@@ -114,10 +114,10 @@ li .icons i {
 .tabular {
 	display: flex;
 }
-.tabular .tabular-text {
+.tabular-text {
 	margin-right: 1rem;
 }
-.tabular .tabular-image + .tabular-text {
+.tabular-image + .tabular-text {
 	margin-left: 4rem;
 	margin-right: 0;
 }
@@ -140,5 +140,19 @@ li .icons i {
 	li .icons i {
 		margin-left: 0;
 		margin-right: 0.5rem;
+	}
+
+	.tabular {
+		flex-direction: column;
+	}
+	.tabular-text, .tabular-image {
+		margin: 0 !important;
+	}
+	.tabular-image {
+		text-align: center;
+		order: -1;
+	}
+	.tabular-image img {
+		max-width: 100%;
 	}
 }
