@@ -60,7 +60,7 @@ h3 {
 	right: 100%;
 	font-size: 1rem;
 	font-weight: 700;
-	color: #ff1994;
+	color: #8d00d9;
 	margin: 0;
 	margin-top: 1rem;
 	margin-right: 0.5rem;
@@ -87,7 +87,7 @@ s {
 }
 
 a {
-	color: #8d00d9;
+	color: #ff1994;
 	text-decoration: none;
 }
 a:hover, a:active, a:focus {
