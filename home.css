@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Marhey:wght@300&family=Roboto&family=Slabo+27px&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Slabo+27px&display=swap');
 @import url('https://www.nerdfonts.com/assets/css/webfont.css');
 
 html, body {
@@ -25,7 +25,9 @@ h2 {
 }
 
 .media {
-	float: right;
+	position: absolute;
+	left: 100%;
+	margin-left: 20rem;
 	font-size: 2rem;
 }
 .media .nf-fa-github {
@@ -35,35 +37,35 @@ h2 {
 	text-decoration: none !important;
 }
 
-.viewport-container {
-	margin: 0 auto;
-	width: 70em;
-	max-width: 100%;
-	padding: 1em;
+header, footer, section {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
 
-main, section {
+section {
 	font-family: 'Roboto', sans-serif;
 }
 
+.viewport-container {
+	width: 40rem;
+	margin-right: 15rem;
+	max-width: 100%;
+	padding: 1em;
+	position: relative;
+}
+
 h3 {
-	font-family: 'Marhey', sans-serif;
-	font-size: 3rem;
-	margin: 0 auto;
-	text-align: center;
-	color: #fc267f;
-}
-h3::before {
-	content: "❧";
-	margin-right: 1rem;
-	color: #c48aff;
-}
-h3::after {
-	content: "❧";
-	display: inline-block;
-	transform: scaleX(-1);
-	margin-left: 1rem;
-	color: #c48aff;
+	position: absolute;
+	right: 100%;
+	font-size: 1rem;
+	font-weight: 700;
+	color: #ff1994;
+	margin: 0;
+	margin-top: 1rem;
+	margin-right: 0.5rem;
+	width: 100%;
+	text-align: right;
 }
 
 s {
@@ -85,7 +87,7 @@ s {
 }
 
 a {
-	color: #ff1994;
+	color: #8d00d9;
 	text-decoration: none;
 }
 a:hover, a:active, a:focus {
@@ -111,22 +113,35 @@ li .icons i {
 	margin-left: 0.5rem;
 }
 
-.tabular {
-	display: flex;
+.right-image {
+	position: absolute;
+	left: 100%;
 }
-.tabular-text {
-	margin-right: 1rem;
-}
-.tabular-image + .tabular-text {
-	margin-left: 4rem;
-	margin-right: 0;
+
+@media screen and (max-width: 1300px) {
+	h3 {
+		position: static;
+		text-align: left;
+	}
+
+	.viewport-container {
+		margin-right: 0;
+	}
+
+	.media {
+		left: unset;
+		right: 1rem;
+	}
+
+	.right-image {
+		position: static;
+		display: block;
+		margin: 0 auto;
+		max-width: 100%;
+	}
 }
 
 @media screen and (max-width: 1000px) {
-	h3 {
-		font-size: 1.75rem;
-	}
-
 	li {
 		margin-bottom: 0.5rem;
 	}
@@ -140,19 +155,5 @@ li .icons i {
 	li .icons i {
 		margin-left: 0;
 		margin-right: 0.5rem;
-	}
-
-	.tabular {
-		flex-direction: column;
-	}
-	.tabular-text, .tabular-image {
-		margin: 0 !important;
-	}
-	.tabular-image {
-		text-align: center;
-		order: -1;
-	}
-	.tabular-image img {
-		max-width: 100%;
 	}
 }
