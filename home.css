@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Marhey:wght@300&family=Roboto&family=Slabo+27px&display=swap');
+@import url('https://www.nerdfonts.com/assets/css/webfont.css');
+
+html, body {
+	margin: 0;
+	height: 100%;
+	font-size: 18px;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+header, footer {
+	background-color: #ed79a9;
+	color: #ffffff;
+	font-family: 'Slabo 27px', serif;
+}
+h1 {
+	margin: 0;
+}
+h2 {
+	opacity: 0.8;
+	margin: 0;
+}
+
+.media {
+	float: right;
+	font-size: 2rem;
+}
+.media .nf-fa-github {
+	color: #ffffff;
+}
+.media a {
+	text-decoration: none !important;
+}
+
+.viewport-container {
+	margin: 0 auto;
+	width: 70em;
+	max-width: 100%;
+	padding: 1em;
+}
+
+main, section {
+	font-family: 'Roboto', sans-serif;
+}
+
+h3 {
+	font-family: 'Marhey', sans-serif;
+	font-size: 3rem;
+	margin: 0 auto;
+	text-align: center;
+	color: #fc267f;
+}
+h3::before {
+	content: "❧";
+	margin-right: 1rem;
+	color: #c48aff;
+}
+h3::after {
+	content: "❧";
+	display: inline-block;
+	transform: scaleX(-1);
+	margin-left: 1rem;
+	color: #c48aff;
+}
+
+s {
+	opacity: 0.5;
+}
+
+.magenta {
+	color: #8f1fff;
+}
+
+.magenta::before {
+	content: "";
+	display: inline-block;
+	width: 0.9rem;
+	height: 0.9rem;
+	background-color: currentColor;
+	vertical-align: middle;
+	margin-right: 0.25rem;
+}
+
+a {
+	color: #ff1994;
+	text-decoration: none;
+}
+a:hover, a:active, a:focus {
+	text-decoration: underline;
+}
+
+ul {
+	padding-left: 0;
+}
+li {
+	position: relative;
+	list-style-type: none;
+	margin-bottom: 0.25rem;
+}
+li .icons {
+	position: absolute;
+	right: 100%;
+	margin-right: 0.5rem;
+	width: 10rem;
+	text-align: right;
+}
+li .icons i {
+	margin-left: 0.5rem;
+}
+
+@media screen and (max-width: 1000px) {
+	h3 {
+		font-size: 1.75rem;
+	}
+
+	li {
+		margin-bottom: 0.5rem;
+	}
+	li .icons {
+		position: static;
+		display: inline-block;
+		text-align: left;
+		width: auto;
+		margin-right: 0;
+	}
+	li .icons i {
+		margin-left: 0;
+		margin-right: 0.5rem;
+	}
+}
