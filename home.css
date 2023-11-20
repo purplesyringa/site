@@ -111,6 +111,17 @@ li .icons i {
 	margin-left: 0.5rem;
 }
 
+.tabular {
+	display: flex;
+}
+.tabular .tabular-text {
+	margin-right: 1rem;
+}
+.tabular .tabular-image + .tabular-text {
+	margin-left: 4rem;
+	margin-right: 0;
+}
+
 @media screen and (max-width: 1000px) {
 	h3 {
 		font-size: 1.75rem;
