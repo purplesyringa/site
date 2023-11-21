@@ -5,6 +5,13 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>purplesyringa</title>
 		<link rel="stylesheet" type="text/css" href="home.css">
+		<script type="text/javascript">
+			const match = window.matchMedia("(prefers-color-scheme: dark)");
+			document.documentElement.classList.toggle("dark", match.matches);
+			match.addEventListener("change", event => {
+				document.documentElement.classList.toggle("dark", event.matches);
+			});
+		</script>
 	</head>
 	<body>
 		<header>

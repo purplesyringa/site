@@ -118,6 +118,20 @@ li .icons i {
 	left: 100%;
 }
 
+.dark header, .dark footer {
+	background-color: #9c2254;
+}
+.dark section {
+	background-color: #160117;
+	color: #fee8ff;
+}
+.dark h3 {
+	color: #cd91ed;
+}
+.dark a {
+	color: #f765b4;
+}
+
 @media screen and (max-width: 1300px) {
 	h3 {
 		position: static;
