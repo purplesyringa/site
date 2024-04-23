@@ -26,7 +26,7 @@ tikzThemes:
     \definecolor{ShallowMagenta}{rgb}{.4,.1,.4}
 ---
 
-There are many code snippets in this blog post. You can [download them from a repo](https://github.com/purplesyringa/site/tree/recovering-garbled-bitcoin-addresses/blog/recovering-garbled-bitcoin-addresses).
+There are many code snippets in this blog post. You can [download them from a repo](https://github.com/purplesyringa/site/tree/recovering-garbled-bitcoin-addresses/blog/recovering-garbled-bitcoin-addresses). The finished project is available [here](https://github.com/purplesyringa/btccaserestore/).
 
 ---
 
