@@ -8,7 +8,10 @@ import markdownit from "markdown-it";
 import markdownitContainer from "markdown-it-container";
 import markdownitTexMath from "markdown-it-texmath";
 import minifyHtml from "@minify-html/node";
+import tmp from "tmp";
 import YAML from "yaml";
+
+tmp.setGracefulCleanup();
 
 const articleDirectory = process.env.INIT_CWD;
 
@@ -30,7 +33,7 @@ const md = markdownit({
 			return "";
 		}
 		if (language === "tikz") {
-			const outputDir = fs.mkdtempSync("blogtex");
+			const outputDir = tmp.dirSync({ unsafeCleanup: true }).name;
 			let rendered = "";
 			for (const theme of [ "light", "dark"]) {
 				const defaultColor = { light: "black", dark: "white" }[theme];
