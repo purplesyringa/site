@@ -26,32 +26,32 @@ tikzThemes:
     \definecolor{ShallowMagenta}{rgb}{.4,.1,.4}
 ---
 
-Once upon a time, there was a decentralized network called [ZeroNet](https://zeronet.io/). Unlike popular content-addressable storage networks that came later, like IPFS, ZeroNet enabled dynamic sites that could be updated by its owners in realtime -- think blogs and forums -- so sites were not addressed by their immutable hashes. The lead developer didn't want to invent any new cryptography, though, so he made perhaps the smartest decision: sites were addressed by Bitcoin addresses, and their contents and updates were signed by that address.
+Once upon a time, there was a decentralized network called [ZeroNet](https://zeronet.io/). Unlike popular content-addressed storage networks that came later (such as IPFS), ZeroNet enabled dynamic sites that could be updated by their owners in real-time, such as blogs and forums. As a consequence, sites could not be addressed by immutable hashes. The lead developer didn't want to invent any new cryptography, though, so he made perhaps the smartest decision: sites were addressed by Bitcoin addresses, and their contents and updates were signed by that address.
 
 :::aside
 Bitcoin now supports [bech32 addresses](https://en.bitcoin.it/wiki/Bech32), which are case-insensitive, but those came later.
 :::
 
-If you haven't used Bitcoin, here's how its addresses look like: `1Lbcfr7sAHTD9CgdQo3HTMTkV8LK4ZnX71`. In comparison, a typical domain name on the web looks like this: `purplesyringa.moe`. The main difference is that Bitcoin addresses are case-sensitive, and people are used to addresses being case-insensitive. This has lead to hacks like using `http://zero/1Lbcfr7sAHTD9CgdQo3HTMTkV8LK4ZnX71` instead of `http://1Lbcfr7sAHTD9CgdQo3HTMTkV8LK4ZnX71.zero`, but mistakes still happened, and sometimes the only trail you had is a lower-cased address, like `1lbcfr7sahtd9cgdqo3htmtkv8lk4znx71`. And that's how valuable information is lost.
+If you haven't used Bitcoin, here's what its addresses look like: `1Lbcfr7sAHTD9CgdQo3HTMTkV8LK4ZnX71`. In comparison, a typical domain name on the web looks like this: `purplesyringa.moe`. The main difference is that Bitcoin addresses are case-sensitive, and people are used to addresses being case-insensitive. This has led to hacks like using `http://zero/1Lbcfr7sAHTD9CgdQo3HTMTkV8LK4ZnX71` instead of `http://1Lbcfr7sAHTD9CgdQo3HTMTkV8LK4ZnX71.zero`, but mistakes still happened, and sometimes the only trail you had is a lower-cased address, like `1lbcfr7sahtd9cgdqo3htmtkv8lk4znx71`. And that's how valuable information is lost.
 
 <aside-inline-here />
 
-I was working on archiving ZeroNet back then, so any sort of information loss due to human error was a nuisance worth fixing. Have we *really* lost access to the site if we only know the lower-cased address? Can we recover the original address, somehow?
+I was working on archiving ZeroNet back then, so any sort of information loss due to human error was a nuisance worth fixing. Have we *really* lost access to the site if we only know the lower-cased address? Can we recover the original address somehow?
 
 
 ### What is an address?
 
 :::aside
-If you're interested how a signature can be verified without knowing a public key, [this](https://crypto.stackexchange.com/questions/18105/how-does-recovering-the-public-key-from-an-ecdsa-signature-work) should answer our question. Also, some people argue applying a hash here increases Bitcoin's resistance to quantum attacks.
+If you are interested in how to verify a signature without knowing a public key, [this](https://crypto.stackexchange.com/questions/18105/how-does-recovering-the-public-key-from-an-ecdsa-signature-work) should answer our question. Also, some people argue applying a hash here increases Bitcoin's resistance to quantum attacks.
 :::
 
-A common misconception is that a Bitcoin address is an encoding of a public key. That's not the case. Instead, an address contains an encoding of a *hash* of the public key. That's a UX decision: the hash is shorter than the public key, and thus easier to use; but it's still long enough so that security is not affected.
+A common misconception is that a Bitcoin address is an encoding of a public key. This is not the case. Instead, an address contains an encoding of a *hash* of the public key. It is a UX decision: the hash is shorter than the public key and thus easier to use, but it is still long enough so that security is not affected.
 
 <aside-inline-here />
 
-It turns out that Satoshi made other UX considerations, too. A Bitcoin address encodes not only a hash of the public key, but also a checksum. If someone makes a typo in the target address while transferring currency, the Bitcoin client is going to notice that and cancel the transaction. The protection is much more serious than the one IBAN uses: the checksum is the first four bytes of `SHA256(SHA256(key_hash))`.
+It turns out that Satoshi made other UX considerations, too. A Bitcoin address encodes not only a hash of the public key but also a checksum. If someone makes a typo in the target address while transferring currency, the Bitcoin client will notice that and cancel the transaction. The protection is much more reliable than the one IBAN uses: the checksum is the first four bytes of `SHA256(SHA256(key_hash))`.
 
-The last important part is that the encoding is not your favorite base64, but base58. The difference is that base58 excludes the characters `0`, `O`, `I`, `l` from the encoding, because they are easily confused, and `+` and `/` because they are not URI-safe (and potentially confusing), and `=` because padding is useless anyway.
+The last important part is that the encoding is not your favorite base64 but base58. The difference is that base58 excludes the characters `0`, `O`, `I`, and `l` from the encoding because they are easily confused, and `+` and `/` because they are not URI-safe (and potentially confusing), and `=` because padding is useless anyway.
 
 Here's a neat illustration:
 
@@ -90,7 +90,7 @@ Here's a neat illustration:
 
 ### First attempt
 
-Can we just try to bruteforce our way through all combinations of lowercase/uppercase and check if any of them is valid? Let's try just that.
+Can we brute-force our way through all combinations of lowercase/uppercase and check if any is valid? Let's try just that.
 
 ```python
 import base58
@@ -186,37 +186,37 @@ user    0m34,275s
 sys 0m0,013s
 ```
 
-Yay! That's exactly the address that we started with.
+Yay! That's precisely the address that we started with.
 
-Problem solved? Well, yeah, but in my case restoring addresses was a part of an automated process. That means that I'm not even sure if the input is total garbage.
+Problem solved? Well, yeah, but in my case, address recovery was a part of an automated process. That means I'm not even sure if the input is total garbage.
 
-Can `1hell0w0rldd9cgdqo3htmtkv8lk4znx71` be restored into a valid Bitcoin address? Maybe! Does anyone actually use that address? I don't know, maybe they used vanitygen and got lucky!
+Can `1hell0w0rldd9cgdqo3htmtkv8lk4znx71` be restored to a valid Bitcoin address? Maybe! Does anyone actually use that address? I don't know! They could have gotten lucky with Vanitygen.
 
-Should I spend my CPU time trying to recover `1aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa`? Probably not, but how am I going to check that automatically while avoiding false negatives?
+Should I spend my CPU time trying to recover `1aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa`? Probably not, but how should I check that automatically while avoiding false negatives?
 
 And that's how the journey towards the fastest recovering algorithm started.
 
 
 ### Third attempt
 
-The first step in the process is decoding base58. Let's check out what the base58 encoding actually does, to see if we can cut any corners.
+The first step in the process is decoding base58. Let's check out what the base58 encoding actually does to see if we can cut any corners.
 
 1. We start with an arbitrary byte string, e.g. `00 d6 f6 4e e7 83 6a cf 6e 5a 93 7d 63 54 c3 a5 96 cd 24 2d fc 2f 78 fa 7c` (represented in hex for simplicity).
 2. We interpret the byte string as a long number in big-endian: `5270856372487448678887896392566731007782045065082238990972`.
-3. We then encode the number in radix 58: `19, 34, 35, 38, 49, 6, 50, 9, 16, 26, 12, 8, 11, 39, 36, 23, 46, 2, 16, 26, 20, 26, 43, 28, 7, 19, 18, 3, 32, 45, 30, 6, 0`.
-4. This conversion process does not preserve the count of leading zero bytes (e.g. `00 ff` and `ff` map to the same radix 58 sequence, namely `4, 23`), so we *add* all the leading zeroes from the byte string to the radix 58 representation. There was just one zero byte in the byte string, so we write `0, 19, 34, 35, 38, 49, 6, 50, 9, 16, 26, 12, 8, 11, 39, 36, 23, 46, 2, 16, 26, 20, 26, 43, 28, 7, 19, 18, 3, 32, 45, 30, 6, 0`.
+3. We then encode the number in radix-58: `19, 34, 35, 38, 49, 6, 50, 9, 16, 26, 12, 8, 11, 39, 36, 23, 46, 2, 16, 26, 20, 26, 43, 28, 7, 19, 18, 3, 32, 45, 30, 6, 0`.
+4. This conversion process does not preserve the count of leading zero bytes (e.g. `00 ff` and `ff` map to one radix-58 sequence, namely `4, 23`), so we *add* all the leading zeroes from the byte string to the radix-58 representation. There was just one zero byte in the byte string, so we write `0, 19, 34, 35, 38, 49, 6, 50, 9, 16, 26, 12, 8, 11, 39, 36, 23, 46, 2, 16, 26, 20, 26, 43, 28, 7, 19, 18, 3, 32, 45, 30, 6, 0`.
 5. Finally, we replace the numbers 0-57 with the corresponding characters from the sequence `123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz`. For instance, 0 maps to `1` and 57 maps to `z`: `1Lbcfr7sAHTD9CgdQo3HTMTkV8LK4ZnX71`.
 
 Conversely, the decoding process is as follows:
 
 1. Replace the alphabet characters with numbers 0-57.
-2. Decode the long number from big-endian radix 58.
-3. Encode the long number into big-endian radix 256.
-4. Add however many leading zeroes there were in the radix 58 representation to the radix 256 representation.
+2. Decode the long number from big-endian radix-58.
+3. Encode the long number into big-endian radix-256.
+4. Add however many leading zeroes there were in the radix-58 representation to the radix-256 representation.
 
-So how does replacing a single character in the encoded string affect the byte string? Say, let's replace `A` with `a` in the example address. On the first step, <code>..., 6, 50, **9**, 16, 26, ...</code> changes to <code>..., 6, 50, **33**, 16, 26, ...</code>. That's just adding 33 - 9 = 24 to a digit of a long number, which amounts to increasing the long number from step 2 by $24 \cdot 58^{25}$. In radix 256, that's still just addition with carry. Step 4 is a bit of a mouthful, but we can sidestep the complexity by abusing the fact that Bitcoin addresses with a checksum are always 25 byte long.
+So, how does replacing a single character in the encoded string affect the byte string? For example, let's replace `A` with `a` in the example address. On the first step, <code>..., 6, 50, **9**, 16, 26, ...</code> changes to <code>..., 6, 50, **33**, 16, 26, ...</code>. This is just adding 33 - 9 = 24 to a digit of a long number, which increases the long number from step 2 by $24 \cdot 58^{25}$. In radix-256, this is still just addition with carry. Step 4 is a bit of a mouthful, but we can sidestep the complexity by abusing that Bitcoin addresses with a checksum are always 25 bytes long.
 
-So, how about we parse the address just once, and then simulate flipping the case by adding or removing a constant (say, $24 \cdot 58^{25}$ in the example above) from the byte representation of the address? Let's do just that:
+So, how about we parse the address just once and then simulate flipping the case by adding or removing a constant (say, $24 \cdot 58^{25}$ in the example above) from the byte representation of the address? Let's do just that:
 
 ```rust expansible
 use itertools::Itertools;
@@ -328,14 +328,14 @@ user    0m6,615s
 sys 0m0,009s
 ```
 
-Hey, that's much better! Honestly, it's a bit embarassing that the slowest part of the last attempt was parsing, not hashing. That's why profilers are so important! Sometimes you can't' guess what the actual bottleneck is, even if that looks obvious.
+Hey, that's much better! Honestly, it's somewhat embarrassing that the slowest part of the last attempt was parsing, not hashing. That's why profilers are so important! Sometimes, one can't guess the bottleneck, even if it seems obvious.
 
 
 ### Fourth attempt
 
-Before we try to apply smart optimizations to other parts of the program, let's see if we've maxxed out the performance of byte string generation.
+Before we try to apply clever optimizations to other parts of the program, let's see if we've maxed out the performance of byte string generation.
 
-Suppose there are just three letters in the address, so `possible_differences` contains just three fixup numbers: `A`, `B`, and `C`. We then iterate through eight subsets of `{A, B, C}` and compute the following numbers:
+Suppose there are just three letters in the address, so `possible_differences` contains three fixup numbers: `A`, `B`, and `C`. We then iterate through eight subsets of `{A, B, C}` and compute the following numbers:
 
 - `base`
 - `base + A`
@@ -346,17 +346,17 @@ Suppose there are just three letters in the address, so `possible_differences` c
 - `base + B + C`
 - `base + A + B + C`
 
-The weird part is *how* we compute them. To compute `base + A + B + C`, we start with `base` and then iteratively add three numbers to it, even though we have computed `base + B + C` on the previous step, and just remembering that value and adding `A` to it would be faster.
+The weird part is *how* we compute them. To calculate `base + A + B + C`, we start with `base` and then iteratively add three numbers to it, even though we have computed `base + B + C` in the previous step, and just remembering that value and adding `A` to it would be faster.
 
-So, can we optimize this computation? Of course we can!
+So, can we optimize this computation? Of course, we can!
 
-What we've been doing before was basically asking three questions in a row:
+What we've been doing before was asking three questions in a row:
 
 - Do we add `A` or not?
 - Do we add `B` or not?
 - Do we add `C` or not?
 
-...and iterating through all possible combinations. We can instead interpret this process as a *recursive* walk down a decision tree, rather than a flat algorithm:
+And iterating through all possible combinations. We can instead interpret this process as a *recursive* walk down a decision tree rather than a flat algorithm:
 
 ```tikz
 \node[draw,diamond,thick,aspect=2] (Root) at(0,0) {Add A?};
@@ -460,7 +460,7 @@ fn iterate_through_possible_differences(
 }
 ```
 
-...and is initiated like this:
+And is initiated like this:
 
 ```rust
 iterate_through_possible_differences(
@@ -472,7 +472,7 @@ iterate_through_possible_differences(
 );
 ```
 
-This is a bit of a mouthful, mostly because we have to explicitly pass the parameters `base_address` and `possible_differences` down the recursion. In a better world, this would be a struct method, so that the parameters are passed implicitly, but that's just prototype code for now.
+This is a bit of a mouthful because we explicitly pass the parameters `base_address` and `possible_differences` down the recursion. In a better world, this would be a struct method, and the arguments would be passed implicitly, but that's just prototype code for now.
 
 How did we do?
 
@@ -492,7 +492,7 @@ That's a slight improvement, perhaps not worth the hassle at first glance, but w
 
 ### Fifth attempt
 
-Now that parsing is mostly out of the way, let's see if we can get rid of hashing too. Well, duh, we can't do that without breaking cryptography, but can we maybe make do with computing fewer hashes?..
+Now that parsing is mostly out of the way, let's see if we can optimize hashing out. Well, duh, we can't do that without breaking cryptography, but can we maybe make do with computing fewer hashes?..
 
 Let's try to watch what happens when we flip the case of a letter up close.
 
@@ -635,16 +635,16 @@ Let's try to watch what happens when we flip the case of a letter up close.
 ```
 
 :::aside
-As no string can have two valid checksums, a typo in the last few characters of a Bitcoin address is certainly going to be noticed. On the other hand, making a typo in other characters might lead to a hash collision, meaning that the typo is unnoticed with probability $2^{-32}$. This means that Bitcoin addresses are ever so slightly more protected against a typo at the end of the address, when the person writing the address by hand is more tired. This effect only exists because of a combination of two seemingly random choices: the checksum being appended to the data rather than prepended, and the use of big-endian as opposed to little-endian. Whether this was a conscious decision made by Satoshi or just a lucky coincidence is an interesting question to ponder.
+As no string can have two valid checksums, a typo in the last few characters of a Bitcoin address will definitely be noticed. On the other hand, making a typo in other characters might lead to a hash collision, meaning that the typo is unnoticed with probability $2^{-32}$. This means that Bitcoin addresses are ever so slightly more protected against a typo at the end of the address when the person writing the address by hand is more tired. This effect only exists because of two seemingly random choices: the checksum being appended to the data rather than prepended, and the use of big-endian instead of little-endian. Whether this was a conscious decision made by Satoshi or just a lucky coincidence is an interesting question to ponder.
 :::
 
-It turns out that flipping the case of a letter affects a *subinterval* of the underlying byte string. Indeed, if you add a small number to a longer one, it's only reasonable that only its lower digits are changed (except in the unlikely cases when long carry propagation happens). The reason why some trailing bits are unchanged is that 58 is even, so e.g. the lowest three bytes of $x \cdot 58^{25}$ are necessarily zero.
+It turns out that flipping the case of a letter affects a *subinterval* of the underlying byte string. Indeed, if you add a small number to a longer one, it's quite reasonable that only its lower digits are changed (except in the unlikely cases when long carry propagation happens). Some trailing bits are unchanged because 58 is even, so, for instance, the lowest three bytes of $x \cdot 58^{25}$ are necessarily zero.
 
-That's worth researching. See, if flipping the case of some letters affects just the checksum, we don't have to iterate through all the combinations of those letters and compute the hash of the immutable 21-byte prefix each time, because we can just straightforwardly compute the checksum of the unchanged 21-byte prefix once and infer the correct letter cases from that. (On the other hand, if some letters affect just the first 21 bytes, that does not really let us optimize anything: two strings can easily have identical checksums.)
+That's worth researching. See, if flipping the case of some letters affects just the checksum, we don't have to iterate through all the combinations of those letters and compute the hash of the immutable 21-byte prefix each time because we can straightforwardly compute the checksum of the unchanged 21-byte prefix once and infer the correct letter cases from that. Unfortunately, if some letters affect just the first 21 bytes, that does not really let us optimize anything: two strings can easily have identical checksums.
 
 <aside-inline-here />
 
-Here's the new algorithm: we shall recursively iterate our way through all combinations of cases, branching on the letters from left to right, and when we determine no further changes in case reflect on the leading 21 bytes, we stop guessing and just compute the hash directly.
+Here's the new algorithm: we shall recursively iterate our way through all combinations of cases, branching on the letters from left to right, and when we determine no further changes in case reflect on the leading 21 bytes, we stop guessing and compute the hash directly.
 
 ```rust expansible
 // snip
@@ -784,7 +784,7 @@ sys 0m0,013s
 
 Yeah, sure it is!
 
-We've already made our code *35 times* faster than the original Rust version. And the bruteforce taking under one second looks even more quick in comparison to the Python version, which would take God knows how much time. Can we use our well-earned rest? Let's try to restore another address just before doing that:
+We've already made our code *35 times* faster than the original Rust version. And the brute force taking under a second looks even quicker in comparison to the Python version, which would take God knows how much time. Can we use our well-earned rest? Let's try to restore another address just before doing that:
 
 ```diff
 -let garbled_address = "1lbcfr7sahtd9cgdqo3htmtkv8lk4znx71";
@@ -802,7 +802,7 @@ user    0m14,334s
 sys 0m0,012s
 ```
 
-Oh. That's no good. The reason why it's so slow is obvious in retrospect: there are much fewer digits in this address than in the one we've used for benchmarking before. And that's not just me being a dick, that's actually a perfectly real randomly generated address I've used on ZeroNet.
+Oh. That's no good. The reason it's so slow is clear in retrospect: there are much fewer digits in this address than in the one we've used for benchmarking before. And that's not just me being a dick, that's actually a real randomly generated address I've used on ZeroNet.
 
 
 ### Sixth attempt
@@ -846,9 +846,9 @@ Overhead  Command   Shared Object      Symbol
 <snip>
 ```
 
-That's hardly surpirising: the slowest part is due to computing hashes. How does the `sha2` crate compute hashes, anyway?
+That's hardly surprising: the slowest part is due to computing hashes. How does the `sha2` crate compute hashes, anyway?
 
-[https://docs.rs/sha2](https://docs.rs/sha2) does not say anything about different implementations. Neither does the GitHub page. But, oh, wait, the GitHub repo shows that its [Cargo.toml](https://github.com/RustCrypto/hashes/blob/sha2-v0.10.8/sha2/Cargo.toml) has some interesting features!
+[https://docs.rs/sha2](https://docs.rs/sha2) does not say anything about different implementations. Neither does the GitHub page. But, oh, wait, the GitHub repo shows that its [Cargo.toml](https://github.com/RustCrypto/hashes/blob/sha2-v0.10.8/sha2/Cargo.toml) has some intriguing features!
 
 ```toml
 [features]
@@ -864,7 +864,7 @@ force-soft = [] # Force software implementation
 asm-aarch64 = ["asm"] # DEPRECATED: use `asm` instead
 ```
 
-Should we just enable the `asm` feature, maybe?..
+Should we enable the `asm` feature, maybe?..
 
 ```shell
 $ cargo add sha2 -F asm
@@ -903,7 +903,7 @@ What is SHA-256, anyway? The Wikipedia page for [SHA-2](https://en.wikipedia.org
 
 > SHA-256 and SHA-512 are novel hash functions computed with eight 32-bit and 64-bit words, respectively.
 
-This seems to indicate that computation of a SHA-256 hash amounts to several operations on 32-bit integers. Indeed, the pseudocode seems to do just that. Can we, perhaps, use SIMD? Many x86 processors support the AVX and AVX2 extensions, which, among other things, enable parallel computations on eight 32-bit integers; older and non-x86 processors typically only support 128-bit SIMD, but that should still give us a fourfold increase in performance. Worth a try!
+This hints that the computation of a SHA-256 hash amounts to several operations on 32-bit integers. Indeed, the pseudocode does just that. Can we, perhaps, use SIMD? Many x86 processors support the AVX and AVX2 extensions, which, among other things, enable parallel computations on eight 32-bit integers; older and non-x86 processors typically only support 128-bit SIMD, but that should still give us a fourfold increase in performance. Worth a try!
 
 Let's start with some boilerplate:
 
@@ -980,7 +980,7 @@ user    0m13,864s
 sys 0m0,023s
 ```
 
-More or less fine, I guess. Time to write some SIMD! In C, we'd have to use `<immintrin.h>` or `<arm_neon.h>` or whatever, but nightly Rust has portable SIMD support, so that's what we're going to use.
+More or less fine, I guess. Time to write some SIMD! In C, we'd have to use `<immintrin.h>` or `<arm_neon.h>`, but nightly Rust has portable SIMD support, so we will use that.
 
 Let's try a straight-forward reimplementation of SHA-256, straight from Wikipedia's pseudocode:
 
@@ -1144,7 +1144,7 @@ user    0m8,858s
 sys 0m0,012s
 ```
 
-I'm... pretty sure that's less than a 2x improvement. (Though an improvement nonetheless.) Perhaps we should apply our minds or something instead of blindly copying code.
+I'm pretty sure that's less than a 2x improvement. (Though an improvement nonetheless.) Perhaps we should apply our minds or something instead of thoughtlessly copying code.
 
 For one thing, the compression function clearly, among other things, performs a rotation of the list `[a, b, c, d, e, f, g, h]`, and we can avoid doing it by renaming variables instead:
 
@@ -1183,7 +1183,7 @@ user    0m8,398s
 sys 0m0,012s
 ```
 
-That's a bit better. But it's still real slow. What takes so long? Let's apply the profiler.
+That's a bit better. But it's still sluggish. What takes so long? Let's apply the profiler.
 
 ```shell
 Samples: 36K of event 'cycles:P', 4000 Hz, Event count (approx.): 34898518133
@@ -1202,7 +1202,7 @@ attempt6::ParallelChecksum::flush  /home/purplesyringa/site/blog/recovering-garb
 ...
 ```
 
-For one thing, there's lots of moves. That's because the compiler does not utilize the [VEX prefix](https://en.wikipedia.org/wiki/VEX_prefix), which enables non-destructive three-operand SIMD operations. VEX is enabled by the AVX extension ...wait. Is that `%xmm` instead of `%ymm`. I have a sinking feeling.
+For one thing, there are lots of moves. That's because the compiler does not utilize the [VEX prefix](https://en.wikipedia.org/wiki/VEX_prefix), which enables non-destructive three-operand SIMD operations. VEX is enabled by the AVX extension ...wait. Is that `%xmm` instead of `%ymm`? I have a sinking feeling.
 
 We've never told rustc it can use any CPU extensions *at all*. All this time, it's been making do with SSE2, which is guaranteed to be available on x86-64 processors, and emulated 256-bit operations with two 128-bit operations. Oh no.
 
@@ -1248,7 +1248,7 @@ Overhead  Command   Shared Object      Symbol
 ...
 ```
 
-Hashing takes around one third of the time, and around half of the time is spent in bigint arithmetic and heap management. We aren't using heap in the hot loop save for a single `Box::new`, so that's due to bigint arithmetic too. Can we do anything about that?
+Hashing takes around one-third of the time, and around half is spent in bigint arithmetic and heap management. We aren't using heap in the hot loop save for a single `Box::new`, so that's due to bigint arithmetic too. Can we do anything about that?
 
 We're using a generic bigint implementation, but we actually need just 25-byte bigints. That's just three 64-bit words plus a single byte. Let's implement long arithmetic ourselves. We don't need any fancy logic here, just the bare bones.
 
@@ -1346,14 +1346,14 @@ user    0m2,512s
 sys 0m0,012s
 ```
 
-Wow! Not bad. And perf says hashing now takes 70% of the time. ...Can we hash even faster?
+Wow! Not bad. perf says hashing now takes 70% of the time. Can we hash even faster?
 
 
 ### Eighth attempt
 
-Well, sort of. These are quite a few scalar operations in our hashing code. We're loading inputs from memory to vector registers, and then dumping outputs from vector registers, all without vectorization.
+Well, sort of. These are quite a few scalar operations in our hashing code. We're loading inputs from memory to vector registers and then dumping outputs from vector registers, all without vectorization.
 
-First, we're doing that even between the two rounds of SHA-256 used when computing checksum. We dump the data after the first round, and then load the very same data before the second round. We can just keep using the same vector registers:
+First, we're doing that even between the two rounds of SHA-256 used when computing the checksum. We dump the data after the first round and then load the very same data before the second round. We can keep using the same vector registers:
 
 ```rust
 fn sha256_adapt_iterated(h: [u32x8; 8]) -> [u32x8; 16] {
@@ -1365,7 +1365,7 @@ fn sha256_adapt_iterated(h: [u32x8; 8]) -> [u32x8; 16] {
 }
 ```
 
-After this optimization, we perform a complicated scalar store from h0..h7 to memory and then only consume the leading four bytes, which are just stored in h0. This inefficiency was hidden before, but now we know we can optimize it out:
+After this optimization, we perform a complicated scalar store from h0..h7 to memory and only consume the leading four bytes stored in h0. This inefficiency was invisible before, but now we know we can optimize it out:
 
 ```rust
 fn sha256_store_leading_four_bytes(h: [u32x8; 8]) -> [u32; 8] {
@@ -1373,7 +1373,7 @@ fn sha256_store_leading_four_bytes(h: [u32x8; 8]) -> [u32; 8] {
 }
 ```
 
-This still leaves with one inefficient 21-byte load. We have:
+This still leaves us with one inefficient 21-byte load. We have:
 
 ```rust
 inputs[0] = [a0, a1, a2, a3, a4, a5]
@@ -1397,7 +1397,7 @@ w[4] = (a4, b4, c4, d4, e4, f4, g4, h4)
 w[5] = (a5, b5, c5, d5, e5, f5, g5, h5)
 ```
 
-That's just matrix transposition. We could perhaps emit six gather calls, but adapting a typical 8x8 transposition algorithm to our usecase is probably going to be more efficient:
+That's just matrix transposition. We could perhaps emit six gather calls, but adapting a typical 8x8 transposition algorithm to our use case is probably going to be more efficient:
 
 ```rust expansible
 fn sha256_load_six_words(vecs: [u8x32; 8], length_in_bits: u32) -> [u32x8; 16] {
@@ -1516,15 +1516,15 @@ user    0m2,397s
 sys 0m0,016s
 ```
 
-...Bummer. That's just barely faster than the inefficient load/store implementation. Perhaps the slowdown is simply due to the deliberately sequential nature of SHA-256, and we can't really make it any faster.
+Bummer. That's just barely faster than the inefficient load/store implementation. Perhaps the slowdown is simply due to the deliberately sequential nature of SHA-256, and we can't really make it any faster.
 
-I guess this is it! Let's see, we started with an implementation that takes *522 seconds* to decode the address `18ryviovmwfyzhrzktjkqgycjkujoxh3k6`, and now it can do that under 2.5 seconds. That's more than a 200x improvement!
+I guess this is it! Let's see, we started with an implementation that takes *522 seconds* to decode the address `18ryviovmwfyzhrzktjkqgycjkujoxh3k6`, and now it can do that in under 2.5 seconds. That's more than a 200x improvement!
 
 :::aside
-Intel provides AVX2 since Haswell (2013), and AMD provides it since Excavator (2015).
+Intel has provided AVX2 since Haswell (2013), and AMD has provided it since Excavator (2015).
 :::
 
-This is not *entirely* a sound comparison, though. The original code assumed nothing more than a x86-64-capable processor, and the last attempt needs AVX2, which is unavailable on older CPUs. I own devices that don't support AVX2, so supporting pure x86-64 is reasonable.
+This comparison is not *entirely* sound, though. The original code assumed nothing more than an x86-64-capable processor, and the last attempt needs AVX2, which is unavailable on older CPUs. I own devices that don't support AVX2, so supporting pure x86-64 is reasonable.
 
 <aside-inline-here />
 
@@ -1543,7 +1543,7 @@ sys 0m0,011s
 
 That's a ~2x reduction in performance, but at least the code still works!
 
-This makes me wonder. If we dropped the "works on x86-64-v1" restriction, would some other extensions help us increase performance? It turns out there's [Intel SHA extensions](https://en.wikipedia.org/wiki/Intel_SHA_extensions), which contain hardware implementations of SHA-256! Can we use them?
+It makes me wonder. If we dropped the "works on x86-64-v1" restriction, would some other extensions help us increase performance? It turns out there are [Intel SHA extensions](https://en.wikipedia.org/wiki/Intel_SHA_extensions), which contain hardware implementations of SHA-256! Can we use them?
 
 ```shell
 $ grep sha_ni /proc/cpuinfo
@@ -1568,7 +1568,7 @@ SHA-NI provides three instructions:
 - `sha256msg2`
 - `sha256rnds2`
 
-The first two instructions are used to optimize this loop:
+The first two instructions optimize this loop:
 
 ```rust
 for i in 16..64 {
@@ -1616,13 +1616,13 @@ for i in (0..64).step_by(8) {
 Roughly speaking, an instruction can run on several ports. You ask a port to compute the instruction and then have to wait. Latency is how many cycles pass till the output is available. Throughput is how many cycles pass till you can send another instruction to this port. This is the reciprocal of what people *usually* call throughput, so it's sometimes (but not always) called rthroughput.
 :::
 
-This optimization looks like a no-brainer, but there's a pitfall: SHA-NI is used to optimize the hashing of a single message, so while the instructions use xmm registers, that's just a hardware way of saying "I want lots of integers as inputs to this instruction". The only way to compute several hashes in parallel is to interleave the instructions that hash different strings, thanks to pipelined execution.
+This optimization looks like a no-brainer, but there is a pitfall: SHA-NI is used to optimize the hashing of a single message, so while the instructions use xmm registers, that is just a hardware way of saying, "I want lots of integers as inputs to this instruction". The only way to compute several hashes in parallel is to interleave the instructions that hash different strings, thanks to pipelined execution.
 
 <aside-inline-here />
 
-How many hashes should we compute in parallel? [uops.info](https://uops.info/table.html) says `sha256rnds2 (xmm, xmm)` has latency 4 and throughput 2 on Zen, so only two `sha256rnds2`s can be executed in simultaneously. Other instructions, like `sha256msg1`, have different latencies and throughputs, but `sha256rnds2` is likely the bottleneck. This means that we should probably run only two SHA-256 chains.
+How many hashes should we compute in parallel? [uops.info](https://uops.info/table.html) says `sha256rnds2 (xmm, xmm)` has latency 4 and throughput 2 on Zen, so only two `sha256rnds2`s can be executed simultaneously. Other instructions, like `sha256msg1`, have different latencies and throughputs, but `sha256rnds2` is likely the bottleneck. This means that we should probably run only two SHA-256 chains.
 
-Let's see how our original code performs on this machine, so that we have some baseline for comparison:
+Let's see how our original code performs on this machine so that we have some baseline for comparison:
 
 ```shell
 > time RUSTFLAGS="-C target-feature=+avx2" cargo run --bin attempt8 --release
@@ -1789,11 +1789,11 @@ Executed in    1.60 secs    fish           external
 I have replicated the same speedup on Zen 4 later.
 :::
 
-This is a 1.8x speedup! Not quite exciting, but an improvement nonetheless. Also, `PARALLELISM == 2` turns out to indeed be the best value.
+This is a 1.8x speedup -- not quite exciting, but an improvement nonetheless. Also, `PARALLELISM == 2` turns out to indeed be the best value.
 
 <aside-inline-here />
 
-There's a few other improvements to make, like replacing recursion with Gray code, entirely getting rid of vtables and heap allocation, but I think this post is already getting long, and we won't be able to get greater than a 1.5x improvement this way, so let's call it quits.
+Some other improvements are possible, like replacing recursion with Gray code and abolishing vtables and heap allocation. But this post is already getting long, and we will not be able to get a greater than 1.5x improvement this way, so let's call it quits.
 
 
 ### Results
@@ -1809,34 +1809,34 @@ We have applied the following optimizations:
 - Use somewhat smarter vectorized algorithms `1.05x`
 - Use SHA-NI if available `1.8x`
 
-This is a ~300-400x speedup. Of these, the first four are mostly theory-based optimizations, yielding an improvement of 34x, and the latter four utilize hardware better, further improving performance by 11x.
+This is a ~300-400x speedup. Of these, the first four are theory-based optimizations, yielding an improvement of 34x, and the latter four utilize hardware better, further improving performance by 11x.
 
 ---
 
-So, if you think you don't need to know computer science or math to write good software, that's bullshit.
+So, if you think you do not need to know computer science or math to write good software, this is bullshit.
 
-Is parsing integers compilcated math? Not really. Do you need *some* mathematical background to try to optimize base58 parsing the way we did? Probably.
+Is parsing integers complicated math? Not really. Do you need *some* mathematical background to optimize base58 parsing the way we did? Probably.
 
 :::aside
-You got me, Gray code-based iteration doesn't require recursion and is going to be even faster. My point stands.
+You got me, Gray code-based iteration does not require recursion and is even faster. My point stands.
 :::
 
-Do you need to know compsci to write a recursive algorithm? No. Do you need some intuition that compsci provides to know recursion is sometimes more efficient than a loop? I think so.
+Do you need to know compsci to write a recursive algorithm? No. Do you need some intuition that compsci provides to realize recursion is sometimes more efficient than a loop? I think so.
 
 <aside-inline-here />
 
 Do you need to know math to notice the leading 21 bytes stop changing at some point? No. Do you need to know a trick or two to terminate recursion at that point instead of just caching the hash and going on? I think so.
 
-This is not rocket science, yet people keep making the same mistakes. Rust's `async`s have $O(n)$ continuation complexity instead of $O(1)$, which forces `tokio` to workaround this inefficiency with various hacks. Developers keep choosing the most inefficient data structures or sticking to a terrible language (for their task, not generally) just because they're familiar with it. Maybe we should be a bit more mindful of these choices.
+It's not rocket science, yet people keep making the same mistakes. Rust's `async`s have $O(n)$ continuation complexity instead of $O(1)$, which forces `tokio` to workaround this inefficiency with various hacks. Developers keep choosing the most inefficient data structures or sticking to a terrible language (for their task, not generally) just because they are familiar with it. Maybe we should be a bit more mindful of these choices.
 
 ---
 
-There's another lesson here. We often try to throw more workforce at the problem, as if that's magically going to hide the inefficiency. But oftentimes the hardware is powerful enough, and the problem is that we've never learnt to make use of it.
+There is another lesson here. We often try to throw more workforce at the problem as if that is magically going to hide the inefficiency. But the hardware is often powerful enough, and the problem is that we've never learnt to make use of it.
 
-I once heard an anecdote that stuck with me. A person noticed `free` showing little free memory, and thought Linux was stupid and nasty for hogging all the memory. But Linux did not, in fact, use all the memory for permanent data. It kept a large disk cache, which could be safely dropped if some program needed more memory than what was available at the moment. Linux said, no one's using this memory at the moment anyway, so why don't I borrow it to increase I/O performance?
+I once heard an anecdote that stuck with me. A person noticed `free` showing little free memory and thought Linux was stupid and nasty for hogging all the memory. But Linux did not, in fact, use all the memory for permanent data. It kept a large disk cache, which could safely be dropped if some program needed more memory than what was available at the time. Linux said, "No one is using this memory at the moment anyway, so why don't I borrow it to increase I/O performance?"
 
-The same applies to CPU use, at least on servers. If your services always use below 10% of CPU resources, maybe you should switch to cheaper hardware or configure the software use CPU more aggressively.
+The same applies to CPU use, at least on servers. If your services always use below 10% of CPU resources, you should consider switching to cheaper hardware or configuring the software to use the CPU more aggressively.
 
-But what *is* CPU use? All mainstream operating systems interpret CPU use as the fraction of time a process executes an instruction on the CPU, completely ignoring the microarchitectural conditions. Both scalar and vectorized code an use 100% of CPU, but they utilize different CPU ports with different efficiency rate -- so *should* we really be saying they utilize the same fraction of CPU resources?
+But what *is* CPU use? All mainstream operating systems interpret CPU use as the fraction of time a process executes an instruction on the CPU, ignoring the microarchitectural conditions. Both scalar and vectorized code use 100% of CPU but utilize different CPU ports with different efficiencies, so *should* we really be saying they utilize the same fraction of CPU resources?
 
 I don't think so. Maybe we should invent a technical term for this closer-to-reality value. Ideas, anyone?
