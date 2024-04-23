@@ -13,10 +13,10 @@
     "@minify-html/node": "^0.15.0",
     "escape-html": "^1.0.3",
     "highlight.js": "^11.9.0",
-    "katex": "^0.16.10",
     "markdown-it": "^14.1.0",
     "markdown-it-container": "^4.0.0",
     "markdown-it-texmath": "^1.0.0",
+    "temml": "^0.10.24",
     "tmp": "^0.2.3",
     "yaml": "^2.4.1"
   }

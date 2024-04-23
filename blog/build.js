@@ -3,11 +3,11 @@ import childProcess from "node:child_process";
 import escapeHTML from "escape-html";
 import fs from "node:fs";
 import hljs from "highlight.js";
-import katex from "katex";
 import markdownit from "markdown-it";
 import markdownitContainer from "markdown-it-container";
 import markdownitTexMath from "markdown-it-texmath";
 import minifyHtml from "@minify-html/node";
+import temml from "temml";
 import tmp from "tmp";
 import YAML from "yaml";
 
@@ -83,7 +83,7 @@ md.use(markdownitContainer, "aside", {
 	},
 });
 md.use(markdownitTexMath, {
-	engine: katex,
+	engine: temml,
 });
 
 html = html.replace(/{{ body }}/g, md.render(markdown).replace(/<aside-inline-here \/>/g, "</div>"));

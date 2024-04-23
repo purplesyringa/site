@@ -19,9 +19,7 @@ code {
 	font-family: 'Noto Sans', sans-serif;
 	color: #8d00d9;
 }
-.katex {
-	font-size: 1.1em;
-	line-height: 0;
+math {
 	color: #8d00d9;
 }
 
@@ -123,7 +121,7 @@ aside > :last-child {
 }
 
 @media all and (prefers-color-scheme: dark) {
-	code, .katex {
+	code, math {
 		color: #cd91ed;
 	}
 	aside {
