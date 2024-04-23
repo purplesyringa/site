@@ -26,6 +26,10 @@ tikzThemes:
     \definecolor{ShallowMagenta}{rgb}{.4,.1,.4}
 ---
 
+There are many code snippets in this blog post. You can [download them from a repo](https://github.com/purplesyringa/site/tree/recovering-garbled-bitcoin-addresses/blog/recovering-garbled-bitcoin-addresses).
+
+---
+
 Once upon a time, there was a decentralized network called [ZeroNet](https://zeronet.io/). Unlike popular content-addressed storage networks that came later (such as IPFS), ZeroNet enabled dynamic sites that could be updated by their owners in real-time, such as blogs and forums. As a consequence, sites could not be addressed by immutable hashes. The lead developer didn't want to invent any new cryptography, though, so he made perhaps the smartest decision: sites were addressed by Bitcoin addresses, and their contents and updates were signed by that address.
 
 :::aside
