@@ -62,6 +62,7 @@ pre code {
 }
 .expansible-code > input:checked + .highlighted {
 	height: auto;
+	overflow: visible;
 }
 .expansible-code > input:checked ~ label {
 	display: none;
