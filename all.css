@@ -108,6 +108,11 @@ li {
 }
 
 @media screen and (max-width: 1300px) {
+	.media {
+		left: unset;
+		right: 1rem;
+	}
+
 	h3 {
 		position: static;
 		text-align: left;

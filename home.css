@@ -38,11 +38,6 @@ li .icons i {
 }
 
 @media screen and (max-width: 1300px) {
-	.media {
-		left: unset;
-		right: 1rem;
-	}
-
 	.right-image {
 		position: static;
 		display: block;
