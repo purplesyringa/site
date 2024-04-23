@@ -1,6 +1,6 @@
 ---
 title: Recovering garbled Bitcoin addresses
-time: April 19, 2024
+time: April 23, 2024
 tikzThemes:
   light: |
     \colorlet{DeepBlue}{blue!30}
