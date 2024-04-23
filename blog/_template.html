@@ -10,13 +10,6 @@
 			@import "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" screen and (prefers-color-scheme: dark);
 			@import "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/base16/atelier-cave-light.min.css" screen and (prefers-color-scheme: light);
 		</style>
-		<script type="text/javascript">
-			const match = window.matchMedia("(prefers-color-scheme: dark)");
-			document.documentElement.classList.toggle("dark", match.matches);
-			match.addEventListener("change", event => {
-				document.documentElement.classList.toggle("dark", event.matches);
-			});
-		</script>
 	</head>
 	<body>
 		<header>

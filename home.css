@@ -22,8 +22,8 @@ h1 {
 	margin: 0;
 }
 
-h1 a, .dark h1 a {
-	color: inherit;
+h1 a {
+	color: inherit !important;
 }
 
 .media {
@@ -44,9 +44,9 @@ header, footer, section {
 	flex-direction: column;
 	align-items: center;
 }
-footer h2, .dark footer h2 {
+footer h2 {
 	opacity: 0.8;
-	color: inherit;
+	color: inherit !important;
 }
 
 section {
@@ -245,40 +245,42 @@ aside > :last-child {
 	display: none;
 }
 
-.dark header, .dark footer {
-	background-color: #9c2254;
-}
-.dark section {
-	background-color: #160117;
-	color: #fee8ff;
-}
-.dark h2, .dark h3, .dark code, .dark .katex {
-	color: #cd91ed;
-}
-.dark a {
-	color: #f765b4;
-}
-.dark aside {
-	background-color: #4e2554;
-}
-.dark blockquote {
-	border-left-color: #9c2254;
-	background-color: #4e2554;
-}
-.dark pre {
-	background-color: #00000080;
-}
-.dark pre code {
-	color: #ffffff;
-}
-.dark .expansible-code > label {
-	background-image: linear-gradient(to bottom, transparent, #000000);
-}
-.dark .only-light {
-	display: none;
-}
-.dark .only-dark {
-	display: block;
+@media all and (prefers-color-scheme: dark) {
+	header, footer {
+		background-color: #9c2254;
+	}
+	section {
+		background-color: #160117;
+		color: #fee8ff;
+	}
+	h2, h3, code, .katex {
+		color: #cd91ed;
+	}
+	a {
+		color: #f765b4;
+	}
+	aside {
+		background-color: #4e2554;
+	}
+	blockquote {
+		border-left-color: #9c2254;
+		background-color: #4e2554;
+	}
+	pre {
+		background-color: #00000080;
+	}
+	pre code {
+		color: #ffffff;
+	}
+	.expansible-code > label {
+		background-image: linear-gradient(to bottom, transparent, #000000);
+	}
+	.only-light {
+		display: none;
+	}
+	.only-dark {
+		display: block;
+	}
 }
 
 @media screen and (max-width: 1300px) {
