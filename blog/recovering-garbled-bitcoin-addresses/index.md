@@ -826,7 +826,13 @@ WARNING: perf not found for kernel 6.8.1-060801
     linux-cloud-tools-generic
 ```
 
-Right, sorry, I'm using mainline on Ubuntu. Let me grab a `perf` from another computer.
+:::aside
+My girlfriend uses Arch, by the way.
+:::
+
+Right, sorry, I'm using mainline on Ubuntu. Let me grab a `perf` and whatever it links to from another computer.
+
+<aside-inline-here />
 
 ```shell
 $ alias perf="LD_LIBRARY_PATH=. ./perf"

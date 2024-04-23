@@ -402,7 +402,7 @@ WARNING: perf not found for kernel 6.8.1-060801
   You may also want to install one of the following packages to keep up to date:
     linux-tools-generic
     linux-cloud-tools-generic
-</code></pre><p>Right, sorry, I’m using mainline on Ubuntu. Let me grab a <code>perf</code> from another computer.<pre><code class=language-shell><span class="hljs-meta prompt_">$ </span><span class=language-bash><span class=hljs-built_in>alias</span> perf=<span class=hljs-string>"LD_LIBRARY_PATH=. ./perf"</span></span>
+</code></pre><div class=aside-group><aside><p>My girlfriend uses Arch, by the way.</aside><p>Right, sorry, I’m using mainline on Ubuntu. Let me grab a <code>perf</code> and whatever it links to from another computer.</div><pre><code class=language-shell><span class="hljs-meta prompt_">$ </span><span class=language-bash><span class=hljs-built_in>alias</span> perf=<span class=hljs-string>"LD_LIBRARY_PATH=. ./perf"</span></span>
 <span class="hljs-meta prompt_">
 $ </span><span class=language-bash>perf record target/release/attempt5</span>
 Found valid address: 18ryVioVmwFYzhRZKTjKqGYCjkUjoxH3k6
