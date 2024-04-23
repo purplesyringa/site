@@ -1589,7 +1589,7 @@ for i in 16..64 {
 }
 ```
 
-`sha256msg1` computes `w[i - 16] + s0` for for consecutive `i`s. `sha256msg2` *would* compute `w[i - 7] + s1` for four consecutive `i`s, if only `w[i]` didn't depend on `w[i - 2]`, so instead of computes `w[i]` given the result of `sha256msg1` and the previous values of `w`. Here is how they are meant to be used, roughly speaking:
+`sha256msg1` computes `w[i - 16] + s0` for four consecutive `i`s. `sha256msg2` *would* compute `w[i - 7] + s1` for four consecutive `i`s, if only `w[i]` didn't depend on `w[i - 2]`, so instead of computes `w[i]` given the result of `sha256msg1` and the previous values of `w`. Here is how they are meant to be used, roughly speaking:
 
 ```rust
 for i in (16..64).step_by(4) {
