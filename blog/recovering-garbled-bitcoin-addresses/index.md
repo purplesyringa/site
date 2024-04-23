@@ -1417,14 +1417,12 @@ fn sha256_load_six_words(vecs: [u8x32; 8], length_in_bits: u32) -> [u32x8; 16] {
     // vecs[7] = [h0, h1, h2, h3, h4, h5, ?, ?]
 
     // Transpose 2x2 matrix of 4x4 elements
-    vecs[0] = simd_swizzle!(vecs[0], vecs[4], [0, 1, 2, 3, 8, 9, 10, 11]);
-    vecs[1] = simd_swizzle!(vecs[1], vecs[5], [0, 1, 2, 3, 8, 9, 10, 11]);
-    vecs[2] = simd_swizzle!(vecs[2], vecs[6], [0, 1, 2, 3, 8, 9, 10, 11]);
-    vecs[3] = simd_swizzle!(vecs[3], vecs[7], [0, 1, 2, 3, 8, 9, 10, 11]);
-    vecs[4] = simd_swizzle!(vecs[0], vecs[4], [4, 5, 6, 7, 12, 13, 14, 15]);
-    vecs[5] = simd_swizzle!(vecs[1], vecs[5], [4, 5, 6, 7, 12, 13, 14, 15]);
-    vecs[6] = simd_swizzle!(vecs[2], vecs[6], [4, 5, 6, 7, 12, 13, 14, 15]);
-    vecs[7] = simd_swizzle!(vecs[3], vecs[7], [4, 5, 6, 7, 12, 13, 14, 15]);
+    for i in 0..4 {
+        (vecs[i], vecs[i + 4]) = (
+            simd_swizzle!(vecs[i], vecs[i + 4], [0, 1, 2, 3, 8, 9, 10, 11]),
+            simd_swizzle!(vecs[i], vecs[i + 4], [4, 5, 6, 7, 12, 13, 14, 15]),
+        );
+    }
 
     // vecs[0] = [a0, a1, a2, a3, e0, e1, e2, e3]
     // vecs[1] = [b0, b1, b2, b3, f0, f1, f2, f3]
@@ -1436,12 +1434,15 @@ fn sha256_load_six_words(vecs: [u8x32; 8], length_in_bits: u32) -> [u32x8; 16] {
     // vecs[7] = [d4, d5, ?,  ?,  h4, h5, ?,  ? ]
 
     // Transpose each 4x4 submatrix as a 2x2 matrix of 2x2 elements
-    vecs[0] = simd_swizzle!(vecs[0], vecs[2], [0, 1, 8, 9, 4, 5, 12, 13]);
-    vecs[1] = simd_swizzle!(vecs[1], vecs[3], [0, 1, 8, 9, 4, 5, 12, 13]);
-    vecs[2] = simd_swizzle!(vecs[0], vecs[2], [2, 3, 10, 11, 6, 7, 14, 15]);
-    vecs[3] = simd_swizzle!(vecs[1], vecs[3], [2, 3, 10, 11, 6, 7, 14, 15]);
-    vecs[4] = simd_swizzle!(vecs[4], vecs[6], [0, 1, 8, 9, 4, 5, 12, 13]);
-    vecs[5] = simd_swizzle!(vecs[5], vecs[7], [0, 1, 8, 9, 4, 5, 12, 13]);
+    for i in 0..2 {
+        (vecs[i], vecs[i + 2]) = (
+            simd_swizzle!(vecs[i], vecs[i + 2], [0, 1, 8, 9, 4, 5, 12, 13]),
+            simd_swizzle!(vecs[i], vecs[i + 2], [2, 3, 10, 11, 6, 7, 14, 15]),
+        );
+    }
+    for i in 4..6 {
+        vecs[i] = simd_swizzle!(vecs[i], vecs[i + 2], [0, 1, 8, 9, 4, 5, 12, 13]);
+    }
 
     // vecs[0] = [a0, a1, c0, c1, e0, e1, g0, g1]
     // vecs[1] = [b0, b1, d0, d1, f0, f1, h0, h1]
@@ -1451,12 +1452,12 @@ fn sha256_load_six_words(vecs: [u8x32; 8], length_in_bits: u32) -> [u32x8; 16] {
     // vecs[5] = [b4, b5, d4, d5, f4, f5, h4, h5]
 
     // Transpose each 2x2 submatrix
-    vecs[0] = simd_swizzle!(vecs[0], vecs[1], [0, 8, 2, 10, 4, 12, 6, 14]);
-    vecs[1] = simd_swizzle!(vecs[0], vecs[1], [1, 9, 3, 11, 5, 13, 7, 15]);
-    vecs[2] = simd_swizzle!(vecs[2], vecs[3], [0, 8, 2, 10, 4, 12, 6, 14]);
-    vecs[3] = simd_swizzle!(vecs[2], vecs[3], [1, 9, 3, 11, 5, 13, 7, 15]);
-    vecs[4] = simd_swizzle!(vecs[4], vecs[5], [0, 8, 2, 10, 4, 12, 6, 14]);
-    vecs[5] = simd_swizzle!(vecs[4], vecs[5], [1, 9, 3, 11, 5, 13, 7, 15]);
+    for i in (0..6).step_by(2) {
+        (vecs[i], vecs[i + 1]) = (
+            simd_swizzle!(vecs[i], vecs[i + 1], [0, 8, 2, 10, 4, 12, 6, 14]),
+            simd_swizzle!(vecs[i], vecs[i + 1], [1, 9, 3, 11, 5, 13, 7, 15]),
+        );
+    }
 
     // vecs[0] = [a0, b0, c0, d0, e0, f0, g0, h0]
     // vecs[1] = [a1, b1, c1, d1, e1, f1, g1, h1]
@@ -1515,9 +1516,9 @@ $ time RUSTFLAGS="-C target-feature=+avx2" cargo run --bin attempt8 --release
      Running `target/release/attempt8`
 Found valid address: 18ryVioVmwFYzhRZKTjKqGYCjkUjoxH3k6
 
-real    0m2,413s
-user    0m2,397s
-sys 0m0,016s
+real    0m2,444s
+user    0m2,424s
+sys 0m0,020s
 ```
 
 Bummer. That's just barely faster than the inefficient load/store implementation. Perhaps the slowdown is simply due to the deliberately sequential nature of SHA-256, and we can't really make it any faster.
@@ -1540,9 +1541,9 @@ $ time cargo run --bin attempt8 --release
      Running `target/release/attempt8`
 Found valid address: 18ryVioVmwFYzhRZKTjKqGYCjkUjoxH3k6
 
-real    0m4,557s
-user    0m4,545s
-sys 0m0,011s
+real    0m4,617s
+user    0m4,604s
+sys 0m0,012s
 ```
 
 That's a ~2x reduction in performance, but at least the code still works!
@@ -1635,9 +1636,9 @@ Let's see how our original code performs on this machine so that we have some ba
 Found valid address: 18ryVioVmwFYzhRZKTjKqGYCjkUjoxH3k6
 
 ________________________________________________________
-Executed in    2.84 secs    fish           external
-   usr time    2.82 secs  416.00 micros    2.82 secs
-   sys time    0.02 secs  340.00 micros    0.02 secs
+Executed in    2.88 secs    fish           external
+   usr time    2.85 secs  268.00 micros    2.85 secs
+   sys time    0.02 secs  253.00 micros    0.02 secs
 ```
 
 And here's the code that uses SHA-NI. It should be more or less straightforward. I hope you excuse me for a bit of unsafety here :-)

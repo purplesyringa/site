@@ -876,14 +876,12 @@ w[<span class=hljs-number>5</span>] = (a5, b5, c5, d5, e5, f5, g5, h5)
     <span class=hljs-comment>// vecs[7] = [h0, h1, h2, h3, h4, h5, ?, ?]</span>
 
     <span class=hljs-comment>// Transpose 2x2 matrix of 4x4 elements</span>
-    vecs[<span class=hljs-number>0</span>] = simd_swizzle!(vecs[<span class=hljs-number>0</span>], vecs[<span class=hljs-number>4</span>], [<span class=hljs-number>0</span>, <span class=hljs-number>1</span>, <span class=hljs-number>2</span>, <span class=hljs-number>3</span>, <span class=hljs-number>8</span>, <span class=hljs-number>9</span>, <span class=hljs-number>10</span>, <span class=hljs-number>11</span>]);
-    vecs[<span class=hljs-number>1</span>] = simd_swizzle!(vecs[<span class=hljs-number>1</span>], vecs[<span class=hljs-number>5</span>], [<span class=hljs-number>0</span>, <span class=hljs-number>1</span>, <span class=hljs-number>2</span>, <span class=hljs-number>3</span>, <span class=hljs-number>8</span>, <span class=hljs-number>9</span>, <span class=hljs-number>10</span>, <span class=hljs-number>11</span>]);
-    vecs[<span class=hljs-number>2</span>] = simd_swizzle!(vecs[<span class=hljs-number>2</span>], vecs[<span class=hljs-number>6</span>], [<span class=hljs-number>0</span>, <span class=hljs-number>1</span>, <span class=hljs-number>2</span>, <span class=hljs-number>3</span>, <span class=hljs-number>8</span>, <span class=hljs-number>9</span>, <span class=hljs-number>10</span>, <span class=hljs-number>11</span>]);
-    vecs[<span class=hljs-number>3</span>] = simd_swizzle!(vecs[<span class=hljs-number>3</span>], vecs[<span class=hljs-number>7</span>], [<span class=hljs-number>0</span>, <span class=hljs-number>1</span>, <span class=hljs-number>2</span>, <span class=hljs-number>3</span>, <span class=hljs-number>8</span>, <span class=hljs-number>9</span>, <span class=hljs-number>10</span>, <span class=hljs-number>11</span>]);
-    vecs[<span class=hljs-number>4</span>] = simd_swizzle!(vecs[<span class=hljs-number>0</span>], vecs[<span class=hljs-number>4</span>], [<span class=hljs-number>4</span>, <span class=hljs-number>5</span>, <span class=hljs-number>6</span>, <span class=hljs-number>7</span>, <span class=hljs-number>12</span>, <span class=hljs-number>13</span>, <span class=hljs-number>14</span>, <span class=hljs-number>15</span>]);
-    vecs[<span class=hljs-number>5</span>] = simd_swizzle!(vecs[<span class=hljs-number>1</span>], vecs[<span class=hljs-number>5</span>], [<span class=hljs-number>4</span>, <span class=hljs-number>5</span>, <span class=hljs-number>6</span>, <span class=hljs-number>7</span>, <span class=hljs-number>12</span>, <span class=hljs-number>13</span>, <span class=hljs-number>14</span>, <span class=hljs-number>15</span>]);
-    vecs[<span class=hljs-number>6</span>] = simd_swizzle!(vecs[<span class=hljs-number>2</span>], vecs[<span class=hljs-number>6</span>], [<span class=hljs-number>4</span>, <span class=hljs-number>5</span>, <span class=hljs-number>6</span>, <span class=hljs-number>7</span>, <span class=hljs-number>12</span>, <span class=hljs-number>13</span>, <span class=hljs-number>14</span>, <span class=hljs-number>15</span>]);
-    vecs[<span class=hljs-number>7</span>] = simd_swizzle!(vecs[<span class=hljs-number>3</span>], vecs[<span class=hljs-number>7</span>], [<span class=hljs-number>4</span>, <span class=hljs-number>5</span>, <span class=hljs-number>6</span>, <span class=hljs-number>7</span>, <span class=hljs-number>12</span>, <span class=hljs-number>13</span>, <span class=hljs-number>14</span>, <span class=hljs-number>15</span>]);
+    <span class=hljs-keyword>for</span> <span class=hljs-variable>i</span> <span class=hljs-keyword>in</span> <span class=hljs-number>0</span>..<span class=hljs-number>4</span> {
+        (vecs[i], vecs[i + <span class=hljs-number>4</span>]) = (
+            simd_swizzle!(vecs[i], vecs[i + <span class=hljs-number>4</span>], [<span class=hljs-number>0</span>, <span class=hljs-number>1</span>, <span class=hljs-number>2</span>, <span class=hljs-number>3</span>, <span class=hljs-number>8</span>, <span class=hljs-number>9</span>, <span class=hljs-number>10</span>, <span class=hljs-number>11</span>]),
+            simd_swizzle!(vecs[i], vecs[i + <span class=hljs-number>4</span>], [<span class=hljs-number>4</span>, <span class=hljs-number>5</span>, <span class=hljs-number>6</span>, <span class=hljs-number>7</span>, <span class=hljs-number>12</span>, <span class=hljs-number>13</span>, <span class=hljs-number>14</span>, <span class=hljs-number>15</span>]),
+        );
+    }
 
     <span class=hljs-comment>// vecs[0] = [a0, a1, a2, a3, e0, e1, e2, e3]</span>
     <span class=hljs-comment>// vecs[1] = [b0, b1, b2, b3, f0, f1, f2, f3]</span>
@@ -895,12 +893,15 @@ w[<span class=hljs-number>5</span>] = (a5, b5, c5, d5, e5, f5, g5, h5)
     <span class=hljs-comment>// vecs[7] = [d4, d5, ?,  ?,  h4, h5, ?,  ? ]</span>
 
     <span class=hljs-comment>// Transpose each 4x4 submatrix as a 2x2 matrix of 2x2 elements</span>
-    vecs[<span class=hljs-number>0</span>] = simd_swizzle!(vecs[<span class=hljs-number>0</span>], vecs[<span class=hljs-number>2</span>], [<span class=hljs-number>0</span>, <span class=hljs-number>1</span>, <span class=hljs-number>8</span>, <span class=hljs-number>9</span>, <span class=hljs-number>4</span>, <span class=hljs-number>5</span>, <span class=hljs-number>12</span>, <span class=hljs-number>13</span>]);
-    vecs[<span class=hljs-number>1</span>] = simd_swizzle!(vecs[<span class=hljs-number>1</span>], vecs[<span class=hljs-number>3</span>], [<span class=hljs-number>0</span>, <span class=hljs-number>1</span>, <span class=hljs-number>8</span>, <span class=hljs-number>9</span>, <span class=hljs-number>4</span>, <span class=hljs-number>5</span>, <span class=hljs-number>12</span>, <span class=hljs-number>13</span>]);
-    vecs[<span class=hljs-number>2</span>] = simd_swizzle!(vecs[<span class=hljs-number>0</span>], vecs[<span class=hljs-number>2</span>], [<span class=hljs-number>2</span>, <span class=hljs-number>3</span>, <span class=hljs-number>10</span>, <span class=hljs-number>11</span>, <span class=hljs-number>6</span>, <span class=hljs-number>7</span>, <span class=hljs-number>14</span>, <span class=hljs-number>15</span>]);
-    vecs[<span class=hljs-number>3</span>] = simd_swizzle!(vecs[<span class=hljs-number>1</span>], vecs[<span class=hljs-number>3</span>], [<span class=hljs-number>2</span>, <span class=hljs-number>3</span>, <span class=hljs-number>10</span>, <span class=hljs-number>11</span>, <span class=hljs-number>6</span>, <span class=hljs-number>7</span>, <span class=hljs-number>14</span>, <span class=hljs-number>15</span>]);
-    vecs[<span class=hljs-number>4</span>] = simd_swizzle!(vecs[<span class=hljs-number>4</span>], vecs[<span class=hljs-number>6</span>], [<span class=hljs-number>0</span>, <span class=hljs-number>1</span>, <span class=hljs-number>8</span>, <span class=hljs-number>9</span>, <span class=hljs-number>4</span>, <span class=hljs-number>5</span>, <span class=hljs-number>12</span>, <span class=hljs-number>13</span>]);
-    vecs[<span class=hljs-number>5</span>] = simd_swizzle!(vecs[<span class=hljs-number>5</span>], vecs[<span class=hljs-number>7</span>], [<span class=hljs-number>0</span>, <span class=hljs-number>1</span>, <span class=hljs-number>8</span>, <span class=hljs-number>9</span>, <span class=hljs-number>4</span>, <span class=hljs-number>5</span>, <span class=hljs-number>12</span>, <span class=hljs-number>13</span>]);
+    <span class=hljs-keyword>for</span> <span class=hljs-variable>i</span> <span class=hljs-keyword>in</span> <span class=hljs-number>0</span>..<span class=hljs-number>2</span> {
+        (vecs[i], vecs[i + <span class=hljs-number>2</span>]) = (
+            simd_swizzle!(vecs[i], vecs[i + <span class=hljs-number>2</span>], [<span class=hljs-number>0</span>, <span class=hljs-number>1</span>, <span class=hljs-number>8</span>, <span class=hljs-number>9</span>, <span class=hljs-number>4</span>, <span class=hljs-number>5</span>, <span class=hljs-number>12</span>, <span class=hljs-number>13</span>]),
+            simd_swizzle!(vecs[i], vecs[i + <span class=hljs-number>2</span>], [<span class=hljs-number>2</span>, <span class=hljs-number>3</span>, <span class=hljs-number>10</span>, <span class=hljs-number>11</span>, <span class=hljs-number>6</span>, <span class=hljs-number>7</span>, <span class=hljs-number>14</span>, <span class=hljs-number>15</span>]),
+        );
+    }
+    <span class=hljs-keyword>for</span> <span class=hljs-variable>i</span> <span class=hljs-keyword>in</span> <span class=hljs-number>4</span>..<span class=hljs-number>6</span> {
+        vecs[i] = simd_swizzle!(vecs[i], vecs[i + <span class=hljs-number>2</span>], [<span class=hljs-number>0</span>, <span class=hljs-number>1</span>, <span class=hljs-number>8</span>, <span class=hljs-number>9</span>, <span class=hljs-number>4</span>, <span class=hljs-number>5</span>, <span class=hljs-number>12</span>, <span class=hljs-number>13</span>]);
+    }
 
     <span class=hljs-comment>// vecs[0] = [a0, a1, c0, c1, e0, e1, g0, g1]</span>
     <span class=hljs-comment>// vecs[1] = [b0, b1, d0, d1, f0, f1, h0, h1]</span>
@@ -910,12 +911,12 @@ w[<span class=hljs-number>5</span>] = (a5, b5, c5, d5, e5, f5, g5, h5)
     <span class=hljs-comment>// vecs[5] = [b4, b5, d4, d5, f4, f5, h4, h5]</span>
 
     <span class=hljs-comment>// Transpose each 2x2 submatrix</span>
-    vecs[<span class=hljs-number>0</span>] = simd_swizzle!(vecs[<span class=hljs-number>0</span>], vecs[<span class=hljs-number>1</span>], [<span class=hljs-number>0</span>, <span class=hljs-number>8</span>, <span class=hljs-number>2</span>, <span class=hljs-number>10</span>, <span class=hljs-number>4</span>, <span class=hljs-number>12</span>, <span class=hljs-number>6</span>, <span class=hljs-number>14</span>]);
-    vecs[<span class=hljs-number>1</span>] = simd_swizzle!(vecs[<span class=hljs-number>0</span>], vecs[<span class=hljs-number>1</span>], [<span class=hljs-number>1</span>, <span class=hljs-number>9</span>, <span class=hljs-number>3</span>, <span class=hljs-number>11</span>, <span class=hljs-number>5</span>, <span class=hljs-number>13</span>, <span class=hljs-number>7</span>, <span class=hljs-number>15</span>]);
-    vecs[<span class=hljs-number>2</span>] = simd_swizzle!(vecs[<span class=hljs-number>2</span>], vecs[<span class=hljs-number>3</span>], [<span class=hljs-number>0</span>, <span class=hljs-number>8</span>, <span class=hljs-number>2</span>, <span class=hljs-number>10</span>, <span class=hljs-number>4</span>, <span class=hljs-number>12</span>, <span class=hljs-number>6</span>, <span class=hljs-number>14</span>]);
-    vecs[<span class=hljs-number>3</span>] = simd_swizzle!(vecs[<span class=hljs-number>2</span>], vecs[<span class=hljs-number>3</span>], [<span class=hljs-number>1</span>, <span class=hljs-number>9</span>, <span class=hljs-number>3</span>, <span class=hljs-number>11</span>, <span class=hljs-number>5</span>, <span class=hljs-number>13</span>, <span class=hljs-number>7</span>, <span class=hljs-number>15</span>]);
-    vecs[<span class=hljs-number>4</span>] = simd_swizzle!(vecs[<span class=hljs-number>4</span>], vecs[<span class=hljs-number>5</span>], [<span class=hljs-number>0</span>, <span class=hljs-number>8</span>, <span class=hljs-number>2</span>, <span class=hljs-number>10</span>, <span class=hljs-number>4</span>, <span class=hljs-number>12</span>, <span class=hljs-number>6</span>, <span class=hljs-number>14</span>]);
-    vecs[<span class=hljs-number>5</span>] = simd_swizzle!(vecs[<span class=hljs-number>4</span>], vecs[<span class=hljs-number>5</span>], [<span class=hljs-number>1</span>, <span class=hljs-number>9</span>, <span class=hljs-number>3</span>, <span class=hljs-number>11</span>, <span class=hljs-number>5</span>, <span class=hljs-number>13</span>, <span class=hljs-number>7</span>, <span class=hljs-number>15</span>]);
+    <span class=hljs-keyword>for</span> <span class=hljs-variable>i</span> <span class=hljs-keyword>in</span> (<span class=hljs-number>0</span>..<span class=hljs-number>6</span>).<span class="hljs-title function_ invoke__">step_by</span>(<span class=hljs-number>2</span>) {
+        (vecs[i], vecs[i + <span class=hljs-number>1</span>]) = (
+            simd_swizzle!(vecs[i], vecs[i + <span class=hljs-number>1</span>], [<span class=hljs-number>0</span>, <span class=hljs-number>8</span>, <span class=hljs-number>2</span>, <span class=hljs-number>10</span>, <span class=hljs-number>4</span>, <span class=hljs-number>12</span>, <span class=hljs-number>6</span>, <span class=hljs-number>14</span>]),
+            simd_swizzle!(vecs[i], vecs[i + <span class=hljs-number>1</span>], [<span class=hljs-number>1</span>, <span class=hljs-number>9</span>, <span class=hljs-number>3</span>, <span class=hljs-number>11</span>, <span class=hljs-number>5</span>, <span class=hljs-number>13</span>, <span class=hljs-number>7</span>, <span class=hljs-number>15</span>]),
+        );
+    }
 
     <span class=hljs-comment>// vecs[0] = [a0, b0, c0, d0, e0, f0, g0, h0]</span>
     <span class=hljs-comment>// vecs[1] = [a1, b1, c1, d1, e1, f1, g1, h1]</span>
@@ -966,17 +967,17 @@ w[<span class=hljs-number>5</span>] = (a5, b5, c5, d5, e5, f5, g5, h5)
      Running `target/release/attempt8`
 Found valid address: 18ryVioVmwFYzhRZKTjKqGYCjkUjoxH3k6
 
-real    0m2,413s
-user    0m2,397s
-sys 0m0,016s
+real    0m2,444s
+user    0m2,424s
+sys 0m0,020s
 </code></pre><p>Bummer. That’s just barely faster than the inefficient load/store implementation. Perhaps the slowdown is simply due to the deliberately sequential nature of SHA-256, and we can’t really make it any faster.<p>I guess this is it! Let’s see, we started with an implementation that takes <em>522 seconds</em> to decode the address <code>18ryviovmwfyzhrzktjkqgycjkujoxh3k6</code>, and now it can do that in under 2.5 seconds. That’s more than a 200x improvement!<div class=aside-group><aside><p>Intel has provided AVX2 since Haswell (2013), and AMD has provided it since Excavator (2015).</aside><p>This comparison is not <em>entirely</em> sound, though. The original code assumed nothing more than an x86-64-capable processor, and the last attempt needs AVX2, which is unavailable on older CPUs. I own devices that don’t support AVX2, so supporting pure x86-64 is reasonable.</div><p>Here’s how our latest code behaves with AVX2 switched off:<pre><code class=language-shell><span class="hljs-meta prompt_">$ </span><span class=language-bash>time cargo run --bin attempt8 --release</span>
     Finished `release` profile [optimized] target(s) in 0.01s
      Running `target/release/attempt8`
 Found valid address: 18ryVioVmwFYzhRZKTjKqGYCjkUjoxH3k6
 
-real    0m4,557s
-user    0m4,545s
-sys 0m0,011s
+real    0m4,617s
+user    0m4,604s
+sys 0m0,012s
 </code></pre><p>That’s a ~2x reduction in performance, but at least the code still works!<p>It makes me wonder. If we dropped the “works on x86-64-v1” restriction, would some other extensions help us increase performance? It turns out there are <a href=https://en.wikipedia.org/wiki/Intel_SHA_extensions>Intel SHA extensions</a>, which contain hardware implementations of SHA-256! Can we use them?<pre><code class=language-shell><span class="hljs-meta prompt_">$ </span><span class=language-bash>grep sha_ni /proc/cpuinfo</span>
 </code></pre><p>Not on this device. Here, let me ssh into an AMD Zen VPS.<pre><code class=language-shell><span class="hljs-meta prompt_">> </span><span class=language-bash>grep sha_ni /proc/cpuinfo</span>
 flags       : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm rep_good nopl cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext perfctr_core ssbd ibrs ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 clzero xsaveerptr wbnoinvd arat umip rdpid arch_capabilities
@@ -1013,9 +1014,9 @@ flags       : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat 
 Found valid address: 18ryVioVmwFYzhRZKTjKqGYCjkUjoxH3k6
 
 ________________________________________________________
-Executed in    2.84 secs    fish           external
-   usr time    2.82 secs  416.00 micros    2.82 secs
-   sys time    0.02 secs  340.00 micros    0.02 secs
+Executed in    2.88 secs    fish           external
+   usr time    2.85 secs  268.00 micros    2.85 secs
+   sys time    0.02 secs  253.00 micros    0.02 secs
 </code></pre><p>And here’s the code that uses SHA-NI. It should be more or less straightforward. I hope you excuse me for a bit of unsafety here :-)<pre><code class=language-rust><div class=expansible-code><input id=expansible8 type=checkbox><div class=highlighted><span class=hljs-keyword>fn</span> <span class="hljs-title function_">sha256_load_six_words</span><<span class=hljs-keyword>const</span> N: <span class=hljs-type>usize</span>>(input: [<span class=hljs-type>u8</span>; N]) <span class=hljs-punctuation>-></span> [u32x4; <span class=hljs-number>4</span>] {
     <span class=hljs-keyword>let</span> (chunks, trailing) = input.as_chunks::<<span class=hljs-number>4</span>>();
     <span class=hljs-keyword>let</span> <span class=hljs-keyword>mut </span><span class=hljs-variable>w</span> = [<span class=hljs-number>0u32</span>; <span class=hljs-number>16</span>];
