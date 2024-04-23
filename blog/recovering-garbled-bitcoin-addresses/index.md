@@ -135,7 +135,7 @@ KeyboardInterrupt
 
 real    1m47,770s
 user    1m47,301s
-sys 0m0,027s
+sys     0m0,027s
 ```
 
 
@@ -187,7 +187,7 @@ Found valid address: 1Lbcfr7sAHTD9CgdQo3HTMTkV8LK4ZnX71
 
 real    0m34,296s
 user    0m34,275s
-sys 0m0,013s
+sys     0m0,013s
 ```
 
 Yay! That's precisely the address that we started with.
@@ -329,7 +329,7 @@ Found valid address: 1Lbcfr7sAHTD9CgdQo3HTMTkV8LK4ZnX71
 
 real    0m6,625s
 user    0m6,615s
-sys 0m0,009s
+sys     0m0,009s
 ```
 
 Hey, that's much better! Honestly, it's somewhat embarrassing that the slowest part of the last attempt was parsing, not hashing. That's why profilers are so important! Sometimes, one can't guess the bottleneck, even if it seems obvious.
@@ -488,7 +488,7 @@ Found valid address: 1Lbcfr7sAHTD9CgdQo3HTMTkV8LK4ZnX71
 
 real    0m5,744s
 user    0m5,729s
-sys 0m0,014s
+sys     0m0,014s
 ```
 
 That's a slight improvement, perhaps not worth the hassle at first glance, but we'll see how it helps us down the road soon.
@@ -783,7 +783,7 @@ Found valid address: 1Lbcfr7sAHTD9CgdQo3HTMTkV8LK4ZnX71
 
 real    0m0,954s
 user    0m0,941s
-sys 0m0,013s
+sys     0m0,013s
 ```
 
 Yeah, sure it is!
@@ -803,7 +803,7 @@ Found valid address: 18ryVioVmwFYzhRZKTjKqGYCjkUjoxH3k6
 
 real    0m14,347s
 user    0m14,334s
-sys 0m0,012s
+sys     0m0,012s
 ```
 
 Oh. That's no good. The reason it's so slow is clear in retrospect: there are much fewer digits in this address than in the one we've used for benchmarking before. And that's not just me being a dick, that's actually a real randomly generated address I've used on ZeroNet.
@@ -898,7 +898,7 @@ Found valid address: 18ryVioVmwFYzhRZKTjKqGYCjkUjoxH3k6
 
 real    0m13,143s
 user    0m13,127s
-sys 0m0,015s
+sys     0m0,015s
 ```
 
 The runtime decreased a bit, but not significantly. Sounds like `sha2` is a dead-end.
@@ -981,7 +981,7 @@ Found valid address: 18ryVioVmwFYzhRZKTjKqGYCjkUjoxH3k6
 
 real    0m13,922s
 user    0m13,864s
-sys 0m0,023s
+sys     0m0,023s
 ```
 
 More or less fine, I guess. Time to write some SIMD! In C, we'd have to use `<immintrin.h>` or `<arm_neon.h>`, but nightly Rust has portable SIMD support, so we will use that.
@@ -1145,7 +1145,7 @@ Found valid address: 18ryVioVmwFYzhRZKTjKqGYCjkUjoxH3k6
 
 real    0m8,872s
 user    0m8,858s
-sys 0m0,012s
+sys     0m0,012s
 ```
 
 I'm pretty sure that's less than a 2x improvement. (Though an improvement nonetheless.) Perhaps we should apply our minds or something instead of thoughtlessly copying code.
@@ -1184,7 +1184,7 @@ Found valid address: 18ryVioVmwFYzhRZKTjKqGYCjkUjoxH3k6
 
 real    0m8,411s
 user    0m8,398s
-sys 0m0,012s
+sys     0m0,012s
 ```
 
 That's a bit better. But it's still sluggish. What takes so long? Let's apply the profiler.
@@ -1218,7 +1218,7 @@ Found valid address: 18ryVioVmwFYzhRZKTjKqGYCjkUjoxH3k6
 
 real    0m6,239s
 user    0m6,223s
-sys 0m0,015s
+sys     0m0,015s
 ```
 
 That's better. Not 2x better, though, for some reason.
@@ -1347,7 +1347,7 @@ Found valid address: 18ryVioVmwFYzhRZKTjKqGYCjkUjoxH3k6
 
 real    0m2,524s
 user    0m2,512s
-sys 0m0,012s
+sys     0m0,012s
 ```
 
 Wow! Not bad. perf says hashing now takes 70% of the time. Can we hash even faster?
@@ -1518,7 +1518,7 @@ Found valid address: 18ryVioVmwFYzhRZKTjKqGYCjkUjoxH3k6
 
 real    0m2,444s
 user    0m2,424s
-sys 0m0,020s
+sys     0m0,020s
 ```
 
 Bummer. That's just barely faster than the inefficient load/store implementation. Perhaps the slowdown is simply due to the deliberately sequential nature of SHA-256, and we can't really make it any faster.
@@ -1543,7 +1543,7 @@ Found valid address: 18ryVioVmwFYzhRZKTjKqGYCjkUjoxH3k6
 
 real    0m4,617s
 user    0m4,604s
-sys 0m0,012s
+sys     0m0,012s
 ```
 
 That's a ~2x reduction in performance, but at least the code still works!
