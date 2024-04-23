@@ -93,10 +93,6 @@ li {
 	margin-bottom: 0.25rem;
 }
 
-.only-dark {
-	display: none;
-}
-
 @media all and (prefers-color-scheme: dark) {
 	header, footer {
 		background-color: #9c2254;
@@ -105,33 +101,11 @@ li {
 		background-color: #160117;
 		color: #fee8ff;
 	}
-	h2, h3, code, .katex {
+	h2, h3 {
 		color: #cd91ed;
 	}
 	a {
 		color: #f765b4;
-	}
-	aside {
-		background-color: #4e2554;
-	}
-	blockquote {
-		border-left-color: #9c2254;
-		background-color: #4e2554;
-	}
-	pre {
-		background-color: #00000080;
-	}
-	pre code {
-		color: #ffffff;
-	}
-	.expansible-code > label {
-		background-image: linear-gradient(to bottom, transparent, #000000);
-	}
-	.only-light {
-		display: none;
-	}
-	.only-dark {
-		display: block;
 	}
 }
 

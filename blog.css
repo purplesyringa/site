@@ -118,6 +118,38 @@ aside > :last-child {
 	margin-bottom: 0;
 }
 
+.only-dark {
+	display: none;
+}
+
+@media all and (prefers-color-scheme: dark) {
+	code, .katex {
+		color: #cd91ed;
+	}
+	aside {
+		background-color: #4e2554;
+	}
+	blockquote {
+		border-left-color: #9c2254;
+		background-color: #4e2554;
+	}
+	pre {
+		background-color: #00000080;
+	}
+	pre code {
+		color: #ffffff;
+	}
+	.expansible-code > label {
+		background-image: linear-gradient(to bottom, transparent, #000000);
+	}
+	.only-light {
+		display: none;
+	}
+	.only-dark {
+		display: block;
+	}
+}
+
 @media screen and (max-width: 1300px) {
 	h3 + * {
 		margin-top: 1rem;
