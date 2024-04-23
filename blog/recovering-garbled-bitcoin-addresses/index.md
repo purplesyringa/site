@@ -1798,7 +1798,7 @@ This is a 1.8x speedup -- not quite exciting, but an improvement nonetheless. Al
 
 <aside-inline-here />
 
-Some other improvements are possible, like replacing recursion with Gray code and abolishing vtables and heap allocation. But this post is already getting long, and we will not be able to get a greater than 1.5x improvement this way, so let's call it quits.
+Some other improvements are possible, like replacing recursion with Gray code and abolishing vtables and heap allocation. But this post is already getting long, and we will not be able to get a greater than 1.5x improvement this way, so let's call it quits. It's faster than anything you will need anyway: the longest possible all-letters address, `1AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA`, can be recovered to `1AAAaAAaaAAaAaaaaAAAaAAAaAaaaAAAaa` in 27 seconds.
 
 
 ### Results
