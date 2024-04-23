@@ -342,7 +342,7 @@ aside > :last-child {
 		margin-right: 0.5rem;
 	}
 
-	pre {
+	pre, .diagram svg {
 		margin-left: 0;
 		width: 100%;
 	}
