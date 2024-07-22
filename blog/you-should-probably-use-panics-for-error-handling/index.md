@@ -155,7 +155,7 @@ One simple commonly used project is [serde](https://serde.rs). After fixing some
 <table>
     <thead>
         <tr>
-            <td rowspan="2">Speed (MB/s)</td>
+            <td rowspan="2">Speed (MB/s, higher is better)</td>
             <th colspan="2"><code>canada</code></th>
             <th colspan="2"><code>citm_catalog</code></th>
             <th colspan="2"><code>twitter</code></th>
