@@ -6,14 +6,14 @@ time: July 22, 2024
 Rust's approach to error handling is neat, but it comes at a cost. Fallible functions return this type:
 
 ```rust
-// Defined in the standard library
+// A sum type. Defined in the standard library.
 enum Result<T, E> {
     Ok(T),
     Err(E),
 }
 ```
 
-So even if the error is small, the `Result` type is larger than the actual returned value:
+So the `Result` type is almost always larger than the actual returned value:
 
 ```
                                      Discriminant
@@ -27,7 +27,7 @@ So even if the error is small, the `Result` type is larger than the actual retur
                                      +-----------+--------------------------+
 ```
 
-Oftentimes this result doesn't fit in CPU registers, so it has to be spilled to stack.
+Oftentimes it doesn't fit in CPU registers, so it has to be spilled to stack.
 
 Callers of fallible functions have to check whether the returned value is `Ok` or `Err`:
 
