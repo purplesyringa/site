@@ -1,0 +1,219 @@
+---
+title: You should probably use panics for error handling
+time: July 22, 2024
+---
+
+Rust's approach to error handling is neat, but it comes at a cost. Fallible functions return this type:
+
+```rust
+// Defined in the standard library
+enum Result<T, E> {
+    Ok(T),
+    Err(E),
+}
+```
+
+So even if the error is small, the `Result` type is larger than the actual returned value:
+
+```
+                                     Discriminant
+                                          vv
+                                     +-----------+--------------------------+
+                       Ok variant:   | 0x00...00 |       actual data        |
+                                     +-----------+--------------------------+
+
+                                     +-----------+--------------------------+
+                       Err variant:  | 0x00...01 |       actual error       |
+                                     +-----------+--------------------------+
+```
+
+Oftentimes this result doesn't fit in CPU registers, so it has to be spilled to stack.
+
+Callers of fallible functions have to check whether the returned value is `Ok` or `Err`:
+
+```rust
+// What the programmer writes:
+f()?
+// What the compiler sees:
+match f() {
+    Ok(value) => value, // Handle the Ok output
+    Err(err) => return Err(err), // Forward the error
+}
+```
+
+That's a comparison, a branch, and a lot of error handling code intertwined with the hot path that *just shouldn't be here*. And I don't mean that lightly: large code size blocks inlining, the most important optimization of all.
+
+### Alternatives
+
+Checked exceptions -- the closest thing there is to `Result`s -- have different priorities. They simplify the success path at the expense of the failure path, so it's easy to forget about the occasional error. This is an explicit anti-goal of Rust.
+
+Rust has panics that use the same mechanism, but guides against using them for fallible functions, because they are almost unusable for that pursose:
+
+```rust
+//                     vvv  Does not specify the error type
+fn produces(n: i32) -> i32 {
+    if n > 0 {
+        n
+    } else {
+        panic!("oopsie")
+    }
+}
+// Compare with Result:       vvvvvvvvvvvvvvvvvvvvvvvvv
+fn produces_result(n: i32) -> Result<i32, &'static str> {
+    if n > 0 {
+        Ok(n)
+    } else {
+        Err("oopsie")
+    }
+}
+
+fn forwards(n: i32) -> i32 {
+    //                 v  Implicitly forwards the error
+    let a = produces(n);
+    let b = produces(n + 1);
+    a + b
+}
+// Compare with Result:
+fn forwards_result(n: i32) -> Result<i32, &'static str> {
+    //                        v  Requires a simple but noticeable sigil
+    let a = produces_result(n)?;
+    let b = produces_result(n + 1)?;
+    Ok(a + b)
+}
+
+fn catches(n: i32) -> i32 {
+    //   vvvvvvvvvvvvvvvvvvv  What?
+    std::panic::catch_unwind(|| forwards(n)).unwrap_or(0)
+}
+// Compare with Result:
+fn catches_result(n: i32) -> i32 {
+    forwards_result(n).unwrap_or(0)
+}
+```
+
+
+### Forbidden fruit
+
+However, panics don't suffer from inefficiency! Throwing an exception unwinds the stack automatically, without any cooperation from the functions except the one that throws the exception and the one that catches it.
+
+Wouldn't it be *neat* if a mechanism with the performance of `panic!` and the ergonomics of `Result` existed?
+
+
+### #[iex]
+
+It doesn't, but I'm familiar with the Rust macro ecosystem and devised a way to [fix that with a crate](https://docs.rs/iex/latest/iex/). Here's how it works, roughly:
+
+```rust
+//        vvv  Import a macro from the iex crate
+use iex::{iex, Outcome};
+
+#[iex]
+//                     vvvvvvvvvvvvvvvvvvvvvvvvv  The signature includes the error...
+fn produces(n: i32) -> Result<i32, &'static str> {
+    if n > 0 {
+        Ok(n)
+    } else {
+        Err("oopsie")
+    }
+}
+// ...but this code is actually compiled to 
+// fn produces(n: i32) -> i32 {
+//     if n > 0 {
+//         n
+//     } else {
+//         // vvvvvvvv  This is magic, don't worry about it. Actually throws a panic
+//         throw_error("oopsie")
+//     }
+// }
+
+#[iex]
+fn forwards(n: i32) -> Result<i32, &'static str> {
+    //                 v  The code is rewritten to rely on unwinding instead of matching
+    let a = produces(n)?;
+    let b = produces(n + 1)?;
+    Ok(a + b)
+}
+
+fn catches(n: i32) -> i32 {
+    //         vvvvvvvvvvvvvv  Switch back to Result
+    forwards(n).into_result().unwrap_or(0)
+}
+```
+
+This was just a joke experiment at first. It *should* work quite efficiently. Microbenchmarks are bound to show that.
+
+But the design allows `Result`-based code to work with `#[iex]` with minimal changes. So I can slap `#[iex]` on a *real* project and benchmark it on *realistic data*.
+
+### Benchmarks
+
+:::aside
+The code [is available](https://github.com/orgs/iex-rs/repositories) for independent reproduction.
+:::
+
+One simple commonly used project is [serde](https://serde.rs). After fixing some glaring bugs, I got these benchmark results on JSON deserialization tests:
+
+<table>
+    <thead>
+        <tr>
+            <td rowspan="2">Speed (MB/s)</td>
+            <th colspan="2"><code>canada</code></th>
+            <th colspan="2"><code>citm_catalog</code></th>
+            <th colspan="2"><code>twitter</code></th>
+        </tr>
+        <tr>
+            <th>DOM</th>
+            <th>struct</th>
+            <th>DOM</th>
+            <th>struct</th>
+            <th>DOM</th>
+            <th>struct</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>Result</code></td>
+            <td align="center">296.2</td>
+            <td align="center">439.0</td>
+            <td align="center">392.4</td>
+            <td align="center">876.8</td>
+            <td align="center">274.8</td>
+            <td align="center">536.4</td>
+        </tr>
+        <tr>
+            <td><code>#[iex] Result</code></td>
+            <td align="center">294.8</td>
+            <td align="center">537.0</td>
+            <td align="center">400.6</td>
+            <td align="center">940.6</td>
+            <td align="center">303.8</td>
+            <td align="center">568.8</td>
+        </tr>
+        <tr>
+            <td>Performance increase</td>
+            <td align="center">-0.5%</td>
+            <td align="center">+22%</td>
+            <td align="center">+2%</td>
+            <td align="center">+7%</td>
+            <td align="center">+11%</td>
+            <td align="center">+6%</td>
+        </tr>
+    </tbody>
+</table>
+
+<aside-inline-here />
+
+This might not sound like a lot, but that's a *great* performance increase *just* from error handling. And this is a *universal* fix to a *global* problem.
+
+### That includes you
+
+This optimization is applicable to almost every project, and you don't even have to *think* before applying it. It's literally this simple:
+
+- Slap `#[iex]` onto all functions that return `Result`,
+- Whenever you need to match on a `Result` or apply a combinator, try to rewrite code without that, and if you can't, add `.into_result()`,
+- Occasionally replace `return e` with `return Ok(e?)` for... reasons.
+
+### Afterword
+
+`#[iex]` is a very young project. It might not be the best solution for production code, and it would certainly be great if rustc could efficiently propagate errors without external crates.
+
+But I think it's a move in the right direction.

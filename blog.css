@@ -18,6 +18,17 @@ math {
 	color: #8d00d9;
 }
 
+table {
+	margin-left: -7rem;
+	width: 52rem;
+	background-color: #00000010;
+	border-collapse: collapse;
+}
+th, td {
+	padding: 0.25rem 0.5rem;
+	border: 0.25rem solid #ffffff;
+}
+
 pre {
 	margin-left: -7rem;
 	width: 52rem;
@@ -127,8 +138,14 @@ aside > :last-child {
 		border-left-color: #9c2254;
 		background-color: #4e2554;
 	}
+	table {
+		background-color: #ffffff10;
+	}
 	pre {
 		background-color: #00000080;
+	}
+	th, td {
+		border-color: #160117;
 	}
 	pre code {
 		color: #ffffff;
@@ -171,7 +188,7 @@ aside > :last-child {
 }
 
 @media screen and (max-width: 1000px) {
-	pre, .diagram svg {
+	pre, .diagram svg, table {
 		margin-left: 0;
 		width: 100%;
 	}

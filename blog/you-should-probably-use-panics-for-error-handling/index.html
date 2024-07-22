@@ -1,0 +1,95 @@
+<!doctypehtml><meta charset=utf-8><meta content=width=device-width,initial-scale=1 name=viewport><title>You should probably use panics for error handling | purplesyringa's blog</title><link href=../../all.css rel=stylesheet><link href=../../blog.css rel=stylesheet><link crossorigin href=https://cdn.jsdelivr.net/npm/temml@0.10.24/dist/Temml-Local.css rel=stylesheet><link crossorigin href=https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&family=Slabo+27px&display=swap rel=stylesheet><link media="screen and (prefers-color-scheme: dark"crossorigin href=https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css rel=stylesheet><link media="screen and (prefers-color-scheme: light"crossorigin href=https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/base16/atelier-cave-light.min.css rel=stylesheet><body><header><div class=viewport-container><div class=media><a href=https://github.com/purplesyringa><img src=../../images/github-mark-white.svg></a></div><h1><a href=/>purplesyringa</a></h1></div></header><section><div class=viewport-container><h2>You should probably use panics for error handling</h2><time>July 22, 2024</time><p>Rust’s approach to error handling is neat, but it comes at a cost. Fallible functions return this type:<pre><code class=language-rust><span class=hljs-comment>// Defined in the standard library</span>
+<span class=hljs-keyword>enum</span> <span class="hljs-title class_">Result</span>&LTT, E> {
+    <span class="hljs-title function_ invoke__">Ok</span>(T),
+    <span class="hljs-title function_ invoke__">Err</span>(E),
+}
+</code></pre><p>So even if the error is small, the <code>Result</code> type is larger than the actual returned value:<pre><code>                                     Discriminant
+                                          vv
+                                     +-----------+--------------------------+
+                       Ok variant:   | 0x00...00 |       actual data        |
+                                     +-----------+--------------------------+
+
+                                     +-----------+--------------------------+
+                       Err variant:  | 0x00...01 |       actual error       |
+                                     +-----------+--------------------------+
+</code></pre><p>Oftentimes this result doesn’t fit in CPU registers, so it has to be spilled to stack.<p>Callers of fallible functions have to check whether the returned value is <code>Ok</code> or <code>Err</code>:<pre><code class=language-rust><span class=hljs-comment>// What the programmer writes:</span>
+<span class="hljs-title function_ invoke__">f</span>()?
+<span class=hljs-comment>// What the compiler sees:</span>
+<span class=hljs-keyword>match</span> <span class="hljs-title function_ invoke__">f</span>() {
+    <span class="hljs-title function_ invoke__">Ok</span>(value) => value, <span class=hljs-comment>// Handle the Ok output</span>
+    <span class="hljs-title function_ invoke__">Err</span>(err) => <span class=hljs-keyword>return</span> <span class="hljs-title function_ invoke__">Err</span>(err), <span class=hljs-comment>// Forward the error</span>
+}
+</code></pre><p>That’s a comparison, a branch, and a lot of error handling code intertwined with the hot path that <em>just shouldn’t be here</em>. And I don’t mean that lightly: large code size blocks inlining, the most important optimization of all.<h3>Alternatives</h3><p>Checked exceptions – the closest thing there is to <code>Result</code>s – have different priorities. They simplify the success path at the expense of the failure path, so it’s easy to forget about the occasional error. This is an explicit anti-goal of Rust.<p>Rust has panics that use the same mechanism, but guides against using them for fallible functions, because they are almost unusable for that pursose:<pre><code class=language-rust><span class=hljs-comment>//                     vvv  Does not specify the error type</span>
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">produces</span>(n: <span class=hljs-type>i32</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>i32</span> {
+    <span class=hljs-keyword>if</span> n > <span class=hljs-number>0</span> {
+        n
+    } <span class=hljs-keyword>else</span> {
+        <span class=hljs-built_in>panic!</span>(<span class=hljs-string>"oopsie"</span>)
+    }
+}
+<span class=hljs-comment>// Compare with Result:       vvvvvvvvvvvvvvvvvvvvvvvvv</span>
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">produces_result</span>(n: <span class=hljs-type>i32</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>Result</span><<span class=hljs-type>i32</span>, &<span class=hljs-symbol>'static</span> <span class=hljs-type>str</span>> {
+    <span class=hljs-keyword>if</span> n > <span class=hljs-number>0</span> {
+        <span class="hljs-title function_ invoke__">Ok</span>(n)
+    } <span class=hljs-keyword>else</span> {
+        <span class="hljs-title function_ invoke__">Err</span>(<span class=hljs-string>"oopsie"</span>)
+    }
+}
+
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">forwards</span>(n: <span class=hljs-type>i32</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>i32</span> {
+    <span class=hljs-comment>//                 v  Implicitly forwards the error</span>
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>a</span> = <span class="hljs-title function_ invoke__">produces</span>(n);
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>b</span> = <span class="hljs-title function_ invoke__">produces</span>(n + <span class=hljs-number>1</span>);
+    a + b
+}
+<span class=hljs-comment>// Compare with Result:</span>
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">forwards_result</span>(n: <span class=hljs-type>i32</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>Result</span><<span class=hljs-type>i32</span>, &<span class=hljs-symbol>'static</span> <span class=hljs-type>str</span>> {
+    <span class=hljs-comment>//                        v  Requires a simple but noticeable sigil</span>
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>a</span> = <span class="hljs-title function_ invoke__">produces_result</span>(n)?;
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>b</span> = <span class="hljs-title function_ invoke__">produces_result</span>(n + <span class=hljs-number>1</span>)?;
+    <span class="hljs-title function_ invoke__">Ok</span>(a + b)
+}
+
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">catches</span>(n: <span class=hljs-type>i32</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>i32</span> {
+    <span class=hljs-comment>//   vvvvvvvvvvvvvvvvvvv  What?</span>
+    std::panic::<span class="hljs-title function_ invoke__">catch_unwind</span>(|| forwards(n)).<span class="hljs-title function_ invoke__">unwrap_or</span>(<span class=hljs-number>0</span>)
+}
+<span class=hljs-comment>// Compare with Result:</span>
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">catches_result</span>(n: <span class=hljs-type>i32</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>i32</span> {
+    forwards_result(n).<span class="hljs-title function_ invoke__">unwrap_or</span>(<span class=hljs-number>0</span>)
+}
+</code></pre><h3>Forbidden fruit</h3><p>However, panics don’t suffer from inefficiency! Throwing an exception unwinds the stack automatically, without any cooperation from the functions except the one that throws the exception and the one that catches it.<p>Wouldn’t it be <em>neat</em> if a mechanism with the performance of <code>panic!</code> and the ergonomics of <code>Result</code> existed?<h3>#[iex]</h3><p>It doesn’t, but I’m familiar with the Rust macro ecosystem and devised a way to <a href=https://docs.rs/iex/latest/iex/>fix that with a crate</a>. Here’s how it works, roughly:<pre><code class=language-rust><span class=hljs-comment>//        vvv  Import a macro from the iex crate</span>
+<span class=hljs-keyword>use</span> iex::{iex, Outcome};
+
+<span class=hljs-meta>#[iex]</span>
+<span class=hljs-comment>//                     vvvvvvvvvvvvvvvvvvvvvvvvv  The signature includes the error...</span>
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">produces</span>(n: <span class=hljs-type>i32</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>Result</span><<span class=hljs-type>i32</span>, &<span class=hljs-symbol>'static</span> <span class=hljs-type>str</span>> {
+    <span class=hljs-keyword>if</span> n > <span class=hljs-number>0</span> {
+        <span class="hljs-title function_ invoke__">Ok</span>(n)
+    } <span class=hljs-keyword>else</span> {
+        <span class="hljs-title function_ invoke__">Err</span>(<span class=hljs-string>"oopsie"</span>)
+    }
+}
+<span class=hljs-comment>// ...but this code is actually compiled to </span>
+<span class=hljs-comment>// fn produces(n: i32) -> i32 {</span>
+<span class=hljs-comment>//     if n > 0 {</span>
+<span class=hljs-comment>//         n</span>
+<span class=hljs-comment>//     } else {</span>
+<span class=hljs-comment>//         // vvvvvvvv  This is magic, don't worry about it. Actually throws a panic</span>
+<span class=hljs-comment>//         throw_error("oopsie")</span>
+<span class=hljs-comment>//     }</span>
+<span class=hljs-comment>// }</span>
+
+<span class=hljs-meta>#[iex]</span>
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">forwards</span>(n: <span class=hljs-type>i32</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>Result</span><<span class=hljs-type>i32</span>, &<span class=hljs-symbol>'static</span> <span class=hljs-type>str</span>> {
+    <span class=hljs-comment>//                 v  The code is rewritten to rely on unwinding instead of matching</span>
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>a</span> = <span class="hljs-title function_ invoke__">produces</span>(n)?;
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>b</span> = <span class="hljs-title function_ invoke__">produces</span>(n + <span class=hljs-number>1</span>)?;
+    <span class="hljs-title function_ invoke__">Ok</span>(a + b)
+}
+
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">catches</span>(n: <span class=hljs-type>i32</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>i32</span> {
+    <span class=hljs-comment>//         vvvvvvvvvvvvvv  Switch back to Result</span>
+    forwards(n).<span class="hljs-title function_ invoke__">into_result</span>().<span class="hljs-title function_ invoke__">unwrap_or</span>(<span class=hljs-number>0</span>)
+}
+</code></pre><p>This was just a joke experiment at first. It <em>should</em> work quite efficiently. Microbenchmarks are bound to show that.<p>But the design allows <code>Result</code>-based code to work with <code>#[iex]</code> with minimal changes. So I can slap <code>#[iex]</code> on a <em>real</em> project and benchmark it on <em>realistic data</em>.<h3>Benchmarks</h3><div class=aside-group><aside><p>The code <a href=https://github.com/orgs/iex-rs/repositories>is available</a> for independent reproduction.</aside><p>One simple commonly used project is <a href=https://serde.rs>serde</a>. After fixing some glaring bugs, I got these benchmark results on JSON deserialization tests:<table><thead><tr><td rowspan=2>Speed (MB/s)<th colspan=2><code>canada</code><th colspan=2><code>citm_catalog</code><th colspan=2><code>twitter</code><tr><th>DOM<th>struct<th>DOM<th>struct<th>DOM<th>struct<tbody><tr><td><code>Result</code><td align=center>296.2<td align=center>439.0<td align=center>392.4<td align=center>876.8<td align=center>274.8<td align=center>536.4<tr><td><code>#[iex] Result</code><td align=center>294.8<td align=center>537.0<td align=center>400.6<td align=center>940.6<td align=center>303.8<td align=center>568.8<tr><td>Performance increase<td align=center>-0.5%<td align=center>+22%<td align=center>+2%<td align=center>+7%<td align=center>+11%<td align=center>+6%</table></div><p>This might not sound like a lot, but that’s a <em>great</em> performance increase <em>just</em> from error handling. And this is a <em>universal</em> fix to a <em>global</em> problem.<h3>That includes you</h3><p>This optimization is applicable to almost every project, and you don’t even have to <em>think</em> before applying it. It’s literally this simple:<ul><li>Slap <code>#[iex]</code> onto all functions that return <code>Result</code>,<li>Whenever you need to match on a <code>Result</code> or apply a combinator, try to rewrite code without that, and if you can’t, add <code>.into_result()</code>,<li>Occasionally replace <code>return e</code> with <code>return Ok(e?)</code> for… reasons.</ul><h3>Afterword</h3><p><code>#[iex]</code> is a very young project. It might not be the best solution for production code, and it would certainly be great if rustc could efficiently propagate errors without external crates.<p>But I think it’s a move in the right direction.</div></section><footer><div class=viewport-container><h2>Made with my own bare hands (why.)</h2></div></footer>
