@@ -217,3 +217,5 @@ This optimization is applicable to almost every project, and you don't even have
 `#[iex]` is a very young project. It might not be the best solution for production code, and it would certainly be great if rustc could efficiently propagate errors without external crates.
 
 But I think it's a move in the right direction.
+
+[The crate documentation](https://docs.rs/iex/latest/iex/) includes instructions on how to use `#[iex]` in your project. I'd be glad to know if you find this library useful [on the issue tracker](https://github.com/iex-rs/iex/issues).
