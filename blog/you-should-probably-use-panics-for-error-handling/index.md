@@ -41,7 +41,7 @@ match f() {
 }
 ```
 
-That's a comparison, a branch, and a lot of error handling code intertwined with the hot path that *just shouldn't be here*. And I don't mean that lightly: large code size blocks inlining, the most important optimization of all.
+That's a comparison, a branch, and a lot of error handling code intertwined with the hot path that *just shouldn't be here*. And I don't mean that lightly: large code size inhibits inlining, the most important optimization of all.
 
 ### Alternatives
 
