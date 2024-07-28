@@ -1,6 +1,6 @@
 ---
 title: You should probably use panics for error handling
-time: July 22, 2024
+time: July 28, 2024
 ---
 
 Rust's approach to error handling is neat, but it comes at a cost. Fallible functions return this type:
@@ -50,7 +50,7 @@ Checked exceptions -- the closest thing there is to `Result`s -- have different 
 Rust has panics that use the same mechanism, but guides against using them for fallible functions, because they are almost unusable for that pursose:
 
 ```rust
-//                     vvv  Does not specify the error type
+//                     vvv  Does not specify the error type.
 fn produces(n: i32) -> i32 {
     if n > 0 {
         n
@@ -68,14 +68,14 @@ fn produces_result(n: i32) -> Result<i32, &'static str> {
 }
 
 fn forwards(n: i32) -> i32 {
-    //                 v  Implicitly forwards the error
+    //                 v  Implicitly forwards the error.
     let a = produces(n);
     let b = produces(n + 1);
     a + b
 }
 // Compare with Result:
 fn forwards_result(n: i32) -> Result<i32, &'static str> {
-    //                        v  Requires a simple but noticeable sigil
+    //                        v  Requires a simple but noticeable sigil.
     let a = produces_result(n)?;
     let b = produces_result(n + 1)?;
     Ok(a + b)
@@ -101,10 +101,10 @@ Wouldn't it be *neat* if a mechanism with the performance of `panic!` and the er
 
 ### #[iex]
 
-It doesn't, but I'm familiar with the Rust macro ecosystem and devised a way to [fix that with a crate](https://docs.rs/iex/latest/iex/). Here's how it works, roughly:
+I'm quite familiar with the Rust macro ecosystem, so I devised a way to [fix that with a crate](https://docs.rs/iex/latest/iex/). Here's how it works, roughly:
 
 ```rust
-//        vvv  Import a macro from the iex crate
+//        vvv  Import a macro from the iex crate.
 use iex::{iex, Outcome};
 
 #[iex]
@@ -116,26 +116,26 @@ fn produces(n: i32) -> Result<i32, &'static str> {
         Err("oopsie")
     }
 }
-// ...but this code is actually compiled to 
+// ...but this code is actually compiled to:
 // fn produces(n: i32) -> i32 {
 //     if n > 0 {
 //         n
 //     } else {
-//         // vvvvvvvv  This is magic, don't worry about it. Actually throws a panic
+//         // vvvvvvvv  ✨ Magic ✨. Don't worry about it. Actually throws a panic.
 //         throw_error("oopsie")
 //     }
 // }
 
 #[iex]
 fn forwards(n: i32) -> Result<i32, &'static str> {
-    //                 v  The code is rewritten to rely on unwinding instead of matching
+    //                 v  The code is rewritten to rely on unwinding instead of matching.
     let a = produces(n)?;
     let b = produces(n + 1)?;
     Ok(a + b)
 }
 
 fn catches(n: i32) -> i32 {
-    //         vvvvvvvvvvvvvv  Switch back to Result
+    //         vvvvvvvvvvvvvv  Switch back to Result.
     forwards(n).into_result().unwrap_or(0)
 }
 ```
@@ -202,6 +202,8 @@ One simple commonly used project is [serde](https://serde.rs). After fixing some
 
 <aside-inline-here />
 
+Sure, this benchmark only measures the happy path. But in realistic programs, the slowness of the error path is quickly offset by the increased speed of successful handling.
+
 This might not sound like a lot, but that's a *great* performance increase *just* from error handling. And this is a *universal* fix to a *global* problem.
 
 ### That includes you
@@ -211,6 +213,7 @@ This optimization is applicable to almost every project, and you don't even have
 - Slap `#[iex]` onto all functions that return `Result`,
 - Whenever you need to match on a `Result` or apply a combinator, try to rewrite code without that, and if you can't, add `.into_result()`,
 - Occasionally replace `return e` with `return Ok(e?)` for... reasons.
+- Last but not least, measure performance.
 
 ### Afterword
 
@@ -218,4 +221,4 @@ This optimization is applicable to almost every project, and you don't even have
 
 But I think it's a move in the right direction.
 
-[The crate documentation](https://docs.rs/iex/latest/iex/) includes instructions on how to use `#[iex]` in your project. I'd be glad to know if you find this library useful [on the issue tracker](https://github.com/iex-rs/iex/issues).
+[The crate documentation](https://docs.rs/iex/latest/iex/) includes instructions on how to use `#[iex]` in your project. If you find this library useful, don't hesitate to tell me [on the issue tracker](https://github.com/iex-rs/iex/issues).
