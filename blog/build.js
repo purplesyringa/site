@@ -7,6 +7,8 @@ import markdownit from "markdown-it";
 import markdownitContainer from "markdown-it-container";
 import markdownitTexMath from "markdown-it-texmath";
 import minifyHtml from "@minify-html/node";
+import path from "node:path";
+import process from "node:process";
 import temml from "temml";
 import tmp from "tmp";
 import YAML from "yaml";
@@ -20,6 +22,7 @@ const [_, yamlHeader, markdown] = fileText.match(/^---\n([\s\S]*?)\n---\n([\s\S]
 const parsedYamlHeader = YAML.parse(yamlHeader);
 
 let html = fs.readFileSync("_template.html", "utf-8");
+html = html.replace(/{{ root }}/g, escapeHTML(path.relative(articleDirectory, process.cwd() + "/..")));
 html = html.replace(/{{ title }}/g, escapeHTML(parsedYamlHeader.title));
 html = html.replace(/{{ time }}/g, escapeHTML(parsedYamlHeader.time));
 
@@ -35,7 +38,7 @@ const md = markdownit({
 		if (language === "tikz") {
 			const outputDir = tmp.dirSync({ unsafeCleanup: true }).name;
 			let rendered = "";
-			for (const theme of [ "light", "dark"]) {
+			for (const theme of ["light", "dark"]) {
 				const defaultColor = { light: "black", dark: "white" }[theme];
 				fs.writeFileSync(`${outputDir}/diagram.tex`, String.raw`\documentclass{standalone}
 \usepackage[svgnames]{xcolor}
