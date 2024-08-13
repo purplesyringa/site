@@ -13,7 +13,7 @@ intro: |
          | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 \
          | base64 | head -1
     Vm0wd2QyUXlVWGxWV0d4V1YwZDRWMVl3WkRSV01WbDNXa1JTVjAxV2JETlhhMUpUVmpBeFYySkVU
-    ``
+    ```
 ---
 
 *Пост написан по мотивам [давнего треда на Reddit](https://www.reddit.com/r/compsci/comments/18234a/the_base64_encoder_has_a_fixed_point/).*
