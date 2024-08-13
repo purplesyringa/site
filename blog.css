@@ -22,10 +22,14 @@ math {
 	color: #8d00d9;
 }
 
-table {
+.table-wrapper {
 	margin-left: -7rem;
 	width: 52rem;
 	background-color: #00000010;
+	overflow: auto;
+}
+table {
+	width: 100%;
 	border-collapse: collapse;
 }
 th, td {
@@ -142,7 +146,7 @@ aside > :last-child {
 		border-left-color: #9c2254;
 		background-color: #4e2554;
 	}
-	table {
+	.table-wrapper {
 		background-color: #ffffff10;
 	}
 	pre {
@@ -192,7 +196,7 @@ aside > :last-child {
 }
 
 @media screen and (max-width: 1000px) {
-	pre, .diagram svg, table {
+	pre, .diagram svg, .table-wrapper {
 		margin-left: 0;
 		width: 100%;
 	}

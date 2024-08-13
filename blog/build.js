@@ -89,7 +89,13 @@ md.use(markdownitTexMath, {
 	engine: temml,
 });
 
-html = html.replace(/{{ body }}/g, md.render(markdown).replace(/<aside-inline-here \/>/g, "</div>"));
+html = html.replace(
+	/{{ body }}/g,
+	md.render(markdown)
+		.replace(/<aside-inline-here \/>/g, "</div>")
+		.replace(/<table>/g, "<div class='table-wrapper'><table>")
+		.replace(/<\/table>/g, "</table></div>")
+);
 
 html = minifyHtml.minify(Buffer.from(html), {});
 
