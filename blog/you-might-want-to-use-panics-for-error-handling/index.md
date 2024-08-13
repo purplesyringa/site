@@ -1,6 +1,6 @@
 ---
-title: You should probably use panics for error handling
-time: July 28, 2024
+title: You might want to use panics for error handling
+time: August 13, 2024
 ordering: 2
 intro: |
     Rust's approach to error handling comes at a cost. The `Result` type often doesn't fit in CPU registers, and callers of fallible functions have to check whether the returned value is `Ok` or `Err`. That's a stack spill, a comparison, a branch, and a lot of error handling code intertwined with the hot path that *just shouldn't be here*, which inhibits inlining, the most important optimization of all.
@@ -207,23 +207,22 @@ One simple commonly used project is [serde](https://serde.rs). After fixing some
 
 <aside-inline-here />
 
-Sure, this benchmark only measures the happy path. But in realistic programs, the slowness of the error path is quickly offset by the increased speed of successful handling.
-
-This might not sound like a lot, but that's a *great* performance increase *just* from error handling. And this is a *universal* fix to a *global* problem.
+This might not sound like a lot, but that's a *great* performance increase *just* from error handling. And this is a universal fix to a global problem.
 
 ### That includes you
 
-This optimization is applicable to almost every project, and you don't even have to *think* before applying it. It's literally this simple:
+To be clear, this benchmark only measures the success path. In realistic programs, the error path may be reached more often than the success path in some cases, so this is not a generic optimization.
+
+However, it is applicable in almost every project to some degree: for example, querying a database is almost always successful. Optimizing such paths is trivial with `#[iex]`:
 
 - Slap `#[iex]` onto all functions that return `Result`,
 - Whenever you need to match on a `Result` or apply a combinator, try to rewrite code without that, and if you can't, add `.into_result()`,
 - Occasionally replace `return e` with `return Ok(e?)` for... reasons.
-- Last but not least, measure performance.
 
 ### Afterword
 
-`#[iex]` is a very young project. It might not be the best solution for production code, and it would certainly be great if rustc could efficiently propagate errors without external crates.
+`#[iex]` is a very young project. It might not be the best solution for production code, and it would certainly be great if rustc supported something like a `#[cold_err]` attribute to propagate errors by unwinding without external crates.
 
 But I think it's a move in the right direction.
 
-[The crate documentation](https://docs.rs/iex/latest/iex/) includes instructions on how to use `#[iex]` in your project. If you find this library useful, don't hesitate to tell me [on the issue tracker](https://github.com/iex-rs/iex/issues).
+[The crate documentation](https://docs.rs/iex/latest/iex/) includes instructions on how to use `#[iex]` in your project. If you find this library useful, please tell me [on the issue tracker](https://github.com/iex-rs/iex/issues).
