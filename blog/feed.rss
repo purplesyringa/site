@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Tue, 13 Aug 2024 10:44:59 GMT</lastBuildDate>
+		<lastBuildDate>Tue, 13 Aug 2024 10:49:11 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -15,9 +15,8 @@
 			<item>
 				<title>You might want to use panics for error handling</title>
 				<link>https://purplesyringa.moe/blog/./you-might-want-to-use-panics-for-error-handling/</link>
-				<description><p>Rust’s approach to error handling comes at a cost. The <code>Result</code> type often doesn’t fit in CPU registers, and callers of fallible functions have to check whether the returned value is <code>Ok</code> or <code>Err</code>. That’s a stack spill, a comparison, a branch, and a lot of error handling code intertwined with the hot path that <em>just shouldn’t be here</em>, which inhibits inlining, the most important optimization of all.</p>
-<p>Exceptions and panics make it easy to forget about the occasional error, but they don’t suffer from inefficiency. Throwing an exception unwinds the stack automatically, without any cooperation from the functions except the one that throws the exception and the one that catches it. Wouldn’t it be <em>neat</em> if a mechanism with the performance of <code>panic!</code> and the ergonomics of <code>Result</code> existed?</p>
-</description>
+				<description>Rust’s approach to error handling comes at a cost. The Result type often doesn’t fit in CPU registers, and callers of fallible functions have to check whether the returned value is Ok or Err. That’s a stack spill, a comparison, a branch, and a lot of error handling code intertwined with the hot path that just shouldn’t be here, which inhibits inlining, the most important optimization of all.
+Exceptions and panics make it easy to forget about the occasional error, but they don’t suffer from inefficiency. Throwing an exception unwinds the stack automatically, without any cooperation from the functions except the one that throws the exception and the one that catches it. Wouldn’t it be neat if a mechanism with the performance of panic! and the ergonomics of Result existed?</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				
 				<guid>https://purplesyringa.moe/blog/./you-might-want-to-use-panics-for-error-handling/</guid>
@@ -27,17 +26,15 @@
 			<item>
 				<title>У base64 есть неподвижная точка</title>
 				<link>https://purplesyringa.moe/blog/ru/base64-has-a-fixed-point/</link>
-				<description><pre><code class="language-shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">&lt;/dev/urandom <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> \
-     | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> \
-     | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">head</span> -1</span>
+				<description>$ base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 \
+| base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 \
+| base64 | head -1
 Vm0wd2QyUXlVWGxWV0d4V1YwZDRWMVl3WkRSV01WbDNXa1JTVjAxV2JETlhhMUpUVmpBeFYySkVU
-<span class="hljs-meta prompt_">
-$ </span><span class="language-bash">&lt;/dev/urandom <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> \
-     | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">base64</span> \
-     | <span class="hljs-built_in">base64</span> | <span class="hljs-built_in">head</span> -1</span>
-Vm0wd2QyUXlVWGxWV0d4V1YwZDRWMVl3WkRSV01WbDNXa1JTVjAxV2JETlhhMUpUVmpBeFYySkVU
-</code></pre>
-</description>
+
+$ base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 \
+| base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 \
+| base64 | head -1
+Vm0wd2QyUXlVWGxWV0d4V1YwZDRWMVl3WkRSV01WbDNXa1JTVjAxV2JETlhhMUpUVmpBeFYySkVU</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				
 				<guid>https://purplesyringa.moe/blog/ru/base64-has-a-fixed-point/</guid>
@@ -47,10 +44,9 @@ Vm0wd2QyUXlVWGxWV0d4V1YwZDRWMVl3WkRSV01WbDNXa1JTVjAxV2JETlhhMUpUVmpBeFYySkVU
 			<item>
 				<title>Recovering garbled Bitcoin addresses</title>
 				<link>https://purplesyringa.moe/blog/./recovering-garbled-bitcoin-addresses/</link>
-				<description><p><a href="https://zeronet.io/">ZeroNet</a> is a decentralized network that enables dynamic sites, such as blogs and forums, unlike popular content-addressed storage networks that came later. Sites aren’t addressed by immutable hashes; instead, site updates are signed by Bitcoin addresses.</p>
-<p>A moot point is that Bitcoin addresses are case-sensitive, and people are used to addresses being case-insensitive. Mistakes happen, and sometimes the only trail you have is a lower-cased address, like <code>1lbcfr7sahtd9cgdqo3htmtkv8lk4znx71</code>.</p>
-<p>Losing valuable information is a bad thing when you’re an archivist. Have we <em>really</em> lost access to the site if we only know the lower-cased address? Can we recover the original address somehow?</p>
-</description>
+				<description>ZeroNet is a decentralized network that enables dynamic sites, such as blogs and forums, unlike popular content-addressed storage networks that came later. Sites aren’t addressed by immutable hashes; instead, site updates are signed by Bitcoin addresses.
+A moot point is that Bitcoin addresses are case-sensitive, and people are used to addresses being case-insensitive. Mistakes happen, and sometimes the only trail you have is a lower-cased address, like 1lbcfr7sahtd9cgdqo3htmtkv8lk4znx71.
+Losing valuable information is a bad thing when you’re an archivist. Have we really lost access to the site if we only know the lower-cased address? Can we recover the original address somehow?</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				
 				<guid>https://purplesyringa.moe/blog/./recovering-garbled-bitcoin-addresses/</guid>

@@ -3,10 +3,9 @@ import escapeHTML from "escape-html";
 import fs from "node:fs";
 import hljs from "highlight.js";
 import markdownit from "markdown-it";
-import markdownitContainer from "markdown-it-container";
 import markdownitTexMath from "markdown-it-texmath";
 import minifyHtml from "@minify-html/node";
-import path from "node:path";
+import { stripHtml } from "string-strip-html";
 import temml from "temml";
 import YAML from "yaml";
 
@@ -88,7 +87,7 @@ fs.writeFileSync("feed.rss", `<?xml version="1.0" encoding="UTF-8" ?>
 			<item>
 				<title>${escapeHTML(post.title)}</title>
 				<link>${escapeHTML(`https://purplesyringa.moe/blog/${post.path}/`)}</link>
-				<description>${md.render(post.intro || "")}</description>
+				<description>${stripHtml(md.render(post.intro || "")).result}</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				${"" /* <comments>URL to hackernews</comments> */}
 				<guid>${escapeHTML(`https://purplesyringa.moe/blog/${post.path}/`)}</guid>

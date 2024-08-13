@@ -17,6 +17,7 @@
     "markdown-it": "^14.1.0",
     "markdown-it-container": "^4.0.0",
     "markdown-it-texmath": "^1.0.0",
+    "string-strip-html": "^13.4.8",
     "temml": "^0.10.24",
     "tmp": "^0.2.3",
     "yaml": "^2.4.1"
