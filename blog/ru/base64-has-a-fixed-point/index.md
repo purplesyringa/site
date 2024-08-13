@@ -1,7 +1,6 @@
 ---
 title: У base64 есть неподвижная точка
-time: 3 августа, 2024
-ordering: 2
+time: August 3, 2024
 intro: |
     ```shell
     $ </dev/urandom base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 \

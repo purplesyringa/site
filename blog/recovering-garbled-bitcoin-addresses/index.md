@@ -1,7 +1,6 @@
 ---
 title: Recovering garbled Bitcoin addresses
 time: April 23, 2024
-ordering: 1
 intro: |
     [ZeroNet](https://zeronet.io/) is a decentralized network that enables dynamic sites, such as blogs and forums, unlike popular content-addressed storage networks that came later. Sites aren't addressed by immutable hashes; instead, site updates are signed by Bitcoin addresses.
 

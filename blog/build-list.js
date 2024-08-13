@@ -40,6 +40,7 @@ const addFromDir = dir => {
 		const parsedYamlHeader = YAML.parse(yamlHeader);
 		posts.push({
 			path: `${dir}/${name}`,
+			parsedDate: new Date(parsedYamlHeader.time + " UTC"),
 			...parsedYamlHeader
 		});
 	}
@@ -48,7 +49,7 @@ const addFromDir = dir => {
 addFromDir(".");
 addFromDir("ru");
 
-posts.sort((a, b) => b.ordering - a.ordering);
+posts.sort((a, b) => b.parsedDate - a.parsedDate);
 
 let content = posts.map(post => {
 	return `
@@ -69,3 +70,29 @@ html = html.replace(/{{ content }}/g, content);
 html = minifyHtml.minify(Buffer.from(html), {});
 
 fs.writeFileSync("index.html", html);
+
+fs.writeFileSync("feed.rss", `<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+	<channel>
+		<title>purplesyringa's blog</title>
+		<link>https://purplesyringa.moe/blog/</link>
+		<description>Posts from purplesyringa's blog.</description>
+		<copyright>CC BY</copyright>
+		<managingEditor>me@purplesyringa.moe</managingEditor>
+		<webMaster>me@purplesyringa.moe</webMaster>
+		<lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+		<docs>https://www.rssboard.org/rss-specification</docs>
+		<ttl>60</ttl>
+		${posts.map(post => `
+			<item>
+				<title>${escapeHTML(post.title)}</title>
+				<link>${escapeHTML(`https://purplesyringa.moe/blog/${post.path}/`)}</link>
+				<description>Here is some text containing an interesting description.</description>
+				<author>me@purplesyringa.moe</author>
+				${"" /* <comments>URL to hackernews</comments> */}
+				<guid>${escapeHTML(`https://purplesyringa.moe/blog/${post.path}/`)}</guid>
+				<pubDate>${post.parsedDate.toUTCString()}</pubDate>
+			</item>
+		`).join("")}
+	</channel>
+</rss>`);

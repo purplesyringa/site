@@ -1,7 +1,6 @@
 ---
 title: You might want to use panics for error handling
 time: August 13, 2024
-ordering: 3
 intro: |
     Rust's approach to error handling comes at a cost. The `Result` type often doesn't fit in CPU registers, and callers of fallible functions have to check whether the returned value is `Ok` or `Err`. That's a stack spill, a comparison, a branch, and a lot of error handling code intertwined with the hot path that *just shouldn't be here*, which inhibits inlining, the most important optimization of all.
     
