@@ -7,10 +7,26 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Tue, 13 Aug 2024 12:54:10 GMT</lastBuildDate>
+		<lastBuildDate>Tue, 13 Aug 2024 13:45:53 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>The sentinel trick</title>
+				<link>https://purplesyringa.moe/blog/./the-sentinel-trick/</link>
+				<description>The sentinel trick underlies a data structure with the following requirements:
+
+Read element by index in O ( 1 ) ,
+Write element by index in O ( 1 ) ,
+Replace all elements with a given value in O ( 1 ) .
+
+It is not a novel technique by any means, but it doesn’t seem on everyone’s lips, so some of you might find it interesting.</description>
+				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+				
+				<guid>https://purplesyringa.moe/blog/./the-sentinel-trick/</guid>
+				<pubDate>Tue, 13 Aug 2024 00:00:00 GMT</pubDate>
+			</item>
 		
 			<item>
 				<title>You might want to use panics for error handling</title>
