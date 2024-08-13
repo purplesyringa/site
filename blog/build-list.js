@@ -77,7 +77,7 @@ fs.writeFileSync("feed.rss", `<?xml version="1.0" encoding="UTF-8" ?>
 		<title>purplesyringa's blog</title>
 		<link>https://purplesyringa.moe/blog/</link>
 		<description>Posts from purplesyringa's blog.</description>
-		<copyright>CC BY</copyright>
+		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe</managingEditor>
 		<webMaster>me@purplesyringa.moe</webMaster>
 		<lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
