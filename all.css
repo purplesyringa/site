@@ -78,6 +78,9 @@ h2 {
 	margin: 0;
 	color: #8d00d9;
 }
+h2 a {
+	color: inherit;
+}
 
 h3 {
 	position: absolute;

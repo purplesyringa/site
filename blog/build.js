@@ -17,7 +17,7 @@ tmp.setGracefulCleanup();
 
 const articleDirectory = process.env.INIT_CWD;
 
-let fileText = fs.readFileSync(`${articleDirectory}/index.md`, "utf-8");
+const fileText = fs.readFileSync(`${articleDirectory}/index.md`, "utf-8");
 const [_, yamlHeader, markdown] = fileText.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)/);
 const parsedYamlHeader = YAML.parse(yamlHeader);
 

@@ -1,6 +1,13 @@
 ---
 title: Recovering garbled Bitcoin addresses
 time: April 23, 2024
+ordering: 1
+intro: |
+    [ZeroNet](https://zeronet.io/) is a decentralized network that enables dynamic sites, such as blogs and forums, unlike popular content-addressed storage networks that came later. Sites aren't addressed by immutable hashes; instead, site updates are signed by Bitcoin addresses.
+
+    A moot point is that Bitcoin addresses are case-sensitive, and people are used to addresses being case-insensitive. Mistakes happen, and sometimes the only trail you have is a lower-cased address, like `1lbcfr7sahtd9cgdqo3htmtkv8lk4znx71`.
+
+    Losing valuable information is a bad thing when you're an archivist. Have we *really* lost access to the site if we only know the lower-cased address? Can we recover the original address somehow?
 tikzThemes:
   light: |
     \colorlet{DeepBlue}{blue!30}

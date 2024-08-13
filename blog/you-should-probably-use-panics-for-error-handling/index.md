@@ -1,6 +1,11 @@
 ---
 title: You should probably use panics for error handling
 time: July 28, 2024
+ordering: 2
+intro: |
+    Rust's approach to error handling comes at a cost. The `Result` type often doesn't fit in CPU registers, and callers of fallible functions have to check whether the returned value is `Ok` or `Err`. That's a stack spill, a comparison, a branch, and a lot of error handling code intertwined with the hot path that *just shouldn't be here*, which inhibits inlining, the most important optimization of all.
+    
+    Exceptions and panics make it easy to forget about the occasional error, but they don't suffer from inefficiency. Throwing an exception unwinds the stack automatically, without any cooperation from the functions except the one that throws the exception and the one that catches it. Wouldn't it be *neat* if a mechanism with the performance of `panic!` and the ergonomics of `Result` existed?
 ---
 
 Rust's approach to error handling is neat, but it comes at a cost. Fallible functions return this type:

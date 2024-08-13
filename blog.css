@@ -9,6 +9,10 @@ h3 + * {
 	margin-top: 3rem;
 }
 
+.post-entry {
+	margin-bottom: 2rem;
+}
+
 code {
 	font-family: 'Noto Sans', sans-serif;
 	color: #8d00d9;
