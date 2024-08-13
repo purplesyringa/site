@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ locale }}" prefix="og: http://ogp.me/ns#">
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,6 +11,13 @@
 		<link rel="stylesheet" type="text/css" href="{{ root }}/vendor/atom-one-dark.min.css" media="screen and (prefers-color-scheme: dark">
 		<link rel="stylesheet" type="text/css" href="{{ root }}/vendor/atelier-cave-light.min.css" media="screen and (prefers-color-scheme: light">
 		<link rel="alternate" type="application/rss+xml" href="{{ root }}/blog/feed.rss" title="Blog posts">
+		<meta property="og:title" content="{{ title }}" />
+		<meta property="og:type" content="article" />
+		<meta property="og:image" content="https://purplesyringa.moe/blog/{{ path }}/og.png" />
+		<meta property="og:url" content="https://purplesyringa.moe/blog/{{ path }}/" />
+		<meta property="og:description" content="{{ description }}" />
+		<meta property="og:locale" content="{{ locale }}" />
+		<meta property="og:site_name" content="purplesyringa's blog" />
 	</head>
 	<body>
 		<header>

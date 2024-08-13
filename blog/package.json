@@ -14,6 +14,7 @@
     "@minify-html/node": "^0.15.0",
     "escape-html": "^1.0.3",
     "highlight.js": "^11.9.0",
+    "jimp": "^0.22.12",
     "markdown-it": "^14.1.0",
     "markdown-it-container": "^4.0.0",
     "markdown-it-texmath": "^1.0.0",

@@ -3,12 +3,14 @@ import childProcess from "node:child_process";
 import escapeHTML from "escape-html";
 import fs from "node:fs";
 import hljs from "highlight.js";
+import Jimp from "jimp";
 import markdownit from "markdown-it";
 import markdownitContainer from "markdown-it-container";
 import markdownitTexMath from "markdown-it-texmath";
 import minifyHtml from "@minify-html/node";
 import path from "node:path";
 import process from "node:process";
+import { stripHtml } from "string-strip-html";
 import temml from "temml";
 import tmp from "tmp";
 import YAML from "yaml";
@@ -21,10 +23,24 @@ const fileText = fs.readFileSync(`${articleDirectory}/index.md`, "utf-8");
 const [_, yamlHeader, markdown] = fileText.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)/);
 const parsedYamlHeader = YAML.parse(yamlHeader);
 
-let html = fs.readFileSync("_template.html", "utf-8");
-html = html.replace(/{{ root }}/g, escapeHTML(path.relative(articleDirectory, process.cwd() + "/..")));
-html = html.replace(/{{ title }}/g, escapeHTML(parsedYamlHeader.title));
-html = html.replace(/{{ time }}/g, escapeHTML(parsedYamlHeader.time));
+const relPath = path.relative(process.cwd(), articleDirectory);
+const locale = relPath.startsWith("ru/") ? "ru_RU" : "en_US";
+
+const image = await Jimp.read("og_template.png");
+const font = await Jimp.loadFont("../fonts/lilitaone.fnt");
+image.print(
+	font,
+	100,
+	100,
+	{
+		text: locale === "en_US" ? parsedYamlHeader.title : "purplesyringa's blog",
+		alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
+		alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE,
+	},
+	1000,
+	430,
+);
+await image.writeAsync(`${articleDirectory}/og.png`);
 
 let spoilerId = 0;
 
@@ -89,6 +105,13 @@ md.use(markdownitTexMath, {
 	engine: temml,
 });
 
+let html = fs.readFileSync("_template.html", "utf-8");
+html = html.replace(/{{ root }}/g, escapeHTML(path.relative(articleDirectory, process.cwd() + "/..")));
+html = html.replace(/{{ title }}/g, escapeHTML(parsedYamlHeader.title));
+html = html.replace(/{{ path }}/g, escapeHTML(relPath));
+html = html.replace(/{{ description }}/g, stripHtml(md.render(parsedYamlHeader.intro || "")).result);
+html = html.replace(/{{ time }}/g, escapeHTML(parsedYamlHeader.time));
+html = html.replace(/{{ locale }}/g, locale);
 html = html.replace(
 	/{{ body }}/g,
 	md.render(markdown)
