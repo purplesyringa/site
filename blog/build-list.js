@@ -23,36 +23,41 @@ md.use(markdownitTexMath, {
 
 const posts = [];
 
-for (const name of fs.readdirSync(".")) {
-	let fileText;
-	try {
-		fileText = fs.readFileSync(`${name}/index.md`, "utf-8");
-	} catch (e) {
-		if (e.code === "ENOTDIR" || e.code === "ENOENT") {
-			continue;
-		} else {
-			throw e;
+const addFromDir = dir => {
+	for (const name of fs.readdirSync(dir)) {
+		let fileText;
+		try {
+			fileText = fs.readFileSync(`${dir}/${name}/index.md`, "utf-8");
+		} catch (e) {
+			if (e.code === "ENOTDIR" || e.code === "ENOENT") {
+				continue;
+			} else {
+				throw e;
+			}
 		}
-	}
 
-	const [_, yamlHeader, markdown] = fileText.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)/);
-	const parsedYamlHeader = YAML.parse(yamlHeader);
-	posts.push({
-		name,
-		...parsedYamlHeader
-	});
-}
+		const [_, yamlHeader, markdown] = fileText.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)/);
+		const parsedYamlHeader = YAML.parse(yamlHeader);
+		posts.push({
+			path: `${dir}/${name}`,
+			...parsedYamlHeader
+		});
+	}
+};
+
+addFromDir(".");
+addFromDir("ru");
 
 posts.sort((a, b) => b.ordering - a.ordering);
 
 let content = posts.map(post => {
 	return `
 		<div class="post-entry">
-			<h2><a href="${escapeHTML(post.name)}/">${escapeHTML(post.title)}</a></h2>
+			<h2><a href="${escapeHTML(post.path)}/">${escapeHTML(post.title)}</a></h2>
 			<time>${escapeHTML(post.time)}</time>
 			${md.render(post.intro || "")}
 			<p>
-				<a href="${escapeHTML(post.name)}/">Keep reading</a>
+				<a href="${escapeHTML(post.path)}/">Keep reading</a>
 			</p>
 		</div>
 	`;

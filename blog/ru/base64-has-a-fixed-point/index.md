@@ -1,6 +1,19 @@
 ---
 title: У base64 есть неподвижная точка
 time: 3 августа, 2024
+ordering: 2
+intro: |
+    ```shell
+    $ </dev/urandom base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 \
+         | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 \
+         | base64 | head -1
+    Vm0wd2QyUXlVWGxWV0d4V1YwZDRWMVl3WkRSV01WbDNXa1JTVjAxV2JETlhhMUpUVmpBeFYySkVU
+
+    $ </dev/urandom base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 \
+         | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 \
+         | base64 | head -1
+    Vm0wd2QyUXlVWGxWV0d4V1YwZDRWMVl3WkRSV01WbDNXa1JTVjAxV2JETlhhMUpUVmpBeFYySkVU
+    ``
 ---
 
 *Пост написан по мотивам [давнего треда на Reddit](https://www.reddit.com/r/compsci/comments/18234a/the_base64_encoder_has_a_fixed_point/).*
