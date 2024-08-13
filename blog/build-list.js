@@ -88,7 +88,7 @@ fs.writeFileSync("feed.rss", `<?xml version="1.0" encoding="UTF-8" ?>
 			<item>
 				<title>${escapeHTML(post.title)}</title>
 				<link>${escapeHTML(`https://purplesyringa.moe/blog/${post.path}/`)}</link>
-				<description>Here is some text containing an interesting description.</description>
+				<description>${md.render(post.intro || "")}</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				${"" /* <comments>URL to hackernews</comments> */}
 				<guid>${escapeHTML(`https://purplesyringa.moe/blog/${post.path}/`)}</guid>
