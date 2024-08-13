@@ -72,23 +72,24 @@ html = minifyHtml.minify(Buffer.from(html), {});
 fs.writeFileSync("index.html", html);
 
 fs.writeFileSync("feed.rss", `<?xml version="1.0" encoding="UTF-8" ?>
-<rss version="2.0">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 	<channel>
 		<title>purplesyringa's blog</title>
 		<link>https://purplesyringa.moe/blog/</link>
 		<description>Posts from purplesyringa's blog.</description>
 		<copyright>Alisa Sireneva, CC BY</copyright>
-		<managingEditor>me@purplesyringa.moe</managingEditor>
-		<webMaster>me@purplesyringa.moe</webMaster>
+		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
+		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
 		<lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
+		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
 		${posts.map(post => `
 			<item>
 				<title>${escapeHTML(post.title)}</title>
 				<link>${escapeHTML(`https://purplesyringa.moe/blog/${post.path}/`)}</link>
 				<description>Here is some text containing an interesting description.</description>
-				<author>me@purplesyringa.moe</author>
+				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				${"" /* <comments>URL to hackernews</comments> */}
 				<guid>${escapeHTML(`https://purplesyringa.moe/blog/${post.path}/`)}</guid>
 				<pubDate>${post.parsedDate.toUTCString()}</pubDate>
