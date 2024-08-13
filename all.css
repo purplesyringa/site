@@ -9,7 +9,7 @@ html, body {
 }
 
 header, footer {
-	background-color: #ed79a9;
+	background-color: #f06ea4;
 	color: #ffffff;
 	font-family: 'Slabo 27px', serif;
 }
@@ -32,6 +32,23 @@ h1 a {
 }
 .media a {
 	text-decoration: none !important;
+}
+
+nav {
+	display: flex;
+	flex-direction: row;
+	margin-top: 0.5rem;
+}
+nav a {
+	color: #ffffff;
+	background-color: #00000030;
+	font-family: 'Roboto', sans-serif;
+	padding: 0.25rem 0.5rem;
+	margin-right: 0.5rem;
+}
+nav .current {
+	background-color: #ebdde2;
+	color: #ff1994;
 }
 
 header, footer, section {
@@ -104,6 +121,10 @@ li {
 	}
 	a {
 		color: #f765b4;
+	}
+	nav .current {
+		background-color: #160117;
+		color: #ffffff;
 	}
 }
 
