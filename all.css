@@ -82,16 +82,19 @@ h2 a {
 	color: inherit;
 }
 
-h3 {
-	position: absolute;
-	right: 100%;
-	font-size: 1rem;
+.next-group {
+	margin-top: 3rem;
+}
+.side-header {
+	display: inline-block;
+	width: 0;
 	font-weight: 700;
 	color: #8d00d9;
-	margin: 0;
-	margin-top: 1rem;
-	margin-right: 0.5rem;
-	width: 100%;
+}
+.side-header > span {
+	display: inline-block;
+	width: 100vw;
+	margin-left: calc(-100vw - 1.5rem);
 	text-align: right;
 }
 
@@ -119,7 +122,7 @@ li {
 		background-color: #160117;
 		color: #fee8ff;
 	}
-	h2, h3 {
+	h2, .side-header {
 		color: #cd91ed;
 	}
 	a {
@@ -137,9 +140,14 @@ li {
 		right: 1rem;
 	}
 
-	h3 {
-		position: static;
+	.side-header {
+		display: block;
+		width: 100%;
+	}
+	.side-header > span {
 		text-align: left;
+		margin-left: 0;
+		width: 100%;
 	}
 
 	.viewport-container {

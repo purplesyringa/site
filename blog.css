@@ -2,15 +2,13 @@ time {
 	opacity: 0.8;
 }
 
-h3 {
-	margin-top: 2rem;
-}
-h3 + * {
-	margin-top: 3rem;
-}
-
 .post-entry {
 	margin-bottom: 2rem;
+}
+
+section h2:nth-child(n + 2) {
+	margin-top: 3rem;
+	margin-bottom: -2rem;
 }
 
 code {
@@ -170,10 +168,6 @@ aside > :last-child {
 }
 
 @media screen and (max-width: 1300px) {
-	h3 + * {
-		margin-top: 1rem;
-	}
-
 	.aside-group {
 		display: flex;
 		flex-direction: column;

@@ -118,6 +118,8 @@ html = html.replace(
 		.replace(/<aside-inline-here \/>/g, "</div>")
 		.replace(/<table>/g, "<div class='table-wrapper'><table>")
 		.replace(/<\/table>/g, "</table></div>")
+		.replace(/<h3>(.*?)<\/h3>\s*<div class='aside-group'><aside>([\s\S]*?)<\/aside>/g, "<div class='aside-group'><aside>$2</aside><h3>$1</h3>")
+		.replace(/<h3>(.*?)<\/h3>\s*<p>/g, "<p class='next-group'><span class='side-header'><span>$1</span></span>")
 );
 
 html = minifyHtml.minify(Buffer.from(html), {});
