@@ -20,7 +20,7 @@ This makes `serde_json` a good target <s>(not in a Jia Tan way)</s> for optimiza
 
 I have recently been working on the [#[iex]](../you-might-want-to-use-panics-for-error-handling/) library. I used `serde` and `serde_json` as benchmarks and noticed some questionable decisions in their performance-critical code while rewriting it to better suit `#[iex]`.
 
-`#[iex]` focuses on error handling, so the error path is the first thing I benchmarked. To my surprise, `serde_json`'s error path was more than 2x slower than the success path on the same data:
+`#[iex]` focuses on error handling, so the error path was the first thing I benchmarked. To my surprise, `serde_json`'s error path was more than 2x slower than the success path on the same data:
 
 <table>
     <thead>
@@ -193,9 +193,9 @@ while self.index < self.slice.len() && !ESCAPE[self.slice[self.index] as usize] 
 }
 ```
 
-What we want here is to find the first non-escape character. "Escape" characters are `\\` (for obvious reasons) and `"` (because it marks the end of the string), but also all ASCII codes up to 0x1f, because the JSON specification [forbids](https://www.crockford.com/mckeeman.html) control codes in strings (so e.g. `"line 1\nline 2"` is valid JSON, but replacing the `\n` with a literal newline invalidates it).
+What we want here is to find the first non-escape character. "Escape" characters are `\` (for obvious reasons) and `"` (because it marks the end of the string), but also all ASCII codes up to and including `0x1F`, because the JSON specification [forbids](https://www.crockford.com/mckeeman.html) control codes in strings (so e.g. `"line 1\nline 2"` is valid JSON, but replacing the `\n` with a literal newline invalidates it).
 
-*If* all I needed was to find the first `\\` or `"`, the [memchr2](https://docs.rs/memchr/latest/memchr/fn.memchr2.html) function provided by `memchr` would suffice. But I need something more complicated, so how am I supposed to go about it?
+*If* all I needed was to find the first `\` or `"`, the [memchr2](https://docs.rs/memchr/latest/memchr/fn.memchr2.html) function provided by `memchr` would suffice. But I need something more complicated, so how am I supposed to go about it?
 
 
 ## Looking for escape
@@ -239,9 +239,9 @@ size_t bespoke_strlcpy(char *dst, const char *src, size_t size) {
 
 GCC can easily detect such loops and replace them with glibc calls, so the author also explicitly disabled this with `-fno-builtin`. Even like this, the two-pass algorithm was still faster than a single-pass one.
 
-However, one detail wasn't explicit. `-fno-builtin` does not disable *all* `memcpy`-related optimizations: the `memcpy` loop can still be vectorized, and that's what GCC did to `bespoke_strlcpy`. So the author was actually comparing scalar `strlen` (check for NUL, loop) + vectorized `memcpy` (check for size, loop) to scalar `strlcpy` (check for NUL, check for size, loop).
+However, one detail wasn't explicit. `-fno-builtin` does not disable *all* `memcpy`-related optimizations: the `memcpy`-like loop can still be vectorized, and that's what GCC did to `bespoke_strlcpy`. So the author was actually comparing scalar `strlen` (check for NUL, loop) + vectorized `memcpy` (check for size, loop) to scalar `strlcpy` (check for NUL, check for size, loop).
 
-Disabling vectorization with `-fno-tree-vectorize` makes the two-pass algorithm *slower*, as it should be, because now we're compiling two loops (check for NUL, loop; check for size, loop) with one loop (check for NUL, check for size, loop), and the latter is faster because it puts less pressure on the branch predictor and has fewer memory accesses.
+Disabling vectorization with `-fno-tree-vectorize` makes the two-pass algorithm *slower*, as it should be, because now we're comparing two loops (check for NUL, loop; check for size, loop) to one loop (check for NUL, check for size, loop), and the latter is faster because it puts less pressure on the branch predictor and has fewer memory accesses.
 
 ---
 
@@ -278,7 +278,7 @@ However, we quickly realized that this was a losing battle. We would slow down s
 
 ### Accepting fate
 
-We really needed to search for `\`, `"` *and* control codes in one pass.
+We really needed to search for `\`, `"`, *and* control codes in one pass.
 
 But I tried hard to keep `serde_json` as simple as it was. I don't usually care about code complexity in my projects, but something another person has to maintain should preferably be as uninvasive as possible. This made separately implementing SIMD for different platforms a no-go.
 
@@ -293,11 +293,11 @@ The way this works is that for `c: i8`, the condition we're looking for is `c >=
 
 So for 8 packed bytes, we compute `!c & (c - 0x2020202020202020) & 0x8080808080808080`. If it's `0`, great, no control character. If it's non-zero, we find the least significant non-zero byte in the mask, and that's our first occurence of a control character.
 
-There's just one problem. The `c - 0x20` in `c >= 0 && c - 0x20 < 0` is a wrapping subtraction, but performing a 64-bit subtraction can propagate carry/borrow between bytes. This is, however, not a problem: the borrow can only be propagated from a byte if it's less than `0x20`, and only to more significant bytes. We only wish to find the least significant control byte, so we don't care if it corrupts more significant bytes.
+There's just one nuance. The `c - 0x20` in `c >= 0 && c - 0x20 < 0` is a wrapping subtraction, but performing a 64-bit subtraction can propagate carry/borrow between bytes. This is, however, not a problem: the borrow can only be propagated from a byte if it's less than `0x20`, and only to more significant bytes. We only wish to find the least significant control byte, so we don't care if it corrupts more significant bytes.
 
-This, of course, only works on little-endian machines. For big-endian machines, `c` has to be bytereversed.
+This, of course, only works on little-endian machines. On big-endian machines, `c` has to be bytereversed.
 
-What about matching `\` (and `"`) though? The condition for `\` is as simple as `c ^ '\\' >= 0 && c ^ '\\' < 1`; this is just the formula above with `0x20` replaced with `0x01`. [The cherry on top](https://github.com/serde-rs/json/pull/1161#discussion_r1713040513) is that `'\\'` doesn't have the sign bit set, so `c ^ '\\' >= 0` is equivalent to `c >= 0`.
+What about matching `\` (and `"`) though? The condition for `\` is as simple as `c ^ b'\\' >= 0 && c ^ b'\\' < 1`; this is just the formula above with `0x20` replaced with `0x01`. [The cherry on top](https://github.com/serde-rs/json/pull/1161#discussion_r1713040513) is that `b'\\'` doesn't have the sign bit set, so `c ^ b'\\' >= 0` is equivalent to `c >= 0`.
 
 All in all, the formula simplifies to:
 
@@ -305,8 +305,8 @@ All in all, the formula simplifies to:
 !c
 & (
     (c - 0x2020202020202020)
-    | ((c ^ '\\') - 0x0101010101010101)
-    | ((c ^ '"') - 0x0101010101010101)
+    | ((c ^ b'\\') - 0x0101010101010101)
+    | ((c ^ b'"') - 0x0101010101010101)
 )
 & 0x8080808080808080
 ```
@@ -434,7 +434,7 @@ fn decode_hex_val(val: u8) -> Option<u16> {
 }
 ```
 
-This is what `serde_json` used to utilize, and it actually worked pretty well (better than `std`, anyway: `std` has to be generic over radix, `serde_json` doesn't). This function would then be used like this:
+This is what `serde_json` used to utilize, and it actually worked pretty well (better than `std`, anyway: `std` has to be generic over radix, `serde_json` doesn't have to). This function would then be used like this:
 
 ```rust
 let mut n = 0;
@@ -473,7 +473,7 @@ for _ in 0..4 {
 }
 ```
 
-If all hex digits are valid, nothing's changed, `n` is still our codepoint. Rotation is exactly as efficient as shifts on x86, so no issues performance-wise either. But if some hex digit is invalid, it's going to "pollute" `n`, setting it to `0xFFFF`, and the next iterations *will keep yielding `0xFFFF`*. Unicode defines `U+FFFF` as a codepoint that does not signify a character, meaning that it's extremely unlikely to be used in realistic data, so we can just branch on `n == 0xFFFF` afterwards and re-verify if we should emit an error or the JSON genuinely contained a `\uFFFF`. Isn't that neat?
+If all hex digits are valid, nothing's changed, `n` is still our codepoint. Rotation is exactly as efficient as shifts on x86, so no issues performance-wise either. But if some hex digit is invalid, it's going to "infect" `n`, setting it to `0xFFFF`, and the next iterations *will keep yielding `0xFFFF`*. Unicode defines `U+FFFF` as a codepoint that does not signify a character, meaning that it's extremely unlikely to be used in realistic data, so we can just branch on `n == 0xFFFF` afterwards and re-check if we should emit an error or the JSON genuinely contained a `\uFFFF`. Isn't that neat?
 
 
 ### clueless.jpg
@@ -497,7 +497,7 @@ What I like about signed numbers is that most processors have a single instructi
 
 Shifts increase latency. Latency bad. Alisa want no latency.
 
-Luckily, this is easy to fix by introducing two tables instead of one: `HEX0`, which is `HEX` casted to `[i16; 256]`, and `HEX1`, which is `HEX` casted to `[i16; 256]` but also left-shifted by `4`.  This allows the loop to be unrolled very clearly and is the final hex-decoding implementation.
+Luckily, this is easy to fix by introducing two tables instead of one: `HEX0`, which is `HEX` cast to `[i16; 256]`, and `HEX1`, which is `HEX` cast to `[i16; 256]` but also left-shifted by `4`.  This allows the loop to be unrolled very clearly and is the final hex-decoding implementation.
 
 ```rust
 fn decode_four_hex_digits(a: u8, b: u8, c: u8, d: u8) -> Option<u16> {
@@ -524,9 +524,9 @@ Overall, this increased the performance of parsing JSON-encoded *War and Peace* 
 
 ### Hazards
 
-After the last optimization, the slowest part of the Unicode string parsing code changed to UTF-8 encoding.
+After the last optimization, the bottleneck of Unicode string parsing shifted to UTF-8 encoding.
 
-This is really funny, because UTF-8 is supposed to be really simple. To give a quick reminder, UTF-8 encodes codepoints in one of the following ways:
+This is funny, because UTF-8 is supposed to be really simple. To give a quick reminder, UTF-8 encodes codepoints in one of the following ways:
 
 - 1 byte: `0xxxxxxx`
 - 2 bytes: `110xxxxx 10xxxxxx`
