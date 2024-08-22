@@ -105,7 +105,7 @@ fn position_of_index(&self, i: usize) -> Position {
 Can we do anything about this? `position_of_index()` wants to convert an index in a string to a line/column pair. To do that, we can reduce the problem to two simpler ones:
 
 - Count `\n`s in `self.slice[..i]`; that's going to be the 0-based line number, and
-- Find the last `\n` in `self.slice[..i]` and subtract its position from `i`; that's going to be the 0-based column number.
+- Find the last `\n` in `self.slice[..i]` and subtract its position from `i`; that's going to be the 1-based column number.
 
 Searching a string for a single-character needle is a long-solved problem. In C, we use `strchr` for that; in Rust, we use the [memchr](https://crates.io/crates/memchr) crate. In fact, this crate also provides [an optimized way](https://docs.rs/memchr/2.7.4/src/memchr/memchr.rs.html#327-333) to *count* occurences, which we need for the first subproblem.
 
