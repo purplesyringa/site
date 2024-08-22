@@ -18,7 +18,7 @@ This makes `serde_json` a good target <s>(not in a Jia Tan way)</s> for optimiza
 
 ### Where do I start?
 
-I have recently been working on the [#[iex]](../you-might-want-to-use-panics-for-error-handling/) library. I used `serde` and `serde_json` as benchmarks and noticed some questionable decisions in their performance-critical code while rewriting it to better suite `#[iex]`.
+I have recently been working on the [#[iex]](../you-might-want-to-use-panics-for-error-handling/) library. I used `serde` and `serde_json` as benchmarks and noticed some questionable decisions in their performance-critical code while rewriting it to better suit `#[iex]`.
 
 `#[iex]` focuses on error handling, so the error path is the first thing I benchmarked. To my surprise, `serde_json`'s error path was more than 2x slower than the success path on the same data:
 
