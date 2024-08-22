@@ -50,5 +50,13 @@
 				<h2>Made with my own bare hands (why.)</h2>
 			</div>
 		</footer>
+
+		<script>
+			window.addEventListener("keydown", e => {
+				if (e.ctrlKey && e.key === "Enter") {
+					window.open("https://github.com/purplesyringa/site/edit/master/blog/{{ path }}/index.md", "_blank");
+				}
+			});
+		</script>
 	</body>
 </html>
