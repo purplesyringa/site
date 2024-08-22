@@ -6,7 +6,7 @@ intro: |
 
     `serde` is *the* Rust framework for serialization and deserialization. Everyone uses it, and it's the default among the ecosystem. `serde_json` is the official `serde` "mixin" for JSON, so when people need to parse stuff, that's what they use instinctively. There are other libraries for JSON parsing, like [simd-json](https://lib.rs/crates/simd-json), but `serde_json` is overwhelmingly used: it has [26916](https://crates.io/crates/serde_json/reverse_dependencies) dependents at the time of this post, compared to only [66](https://crates.io/crates/simd-json/reverse_dependencies) for `simd-json`.
 
-    This makes `serde_json` a good target <s>(not in a Jia Tan way)</s> for optimization. Chances are, many of those 26916 users would profit from switching to `simd-json`, but as long as they aren't doing that, smaller optimizations are better than nothing, and such improvements are reapt across the ecosystem
+    This makes `serde_json` a good target <s>(not in a Jia Tan way)</s> for optimization. Chances are, many of those 26916 users would profit from switching to `simd-json`, but as long as they aren't doing that, smaller optimizations are better than nothing, and such improvements are reapt across the ecosystem.
 ---
 
 I have recently done some performance work and realized that reading about my experience could be entertaining. Teaching to *think* is just as important as teaching to *code*, but this is seldom done; I think something I've done last month is a great opportunity to draw the curtain a bit.
