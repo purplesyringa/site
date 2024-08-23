@@ -1,5 +1,11 @@
+h2 {
+	margin-bottom: 0.25rem;
+}
 time {
 	opacity: 0.8;
+}
+.discussion {
+	margin-left: 1rem;
 }
 
 .post-entry {
