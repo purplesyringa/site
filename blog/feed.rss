@@ -7,20 +7,10 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Fri, 23 Aug 2024 06:19:15 GMT</lastBuildDate>
+		<lastBuildDate>Fri, 23 Aug 2024 09:15:10 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
-		
-			<item>
-				<title>255 is better than 256</title>
-				<link>https://purplesyringa.moe/blog/./i-was-impatient-for-256-subs/</link>
-				<description>dasdasdas.</description>
-				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				
-				<guid>https://purplesyringa.moe/blog/./i-was-impatient-for-256-subs/</guid>
-				<pubDate>Sat, 24 Aug 2024 00:00:00 GMT</pubDate>
-			</item>
 		
 			<item>
 				<title>I sped up serde_json strings by 20%</title>
