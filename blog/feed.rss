@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Thu, 22 Aug 2024 02:21:12 GMT</lastBuildDate>
+		<lastBuildDate>Fri, 23 Aug 2024 04:50:42 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -19,7 +19,7 @@
 serde is the Rust framework for serialization and deserialization. Everyone uses it, and it’s the default among the ecosystem. serde_json is the official serde “mixin” for JSON, so when people need to parse stuff, that’s what they use instinctively. There are other libraries for JSON parsing, like simd-json, but serde_json is overwhelmingly used: it has 26916 dependents at the time of this post, compared to only 66 for simd-json.
 This makes serde_json a good target (not in a Jia Tan way) for optimization. Chances are, many of those 26916 users would profit from switching to simd-json, but as long as they aren’t doing that, smaller optimizations are better than nothing, and such improvements are reapt across the ecosystem.</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				
+				<comments>https://www.reddit.com/r/rust/comments/1eyxspu/i_sped_up_serde_json_strings_by_20/</comments>
 				<guid>https://purplesyringa.moe/blog/./i-sped-up-serde-json-strings-by-20-percent/</guid>
 				<pubDate>Tue, 20 Aug 2024 00:00:00 GMT</pubDate>
 			</item>
@@ -35,7 +35,7 @@ Replace all elements with a given value in O ( 1 ) .
 
 It is not a novel technique by any means, but it doesn’t seem on everyone’s lips, so some of you might find it interesting.</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				
+				<comments>https://t.me/alisa_rummages/148</comments>
 				<guid>https://purplesyringa.moe/blog/./the-sentinel-trick/</guid>
 				<pubDate>Tue, 13 Aug 2024 00:00:00 GMT</pubDate>
 			</item>
@@ -64,7 +64,7 @@ $ base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64
 | base64 | head -1
 Vm0wd2QyUXlVWGxWV0d4V1YwZDRWMVl3WkRSV01WbDNXa1JTVjAxV2JETlhhMUpUVmpBeFYySkVU</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				
+				<comments>https://t.me/alisa_rummages/146</comments>
 				<guid>https://purplesyringa.moe/blog/ru/base64-has-a-fixed-point/</guid>
 				<pubDate>Sat, 03 Aug 2024 00:00:00 GMT</pubDate>
 			</item>
@@ -79,7 +79,7 @@ Undefined Behavior.
 These two words make a seasoned programmer shudder. But sidestepping UB increases code size so much the library can hardly be used on CF. So I took a gamble. I meticulously scanned every instance of UB I used intentionally and made sure the compiler had absolutely no reason to miscompile it. I wrote excessive tests and run them on CI on all architecture and OS combinations I could think of. I released the library without so much as a flaw. It worked like clockwork.
 And then, 3 months later, I updated README, and all hell broke loose.</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				
+				<comments>https://codeforces.com/blog/entry/130661</comments>
 				<guid>https://purplesyringa.moe/blog/./i-thought-i-was-smart-enough-to-play-with-fire/</guid>
 				<pubDate>Thu, 20 Jun 2024 00:00:00 GMT</pubDate>
 			</item>
@@ -91,7 +91,7 @@ And then, 3 months later, I updated README, and all hell broke loose.</descripti
 A moot point is that Bitcoin addresses are case-sensitive, and people are used to addresses being case-insensitive. Mistakes happen, and sometimes the only trail you have is a lower-cased address, like 1lbcfr7sahtd9cgdqo3htmtkv8lk4znx71.
 Losing valuable information is a bad thing when you’re an archivist. Have we really lost access to the site if we only know the lower-cased address? Can we recover the original address somehow?</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				
+				<comments>https://t.me/alisa_rummages/111</comments>
 				<guid>https://purplesyringa.moe/blog/./recovering-garbled-bitcoin-addresses/</guid>
 				<pubDate>Tue, 23 Apr 2024 00:00:00 GMT</pubDate>
 			</item>

@@ -1,6 +1,7 @@
 ---
 title: I sped up serde_json strings by 20%
 time: August 20, 2024
+discussion: https://www.reddit.com/r/rust/comments/1eyxspu/i_sped_up_serde_json_strings_by_20/
 intro: |
     I have recently done some performance work and realized that reading about my experience could be entertaining. Teaching to *think* is just as important as teaching to *code*, but this is seldom done; I think something I've done last month is a great opportunity to draw the curtain a bit.
 

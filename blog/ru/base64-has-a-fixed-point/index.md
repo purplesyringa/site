@@ -1,6 +1,7 @@
 ---
 title: У base64 есть неподвижная точка
 time: August 3, 2024
+discussion: https://t.me/alisa_rummages/146
 intro: |
     ```shell
     $ </dev/urandom base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 \

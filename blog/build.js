@@ -112,6 +112,19 @@ html = html.replace(/{{ path }}/g, escapeHTML(relPath));
 html = html.replace(/{{ description }}/g, stripHtml(md.render(parsedYamlHeader.intro || "")).result);
 html = html.replace(/{{ time }}/g, escapeHTML(parsedYamlHeader.time));
 html = html.replace(/{{ locale }}/g, locale);
+if (parsedYamlHeader.discussion) {
+	const discussionSpace = (
+		parsedYamlHeader.discussion.startsWith("https://codeforces.com") ? "Codeforces" :
+			parsedYamlHeader.discussion.startsWith("https://www.reddit.com") ? "Reddit" :
+				parsedYamlHeader.discussion.startsWith("https://t.me") ? "Telegram" :
+					"???"
+	);
+	html = html.replace(/{{ discussion }}/g, escapeHTML(parsedYamlHeader.discussion));
+	html = html.replace(/{{ discussion_space }}/g, discussionSpace);
+	html = html.replace(/{% (end)?if discussion %}/g, "");
+} else {
+	html = html.replace(/{% if discussion %}.*?{% endif discussion %}/g, "");
+}
 html = html.replace(
 	/{{ body }}/g,
 	md.render(markdown)

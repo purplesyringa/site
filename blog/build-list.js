@@ -40,6 +40,12 @@ const addFromDir = dir => {
 		posts.push({
 			path: `${dir}/${name}`,
 			parsedDate: new Date(parsedYamlHeader.time + " UTC"),
+			discussionSpace: parsedYamlHeader.discussion && (
+				parsedYamlHeader.discussion.startsWith("https://codeforces.com") ? "Codeforces" :
+					parsedYamlHeader.discussion.startsWith("https://www.reddit.com") ? "Reddit" :
+						parsedYamlHeader.discussion.startsWith("https://t.me") ? "Telegram" :
+							"???"
+			),
 			...parsedYamlHeader
 		});
 	}
@@ -55,6 +61,7 @@ let content = posts.map(post => {
 		<div class="post-entry">
 			<h2><a href="${escapeHTML(post.path)}/">${escapeHTML(post.title)}</a></h2>
 			<time>${escapeHTML(post.time)}</time>
+			${post.discussion ? `<a class="discussion" href="${escapeHTML(post.discussion)}"><i class="nf nf-md-comment" title="Comment"></i> Discuss on ${post.discussionSpace}</a>` : ""}
 			${md.render(post.intro || "")}
 			<p>
 				<a href="${escapeHTML(post.path)}/">Keep reading</a>
@@ -89,7 +96,7 @@ fs.writeFileSync("feed.rss", `<?xml version="1.0" encoding="UTF-8" ?>
 				<link>${escapeHTML(`https://purplesyringa.moe/blog/${post.path}/`)}</link>
 				<description>${stripHtml(md.render(post.intro || "")).result}</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				${"" /* <comments>URL to hackernews</comments> */}
+				${post.discussion ? `<comments>${escapeHTML(post.discussion)}</comments>` : ""}
 				<guid>${escapeHTML(`https://purplesyringa.moe/blog/${post.path}/`)}</guid>
 				<pubDate>${post.parsedDate.toUTCString()}</pubDate>
 			</item>

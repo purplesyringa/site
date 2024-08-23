@@ -8,6 +8,7 @@
 		<link rel="stylesheet" type="text/css" href="{{ root }}/blog.css">
 		<link rel="stylesheet" type="text/css" href="{{ root }}/vendor/Temml-Local.css">
 		<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&family=Slabo+27px&display=swap" crossorigin="anonymous">
+		<link rel="stylesheet" type="text/css" href="{{ root }}/fonts/webfont.css">
 		<link rel="stylesheet" type="text/css" href="{{ root }}/vendor/atom-one-dark.min.css" media="screen and (prefers-color-scheme: dark">
 		<link rel="stylesheet" type="text/css" href="{{ root }}/vendor/atelier-cave-light.min.css" media="screen and (prefers-color-scheme: light">
 		<link rel="alternate" type="application/rss+xml" href="{{ root }}/blog/feed.rss" title="Blog posts">
@@ -40,6 +41,7 @@
 			<div class="viewport-container">
 				<h2>{{ title }}</h2>
 				<time>{{ time }}</time>
+				{% if discussion %}<a class="discussion" href="{{ discussion }}"><i class="nf nf-md-comment" title="Comment"></i> Discuss on {{ discussion_space }}</a>{% endif discussion %}
 
 				{{ body }}
 			</div>

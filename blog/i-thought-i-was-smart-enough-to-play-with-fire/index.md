@@ -1,6 +1,7 @@
 ---
 title: I thought I was smart enough to play with fire
 time: June 20, 2024
+discussion: https://codeforces.com/blog/entry/130661
 intro: |
     [blazingio](https://codeforces.com/blog/entry/126390) cuts corners by design. It keeps the constant factor small and uses long forgotten algorithms people used before processors supported SIMD and integer division. But another limitation made this task much harder.
 

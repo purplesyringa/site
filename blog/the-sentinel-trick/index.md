@@ -1,6 +1,7 @@
 ---
 title: The sentinel trick
 time: August 13, 2024
+discussion: https://t.me/alisa_rummages/148
 intro: |
     The sentinel trick underlies a data structure with the following requirements:
 
