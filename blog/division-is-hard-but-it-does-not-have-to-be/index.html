@@ -1,0 +1,127 @@
+<!doctypehtml><html prefix="og: http://ogp.me/ns#"lang=en_US><meta charset=utf-8><meta content=width=device-width,initial-scale=1 name=viewport><title>Division is hard, but it does not have to be | purplesyringa's blog</title><link href=../../all.css rel=stylesheet><link href=../../blog.css rel=stylesheet><link href=../../vendor/Temml-Local.css rel=stylesheet><link crossorigin href=https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&family=Slabo+27px&display=swap rel=stylesheet><link href=../../fonts/webfont.css rel=stylesheet><link media="screen and (prefers-color-scheme: dark"href=../../vendor/atom-one-dark.min.css rel=stylesheet><link media="screen and (prefers-color-scheme: light"href=../../vendor/atelier-cave-light.min.css rel=stylesheet><link title="Blog posts"href=../../blog/feed.rss rel=alternate type=application/rss+xml><meta content="Division is hard, but it does not have to be"property=og:title><meta content=article property=og:type><meta content=https://purplesyringa.moe/blog/division-is-hard/og.png property=og:image><meta content=https://purplesyringa.moe/blog/division-is-hard/ property=og:url><meta content=dasdasdas. property=og:description><meta content=en_US property=og:locale><meta content="purplesyringa's blog"property=og:site_name><meta content=summary_large_image name=twitter:card><meta content=https://purplesyringa.moe/blog/division-is-hard/og.png name=twitter:image><script data-website-id=0da1961d-43f2-45cc-a8e2-75679eefbb69 defer src=https://zond.tei.su/script.js></script><body><header><div class=viewport-container><div class=media><a href=https://github.com/purplesyringa><img src=../../images/github-mark-white.svg></a></div><h1><a href=/>purplesyringa</a></h1><nav><a href=../..>about</a><a class=current href=../../blog/>blog</a><a href=../../sink/>kitchen sink</a></nav></div></header><section><div class=viewport-container><h2>Division is hard, but it does not have to be</h2><time>August 24, 2024</time><p>Developers don’t usually divide numbers all the time, but hashmaps often need to compute <a href=https://en.wikipedia.org/wiki/Remainder>remainders</a> modulo a prime. Hashmaps are really common, so fast division is useful.<p>For instance, rolling hashes often need to compute <code>u128 % u64</code> for a fixed divisor. Compilers just drop the ball here:<pre><code class=language-rust><span class=hljs-keyword>fn</span> <span class="hljs-title function_">modulo</span>(n: <span class=hljs-type>u128</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>u64</span> {
+    (n % <span class=hljs-number>0xffffffffffffffc5</span>) <span class=hljs-keyword>as</span> <span class=hljs-type>u64</span>
+}
+</code></pre><pre><code class=language-x86asm><span class=hljs-symbol>modulo:</span>
+    <span class=hljs-keyword>push</span>    <span class=hljs-built_in>rax</span>
+    <span class=hljs-keyword>mov</span>     <span class=hljs-built_in>rdx</span>, -<span class=hljs-number>59</span>
+    <span class=hljs-keyword>xor</span>     <span class=hljs-built_in>ecx</span>, <span class=hljs-built_in>ecx</span>
+    <span class=hljs-keyword>call</span>    <span class=hljs-built_in>qword</span> <span class=hljs-built_in>ptr</span> [<span class=hljs-built_in>rip</span> + __umodti3@GOTPCREL]
+    <span class=hljs-keyword>pop</span>     <span class=hljs-built_in>rcx</span>
+    <span class=hljs-keyword>ret</span>
+</code></pre><p><code>__umodti3</code> is a generic long division implementation, and it’s slow and ugly.<p>I prefer my code the opposite of slow and ugly.<p class=next-group><span class=side-header><span>And I know math</span></span><code>0xffffffffffffffc5</code> is <eq><math><mrow><msup><mn>2</mn><mn>64</mn></msup><mo>−</mo></mrow><mrow><mn>59</mn></mrow></math></eq>; in fact it’s the largest prime below <eq><math><msup><mn>2</mn><mn>64</mn></msup></math></eq>, but what I really care about is that it’s oh so close to <eq><math><msup><mn>2</mn><mn>64</mn></msup></math></eq>.<p>So I’m going to use a trick. I’ll subtract a multiple of <eq><math><mrow><msup><mn>2</mn><mn>64</mn></msup><mo>−</mo></mrow><mrow><mn>59</mn></mrow></math></eq> from <code>n</code>, which won’t affect the reminder. Namely, I wish to transform <eq><math><mi>n</mi></math></eq> to <eq><math><mrow><mi>n</mi><mo>−</mo></mrow><mrow><mrow><mo fence=true form=prefix>⌊</mo><mfrac><mi>n</mi><msup><mn>2</mn><mn>64</mn></msup></mfrac><mo fence=true form=postfix>⌋</mo></mrow><mo>⋅</mo></mrow><mrow><mo form=prefix stretchy=false>(</mo><msup><mn>2</mn><mn>64</mn></msup><mo>−</mo><mn>59</mn><mo form=postfix stretchy=false>)</mo></mrow></math></eq>, which can be simplified to <eq><math><mrow><mi>n</mi><mo lspace=0.2222em rspace=0.2222em>mod</mo></mrow><mrow><msup><mn>2</mn><mn>64</mn></msup><mo>+</mo></mrow><mrow><mrow><mo fence=true form=prefix>⌊</mo><mfrac><mi>n</mi><msup><mn>2</mn><mn>64</mn></msup></mfrac><mo fence=true form=postfix>⌋</mo></mrow><mo>⋅</mo></mrow><mrow><mn>59</mn></mrow></math></eq>.<pre><code class=language-rust><span class=hljs-keyword>fn</span> <span class="hljs-title function_">modulo</span>(<span class=hljs-keyword>mut</span> n: <span class=hljs-type>u128</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>u64</span> {
+    n = n % (<span class=hljs-number>1</span> << <span class=hljs-number>64</span>) + (n >> <span class=hljs-number>64</span>) * <span class=hljs-number>59</span>;
+    (n % <span class=hljs-number>0xffffffffffffffc5</span>) <span class=hljs-keyword>as</span> <span class=hljs-type>u64</span>
+}
+</code></pre><p>Computers divide by <eq><math><msup><mn>2</mn><mn>64</mn></msup></math></eq> all the time; this operation is almost free. So at the cost of a single multiplication by <eq><math><mn>59</mn></math></eq>, <eq><math><mi>n</mi></math></eq> up to <eq><math><mrow><msup><mn>2</mn><mn>128</mn></msup><mo>−</mo></mrow><mrow><mn>1</mn></mrow></math></eq> is transformed to an equivalent <eq><math><mi>n</mi></math></eq> up to <eq><math><mrow><mo form=prefix stretchy=false>(</mo><msup><mn>2</mn><mn>64</mn></msup><mo>−</mo><mn>1</mn><mo form=postfix stretchy=false>)</mo><mo>⋅</mo></mrow><mrow><mn>60</mn></mrow></math></eq>.<p>Then I apply the same operation twice, further reducing to <eq><math><mi>n</mi></math></eq> up to <eq><math><mrow><msup><mn>2</mn><mn>64</mn></msup><mo>+</mo></mrow><mrow><msup><mn>59</mn><mn>2</mn></msup><mo>−</mo></mrow><mrow><mn>1</mn></mrow></math></eq>. <em>This</em> remainder can be computed with a single <code>if</code>.<pre><code class=language-rust><span class=hljs-keyword>fn</span> <span class="hljs-title function_">modulo</span>(<span class=hljs-keyword>mut</span> n: <span class=hljs-type>u128</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>u64</span> {
+    n = n % (<span class=hljs-number>1</span> << <span class=hljs-number>64</span>) + (n >> <span class=hljs-number>64</span>) * <span class=hljs-number>59</span>;
+    n = n % (<span class=hljs-number>1</span> << <span class=hljs-number>64</span>) + (n >> <span class=hljs-number>64</span>) * <span class=hljs-number>59</span>;
+    <span class=hljs-keyword>if</span> n >= <span class=hljs-number>0xffffffffffffffc5</span> {
+        n -= <span class=hljs-number>0xffffffffffffffc5</span>;
+    }
+    n <span class=hljs-keyword>as</span> <span class=hljs-type>u64</span>
+}
+</code></pre><pre><code class=language-x86asm><span class=hljs-symbol>modulo:</span>
+    <span class=hljs-keyword>mov</span>     <span class=hljs-built_in>rax</span>, <span class=hljs-built_in>rsi</span>
+    <span class=hljs-keyword>mov</span>     <span class=hljs-built_in>esi</span>, <span class=hljs-number>59</span>
+    <span class=hljs-keyword>mul</span>     <span class=hljs-built_in>rsi</span>
+    <span class=hljs-keyword>mov</span>     <span class=hljs-built_in>rcx</span>, <span class=hljs-built_in>rax</span>
+    <span class=hljs-keyword>add</span>     <span class=hljs-built_in>rcx</span>, <span class=hljs-built_in>rdi</span>
+    <span class=hljs-keyword>adc</span>     <span class=hljs-built_in>rdx</span>, <span class=hljs-number>0</span>
+    <span class=hljs-keyword>mov</span>     <span class=hljs-built_in>rax</span>, <span class=hljs-built_in>rdx</span>
+    <span class=hljs-keyword>mul</span>     <span class=hljs-built_in>rsi</span>
+    <span class=hljs-keyword>add</span>     <span class=hljs-built_in>rax</span>, <span class=hljs-built_in>rcx</span>
+    <span class=hljs-keyword>adc</span>     <span class=hljs-built_in>rdx</span>, <span class=hljs-number>0</span>
+    <span class=hljs-keyword>xor</span>     <span class=hljs-built_in>ecx</span>, <span class=hljs-built_in>ecx</span>
+    <span class=hljs-keyword>mov</span>     <span class=hljs-built_in>rsi</span>, -<span class=hljs-number>60</span>
+    <span class=hljs-keyword>cmp</span>     <span class=hljs-built_in>rsi</span>, <span class=hljs-built_in>rax</span>
+    <span class=hljs-keyword>sbb</span>     <span class=hljs-built_in>rcx</span>, <span class=hljs-built_in>rdx</span>
+    <span class=hljs-keyword>lea</span>     <span class=hljs-built_in>rcx</span>, [<span class=hljs-built_in>rax</span> + <span class=hljs-number>59</span>]
+    <span class=hljs-keyword>cmovb</span>   <span class=hljs-built_in>rax</span>, <span class=hljs-built_in>rcx</span>
+    <span class=hljs-keyword>ret</span>
+</code></pre><hr><p>Oh, and it’s not like hard-coding <eq><math><mrow><msup><mn>2</mn><mn>64</mn></msup><mo>−</mo></mrow><mrow><mn>59</mn></mrow></math></eq> was necessary. Two iterations suffice for any divisor <eq><math><mrow><mo>≥</mo></mrow><mrow><msup><mn>2</mn><mn>64</mn></msup><mo>−</mo></mrow><mrow><msup><mn>2</mn><mn>32</mn></msup><mo>+</mo></mrow><mrow><mn>1</mn></mrow></math></eq>. Need more primes? Choose away, there’s a lot of them in the <eq><math><msup><mn>2</mn><mn>32</mn></msup></math></eq>-long region.<p>And this method works for division too, not just modulo:<pre><code class=language-rust><span class=hljs-keyword>fn</span> <span class="hljs-title function_">divide</span>(<span class=hljs-keyword>mut</span> n: <span class=hljs-type>u128</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>u128</span> {
+    <span class=hljs-keyword>let</span> <span class=hljs-keyword>mut </span><span class=hljs-variable>quotient</span> = n >> <span class=hljs-number>64</span>;
+    n = n % (<span class=hljs-number>1</span> << <span class=hljs-number>64</span>) + (n >> <span class=hljs-number>64</span>) * <span class=hljs-number>59</span>;
+    quotient += n >> <span class=hljs-number>64</span>;
+    n = n % (<span class=hljs-number>1</span> << <span class=hljs-number>64</span>) + (n >> <span class=hljs-number>64</span>) * <span class=hljs-number>59</span>;
+    <span class=hljs-keyword>if</span> n >= <span class=hljs-number>0xffffffffffffffc5</span> {
+        quotient += <span class=hljs-number>1</span>;
+    }
+    quotient
+}
+</code></pre><p class=next-group><span class=side-header><span>It gets better</span></span>What if you <em>don’t</em> need a large prime? What if you just need something large that isn’t a power of two? Say, <eq><math><mrow><msup><mn>2</mn><mn>64</mn></msup><mo>−</mo></mrow><mrow><mn>1</mn></mrow></math></eq>? Let’s start anew:<pre><code class=language-rust><span class=hljs-keyword>fn</span> <span class="hljs-title function_">modulo</span>(<span class=hljs-keyword>mut</span> n: <span class=hljs-type>u128</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>u64</span> {
+    n = n % (<span class=hljs-number>1</span> << <span class=hljs-number>64</span>) + (n >> <span class=hljs-number>64</span>) * <span class=hljs-number>1</span>;
+    (n % <span class=hljs-type>u64</span>::MAX <span class=hljs-keyword>as</span> <span class=hljs-type>u128</span>) <span class=hljs-keyword>as</span> <span class=hljs-type>u64</span>
+}
+</code></pre><p>The first line now just sums two halves of the number! It’s not really hard to get optimal code starting from here; in fact, even the compiler realizes this immediately:<pre><code class=language-rust><span class=hljs-keyword>fn</span> <span class="hljs-title function_">modulo</span>(n: <span class=hljs-type>u128</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>u64</span> {
+    (n % <span class=hljs-type>u64</span>::MAX <span class=hljs-keyword>as</span> <span class=hljs-type>u128</span>) <span class=hljs-keyword>as</span> <span class=hljs-type>u64</span>
+}
+</code></pre><pre><code class=language-x86asm><span class=hljs-symbol>modulo:</span>
+    <span class=hljs-keyword>add</span>     <span class=hljs-built_in>rdi</span>, <span class=hljs-built_in>rsi</span>
+    <span class=hljs-keyword>adc</span>     <span class=hljs-built_in>rdi</span>, <span class=hljs-number>0</span>
+    <span class=hljs-keyword>xor</span>     <span class=hljs-built_in>eax</span>, <span class=hljs-built_in>eax</span>
+    <span class=hljs-keyword>cmp</span>     <span class=hljs-built_in>rdi</span>, -<span class=hljs-number>1</span>
+    <span class=hljs-keyword>cmovne</span>  <span class=hljs-built_in>rax</span>, <span class=hljs-built_in>rdi</span>
+    <span class=hljs-keyword>ret</span>
+</code></pre><p class=next-group><span class=side-header><span>This isn’t all</span></span>Rolling hashes in particular don’t need <em>the</em> remainder. They need <em>a</em> representation of a number. It’s not like it matters if a number divisible by <eq><math><mrow><msup><mn>2</mn><mn>64</mn></msup><mo>−</mo></mrow><mrow><mn>59</mn></mrow></math></eq> is represented by <eq><math><mn>0</mn></math></eq> or <eq><math><mrow><msup><mn>2</mn><mn>64</mn></msup><mo>−</mo></mrow><mrow><mn>59</mn></mrow></math></eq> during computation of the hash, as long as it’s all mapped to <eq><math><mn>0</mn></math></eq> at the very end of the computation.<p>So we can modify the code <em>just so</em>:<pre><code class=language-rust><span class=hljs-keyword>fn</span> <span class="hljs-title function_">reduce</span>(<span class=hljs-keyword>mut</span> n: <span class=hljs-type>u128</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>u64</span> {
+    n = n % (<span class=hljs-number>1</span> << <span class=hljs-number>64</span>) + (n >> <span class=hljs-number>64</span>) * <span class=hljs-number>59</span>;
+    n = n % (<span class=hljs-number>1</span> << <span class=hljs-number>64</span>) + (n >> <span class=hljs-number>64</span>) * <span class=hljs-number>59</span>;
+    <span class=hljs-keyword>if</span> n >= <span class=hljs-number>0x10000000000000000</span> <span class=hljs-comment>/* n >= 0xffffffffffffffc5 */</span> {
+        n -= <span class=hljs-number>0xffffffffffffffc5</span>;
+    }
+    n <span class=hljs-keyword>as</span> <span class=hljs-type>u64</span>
+}
+</code></pre><p>…which reduces the assembly a bit. The effect is most prominent with <eq><math><mrow><msup><mn>2</mn><mn>64</mn></msup><mo>−</mo></mrow><mrow><mn>1</mn></mrow></math></eq>:<pre><code class=language-rust><span class=hljs-keyword>fn</span> <span class="hljs-title function_">reduce</span>(<span class=hljs-keyword>mut</span> n: <span class=hljs-type>u128</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>u64</span> {
+    n = n % (<span class=hljs-number>1</span> << <span class=hljs-number>64</span>) + (n >> <span class=hljs-number>64</span>);
+    <span class=hljs-keyword>if</span> n >= <span class=hljs-number>1</span> << <span class=hljs-number>64</span> {
+        <span class=hljs-comment>// Actually n - ((1 << 64) - 1), but that's not optimized well enough.</span>
+        (n + <span class=hljs-number>1</span>) <span class=hljs-keyword>as</span> <span class=hljs-type>u64</span>
+    } <span class=hljs-keyword>else</span> {
+        n <span class=hljs-keyword>as</span> <span class=hljs-type>u64</span>
+    }
+}
+</code></pre><pre><code class=language-x86asm><span class=hljs-symbol>reduce:</span>
+    <span class=hljs-keyword>mov</span>     <span class=hljs-built_in>rax</span>, <span class=hljs-built_in>rdi</span>
+    <span class=hljs-keyword>add</span>     <span class=hljs-built_in>rax</span>, <span class=hljs-built_in>rsi</span>
+    <span class=hljs-keyword>adc</span>     <span class=hljs-built_in>rax</span>, <span class=hljs-number>0</span>
+    <span class=hljs-keyword>ret</span>
+</code></pre><p class=next-group><span class=side-header><span>Benchmarks</span></span>I’m going to compare these implementations:<pre><code class=language-rust><span class=hljs-keyword>fn</span> <span class="hljs-title function_">modulo_naive</span>(n: <span class=hljs-type>u128</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>u64</span> {
+    (n % <span class=hljs-number>0xffffffffffffffc5</span>) <span class=hljs-keyword>as</span> <span class=hljs-type>u64</span>
+}
+
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">modulo_optimized</span>(<span class=hljs-keyword>mut</span> n: <span class=hljs-type>u128</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>u64</span> {
+    n = n % (<span class=hljs-number>1</span> << <span class=hljs-number>64</span>) + (n >> <span class=hljs-number>64</span>) * <span class=hljs-number>59</span>;
+    n = n % (<span class=hljs-number>1</span> << <span class=hljs-number>64</span>) + (n >> <span class=hljs-number>64</span>) * <span class=hljs-number>59</span>;
+    <span class=hljs-keyword>if</span> n >= <span class=hljs-number>0xffffffffffffffc5</span> {
+        n -= <span class=hljs-number>0xffffffffffffffc5</span>;
+    }
+    n <span class=hljs-keyword>as</span> <span class=hljs-type>u64</span>
+}
+
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">reduce</span>(<span class=hljs-keyword>mut</span> n: <span class=hljs-type>u128</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>u64</span> {
+    n = n % (<span class=hljs-number>1</span> << <span class=hljs-number>64</span>) + (n >> <span class=hljs-number>64</span>) * <span class=hljs-number>59</span>;
+    n = n % (<span class=hljs-number>1</span> << <span class=hljs-number>64</span>) + (n >> <span class=hljs-number>64</span>) * <span class=hljs-number>59</span>;
+    <span class=hljs-keyword>if</span> n >= <span class=hljs-number>0x10000000000000000</span> {
+        n -= <span class=hljs-number>0xffffffffffffffc5</span>;
+    }
+    n <span class=hljs-keyword>as</span> <span class=hljs-type>u64</span>
+}
+
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">divide_naive</span>(n: <span class=hljs-type>u128</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>u128</span> {
+    n / <span class=hljs-number>0xffffffffffffffc5</span>
+}
+
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">divide_optimized</span>(<span class=hljs-keyword>mut</span> n: <span class=hljs-type>u128</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>u128</span> {
+    <span class=hljs-keyword>let</span> <span class=hljs-keyword>mut </span><span class=hljs-variable>quotient</span> = n >> <span class=hljs-number>64</span>;
+    n = n % (<span class=hljs-number>1</span> << <span class=hljs-number>64</span>) + (n >> <span class=hljs-number>64</span>) * <span class=hljs-number>59</span>;
+    quotient += n >> <span class=hljs-number>64</span>;
+    n = n % (<span class=hljs-number>1</span> << <span class=hljs-number>64</span>) + (n >> <span class=hljs-number>64</span>) * <span class=hljs-number>59</span>;
+    <span class=hljs-keyword>if</span> n >= <span class=hljs-number>0xffffffffffffffc5</span> {
+        quotient += <span class=hljs-number>1</span>;
+    }
+    quotient
+}
+</code></pre><div class=table-wrapper><table><thead><tr><th>Test<th>Time/iteration (ns)<th>Speedup<tbody><tr><td><code>modulo_naive</code><td>25.421<td>(base)<tr><td><code>modulo_optimized</code><td>2.6755<td>9.5x<tr><td><code>reduce</code><td>2.2016<td>11.5x<tr><td><code>divide_naive</code><td>25.366<td>(base)<tr><td><code>divide_optimized</code><td>2.8677<td>8.8x</table></div><p class=next-group><span class=side-header><span>So what?</span></span>In all honesty, this is not immediately useful when applied to rolling hashes. <code>reduce</code> is still a little slower than 1/2 of a <code>u64 % u32</code> modulo, so if computing the hash modulo two 32-bit primes rather than one 64-bit prime suffices for you, do that. Still, if you need the best guaranteed collision rate as fast as possible, this is the way.<p>It’s a free optimization for compilers to perform too. It’s quite possible that I’m not just unfamiliar with practical applications. Also, hey, it’s one more trick you might be able to apply elsewhere now that you’ve seen it.</div></section><footer><div class=viewport-container><h2>Made with my own bare hands (why.)</h2></div></footer><script>window.addEventListener("keydown", e => {
+				if (e.ctrlKey && e.key === "Enter") {
+					window.open("https://github.com/purplesyringa/site/edit/master/blog/division-is-hard/index.md", "_blank");
+				}
+			});</script>
