@@ -256,7 +256,7 @@ The original approach thus morphed into:
 - Use `memchr2` to find the first `\` or `"`, and after that
 - Use hand-written SIMD to ensure there are no control characters.
 
-We would need to reinvent the bicycle, but this is quite neat if you think about it. In the success path, we *find positions* of `\` and `"`, but we only *check the absence* of control codes. So we can avoid a conditional branch in the hot loop, by replacing this:
+We would need to reinvent the wheel, but this is quite neat if you think about it. In the success path, we *find positions* of `\` and `"`, but we only *check the absence* of control codes. So we can avoid a conditional branch in the hot loop, by replacing this:
 
 ```python
 for simd_word in to_simd_words(data):
