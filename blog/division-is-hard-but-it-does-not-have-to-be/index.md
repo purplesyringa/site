@@ -253,4 +253,4 @@ I'm also going to compare to the [`strength_reduce` crate](https://lib.rs/streng
 
 In all honesty, this is not immediately useful when applied to rolling hashes. `reduce` is still a little slower than two `u64 % u32` computations, so if calculating the hash modulo two 32-bit primes rather than one 64-bit prime suffices for you, do that. Still, if you need the best guaranteed collision rate as fast as possible, this is the way.
 
-It's a free optimization for compilers to perform too. It's quite possible that I'm not just unfamiliar with practical applications. Also, hey, it's one more trick you might be able to apply elsewhere now that you've seen it.
+It's a free (if conditional) optimization for compilers to perform too. It's quite possible that I'm not just unfamiliar with practical applications. Also, hey, it's one more trick you might be able to apply elsewhere now that you've seen it.
