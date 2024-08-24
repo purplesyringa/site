@@ -83,6 +83,8 @@ modulo:
 
 Oh, and it's not like hard-coding $2^{64} - 59$ was necessary. Two iterations suffice for any divisor $\ge 2^{64} - 2^{32} + 1$. Need more primes? Choose away, there's a lot of them in the $2^{32}$-long region.
 
+Need a smaller divisor? Three iterations work for $n \ge 2^{64} - 6981461082631$ (42.667 bits compared to 32 for two iterations), four for $n \ge 2^{64} - 281472113362716$ (48 bits). Sounds like a lot? That's still better than `__umodti3`.
+
 And this method works for division too, not just modulo:
 
 ```rust
