@@ -105,7 +105,7 @@ modulo:
 
 Oh, and it's not like hard-coding $2^{64} - 59$ was necessary. Two iterations suffice for any divisor $\ge 2^{64} - 2^{32} + 1$. Need more primes? Choose away, there's a lot of them in the $2^{32}$-long region.
 
-Need a smaller divisor? Three iterations work for $n \ge 2^{64} - 6981461082631$ (42.667 bits compared to 32 for two iterations), four for $n \ge 2^{64} - 281472113362716$ (48 bits). Sounds like a lot? That's still better than `__umodti3`.
+Need a smaller divisor? Three iterations work for $n \ge 2^{64} - 6981461082631$ (42.667 bits compared to 32 for two iterations), four for $n \ge 2^{64} - 281472113362716$ (48 bits). Sounds like a lot? That's still better than `__umodti3`. Sure, it's not universal, but still covers important usecases.
 
 And this method works for division too, not just modulo:
 
@@ -236,14 +236,17 @@ fn divide_optimized(mut n: u128) -> u128 {
 }
 ```
 
+I'm also going to compare to the [`strength_reduce` crate](https://lib.rs/strength_reduce/) to simulate the same optimizations that compilers perform with `u64 % u32`. I'm compiling with `-C target-cpu=native`.
+
 |Test                    |Time/iteration (ns)|Speedup                  |
 |------------------------|-------------------|-------------------------|
-|`modulo_naive`          |25.421             |(base)                   |
-|`modulo_optimized`      |2.6755             |9.5x                     |
-|`reduce`                |2.2016             |11.5x                    |
-|`divide_naive`          |25.366             |(base)                   |
-|`divide_optimized`      |2.8677             |8.8x                     |
-
+|`modulo_naive`          |25.440             |(base)                   |
+|`modulo_strength_reduce`|4.9672             |5.1x                     |
+|`modulo_optimized`      |2.5847             |9.8x                     |
+|`reduce`                |2.1746             |11.7x                    |
+|`divide_naive`          |25.460             |(base)                   |
+|`divide_strength_reduce`|5.4451             |4.7x                     |
+|`divide_optimized`      |2.7730             |9.2x                     |
 
 
 ### So what?
