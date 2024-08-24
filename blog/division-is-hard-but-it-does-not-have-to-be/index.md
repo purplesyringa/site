@@ -7,7 +7,7 @@ intro: |
 
 Developers don't usually divide numbers all the time, but hashmaps often need to compute [remainders](https://en.wikipedia.org/wiki/Remainder) modulo a prime. Hashmaps are really common, so fast division is useful.
 
-For instance, rolling hashes often need to compute `u128 % u64` for a fixed divisor. Compilers just drop the ball here:
+For instance, rolling hashes might compute `u128 % u64` with a fixed divisor. Compilers just drop the ball here:
 
 ```rust
 fn modulo(n: u128) -> u64 {
