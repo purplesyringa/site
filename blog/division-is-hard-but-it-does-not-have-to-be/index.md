@@ -2,7 +2,29 @@
 title: Division is hard, but it doesn't have to be
 time: August 24, 2024
 intro: |
-    dasdasdas.
+    Developers don't usually divide numbers all the time, but hashmaps often need to compute [remainders](https://en.wikipedia.org/wiki/Remainder) modulo a prime. Hashmaps are really common, so fast division is useful.
+
+    For instance, rolling hashes might compute `u128 % u64` with a fixed divisor. Compilers just drop the ball here:
+
+    ```rust
+    fn modulo(n: u128) -> u64 {
+        (n % 0xffffffffffffffc5) as u64
+    }
+    ```
+
+    ```x86asm
+    modulo:
+        push    rax
+        mov     rdx, -59
+        xor     ecx, ecx
+        call    qword ptr [rip + __umodti3@GOTPCREL]
+        pop     rcx
+        ret
+    ```
+
+    `__umodti3` is a generic long division implementation, and it's slow and ugly.
+
+    I prefer my code the opposite of slow and ugly.
 ---
 
 Developers don't usually divide numbers all the time, but hashmaps often need to compute [remainders](https://en.wikipedia.org/wiki/Remainder) modulo a prime. Hashmaps are really common, so fast division is useful.
