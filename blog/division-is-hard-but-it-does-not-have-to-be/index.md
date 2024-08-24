@@ -1,5 +1,5 @@
 ---
-title: Division is hard, but it does not have to be
+title: Division is hard, but it doesn't have to be
 time: August 24, 2024
 intro: |
     dasdasdas.
