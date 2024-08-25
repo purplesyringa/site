@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Sat, 24 Aug 2024 10:34:36 GMT</lastBuildDate>
+		<lastBuildDate>Sun, 25 Aug 2024 08:33:35 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -32,7 +32,7 @@ ret
 __umodti3 is a generic long division implementation, and it’s slow and ugly.
 I prefer my code the opposite of slow and ugly.</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				
+				<comments>https://www.reddit.com/r/programming/comments/1f0n8sk/division_is_hard_but_it_doesnt_have_to_be/</comments>
 				<guid>https://purplesyringa.moe/blog/./division-is-hard-but-it-does-not-have-to-be/</guid>
 				<pubDate>Sat, 24 Aug 2024 00:00:00 GMT</pubDate>
 			</item>

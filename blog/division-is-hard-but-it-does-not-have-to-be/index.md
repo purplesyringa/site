@@ -1,6 +1,7 @@
 ---
 title: Division is hard, but it doesn't have to be
 time: August 24, 2024
+discussion: https://www.reddit.com/r/programming/comments/1f0n8sk/division_is_hard_but_it_doesnt_have_to_be/
 intro: |
     Developers don't usually divide numbers all the time, but hashmaps often need to compute [remainders](https://en.wikipedia.org/wiki/Remainder) modulo a prime. Hashmaps are really common, so fast division is useful.
 
