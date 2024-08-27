@@ -47,7 +47,7 @@ pre {
 	font-size: 0.85rem;
 	padding: 0.75rem;
 	overflow: auto;
-	background-color: #00000010;
+	background-color: #00000008;
 }
 pre code {
 	font-family: 'Roboto Mono', monospace;
@@ -133,7 +133,7 @@ aside {
 	margin-top: -0.5rem;
 	width: 15rem;
 	padding: 0.5rem;
-	background-color: #f2befa;
+	background-color: #fce5ff;
 	z-index: 1;
 }
 aside > :first-child {
@@ -145,6 +145,12 @@ aside > :last-child {
 
 .only-dark {
 	display: none;
+}
+
+@media all and (prefers-color-scheme: light) {
+	.hljs-section, .hljs-title {
+		color: #00779f !important; /* Contrast */
+	}
 }
 
 @media all and (prefers-color-scheme: dark) {
