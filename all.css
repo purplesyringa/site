@@ -122,12 +122,12 @@ li {
 @media all and (prefers-color-scheme: dark) {
 	html {
 		scrollbar-color: #d0438f #f765b420;
+		background-color: #160117;
 	}
 	header, footer {
 		background-color: #9c2254;
 	}
 	section {
-		background-color: #160117;
 		color: #fee8ff;
 	}
 	h2, .side-header {
