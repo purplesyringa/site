@@ -6,7 +6,7 @@ Vm0wd2QyUXlVWGxWV0d4V1YwZDRWMVl3WkRSV01WbDNXa1JTVjAxV2JETlhhMUpUVmpBeFYySkVU
 $ base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 \
 | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 \
 | base64 | head -1
-Vm0wd2QyUXlVWGxWV0d4V1YwZDRWMVl3WkRSV01WbDNXa1JTVjAxV2JETlhhMUpUVmpBeFYySkVU"property=og:description><meta content=ru_RU property=og:locale><meta content="purplesyringa's blog"property=og:site_name><meta content=summary_large_image name=twitter:card><meta content=https://purplesyringa.moe/blog/ru/base64-has-a-fixed-point/og.png name=twitter:image><script data-website-id=0da1961d-43f2-45cc-a8e2-75679eefbb69 defer src=https://zond.tei.su/script.js></script><body><header><div class=viewport-container><div class=media><a href=https://github.com/purplesyringa><img src=../../../images/github-mark-white.svg></a></div><h1><a href=/>purplesyringa</a></h1><nav><a href=../../..>about</a><a class=current href=../../../blog/>blog</a><a href=../../../sink/>kitchen sink</a></nav></div></header><section><div class=viewport-container><h2>У base64 есть неподвижная точка</h2><time>August 3, 2024</time><a class=discussion href=https://t.me/alisa_rummages/146><i class="nf nf-md-comment"title=Comment></i> Discuss on Telegram</a><p><em>Пост написан по мотивам <a href=https://www.reddit.com/r/compsci/comments/18234a/the_base64_encoder_has_a_fixed_point/>давнего треда на Reddit</a>.</em><pre><code class=language-shell><span class="hljs-meta prompt_">$ </span><span class=language-bash>&LT/dev/urandom <span class=hljs-built_in>base64</span> | <span class=hljs-built_in>base64</span> | <span class=hljs-built_in>base64</span> | <span class=hljs-built_in>base64</span> | <span class=hljs-built_in>base64</span> | <span class=hljs-built_in>base64</span> | <span class=hljs-built_in>base64</span> | <span class=hljs-built_in>base64</span> | <span class=hljs-built_in>base64</span> \
+Vm0wd2QyUXlVWGxWV0d4V1YwZDRWMVl3WkRSV01WbDNXa1JTVjAxV2JETlhhMUpUVmpBeFYySkVU"property=og:description><meta content=ru_RU property=og:locale><meta content="purplesyringa's blog"property=og:site_name><meta content=summary_large_image name=twitter:card><meta content=https://purplesyringa.moe/blog/ru/base64-has-a-fixed-point/og.png name=twitter:image><script data-website-id=0da1961d-43f2-45cc-a8e2-75679eefbb69 defer src=https://zond.tei.su/script.js></script><body><header><div class=viewport-container><div class=media><a href=https://github.com/purplesyringa><img alt=GitHub src=../../../images/github-mark-white.svg></a></div><h1><a href=/>purplesyringa</a></h1><nav><a href=../../..>about</a><a class=current href=../../../blog/>blog</a><a href=../../../sink/>kitchen sink</a></nav></div></header><section><div class=viewport-container><h2>У base64 есть неподвижная точка</h2><time>August 3, 2024</time><a class=discussion href=https://t.me/alisa_rummages/146><i class="nf nf-md-comment"title=Comment></i> Discuss on Telegram</a><p><em>Пост написан по мотивам <a href=https://www.reddit.com/r/compsci/comments/18234a/the_base64_encoder_has_a_fixed_point/>давнего треда на Reddit</a>.</em><pre><code class=language-shell><span class="hljs-meta prompt_">$ </span><span class=language-bash>&LT/dev/urandom <span class=hljs-built_in>base64</span> | <span class=hljs-built_in>base64</span> | <span class=hljs-built_in>base64</span> | <span class=hljs-built_in>base64</span> | <span class=hljs-built_in>base64</span> | <span class=hljs-built_in>base64</span> | <span class=hljs-built_in>base64</span> | <span class=hljs-built_in>base64</span> | <span class=hljs-built_in>base64</span> \
      | <span class=hljs-built_in>base64</span> | <span class=hljs-built_in>base64</span> | <span class=hljs-built_in>base64</span> | <span class=hljs-built_in>base64</span> | <span class=hljs-built_in>base64</span> | <span class=hljs-built_in>base64</span> | <span class=hljs-built_in>base64</span> | <span class=hljs-built_in>base64</span> | <span class=hljs-built_in>base64</span> | <span class=hljs-built_in>base64</span> \
      | <span class=hljs-built_in>base64</span> | <span class=hljs-built_in>head</span> -1</span>
 Vm0wd2QyUXlVWGxWV0d4V1YwZDRWMVl3WkRSV01WbDNXa1JTVjAxV2JETlhhMUpUVmpBeFYySkVU
@@ -50,7 +50,7 @@ bit_range_max = <span class=hljs-string>""</span>
         prefix += <span class=hljs-number>1</span>
     <span class=hljs-built_in>print</span>(<span class=hljs-string>"Common prefix:"</span>, bit_range_min[:prefix], <span class=hljs-string>"length"</span>, prefix)
     <span class=hljs-built_in>print</span>()
-</div><label for=expansible1></label></div></code></pre><pre><code class=language-text><div class=expansible-code><input id=expansible2 type=checkbox><div class=highlighted>Bits studied: 6
+</div><label for=expansible1>Expand</label></div></code></pre><pre><code class=language-text><div class=expansible-code><input id=expansible2 type=checkbox><div class=highlighted>Bits studied: 6
 Range: 00101011 ..= 01111010
 Common prefix: 0 length 1
 
@@ -81,7 +81,7 @@ Common prefix: 01010110011011010 length 17
 Bits studied: 48
 Range: 0101011001101101001100000010101100101011001010110010101100101011 ..= 0101011001101101001100010111101001100100011110100101011001110100
 Common prefix: 01010110011011010011000 length 23
-</div><label for=expansible2></label></div></code></pre><p>Итак, любая строка после восьмикратного применения к ней base64 будет начинаться с фиксированного префикса <code>01010110011011010011000</code> (<code>Vm?</code>, где <code>?</code> – <code>0</code> или <code>1</code>). Его длина достаточно большая для того, чтобы применить лемму о <eq><math><mrow><mi>n</mi><mo>≥</mo></mrow><mrow><mn>18</mn></mrow></math></eq> и сделать вывод, что каждый префикс <eq><math><mrow><mi>b</mi><mi>a</mi><mi>s</mi><mi>e</mi><msup><mn>64</mn><mi>n</mi></msup><mo form=prefix stretchy=false>(</mo><mi>s</mi><mo form=postfix stretchy=false>)</mo></mrow></math></eq> при достаточно большом <eq><math><mi>n</mi></math></eq> не зависит от <eq><math><mi>s</mi></math></eq>, причем длина этого префикса растет экспоненциально. Сильнее, чем так, сузиться сложно.<p class=next-group><span class=side-header><span>Пределы</span></span>Пусть от <eq><math><mi>s</mi></math></eq> префикс не зависит, но как он зависит от <eq><math><mi>n</mi></math></eq>? Вывод скрипта намекает, что есть некоторая одна длинная строка, к которой все стремится:<pre><code>0
+</div><label for=expansible2>Expand</label></div></code></pre><p>Итак, любая строка после восьмикратного применения к ней base64 будет начинаться с фиксированного префикса <code>01010110011011010011000</code> (<code>Vm?</code>, где <code>?</code> – <code>0</code> или <code>1</code>). Его длина достаточно большая для того, чтобы применить лемму о <eq><math><mrow><mi>n</mi><mo>≥</mo></mrow><mrow><mn>18</mn></mrow></math></eq> и сделать вывод, что каждый префикс <eq><math><mrow><mi>b</mi><mi>a</mi><mi>s</mi><mi>e</mi><msup><mn>64</mn><mi>n</mi></msup><mo form=prefix stretchy=false>(</mo><mi>s</mi><mo form=postfix stretchy=false>)</mo></mrow></math></eq> при достаточно большом <eq><math><mi>n</mi></math></eq> не зависит от <eq><math><mi>s</mi></math></eq>, причем длина этого префикса растет экспоненциально. Сильнее, чем так, сузиться сложно.<p class=next-group><span class=side-header><span>Пределы</span></span>Пусть от <eq><math><mi>s</mi></math></eq> префикс не зависит, но как он зависит от <eq><math><mi>n</mi></math></eq>? Вывод скрипта намекает, что есть некоторая одна длинная строка, к которой все стремится:<pre><code>0
 01
 0101
 010101
@@ -146,7 +146,15 @@ MUdXR0pXV2xoV1J6VkxXVlpKZVdGRk9WVldla1oyVmpGYWExWXhWbkphUjNST1lURndTVlpxU2pSV01W
 RkpIVmtaU1YxZHNXbXhXTURReVZXMTRiMVV5UlhwUmJVWlhWbTFOZUZscVJscGxSbVJaWTBkb1ZGSllRbGRYVmxKTFZURk9SMVp1
 UmxOaVZWcFpWbTAxUTFOV2JGWlhhemxYVFZad1NGWXllR3RXTWtwSVZHcFNWV0V5VWxOYVZscGhZMnh3UjFwSGJHbFNXR...
 </code></pre></div></section><footer><div class=viewport-container><h2>Made with my own bare hands (why.)</h2></div></footer><script>window.addEventListener("keydown", e => {
-				if (e.ctrlKey && e.key === "Enter") {
-					window.open("https://github.com/purplesyringa/site/edit/master/blog/ru/base64-has-a-fixed-point/index.md", "_blank");
+				if (e.key === "Enter") {
+					if (e.ctrlKey) {
+						window.open("https://github.com/purplesyringa/site/edit/master/blog/ru/base64-has-a-fixed-point/index.md", "_blank");
+					} else if (
+						e.target.type === "checkbox"
+						&& e.target.parentNode
+						&& e.target.parentNode.className === "expansible-code"
+					) {
+						e.target.click();
+					}
 				}
 			});</script>

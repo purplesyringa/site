@@ -52,6 +52,8 @@ const md = markdownit({
 			return "";
 		}
 		if (language === "tikz") {
+			const altText = code.startsWith("% alt ") ? code.match(/^% alt (.*)/)[1] : "";
+
 			const outputDir = tmp.dirSync({ unsafeCleanup: true }).name;
 			let rendered = "";
 			for (const theme of ["light", "dark"]) {
@@ -77,6 +79,7 @@ ${code}
 				childProcess.execFileSync("latex", ["-interaction=batchmode", `-output-directory=${outputDir}`, "diagram.tex"]);
 				childProcess.execFileSync("dvisvgm", ["--optimize", "--no-fonts", `--output=${outputDir}/diagram`, `${outputDir}/diagram.dvi`]);
 				let svg = fs.readFileSync(`${outputDir}/diagram.svg`, "utf-8");
+				svg = svg.replace(/<\/svg>/, `<title>${escapeHTML(altText)}</title></svg>`);
 				svg = svg.replace(/<\?xml.*?\?>/, "");
 				svg = svg.replace(/<!DOCTYPE.*?>/, "");
 				rendered += `<div class="diagram only-${theme}">${svg}</div>`;
@@ -90,7 +93,7 @@ ${code}
 		const highlighted = hljs.highlight(code, { language }).value;
 		if (opts === "expansible") {
 			spoilerId++;
-			return `<div class="expansible-code"><input type="checkbox" id="expansible${spoilerId}"><div class="highlighted">${highlighted}</div><label for="expansible${spoilerId}"></label></div>`;
+			return `<div class="expansible-code"><input type="checkbox" id="expansible${spoilerId}"><div class="highlighted">${highlighted}</div><label for="expansible${spoilerId}">Expand</label></div>`;
 		} else {
 			return highlighted;
 		}

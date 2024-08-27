@@ -27,7 +27,7 @@
 		<header>
 			<div class="viewport-container">
 				<div class="media">
-					<a href="https://github.com/purplesyringa"><img src="{{ root }}/images/github-mark-white.svg"></a>
+					<a href="https://github.com/purplesyringa"><img src="{{ root }}/images/github-mark-white.svg" alt="GitHub"></a>
 				</div>
 				<h1><a href="/">purplesyringa</a></h1>
 				<nav>
@@ -56,8 +56,16 @@
 
 		<script>
 			window.addEventListener("keydown", e => {
-				if (e.ctrlKey && e.key === "Enter") {
-					window.open("https://github.com/purplesyringa/site/edit/master/blog/{{ path }}/index.md", "_blank");
+				if (e.key === "Enter") {
+					if (e.ctrlKey) {
+						window.open("https://github.com/purplesyringa/site/edit/master/blog/{{ path }}/index.md", "_blank");
+					} else if (
+						e.target.type === "checkbox"
+						&& e.target.parentNode
+						&& e.target.parentNode.className === "expansible-code"
+					) {
+						e.target.click();
+					}
 				}
 			});
 		</script>

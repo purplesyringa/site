@@ -58,7 +58,19 @@ pre code {
 	position: relative;
 }
 .expansible-code > input {
-	display: none;
+	appearance: none;
+	margin: 0;
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	bottom: 0.25rem;
+	z-index: 1;
+	font-family: 'Roboto', sans-serif;
+	font-size: 1rem;
+	cursor: pointer;
+}
+.expansible-code > input::before {
+	content: "Expand";
 }
 .expansible-code > .highlighted {
 	height: 20em;
@@ -76,18 +88,14 @@ pre code {
 	align-items: center;
 	justify-content: flex-end;
 	background-image: linear-gradient(to bottom, transparent, #d0d0d0);
-	font-family: 'Roboto', sans-serif;
-	font-size: 1rem;
 	cursor: pointer;
-}
-.expansible-code > label::before {
-	content: "Expand";
+	font-size: 0;
 }
 .expansible-code > input:checked + .highlighted {
 	height: auto;
 	overflow: visible;
 }
-.expansible-code > input:checked ~ label {
+.expansible-code > input:checked, .expansible-code > input:checked ~ label {
 	display: none;
 }
 
@@ -144,7 +152,7 @@ aside > :last-child {
 		color: #cd91ed;
 	}
 	aside {
-		background-color: #4e2554;
+		background-color: #361c39;
 	}
 	blockquote {
 		border-left-color: #9c2254;
@@ -161,6 +169,9 @@ aside > :last-child {
 	}
 	pre code {
 		color: #ffffff;
+	}
+	.hljs-comment {
+		color: #7f8591 !important; /* Constrast */
 	}
 	.expansible-code > label {
 		background-image: linear-gradient(to bottom, transparent, #000000);

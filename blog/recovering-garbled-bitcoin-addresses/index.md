@@ -50,7 +50,7 @@ If you haven't used Bitcoin, here's what its addresses look like: `1Lbcfr7sAHTD9
 I was working on archiving ZeroNet back then, so any sort of information loss due to human error was a nuisance worth fixing. Have we *really* lost access to the site if we only know the lower-cased address? Can we recover the original address somehow?
 
 
-### What is an address?
+### What's an address?
 
 :::aside
 If you are interested in how to verify a signature without knowing a public key, [this](https://crypto.stackexchange.com/questions/18105/how-does-recovering-the-public-key-from-an-ecdsa-signature-work) should answer our question. Also, some people argue applying a hash here increases Bitcoin's resistance to quantum attacks.
@@ -67,6 +67,7 @@ The last important part is that the encoding is not your favorite base64 but bas
 Here's a neat illustration:
 
 ```tikz
+% alt A private key (random 32 bytes) maps via ECDSA magic to a public key (33 bytes). The public key is then hashed via SHA-256 and RIPEMD-160 to a 20-byte string. Prepending a 1-byte address type (0x00) to the hash produces a 21-byte payload. This payload is hashed via SHA-256 twice, and the first 4 bytes are used as the checksum. The payload and the checksum are then concatenated, resulting in a 25-byte decoded address. This address is then encoded with base58 to produce a human-readable string, about 34 characters long on average.
 \draw[step=1,DeepBlue,thick,fill=ShallowBlue] (0,0) grid (32,-1) rectangle (0,0);
 \node[scale=2] at(16,-0.5) {Private key (random 32 bytes)};
 \draw[-{>[length=0.25cm]},thick] (16,-1) -- node[right=0.5cm,scale=2] {ECDSA magic} (16,-4);
@@ -370,6 +371,7 @@ What we've been doing before was asking three questions in a row:
 And iterating through all possible combinations. We can instead interpret this process as a *recursive* walk down a decision tree rather than a flat algorithm:
 
 ```tikz
+% alt A decision tree. The first node spells "Add A?", branching with "Yes" and "No" as options. At each option, another tree starts, with the root nodes spelling "Add B?" in both trees. The trees branch again, passing through "Add C?", finally producing an output. The tree is 3-branch high, producing 8 distinct outputs in total: base+A+B+C, base+A+B, base+A+C, base+A, base+B+C, base+B, base+C, base.
 \node[draw,diamond,thick,aspect=2] (Root) at(0,0) {Add A?};
 
 \node[draw,diamond,thick,aspect=2] (Yes) at(-6,-2) {Add B?};
@@ -508,6 +510,7 @@ Now that parsing is mostly out of the way, let's see if we can optimize hashing 
 Let's try to watch what happens when we flip the case of a letter up close.
 
 ```tikz
+% alt The address 1Lbcfr7sAHT... with a capital A. Decoding the address via base58 results in the string 00 d6 f6 4e e7 83 6a ... 2f 78 fa 7c.
 \draw[DeepMagenta,thick,fill=ShallowMagenta] (-17,0) grid (17,-1) rectangle (-17,0);
 \fill[DeepMagenta] (-9,0) rectangle (-8,-1);
 \node[scale=2] at(-16.5,-0.5) {1};
@@ -577,6 +580,7 @@ Let's try to watch what happens when we flip the case of a letter up close.
 ```
 
 ```tikz
+% alt The same address as before, but with a lower-case a. Decoding the address via base58 results in the string 00 d6 f6 4e e7 83 ed ... 9f 78 fa 7c. The first six and the last three bytes are intact, all 16 bytes inbetween are different from before.
 \draw[DeepMagenta,thick,fill=ShallowMagenta] (-17,0) grid (17,-1) rectangle (-17,0);
 \fill[DeepMagenta] (-9,0) rectangle (-8,-1);
 \node[scale=2] at(-16.5,-0.5) {1};
