@@ -1,5 +1,6 @@
 html {
 	color-scheme: light dark;
+	scrollbar-color: #ff7ac1 #ff199420;
 }
 
 html, body {
@@ -119,6 +120,9 @@ li {
 }
 
 @media all and (prefers-color-scheme: dark) {
+	html {
+		scrollbar-color: #d0438f #f765b420;
+	}
 	header, footer {
 		background-color: #9c2254;
 	}
