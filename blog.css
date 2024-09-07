@@ -100,12 +100,15 @@ pre code {
 }
 
 .diagram {
+	display: flex;
+	justify-content: center;
+	margin-left: -7rem;
 	margin-top: 1rem;
 	margin-bottom: 1rem;
-}
-.diagram svg {
-	margin-left: -7rem;
 	width: 52rem;
+}
+.diagram > * {
+	max-width: 100%;
 	height: auto;
 }
 
@@ -213,7 +216,7 @@ aside > :last-child {
 }
 
 @media screen and (max-width: 1000px) {
-	pre, .diagram svg, .table-wrapper {
+	pre, .diagram, .table-wrapper {
 		margin-left: 0;
 		width: 100%;
 	}
