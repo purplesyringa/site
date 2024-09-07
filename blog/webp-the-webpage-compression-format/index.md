@@ -365,7 +365,7 @@ These modifications are really small. Visit [this link](https://tiansh.github.io
 
 I don't like this privacy protection technique. Not only does it break real usecases for no reason (WebP decoding simply can't be device-dependent), it is also totally useless, because adding predictable (!) noise increases uniqueness instead of decreasing it.
 
-It is also beyond me why using WebGL instead of the 2D context works:
+It is also unclear to me why using WebGL instead of the 2D context works:
 
 ```javascript
 const bitmap = await createImageBitmap(blob);
@@ -380,7 +380,7 @@ context.readPixels(0, 0, bitmap.width, bitmap.height, context.RGBA, context.UNSI
 // Look ma! No noise!
 ```
 
-Why `readPixels` is not subject to anti-fingerprinting is beyond my understanding. Anyway, it doesn't sprinkle hardly visible typos all over the page, so that works for me.
+Why `readPixels` is not subject to anti-fingerprinting is beyond me. Anyway, it doesn't sprinkle hardly visible typos all over the page, so that works for me.
 
 WebGL only reliably supports textures up to `2048x2048`, so some bounds have to be updated.
 
