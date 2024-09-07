@@ -4,8 +4,8 @@ fn main() {
     let mut binary_data = Vec::new();
     std::io::stdin().read_to_end(&mut binary_data).expect("failed to read stdin");
 
-    // Umm... Nx16383?
-    let width = (binary_data.len() as u32).div_ceil(16383);
+    // Umm... Nx2048?
+    let width = (binary_data.len() as u32).div_ceil(2048);
     let height = (binary_data.len() as u32).div_ceil(width);
     eprintln!("{width}x{height}");
 

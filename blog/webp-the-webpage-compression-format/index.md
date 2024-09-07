@@ -54,7 +54,7 @@ Actually, it does! [Compression Streams API](https://developer.mozilla.org/en-US
 
 Wait, where's brotli? Oh, it just doesn't exist for... [reasons](https://github.com/whatwg/compression/issues/34). This might hopefully change soon, but that's not where we are at at the moment, and you know how slowly these things progress.
 
-I also briefly contemplated using `gzip` anyway, but precompressing gzip with a more efficient library, but `zopfli` only managed to produce a `86 KiB` file, still significantly worse than brotli.
+I also briefly contemplated using `gzip` anyway, but precompressing gzip with a more efficient library -- `zopfli` -- only managed to produce a `86 KiB` file, still significantly worse than brotli.
 
 
 ### Breaking laws
@@ -330,7 +330,7 @@ All in all, WebP seems to be quite a good candidate for Web in particular.
 
 With that said, let's return to quote-unquote practical applications.
 
-Decoding the WebP is quite simple:
+Decoding the WebP would be quite simple if Canvas API provided a reliable way to read pixels. It doesn't, for anti-fingerprinting reasons, so we have to resort to ugly WebGL hacks:
 
 ```html
 <script type="module">
@@ -340,9 +340,14 @@ const blob = await result.blob();
 
 // Decode to RGBA
 const bitmap = await createImageBitmap(blob);
-const context = new OffscreenCanvas(bitmap.width, bitmap.height).getContext("2d");
-context.drawImage(bitmap, 0, 0);
-const pixels = context.getImageData(0, 0, bitmap.width, bitmap.height).data;
+const context = new OffscreenCanvas(bitmap.width, bitmap.height).getContext("webgl");
+const texture = context.createTexture();
+context.bindTexture(context.TEXTURE_2D, texture);
+context.texImage2D(context.TEXTURE_2D, 0, context.RGBA, context.RGBA, context.UNSIGNED_BYTE, bitmap);
+context.bindFramebuffer(context.FRAMEBUFFER, context.createFramebuffer());
+context.framebufferTexture2D(context.FRAMEBUFFER, context.COLOR_ATTACHMENT0, context.TEXTURE_2D, texture, 0);
+const pixels = new Uint8Array(bitmap.width * bitmap.height * 4);
+context.readPixels(0, 0, bitmap.width, bitmap.height, context.RGBA, context.UNSIGNED_BYTE, pixels);
 
 // The R channel is the raw HTML bytes
 const bytes = new Uint8Array(bitmap.width * bitmap.height);
@@ -357,18 +362,11 @@ document.documentElement.innerHTML = html;
 </script>
 ```
 
-It minifies to just 350 bytes:
+Why `readPixels` is not subject to anti-fingerprinting is beyond my understanding. Anyway, it doesn't sprinkle hardly visible typos all over the page, so that works for me.
 
-```html
-<script type=module>var b=await createImageBitmap(await(await fetch("compressor/compressed.webp")).blob()),c=new OffscreenCanvas(b.width,b.height).getContext("2d"),p,y,i;
-c.drawImage(b,0,0)
-p=c.getImageData(0,0,b.width,b.height).data
-y=new Uint8Array(p.length/4)
-for(i=0;i<y.length;i++)y[i]=p[i*4]
-document.documentElement.innerHTML=new TextDecoder().decode(y)</script>
-```
+WebGL only reliably supports textures up to `2048x2048`, so some bounds have to be updated.
 
-...which, together with the WebP itself, amounts to `43 KiB` (gzip was `92 KiB`, brotli would be `37 KiB`).
+This code minifies to about 550 bytes. Together with the WebP itself, this amounts to `44 KiB`. In comparison, gzip was `92 KiB` and brotli would be `37 KiB`.
 
 
 ### Polishing
