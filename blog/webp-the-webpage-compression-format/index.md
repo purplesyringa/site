@@ -418,7 +418,7 @@ The bright part on the very top and the very bottom is text and code. The hatche
 
 The really bright pixels throughout text? Those are Unicode characters, mostly punctuation like the apostrophe and the ellipsis.
 
-The actual savings here are unfortunately quite moderate: the original is `87 KiB` after gzip, the WebP one is `82 KiB` after gzip. In contrast, brotli would provide `69 KiB`. Better than nothing, though.
+The actual savings here are unfortunately quite moderate: the original is `87 KiB` after gzip, the WebP one is `83 KiB` after gzip. In contrast, brotli would provide `69 KiB`. Better than nothing, though.
 
 Also, hey, it's fun. I like having fun.
 
