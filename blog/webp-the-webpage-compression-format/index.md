@@ -131,6 +131,8 @@ fn main() {
 }
 ```
 
+Why grayscale? WebP supports a "subtract green" transform, where prior to encoding, the G channel is subtracted from both the R and B channels. For grayscale pictures, this effectively zeroes them out. WebP encodes the three channels with separate Huffman trees and thus stores fixed-value channels in $O(1)$ space.
+
 ```shell
 $ cargo run
 thread 'main' panicked at src/main.rs:13:100:

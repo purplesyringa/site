@@ -25,7 +25,7 @@ $ </span><span class=language-bash>gzip --best &LTtest.html | <span class=hljs-b
     <span class=hljs-built_in>println!</span>(<span class=hljs-string>"Data length: {}"</span>, compressed.<span class="hljs-title function_ invoke__">len</span>());
     std::fs::<span class="hljs-title function_ invoke__">write</span>(<span class=hljs-string>"compressed.webp"</span>, compressed.<span class="hljs-title function_ invoke__">as_ref</span>()).<span class="hljs-title function_ invoke__">expect</span>(<span class=hljs-string>"failed to write"</span>);
 }
-</code></pre><pre><code class=language-shell><span class="hljs-meta prompt_">$ </span><span class=language-bash>cargo run</span>
+</code></pre><p>Why grayscale? WebP supports a “subtract green” transform, where prior to encoding, the G channel is subtracted from both the R and B channels. For grayscale pictures, this effectively zeroes them out. WebP encodes the three channels with separate Huffman trees and thus stores fixed-value channels in <eq><math><mrow><mi>O</mi><mo form=prefix stretchy=false>(</mo><mn>1</mn><mo form=postfix stretchy=false>)</mo></mrow></math></eq> space.<pre><code class=language-shell><span class="hljs-meta prompt_">$ </span><span class=language-bash>cargo run</span>
 thread 'main' panicked at src/main.rs:13:100:
 encoding failed: VP8_ENC_ERROR_BAD_DIMENSION
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
