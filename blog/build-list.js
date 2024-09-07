@@ -93,7 +93,7 @@ fs.writeFileSync("feed.rss", `<?xml version="1.0" encoding="UTF-8" ?>
 		${posts.map(post => `
 			<item>
 				<title>${escapeHTML(post.title)}</title>
-				<link>${escapeHTML(`https://purplesyringa.moe/blog/${post.path}/`)}</link>
+				<link>${escapeHTML(`https://purplesyringa.moe/blog/${post.path}/${post.path === "./webp-the-webpage-compression-format" ? "nojs.html" : ""}`)}</link>
 				<description>${stripHtml(md.render(post.intro || "")).result}</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				${post.discussion ? `<comments>${escapeHTML(post.discussion)}</comments>` : ""}
