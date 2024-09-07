@@ -330,7 +330,7 @@ All in all, WebP seems to be quite a good candidate for Web in particular.
 
 With that said, let's return to quote-unquote practical applications.
 
-Decoding the WebP would be quite simple if Canvas API provided a reliable way to read pixels. It doesn't, for anti-fingerprinting reasons, so we have to resort to ugly WebGL hacks:
+Decoding the WebP is quite simple via the Canvas API:
 
 ```html
 <script type="module">
@@ -340,14 +340,9 @@ const blob = await result.blob();
 
 // Decode to RGBA
 const bitmap = await createImageBitmap(blob);
-const context = new OffscreenCanvas(bitmap.width, bitmap.height).getContext("webgl");
-const texture = context.createTexture();
-context.bindTexture(context.TEXTURE_2D, texture);
-context.texImage2D(context.TEXTURE_2D, 0, context.RGBA, context.RGBA, context.UNSIGNED_BYTE, bitmap);
-context.bindFramebuffer(context.FRAMEBUFFER, context.createFramebuffer());
-context.framebufferTexture2D(context.FRAMEBUFFER, context.COLOR_ATTACHMENT0, context.TEXTURE_2D, texture, 0);
-const pixels = new Uint8Array(bitmap.width * bitmap.height * 4);
-context.readPixels(0, 0, bitmap.width, bitmap.height, context.RGBA, context.UNSIGNED_BYTE, pixels);
+const context = new OffscreenCanvas(bitmap.width, bitmap.height).getContext("2d");
+context.drawImage(bitmap, 0, 0);
+const pixels = context.getImageData(0, 0, bitmap.width, bitmap.height).data;
 
 // The R channel is the raw HTML bytes
 const bytes = new Uint8Array(bitmap.width * bitmap.height);
@@ -360,6 +355,27 @@ const html = new TextDecoder().decode(bytes);
 
 document.documentElement.innerHTML = html;
 </script>
+```
+
+...except it's not. See, the Canvas API is frequently used for fingerprinting, so browsers mess up with you by adding noise to the data returned by `getImageData`.
+
+These modifications are really small. Visit [this link](https://tiansh.github.io/detect-canvas-noise/) in Firefox and see for yourself: fewer than 1% pixels are affected. In effect, this introduces small typos to the HTML, which I initially thought to be genuine.
+
+I don't like this privacy protection technique. Not only does it break real usecases for no reason (WebP decoding simply can't be device-dependent), it is also totally useless, because adding predictable (!) noise increases uniqueness instead of decreasing it.
+
+It is also beyond me why using WebGL instead of the 2D context works:
+
+```javascript
+const bitmap = await createImageBitmap(blob);
+const context = new OffscreenCanvas(bitmap.width, bitmap.height).getContext("webgl");
+const texture = context.createTexture();
+context.bindTexture(context.TEXTURE_2D, texture);
+context.texImage2D(context.TEXTURE_2D, 0, context.RGBA, context.RGBA, context.UNSIGNED_BYTE, bitmap);
+context.bindFramebuffer(context.FRAMEBUFFER, context.createFramebuffer());
+context.framebufferTexture2D(context.FRAMEBUFFER, context.COLOR_ATTACHMENT0, context.TEXTURE_2D, texture, 0);
+const pixels = new Uint8Array(bitmap.width * bitmap.height * 4);
+context.readPixels(0, 0, bitmap.width, bitmap.height, context.RGBA, context.UNSIGNED_BYTE, pixels);
+// Look ma! No noise!
 ```
 
 Why `readPixels` is not subject to anti-fingerprinting is beyond my understanding. Anyway, it doesn't sprinkle hardly visible typos all over the page, so that works for me.
@@ -379,7 +395,7 @@ A hundred milliseconds later, the WebP is loaded, decoded, the HTML is parsed, C
 
 A simple way to fix this is to keep the styling and the top of the page (about `8 KiB` uncompressed) in the gzipped HTML and only compress the content below the viewport with WebP. It's still going to feel junky when refreshing the page below the viewport, but it's still manageable.
 
-Another nuisance is scroll behavior. Scroll position is usually retained upon refresh, but when you're at `Y = 5000px`, you refresh and the page is `0px` tall, it's reset. Temporarily adding a really huge `<div>` helps with this.
+Another nuisance is scroll behavior. Scroll position is usually retained upon refresh, but when you're at `Y = 5000px`, you refresh and the page is `0px` tall, it's reset. Temporarily adding a really huge `<div>` helps with this. In addition, assigning to `document.documentElement.innerHTML` instead of calling `document.write` is necessary, because that updates the current document instead of replacing it with a new one.
 
 
 ### Embedding
