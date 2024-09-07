@@ -74,7 +74,7 @@ PNG also uses DEFLATE, but vitally, it passes image data through another transfo
 
 But the real winner here is [WebP](https://developers.google.com/speed/webp/docs/webp_lossless_bitstream_specification), the format half the lunatics believe is the creation of the devil and the other half believes is a treasure. WebP has two variations: lossy and lossless, using completely different approaches. We're talking about VP8L the lossless format here.
 
-VP8L is similar to PNG. It uses a predictive transform, slight more complicated than PNG's, but the better part is that Google replaced DEFLATE with a hand-rolled DEFLATE-like method.
+VP8L is similar to PNG. It too uses a predictive transform, slightly more complicated than PNG's, but the better part is that Google replaced DEFLATE with a hand-rolled DEFLATE-like method.
 
 DEFLATE enables you to split the file into pieces and use a custom Huffman tree for each piece. This is reasonable: in practice, data is not uniform, so different parts have different character and backreference probability distributions. For example, JavaScript, SVG, and markup will probably use different trees when embedded into one HTML file.
 
