@@ -361,7 +361,7 @@ document.documentElement.innerHTML = html;
 
 ...except it's not. See, the Canvas API is widely used for fingerprinting, so browsers mess up with you by adding noise to the data returned by `getImageData`.
 
-These modifications are slight. Visit [this link](https://tiansh.github.io/detect-canvas-noise/) in Firefox and see that fewer than 1% of pixels are affected. In effect, this introduces typos to the HTML, which I initially thought to be genuine.
+These modifications are slight. Visit [this link](https://tiansh.github.io/detect-canvas-noise/) in Firefox with strict tracking protection enabled and see that fewer than 1% of pixels are affected. In effect, this introduces typos to the HTML, which I initially thought to be genuine.
 
 I loathe this privacy protection technique. Not only does it break real use cases for no reason (WebP decoding can't be device-dependent), but it is also useless because adding predictable (!) noise increases uniqueness instead of decreasing it.
 
