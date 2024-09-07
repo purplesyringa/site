@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Sat, 07 Sep 2024 11:44:18 GMT</lastBuildDate>
+		<lastBuildDate>Sat, 07 Sep 2024 12:29:39 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -18,7 +18,7 @@
 				<description>I want to provide a smooth experience to my site visitors, so I work on accessibility and ensure it works without JavaScript enabled. I care about page load time because some pages contain large illustrations, so I minify my HTML.
 But one thing makes turning my blog light as a feather a pain in the ass.</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				
+				<comments>https://www.reddit.com/r/programming/comments/1fb5pzh/webp_the_webpage_compression_format/</comments>
 				<guid>https://purplesyringa.moe/blog/./webp-the-webpage-compression-format/</guid>
 				<pubDate>Sat, 07 Sep 2024 00:00:00 GMT</pubDate>
 			</item>

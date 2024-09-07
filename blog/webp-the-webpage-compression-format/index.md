@@ -1,6 +1,7 @@
 ---
 title: "WebP: The WebPage compression format"
 time: September 7, 2024
+discussion: https://www.reddit.com/r/programming/comments/1fb5pzh/webp_the_webpage_compression_format/
 intro: |
     I want to provide a smooth experience to my site visitors, so I work on accessibility and ensure it works without JavaScript enabled. I care about page load time because some pages contain large illustrations, so I minify my HTML.
 
@@ -443,4 +444,4 @@ Also, hey, it's fun. I like having fun.
 
 ### Links
 
-Rust code, the corpus, and various other files are available [on GitHub](https://github.com/purplesyringa/site/tree/master/blog/webp-the-webpage-compression-format). Join the discussion on Reddit if you feel like it.
+Rust code, the corpus, and various other files are available [on GitHub](https://github.com/purplesyringa/site/tree/master/blog/webp-the-webpage-compression-format). Join the discussion [on Reddit](https://www.reddit.com/r/programming/comments/1fb5pzh/webp_the_webpage_compression_format/) if you feel like it.
