@@ -42,8 +42,7 @@
 			<div class="viewport-container">
 				<h2>{{ title }}</h2>
 				<time>{{ time }}</time>
-				{% if discussion %}<a class="discussion" href="{{ discussion }}"><i class="nf nf-md-comment" title="Comment"></i> Discuss on {{ discussion_space }}</a>{% endif discussion %}
-
+				{{ discussion }}
 				{{ body }}
 			</div>
 		</section>

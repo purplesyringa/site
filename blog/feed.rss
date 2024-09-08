@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Sun, 08 Sep 2024 13:16:59 GMT</lastBuildDate>
+		<lastBuildDate>Sun, 08 Sep 2024 20:33:40 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -18,7 +18,7 @@
 				<description>I want to provide a smooth experience to my site visitors, so I work on accessibility and ensure it works without JavaScript enabled. I care about page load time because some pages contain large illustrations, so I minify my HTML.
 But one thing makes turning my blog light as a feather a pain in the ass.</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				<comments>https://news.ycombinator.com/item?id=41475124</comments>
+				<comments>https://news.ycombinator.com/item?id=41475124,https://www.reddit.com/r/programming/comments/1fb5pzh/webp_the_webpage_compression_format/</comments>
 				<guid>https://purplesyringa.moe/blog/./webp-the-webpage-compression-format/</guid>
 				<pubDate>Sat, 07 Sep 2024 00:00:00 GMT</pubDate>
 			</item>
@@ -82,7 +82,7 @@ It is not a novel technique by any means, but it doesn’t seem on everyone’s 
 				<description>Rust’s approach to error handling comes at a cost. The Result type often doesn’t fit in CPU registers, and callers of fallible functions have to check whether the returned value is Ok or Err. That’s a stack spill, a comparison, a branch, and a lot of error handling code intertwined with the hot path that just shouldn’t be here, which inhibits inlining, the most important optimization of all.
 Exceptions and panics make it easy to forget about the occasional error, but they don’t suffer from inefficiency. Throwing an exception unwinds the stack automatically, without any cooperation from the functions except the one that throws the exception and the one that catches it. Wouldn’t it be neat if a mechanism with the performance of panic! and the ergonomics of Result existed?</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				
+				<comments></comments>
 				<guid>https://purplesyringa.moe/blog/./you-might-want-to-use-panics-for-error-handling/</guid>
 				<pubDate>Tue, 13 Aug 2024 00:00:00 GMT</pubDate>
 			</item>

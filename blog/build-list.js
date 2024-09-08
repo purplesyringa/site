@@ -38,16 +38,10 @@ const addFromDir = dir => {
 		const [_, yamlHeader, markdown] = fileText.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)/);
 		const parsedYamlHeader = YAML.parse(yamlHeader);
 		posts.push({
+			...parsedYamlHeader,
 			path: `${dir}/${name}`,
 			parsedDate: new Date(parsedYamlHeader.time + " UTC"),
-			discussionSpace: parsedYamlHeader.discussion && (
-				parsedYamlHeader.discussion.startsWith("https://news.ycombinator.com") ? "Hacker News" :
-					parsedYamlHeader.discussion.startsWith("https://codeforces.com") ? "Codeforces" :
-						parsedYamlHeader.discussion.startsWith("https://www.reddit.com") ? "Reddit" :
-							parsedYamlHeader.discussion.startsWith("https://t.me") ? "Telegram" :
-								"???"
-			),
-			...parsedYamlHeader
+			discussion: typeof parsedYamlHeader.discussion === "string" ? [parsedYamlHeader.discussion] : parsedYamlHeader.discussion || []
 		});
 	}
 };
@@ -62,7 +56,16 @@ let content = posts.map(post => {
 		<div class="post-entry">
 			<h2><a href="${escapeHTML(post.path)}/">${escapeHTML(post.title)}</a></h2>
 			<time>${escapeHTML(post.time)}</time>
-			${post.discussion ? `<a class="discussion" href="${escapeHTML(post.discussion)}"><i class="nf nf-md-comment" title="Comment"></i> Discuss on ${post.discussionSpace}</a>` : ""}
+			${post.discussion.map(url => {
+				const space = (
+					url.startsWith("https://news.ycombinator.com") ? "Hacker News" :
+						url.startsWith("https://codeforces.com") ? "Codeforces" :
+							url.startsWith("https://www.reddit.com") ? "Reddit" :
+								url.startsWith("https://t.me") ? "Telegram" :
+									"???"
+				);
+				return `<a class="discussion" href="${escapeHTML(url)}"><i class="nf nf-md-comment" title="Comment"></i> ${space}</a>`;
+			}).join("")}
 			${md.render(post.intro || "")}
 			<p>
 				<a href="${escapeHTML(post.path)}/">Keep reading</a>
