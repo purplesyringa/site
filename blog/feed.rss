@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Sun, 08 Sep 2024 20:37:00 GMT</lastBuildDate>
+		<lastBuildDate>Sun, 08 Sep 2024 20:38:02 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -55,7 +55,7 @@ I prefer my code the opposite of slow and ugly.</description>
 serde is the Rust framework for serialization and deserialization. Everyone uses it, and it’s the default among the ecosystem. serde_json is the official serde “mixin” for JSON, so when people need to parse stuff, that’s what they use instinctively. There are other libraries for JSON parsing, like simd-json, but serde_json is overwhelmingly used: it has 26916 dependents at the time of this post, compared to only 66 for simd-json.
 This makes serde_json a good target (not in a Jia Tan way) for optimization. Chances are, many of those 26916 users would profit from switching to simd-json, but as long as they aren’t doing that, smaller optimizations are better than nothing, and such improvements are reapt across the ecosystem.</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				<comments>https://www.reddit.com/r/rust/comments/1eyxspu/i_sped_up_serde_json_strings_by_20/</comments>
+				<comments>https://www.reddit.com/r/rust/comments/1eyxspu/i_sped_up_serde_json_strings_by_20/,https://news.ycombinator.com/item?id=41316807</comments>
 				<guid>https://purplesyringa.moe/blog/./i-sped-up-serde-json-strings-by-20-percent/</guid>
 				<pubDate>Tue, 20 Aug 2024 00:00:00 GMT</pubDate>
 			</item>
