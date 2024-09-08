@@ -4,6 +4,7 @@ time: September 7, 2024
 discussion:
     - https://news.ycombinator.com/item?id=41475124
     - https://www.reddit.com/r/programming/comments/1fb5pzh/webp_the_webpage_compression_format/
+    - https://lobste.rs/s/t81n2g/webp_webpage_compression_format
 intro: |
     I want to provide a smooth experience to my site visitors, so I work on accessibility and ensure it works without JavaScript enabled. I care about page load time because some pages contain large illustrations, so I minify my HTML.
 

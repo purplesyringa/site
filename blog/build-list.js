@@ -61,8 +61,9 @@ let content = posts.map(post => {
 					url.startsWith("https://news.ycombinator.com") ? "Hacker News" :
 						url.startsWith("https://codeforces.com") ? "Codeforces" :
 							url.startsWith("https://www.reddit.com") ? "Reddit" :
-								url.startsWith("https://t.me") ? "Telegram" :
-									"???"
+								url.startsWith("https://lobste.rs") ? "Lobsters" :
+									url.startsWith("https://t.me") ? "Telegram" :
+										"???"
 				);
 				return `<a class="discussion" href="${escapeHTML(url)}"><i class="nf nf-md-comment" title="Comment"></i> ${space}</a>`;
 			}).join("")}
