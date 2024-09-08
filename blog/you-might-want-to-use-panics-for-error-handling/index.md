@@ -51,7 +51,7 @@ That's a comparison, a branch, and a lot of error handling code intertwined with
 
 Checked exceptions -- the closest thing there is to `Result`s -- have different priorities. They simplify the success path at the expense of the failure path, so it's easy to forget about the occasional error. This is an explicit anti-goal of Rust.
 
-Rust has panics that use the same mechanism, but guides against using them for fallible functions, because they are almost unusable for that pursose:
+Rust has panics that use the same mechanism, but guides against using them for fallible functions, because they are almost unusable for that purpose:
 
 ```rust
 //                     vvv  Does not specify the error type.
