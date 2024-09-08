@@ -41,10 +41,11 @@ const addFromDir = dir => {
 			path: `${dir}/${name}`,
 			parsedDate: new Date(parsedYamlHeader.time + " UTC"),
 			discussionSpace: parsedYamlHeader.discussion && (
-				parsedYamlHeader.discussion.startsWith("https://codeforces.com") ? "Codeforces" :
-					parsedYamlHeader.discussion.startsWith("https://www.reddit.com") ? "Reddit" :
-						parsedYamlHeader.discussion.startsWith("https://t.me") ? "Telegram" :
-							"???"
+				parsedYamlHeader.discussion.startsWith("https://news.ycombinator.com") ? "Hacker News" :
+					parsedYamlHeader.discussion.startsWith("https://codeforces.com") ? "Codeforces" :
+						parsedYamlHeader.discussion.startsWith("https://www.reddit.com") ? "Reddit" :
+							parsedYamlHeader.discussion.startsWith("https://t.me") ? "Telegram" :
+								"???"
 			),
 			...parsedYamlHeader
 		});

@@ -117,10 +117,11 @@ html = html.replace(/{{ time }}/g, escapeHTML(parsedYamlHeader.time));
 html = html.replace(/{{ locale }}/g, locale);
 if (parsedYamlHeader.discussion) {
 	const discussionSpace = (
-		parsedYamlHeader.discussion.startsWith("https://codeforces.com") ? "Codeforces" :
-			parsedYamlHeader.discussion.startsWith("https://www.reddit.com") ? "Reddit" :
-				parsedYamlHeader.discussion.startsWith("https://t.me") ? "Telegram" :
-					"???"
+		parsedYamlHeader.discussion.startsWith("https://news.ycombinator.com") ? "Hacker News" :
+			parsedYamlHeader.discussion.startsWith("https://codeforces.com") ? "Codeforces" :
+				parsedYamlHeader.discussion.startsWith("https://www.reddit.com") ? "Reddit" :
+					parsedYamlHeader.discussion.startsWith("https://t.me") ? "Telegram" :
+						"???"
 	);
 	html = html.replace(/{{ discussion }}/g, escapeHTML(parsedYamlHeader.discussion));
 	html = html.replace(/{{ discussion_space }}/g, discussionSpace);
