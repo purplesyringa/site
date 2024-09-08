@@ -4,6 +4,7 @@ time: August 20, 2024
 discussion:
     - https://www.reddit.com/r/rust/comments/1eyxspu/i_sped_up_serde_json_strings_by_20/
     - https://news.ycombinator.com/item?id=41316807
+    - https://lobste.rs/s/2jc66h/i_sped_up_serde_json_strings_by_20
 translation:
     Russian: https://habr.com/ru/articles/838404/
 intro: |

@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Sun, 08 Sep 2024 20:43:29 GMT</lastBuildDate>
+		<lastBuildDate>Sun, 08 Sep 2024 20:53:31 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -18,7 +18,7 @@
 				<description>I want to provide a smooth experience to my site visitors, so I work on accessibility and ensure it works without JavaScript enabled. I care about page load time because some pages contain large illustrations, so I minify my HTML.
 But one thing makes turning my blog light as a feather a pain in the ass.</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				<comments>https://news.ycombinator.com/item?id=41475124,https://www.reddit.com/r/programming/comments/1fb5pzh/webp_the_webpage_compression_format/,https://lobste.rs/s/t81n2g/webp_webpage_compression_format</comments>
+				<comments>https://news.ycombinator.com/item?id=41475124</comments>
 				<guid>https://purplesyringa.moe/blog/./webp-the-webpage-compression-format/</guid>
 				<pubDate>Sat, 07 Sep 2024 00:00:00 GMT</pubDate>
 			</item>
@@ -55,7 +55,7 @@ I prefer my code the opposite of slow and ugly.</description>
 serde is the Rust framework for serialization and deserialization. Everyone uses it, and it’s the default among the ecosystem. serde_json is the official serde “mixin” for JSON, so when people need to parse stuff, that’s what they use instinctively. There are other libraries for JSON parsing, like simd-json, but serde_json is overwhelmingly used: it has 26916 dependents at the time of this post, compared to only 66 for simd-json.
 This makes serde_json a good target (not in a Jia Tan way) for optimization. Chances are, many of those 26916 users would profit from switching to simd-json, but as long as they aren’t doing that, smaller optimizations are better than nothing, and such improvements are reapt across the ecosystem.</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				<comments>https://www.reddit.com/r/rust/comments/1eyxspu/i_sped_up_serde_json_strings_by_20/,https://news.ycombinator.com/item?id=41316807</comments>
+				<comments>https://www.reddit.com/r/rust/comments/1eyxspu/i_sped_up_serde_json_strings_by_20/</comments>
 				<guid>https://purplesyringa.moe/blog/./i-sped-up-serde-json-strings-by-20-percent/</guid>
 				<pubDate>Tue, 20 Aug 2024 00:00:00 GMT</pubDate>
 			</item>
@@ -82,7 +82,7 @@ It is not a novel technique by any means, but it doesn’t seem on everyone’s 
 				<description>Rust’s approach to error handling comes at a cost. The Result type often doesn’t fit in CPU registers, and callers of fallible functions have to check whether the returned value is Ok or Err. That’s a stack spill, a comparison, a branch, and a lot of error handling code intertwined with the hot path that just shouldn’t be here, which inhibits inlining, the most important optimization of all.
 Exceptions and panics make it easy to forget about the occasional error, but they don’t suffer from inefficiency. Throwing an exception unwinds the stack automatically, without any cooperation from the functions except the one that throws the exception and the one that catches it. Wouldn’t it be neat if a mechanism with the performance of panic! and the ergonomics of Result existed?</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				<comments></comments>
+				<comments>undefined</comments>
 				<guid>https://purplesyringa.moe/blog/./you-might-want-to-use-panics-for-error-handling/</guid>
 				<pubDate>Tue, 13 Aug 2024 00:00:00 GMT</pubDate>
 			</item>
