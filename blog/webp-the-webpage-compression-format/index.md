@@ -79,7 +79,7 @@ VP8L is similar to PNG. It too uses a predictive transform, slightly more compli
 
 DEFLATE enables you to split the file into pieces and use a custom Huffman tree for each piece. This is reasonable: realistic data is not uniform, so different parts have different character and backreference probability distributions. For example, JavaScript, SVG, and markup will probably use different trees when embedded into one HTML file.
 
-VP8L supports this too, but with a twist. A WebP file can define an arbitrarily large table of distinct Huffman trees and use different trees for each 16x16 pixel block. Crucially, this enables table reuse. In DEFLATE, JavaScript followed by CSS, followed by JavaScript would encode three trees despite the 1st and the 3rd being quite similar, but VP8L would need just two tables. In addition, this enables more locality because tables are cheaper to switch often.
+VP8L supports this too, but with a twist. A WebP file can define an arbitrarily large table of distinct Huffman trees and use different trees for each 16x16 pixel block. Crucially, this enables tree reuse. In DEFLATE, JavaScript followed by CSS, followed by JavaScript would encode three trees despite the 1st and the 3rd being quite similar, but VP8L would need just two trees. In addition, this enables more locality because trees are cheaper to switch often.
 
 
 ### More tweaks
