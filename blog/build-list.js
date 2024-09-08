@@ -67,6 +67,9 @@ let content = posts.map(post => {
 				);
 				return `<a class="discussion" href="${escapeHTML(url)}"><i class="nf nf-md-comment" title="Comment"></i> ${space}</a>`;
 			}).join("")}
+			${Object.entries(post.translation || {}).map(([language, url]) => {
+				return `<a class="discussion" href="${escapeHTML(url)}"><i class="nf nf-md-translate" title="Translation"></i> ${language}</a>`;
+			}).join("")}
 			${md.render(post.intro || "")}
 			<p>
 				<a href="${escapeHTML(post.path)}/">Keep reading</a>

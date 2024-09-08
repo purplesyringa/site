@@ -4,6 +4,8 @@ time: August 20, 2024
 discussion:
     - https://www.reddit.com/r/rust/comments/1eyxspu/i_sped_up_serde_json_strings_by_20/
     - https://news.ycombinator.com/item?id=41316807
+translation:
+    Russian: https://habr.com/ru/articles/838404/
 intro: |
     I have recently done some performance work and realized that reading about my experience could be entertaining. Teaching to *think* is just as important as teaching to *code*, but this is seldom done; I think something I've done last month is a great opportunity to draw the curtain a bit.
 

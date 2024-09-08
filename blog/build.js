@@ -132,6 +132,12 @@ html = html.replace(
 	}).join("")
 );
 html = html.replace(
+	/{{ translation }}/g,
+	Object.entries(parsedYamlHeader.translation || {}).map(([language, url]) => {
+		return `<a class="discussion" href="${escapeHTML(url)}"><i class="nf nf-md-translate" title="Translation"></i> ${language}</a>`;
+	}).join("")
+);
+html = html.replace(
 	/{{ body }}/g,
 	md.render(markdown)
 		.replace(/<aside-inline-here \/>/g, "</div>")
