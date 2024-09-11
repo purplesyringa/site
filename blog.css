@@ -17,11 +17,6 @@ section h2:nth-child(n + 2) {
 	margin-bottom: -2rem;
 }
 
-code {
-	font-family: 'Noto Sans', sans-serif;
-	color: #8d00d9;
-	word-wrap: break-word;
-}
 math {
 	color: #8d00d9;
 }
@@ -125,11 +120,6 @@ blockquote > :last-child {
 	margin-bottom: 0;
 }
 
-hr {
-	visibility: hidden;
-	margin-top: 2rem;
-}
-
 aside {
 	position: absolute;
 	left: 100%;
@@ -157,7 +147,7 @@ aside > :last-child {
 }
 
 @media all and (prefers-color-scheme: dark) {
-	code, math {
+	math {
 		color: #cd91ed;
 	}
 	aside {

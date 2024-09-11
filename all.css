@@ -72,6 +72,12 @@ section {
 	font-family: 'Roboto', sans-serif;
 }
 
+code {
+	font-family: 'Noto Sans', sans-serif;
+	color: #8d00d9;
+	word-wrap: break-word;
+}
+
 .viewport-container {
 	width: 40rem;
 	margin-right: 15rem;
@@ -120,6 +126,11 @@ li {
 	margin-bottom: 0.25rem;
 }
 
+hr {
+	visibility: hidden;
+	margin-top: 2rem;
+}
+
 @media all and (prefers-color-scheme: dark) {
 	html {
 		scrollbar-color: #d0438f #f765b420;
@@ -130,6 +141,9 @@ li {
 	}
 	section {
 		color: #fee8ff;
+	}
+	code {
+		color: #cd91ed;
 	}
 	h2, .side-header {
 		color: #cd91ed;
