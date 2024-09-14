@@ -7,10 +7,23 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Sun, 08 Sep 2024 20:53:31 GMT</lastBuildDate>
+		<lastBuildDate>Sat, 14 Sep 2024 05:08:03 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>Minecraft сравнивает массивы за куб</title>
+				<link>https://purplesyringa.moe/blog/ru/minecraft-compares-arrays-in-cubic-time/</link>
+				<description>Коллизии в играх обнаруживаются тяжелыми алгоритмами. Для примера попробуйте представить себе, насколько сложно это для просто двух произвольно повернутых кубов в пространстве. Они могут контактировать двумя ребрами, вершиной и гранью или еще как-то более сложно.
+В майнкрафте вся геометрия хитбоксов параллельна осям координат, т.е. наклона не бывает. Это сильно упрощает поиск коллизий.
+Я бы такое писала просто. Раз хитбокс блока — это объединение нескольких параллелепипедов, то можно его так и хранить: как список 6-элеметных тьюплов. В подавляющем большинстве случаев этот список будет очень коротким. Для обычных кубов его длина — 1, для стеклопаналей может достигать 2, наковальня, о боги, состоит из 3 элементов, а стены могут иметь их аж целых 4. Для проверки хитбоксов на пересечение достаточно перебрать пары паралеллепипедов двух хитбоксов (кажется, их может быть максимум 16). Для параллелеипедов с параллельными осями задача решается тривиально.
+Но Minecraft JE писала не я, поэтому там реализация иная.</description>
+				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+				<comments>https://t.me/alisa_rummages/156</comments>
+				<guid>https://purplesyringa.moe/blog/ru/minecraft-compares-arrays-in-cubic-time/</guid>
+				<pubDate>Sat, 14 Sep 2024 00:00:00 GMT</pubDate>
+			</item>
 		
 			<item>
 				<title>WebP: The WebPage compression format</title>
