@@ -23,7 +23,7 @@ This project required a great deal of ingenuity. In this post, I'll detail how i
 
 - [Yuki](https://github.com/yuki0iq), for inventing several core techniques, gathering raw data and preprocessing it with ffmpeg (I hate ffmpeg).
 - [Mia](https://github.com/miabaka), for testing performance on a high-end PC and getting me up-to-speed on dithering techniques.
-- [kira](https://github.com/q60), for recording the video and rubber duck debugging.
+- [kira](https://github.com/q60), for testing performance, recording the video, and rubber duck debugging.
 
 
 ### Try it out
