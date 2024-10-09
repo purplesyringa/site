@@ -149,6 +149,12 @@ html = html.replace(
 			if (src.indexOf("/") === -1 && src.endsWith(".svg")) {
 				// Inline svg
 				tag = fs.readFileSync(`${articleDirectory}/${src}`, "utf-8").replace(/<\/svg>/, `<title>${alt}</title></svg>`);
+			} else if (src.indexOf("/") === -1 && src.endsWith(".webm")) {
+				// Use video
+				tag = `<video autoplay loop muted playsinline src="${src}" alt="${alt}" title="${alt}"></video>`;
+			} else {
+				// Add title
+				tag = `<img src="${src}" alt="${alt}" title="${alt}">`;
 			}
 			return `<div class="diagram">${tag}</div>`;
 		})
