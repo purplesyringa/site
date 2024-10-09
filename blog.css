@@ -96,7 +96,8 @@ pre code {
 
 .diagram {
 	display: flex;
-	justify-content: center;
+	flex-direction: column;
+	align-items: center;
 	margin-left: -7rem;
 	margin-top: 1rem;
 	margin-bottom: 1rem;
@@ -105,6 +106,14 @@ pre code {
 .diagram > * {
 	max-width: 100%;
 	height: auto;
+}
+.epilepsy::before {
+	content: "This video contains flashes that might trigger seizures in people with photosensitive epilepsy. Stop watching if you experience any symptoms. For convenience, the title text for the video explains the action in prose.";
+	display: block;
+	background-color: #db4f37;
+	color: #ffffff;
+	padding: 1rem;
+	margin-bottom: 1rem;
 }
 
 blockquote {

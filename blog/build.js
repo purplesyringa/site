@@ -146,17 +146,23 @@ html = html.replace(
 		.replace(/<h3>(.*?)<\/h3>\s*<div class='aside-group'><aside>([\s\S]*?)<\/aside>/g, "<div class='aside-group'><aside>$2</aside><h3>$1</h3>")
 		.replace(/<h3>(.*?)<\/h3>\s*<p>/g, "<p class='next-group'><span class='side-header' role='heading' aria-level='3'><span>$1</span></span>")
 		.replace(/<img src="(.*?)" alt="(.*?)">/g, (tag, src, alt) => {
+			let className = "diagram";
 			if (src.indexOf("/") === -1 && src.endsWith(".svg")) {
 				// Inline svg
 				tag = fs.readFileSync(`${articleDirectory}/${src}`, "utf-8").replace(/<\/svg>/, `<title>${alt}</title></svg>`);
-			} else if (src.indexOf("/") === -1 && src.endsWith(".webm")) {
+			} else if (src.indexOf("/") === -1 && src.replace(/#.*/, "").endsWith(".webm")) {
 				// Use video
-				tag = `<video autoplay loop muted playsinline src="${src}" alt="${alt}" title="${alt}"></video>`;
+				if (src.endsWith("#epilepsy")) {
+					className += " epilepsy";
+					tag = `<video preload="auto" controls loop muted playsinline src="${src}" alt="${alt}" title="${alt}"></video>`;
+				} else {
+					tag = `<video autoplay loop muted playsinline src="${src}" alt="${alt}" title="${alt}"></video>`;
+				}
 			} else {
 				// Add title
 				tag = `<img src="${src}" alt="${alt}" title="${alt}">`;
 			}
-			return `<div class="diagram">${tag}</div>`;
+			return `<div class="${className}">${tag}</div>`;
 		})
 );
 

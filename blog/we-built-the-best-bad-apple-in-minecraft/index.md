@@ -180,7 +180,7 @@ Theoretically, [zero-ticking](https://minecraft.wiki/w/Tutorials/Zero-ticking) s
 
 These structures should be built under `/tick freeze`, so that the repeaters are turned off. This way, when the structure is loaded, there's a 1 redstone tick delay before replacing the structure:
 
-![The structure from above alternating between red and yellow wool every redstone tick.](working-structure-blocks-red-yellow-running.webm)
+![The structure from above alternating between red and yellow wool every redstone tick.](working-structure-blocks-red-yellow-running.webm#epilepsy)
 
 
 ### Activation
@@ -206,13 +206,13 @@ So far, we've seen colors alternating 10 times per second. For 20 fps, we need 4
 
 ![4 structures, now 2 block deep. The red and yellow structures are just like before, with the far layer being empty. The new blue and green structures have the redstone blocks, repeaters and structure blocks in the far layer, with the near layer being empty except for the wool block.](4-colors-components.png)
 
-![The same structures from above](4-colors-components-up.png)
+![The same structures from above.](4-colors-components-up.png)
 
 The small pink cubes indicate *structure voids*: blocks that aren't replaced when the structure is loaded. By default, even air can replace blocks, so these voids let us overlap structures.
 
 The red and yellow structures form one 10 Hz clock, while the blue and green structures form another 10 Hz clock. Both clocks place the wool at the same position, so if the structures are activated at the right offset, four colors alternate at 20 Hz:
 
-![The two structures overlapped, visibly alternating between green, yellow, blue, and red](4-colors.webm)
+![The two structures overlapped, visibly alternating between green, yellow, blue, and red.](4-colors.webm#epilepsy)
 
 This video was recorded by manually activating the two clocks at different times so that they run in different phases. To streamline this process, we can use a long-standing bug where pistons pushing redstone blocks take 3 game ticks to extend when activated directly by user input. This way, pressing a single button activates the mechanism with 100% success:
 
@@ -223,7 +223,7 @@ This video was recorded by manually activating the two clocks at different times
 
 To make a screen, all we have to do is place a large grid of wool instead of just one block.
 
-![Five 48-block-tall towers: four for the original components, updating at 10 Hz, and the fifth one combined, updating at 20 Hz](towers.webm)
+![Five 48-block-tall towers: four for the original components, updating at 10 Hz, and the fifth one combined, updating at 20 Hz.](towers.webm#epilepsy)
 
 Oof, that was tiresome, and that was just 48 block tall towers. I need... 384 blocks vertically? Wait, how tall are Minecraft worlds, anyway? That's 384 blocks, i.e. 24 chunks. And it's going to be 32 chunks horizontally. The maximum render distance is 32 chunks, so I'll probably have to play around with FOV...
 
@@ -245,9 +245,9 @@ That's as impossible as placing blocks automatically. In other words, it's possi
 
 Minecraft supports custom textures through resource packs (not to be confused with datapacks). We can replace the textures of several -- say 16 -- distinct blocks. 16 variants translate to 4 bits, which correspond to "subpixels" of a block:
 
-![16 blocks of wool of different colors, using default Minecraft textures](wool-untextured.png)
+![16 blocks of wool of different colors, using default Minecraft textures.](wool-untextured.png)
 
-![The same blocks of wool, with textures replaced by 2x2 black-and-white pictures with different pattern for each "color"](wool-textured.png)
+![The same blocks of wool, with textures replaced by 2x2 black-and-white pictures with different pattern for each "color".](wool-textured.png)
 
 We can go futher. By taking $4^4 = 256$ blocks and adding two more colors to the subpixels, we can shift from black-and-white to grayscale.
 
@@ -268,7 +268,7 @@ If there are $N$ threads and the $N$ chunks closest to the player are updated so
 
 You can partially observe this effect here:
 
-![Five towers from before, recorded while standing at the bottom. The red-yellow tower glitches occasionally, rendering as partially red and and partially yellow at times.](towers-glitch.webm)
+![Five towers from before, recorded while standing at the bottom. The red-yellow tower glitches occasionally, rendering as partially red and and partially yellow at times.](towers-glitch.webm#epilepsy)
 
 The towers clearly glitch in the middle occasionally because they span three chunks, so sometimes only two chunks are rendered in time.
 
@@ -420,7 +420,7 @@ Yuki helped me devise a way to create instant wire using structure blocks. It's 
 
 Whenever the button is pressed, the structure block loads a *powered* redstone torch over the unpowered torch in the middle component. This torch gets unpowered on the next tick because it's sitting on a redstone block, but before that happens, it activates another structure block. This structure block spawns a powered redstone torch in the third component, triggering the lamp.
 
-![The same three components, showing what happens when the button is pressed](instant-wire.webm)
+![The same three components, showing that the lamp is activated with zero delay when the button is pressed.](instant-wire.webm#epilepsy)
 
 A structure block spans up to $48$ blocks, so this method helped me transfer startup signals across a grid of $48 \times 48$ subscreens.
 
@@ -472,19 +472,19 @@ Some people believe "Bad Apple!!" is purely black-and-white, but there are *many
 
 Motion blur:
 
-![A girl raising a hand with an apple at large velocity, with the apple and the hand blurred significantly](grayscale-apple-original.png)
+![A girl raising a hand with an apple at large velocity, with the apple and the hand blurred significantly.](grayscale-apple-original.png)
 
 Glow and objects of different brightness:
 
-![A girl flying on a broom towards a castle under a night sky](grayscale-sky-original.png)
+![A girl flying on a broom towards a castle under a night sky.](grayscale-sky-original.png)
 
 Gradients between scenes:
 
-![A transition from a black-background scene to a white-background scene with a gradient](grayscale-gradient-original.png)
+![A transition from a black-background scene to a white-background scene with a gradient.](grayscale-gradient-original.png)
 
 In high-speed scenes, the motion blur is enchanced by overlapping 5 frames of an $\approx 200$ fps video with different opacity, leaving a trace:
 
-![A girl spinning, with arms leaving a trace](grayscale-trace-original.png)
+![A girl spinning, with arms leaving a trace.](grayscale-trace-original.png)
 
 Blur (the girl in the background) and gradients:
 
@@ -492,19 +492,19 @@ Blur (the girl in the background) and gradients:
 
 Fire:
 
-![A girl with fire emanating from her hands](grayscale-fire-original.png)
+![A girl with fire emanating from her hands.](grayscale-fire-original.png)
 
 The sun:
 
-![A girl and the sun, with a radial gradient around the sun](grayscale-sun-original.png)
+![A girl and the sun, with a radial gradient around the sun.](grayscale-sun-original.png)
 
 Shadows:
 
-![Three girls playing instruments, with shadows](grayscale-shadows-original.png)
+![Three girls playing instruments, with shadows.](grayscale-shadows-original.png)
 
 Ripples in water:
 
-![Ripples spreading from a falling drop](grayscale-water-original.png)
+![Ripples spreading from a falling drop.](grayscale-water-original.png)
 
 Simply rounding to the nearest representable color doesn't do these frames justice, introducing [banding](https://en.wikipedia.org/wiki/Colour_banding):
 
