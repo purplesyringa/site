@@ -14,7 +14,9 @@ But how about Bad Apple!!... in Minecraft?
 
 ### Video
 
-TODO: [video here]
+Link: [YouTube](https://www.youtube.com/watch?v=UDIRAfurpOI).
+
+![Bad Apple!!](https://www.youtube.com/watch?v=UDIRAfurpOI#aspectratio=16/9)
 
 
 ### Credits
@@ -28,7 +30,7 @@ This project required a great deal of ingenuity. In this post, I'll detail how i
 
 ### Try it out
 
-TODO: World download
+[Download world](https://mega.nz/file/dZhzmKCL#X0abTQv3NPU-EbQfEwaTs1i4IpBZKW3TufRc9wfbhsM).
 
 On low-end devices, you might have to install [VulkanMod](https://modrinth.com/mod/vulkanmod) (preferably) or [Sodium](https://modrinth.com/mod/sodium) (if Vulkan is unavailable) for satisfactory performance. **Avoid** [C2ME](https://modrinth.com/mod/c2me-fabric), as its autosaving facilities lead to performance regressions.
 

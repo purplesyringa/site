@@ -107,6 +107,9 @@ pre code {
 	max-width: 100%;
 	height: auto;
 }
+.diagram > iframe {
+	width: 100%;
+}
 .epilepsy {
 	display: block;
 	font-weight: normal;

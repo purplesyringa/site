@@ -164,6 +164,11 @@ html = html.replace(
 				} else {
 					tag = `<video autoplay loop muted playsinline src="${src}" alt="${alt}" title="${alt}"></video>`;
 				}
+			} else if (src.startsWith("https://www.youtube.com/watch?v=")) {
+				const match = src.match(/^https:\/\/www\.youtube\.com\/watch\?v=(.*)#aspectratio=(.*)/);
+				const videoId = match[1];
+				const aspectRatio = match[2];
+				tag = `<iframe style="aspect-ratio:${aspectRatio}" src="https://www.youtube.com/embed/${videoId}" title="${alt}" frameborder="0" allow="clipboard-write; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
 			} else {
 				// Add title
 				tag = `<img src="${src}" alt="${alt}" title="${alt}">`;
