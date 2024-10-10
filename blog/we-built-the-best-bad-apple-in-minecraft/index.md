@@ -536,6 +536,37 @@ Unfortunately, `ffmpeg`, the tool I used to generate video, doesn't support blue
 ![A girl and the sun, with a radial gradient around the sun. The gradient is of average quality, but not chunky anymore.](grayscale-sun-final.png)
 
 
+### Oopsie
+
+One problem becomes apparent when dithering is implemented, however.
+
+Where did these dark gray pixels come from?
+
+![A girl holding an apple. The girl's is not perfectly black, there are some gray pixels.](grayscale-hand-fullrange.png)
+
+The stars shouldn't be this noisy and large:
+
+![A girl flying on a broom towards a castle under a night sky. The stars are visibly noisy.](grayscale-sky-fullrange.png)
+
+What's this uneven gradient?
+
+![A girl and the sun, with a radial gradient around the sun. The gradient starts as an ideal circle but is malformed at the edge.](grayscale-sun-fullrange.png)
+
+You see, the source of the Bad Apple!! animation is an [upload](https://www.nicovideo.jp/watch/sm8628149) on [Niconico](https://en.wikipedia.org/wiki/Niconico) by an anonymous user. I tried to reach them via various channels to no avail, so I only had access to lossily compressed material. These artifacts are present in the original video too, they are just less visible.
+
+Is it even possible to denoise a video while neither blurring edges nor introducing gradient banding? Sort of. Bad Apple!! has few solid gray regions, so visible noise mostly occurs on blacks and whites only. This meant that I could simply round almost-blacks to black, almost-whites to white, and spread the inbetween colors for continuity:
+
+![A Curves graph from GIMP. Values 0-15 are mapped to 0, values 16-239 are mapped to 0-255 linearly, values 240-255 are mapped to 255.](curves.png)
+
+That's better.
+
+![A girl holding an apple. The girl's is almost perfectly black.](grayscale-hand-reducedrange.png)
+
+![A girl flying on a broom towards a castle under a night sky. The stars are not noisy.](grayscale-sky-reducedrange.png)
+
+![A girl and the sun, with a radial gradient around the sun. The gradient is a lot smaller than before, but is almost perfectly circular.](grayscale-sun-reducedrange.png)
+
+
 ### Frame rate
 
 Transforming 30 fps to 20 fps sounds like a no-brainer. Just drop every third frame. But there's a reason we don't just drop every third pixel while resizing an image, and the same principle applies to the time axis.
