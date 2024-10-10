@@ -107,9 +107,9 @@ pre code {
 	max-width: 100%;
 	height: auto;
 }
-.epilepsy::before {
-	content: "This video contains flashes that might trigger seizures in people with photosensitive epilepsy. Stop watching if you experience any symptoms. For convenience, the title text for the video explains the action in prose.";
+.epilepsy {
 	display: block;
+	font-weight: normal;
 	background-color: #db4f37;
 	color: #ffffff;
 	padding: 1rem;
