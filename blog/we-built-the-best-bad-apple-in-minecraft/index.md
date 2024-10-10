@@ -67,6 +67,7 @@ I didn't want to go into this blind, so I tried to find what others did before m
 
 |Author + video link|Frames|Resolution|Colors|Slower than real-time?|Method|
 |---------------------|------|----------|------|-----------|------|
+|My goal|20 fps|$512 \times 384$|$> 2$|Real-time|???|
 |[Sloimay](https://www.youtube.com/watch?v=9jW6WyRoDAQ)|30 fps|$96 \times 72$|B/W|$6 \times$ (simulation only)|Command blocks|
 |[Sloimay](https://www.youtube.com/watch?v=JUJUwZbl304)|15 fps|$64 \times 48$|B/W|$300 \times$|Pure redstone|
 |[Mod Punchtree](https://www.youtube.com/watch?v=AY5ROo13oIM)|2 fps|$32 \times 24$|B/W|$\ge 10 \times$, hard to estimate|Pure redstone (MPU 8)|
