@@ -3,12 +3,12 @@ title: We built the best "Bad Apple!!" in Minecraft
 time: October 10, 2024
 discussion: https://news.ycombinator.com/item?id=41798369
 intro: |
-    Demoscene is the art of pushing computers to perform tasks weren't designed to handle. One recurring theme in demoscene is the shadow-art animation "Bad Apple!!". We've played it on the Commodore 64, [Vectrex](https://en.wikipedia.org/wiki/Vectrex) (a unique game console utilizing only vector graphics), [Impulse Tracker](https://www.youtube.com/watch?v=SDvk3aL78fI), and even [exploited Super Mario Bros.](https://tasvideos.org/6012M) to play it.
+    Demoscene is the art of pushing computers to perform tasks they weren't designed to handle. One recurring theme in demoscene is the shadow-art animation "Bad Apple!!". We've played it on the Commodore 64, [Vectrex](https://en.wikipedia.org/wiki/Vectrex) (a unique game console utilizing only vector graphics), [Impulse Tracker](https://www.youtube.com/watch?v=SDvk3aL78fI), and even [exploited Super Mario Bros.](https://tasvideos.org/6012M) to play it.
 
     But how about Bad Apple!!... in Minecraft?
 ---
 
-Demoscene is the art of pushing computers to perform tasks weren't designed to handle. One recurring theme in demoscene is the shadow-art animation "Bad Apple!!". We've played it on the Commodore 64, [Vectrex](https://en.wikipedia.org/wiki/Vectrex) (a unique game console utilizing only vector graphics), [Impulse Tracker](https://www.youtube.com/watch?v=SDvk3aL78fI), and even [exploited Super Mario Bros.](https://tasvideos.org/6012M) to play it.
+Demoscene is the art of pushing computers to perform tasks they weren't designed to handle. One recurring theme in demoscene is the shadow-art animation "Bad Apple!!". We've played it on the Commodore 64, [Vectrex](https://en.wikipedia.org/wiki/Vectrex) (a unique game console utilizing only vector graphics), [Impulse Tracker](https://www.youtube.com/watch?v=SDvk3aL78fI), and even [exploited Super Mario Bros.](https://tasvideos.org/6012M) to play it.
 
 But how about Bad Apple!!... in Minecraft?
 
