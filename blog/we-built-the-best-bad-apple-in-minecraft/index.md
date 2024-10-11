@@ -63,7 +63,7 @@ I do things not because they are easy, but because they are hard. Before diving 
 
 ### Prior art
 
-I didn't want to go into this blind, so I tried to find what others did before me. Thanks for motivating me to do my best!
+I didn't want to go into this blind, so I tried to find what others did before me. (Thanks for motivating me to do my best!)
 
 |Author + video link|Frames|Resolution|Colors|Slower than real-time?|Method|
 |---------------------|------|----------|------|-----------|------|
