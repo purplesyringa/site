@@ -7,15 +7,25 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Thu, 10 Oct 2024 13:03:50 GMT</lastBuildDate>
+		<lastBuildDate>Wed, 06 Nov 2024 13:11:27 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
 		
 			<item>
+				<title>Bringing faster exceptions to Rust</title>
+				<link>https://purplesyringa.moe/blog/./bringing-faster-exceptions-to-rust/</link>
+				<description>Three months ago, I wrote about why you might want to use panics for error handling. Even though it’s a catchy title, panics are hardly suited for this goal, even if you try to hack around with macros and libraries. The real star is the unwinding mechanism, which powers panics. This post is the first in a series exploring what unwinding is, how to speed it up, and how it can benefit Rust and C++ programmers.</description>
+				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+				
+				<guid>https://purplesyringa.moe/blog/./bringing-faster-exceptions-to-rust/</guid>
+				<pubDate>Wed, 06 Nov 2024 00:00:00 GMT</pubDate>
+			</item>
+		
+			<item>
 				<title>We built the best &quot;Bad Apple!!&quot; in Minecraft</title>
 				<link>https://purplesyringa.moe/blog/./we-built-the-best-bad-apple-in-minecraft/</link>
-				<description>Demoscene is the art of pushing computers to perform tasks weren’t designed to handle. One recurring theme in demoscene is the shadow-art animation “Bad Apple!!”. We’ve played it on the Commodore 64, Vectrex (a unique game console utilizing only vector graphics), Impulse Tracker, and even exploited Super Mario Bros. to play it.
+				<description>Demoscene is the art of pushing computers to perform tasks they weren’t designed to handle. One recurring theme in demoscene is the shadow-art animation “Bad Apple!!”. We’ve played it on the Commodore 64, Vectrex (a unique game console utilizing only vector graphics), Impulse Tracker, and even exploited Super Mario Bros. to play it.
 But how about Bad Apple!!.. in Minecraft?</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				<comments>https://news.ycombinator.com/item?id=41798369</comments>
