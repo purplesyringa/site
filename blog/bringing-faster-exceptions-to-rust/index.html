@@ -1,0 +1,267 @@
+<!doctypehtml><html prefix="og: http://ogp.me/ns#"lang=en_US><meta charset=utf-8><meta content=width=device-width,initial-scale=1 name=viewport><title>Bringing faster exceptions to Rust | purplesyringa's blog</title><link href=../../all.css rel=stylesheet><link href=../../blog.css rel=stylesheet><link href=../../vendor/Temml-Local.css rel=stylesheet><link crossorigin href=https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&family=Slabo+27px&display=swap rel=stylesheet><link href=../../fonts/webfont.css rel=stylesheet><link media="screen and (prefers-color-scheme: dark"href=../../vendor/atom-one-dark.min.css rel=stylesheet><link media="screen and (prefers-color-scheme: light"href=../../vendor/a11y-light.min.css rel=stylesheet><link title="Blog posts"href=../../blog/feed.rss rel=alternate type=application/rss+xml><meta content="Bringing faster exceptions to Rust"property=og:title><meta content=article property=og:type><meta content=https://purplesyringa.moe/blog/bringing-faster-exceptions-to-rust/og.png property=og:image><meta content=https://purplesyringa.moe/blog/bringing-faster-exceptions-to-rust/ property=og:url><meta content="Three months ago, I wrote a post on why you might want to use panics for error handling. That’s a clickbaity title: panics are badly suited for this goal, even if you try to hack around with macros and libraries. The real treasure is the unwinding mechanism. This is the first of a series of posts on what unwinding is, how to speed it up, and how it can help Rust and C++ programmers"property=og:description><meta content=en_US property=og:locale><meta content="purplesyringa's blog"property=og:site_name><meta content=summary_large_image name=twitter:card><meta content=https://purplesyringa.moe/blog/bringing-faster-exceptions-to-rust/og.png name=twitter:image><script data-website-id=0da1961d-43f2-45cc-a8e2-75679eefbb69 defer src=https://zond.tei.su/script.js></script><body><header><div class=viewport-container><div class=media><a href=https://github.com/purplesyringa><img alt=GitHub src=../../images/github-mark-white.svg></a></div><h1><a href=/>purplesyringa</a></h1><nav><a href=../..>about</a><a class=current href=../../blog/>blog</a><a href=../../sink/>kitchen sink</a></nav></div></header><section><div class=viewport-container><h2>Bringing faster exceptions to Rust</h2><time>November 6, 2024</time><p>Three months ago, I wrote a post on why <a href=../you-might-want-to-use-panics-for-error-handling/>you might want to use panics for error handling</a>. That’s a clickbaity title: panics are badly suited for this goal, even if you try to hack around with macros and libraries. The real treasure is <em>the unwinding mechanism</em>. This is the first of a series of posts on what unwinding is, how to speed it up, and how it can help Rust and C++ programmers.<p class=next-group><span aria-level=3 class=side-header role=heading><span>TL;DR</span></span>Check out the <a href=https://lib.rs/lithium>Lithium</a> crate.<p class=next-group><span aria-level=3 class=side-header role=heading><span>The what?</span></span>Normally, when you call a function, execution proceeds to the statement after the call when the function returns:<pre><code class=language-rust><span class=hljs-keyword>fn</span> <span class="hljs-title function_">f</span>() {
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>x</span> = <span class="hljs-title function_ invoke__">g</span>();
+    dbg!(x); <span class=hljs-comment>// x = 123</span>
+}
+
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">g</span>() <span class=hljs-punctuation>-></span> <span class=hljs-type>i32</span> {
+    <span class=hljs-keyword>return</span> <span class=hljs-number>123</span>;
+}
+</code></pre><p>However, suppose that some calls could specify <em>alternate</em> return points, and the callee could decide whether it wishes to return to the main return point or the alternate one:<pre><code class=language-rust><span class=hljs-comment>// Dreamed-up syntax</span>
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">f</span>() {
+    <span class="hljs-title function_ invoke__">g</span>() alternate |x| {
+        dbg!(x); <span class=hljs-comment>// x = 123</span>
+    };
+}
+
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">g</span>() <span class=hljs-punctuation>-></span> () alternate <span class=hljs-type>i32</span> {
+    return_alternate <span class=hljs-number>123</span>;
+}
+</code></pre><p>This looks simple. Returning to an alternate address shouldn’t be significantly more expensive than returning to the normal address, so this has to be cheap.<p>But wait. If the function returns either of two values, it’s as if it returned a success value or an error. This reminds me of something…<pre><code class=language-rust><span class=hljs-comment>// Dreamed-up syntax</span>
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">f</span>() {
+    <span class="hljs-title function_ invoke__">g</span>() catch |x| {
+        dbg!(x); <span class=hljs-comment>// x = 123</span>
+    };
+}
+
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">g</span>() <span class=hljs-punctuation>-></span> () throws <span class=hljs-type>i32</span> {
+    throw <span class=hljs-number>123</span>;
+}
+</code></pre><p>That’s just exceptions! And we all know exceptions are slow. How did we get from alternate return addresses to something you should avoid at all costs in performant code?<p class=next-group><span aria-level=3 class=side-header role=heading><span>Dramatis personae</span></span>The core of the alternate return mechanism is <em>the unwinder</em>. This is a system library that knows how to map main return addresses to alternate return addresses, how to pass alternate return values from the callee to the caller, and how to consume this return value. The details differ between operating systems and runtimes, but on Linux, the main parts of the unwinder API are these two functions:<ul><li><code>_Unwind_RaiseException(Exception)</code>: Perform an alternate return, assuming we’re current in a normal return point.<li><code>_Unwind_Resume(Exception)</code>: Perform an alternate return, assuming we’re current in an alternate return point.</ul><p>So, what is it about the implementation of exceptions and panics that makes them so inefficient? This is what we’ll be digging into over the course of this post series, and today we’ll see if we can speed up the Rust side of panic handling in particular, without touching the unwinder implementation itself.<h2>Digging deeper</h2><p class=next-group><span aria-level=3 class=side-header role=heading><span>Benchmark</span></span>Before we start optimizing stuff, let’s see where we stand at the moment. I’m going to use the <a href=https://docs.rs/criterion>criterion</a> framework for benchmarking, and the first attempt is:<pre><code class=language-rust><span class=hljs-comment>// Prevent spamming stderr with panic messages</span>
+std::panic::<span class="hljs-title function_ invoke__">set_hook</span>(<span class=hljs-type>Box</span>::<span class="hljs-title function_ invoke__">new</span>(|_| {}));
+
+b.<span class="hljs-title function_ invoke__">iter</span>(|| {
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>_</span> = std::panic::<span class="hljs-title function_ invoke__">catch_unwind</span>(|| <span class=hljs-built_in>panic!</span>(<span class=hljs-string>"Hello, world!"</span>));
+})
+</code></pre><p><code>2.3814 µs</code>. That’s less than 1 millions panics per second, huh. Okay, so why does that happen?<p class=next-group><span aria-level=3 class=side-header role=heading><span>Macro</span></span>Let’s see what happens when you call <code>panic!()</code>. After passing arguments through some macro calls, we arrive at <code>core::panic::panic_fmt</code>:<pre><code class=language-rust><span class=hljs-keyword>pub</span> <span class=hljs-keyword>const</span> <span class=hljs-keyword>fn</span> <span class="hljs-title function_">panic_fmt</span>(fmt: fmt::Arguments<<span class=hljs-symbol>'_</span>>) <span class=hljs-punctuation>-></span> ! {
+    <span class=hljs-comment>// snip</span>
+
+    <span class=hljs-keyword>extern</span> <span class=hljs-string>"Rust"</span> {
+        <span class=hljs-meta>#[lang = <span class=hljs-string>"panic_impl"</span>]</span>
+        <span class=hljs-keyword>fn</span> <span class="hljs-title function_">panic_impl</span>(pi: &PanicInfo<<span class=hljs-symbol>'_</span>>) <span class=hljs-punctuation>-></span> !;
+    }
+
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>pi</span> = PanicInfo::<span class="hljs-title function_ invoke__">new</span>(
+        fmt,
+        Location::<span class="hljs-title function_ invoke__">caller</span>(),
+        <span class=hljs-comment>/* can_unwind */</span> <span class=hljs-literal>true</span>,
+        <span class=hljs-comment>/* force_no_backtrace */</span> <span class=hljs-literal>false</span>,
+    );
+
+    <span class=hljs-comment>// SAFETY: `panic_impl` is defined in safe Rust code and thus is safe to call.</span>
+    <span class=hljs-keyword>unsafe</span> { <span class="hljs-title function_ invoke__">panic_impl</span>(&pi) }
+}
+</code></pre><p>The first thing we need to know is that the formatting arguments are necessarily type-erased, as <code>panic_impl</code> is an extern function defined elsewhere, so no optimizations are likely to occur here (barring LTO).<p>Where is the lang item <code>panic_impl</code> defined? It’s eventually resolved to <code>std::panicking::begin_panic_handler</code>, defined in <a href=https://doc.rust-lang.org/1.82.0/src/std/panicking.rs.html#595-679>std</a> as opposed to <code>core</code>. This is reasonable: while formatting is OS-independent, the actual panicking mechanism is OS-dependent, so we have to enter <code>std</code> eventually. Why is the <code>panic!</code> macro in <code>core</code> in the first place? That’s because many Rust builtins panic, and making them work in <code>#![no_std]</code> requires the macro to be in <code>core</code>.<pre><code class=language-rust><span class=hljs-keyword>pub</span> <span class=hljs-keyword>fn</span> <span class="hljs-title function_">begin_panic_handler</span>(info: &core::panic::PanicInfo<<span class=hljs-symbol>'_</span>>) <span class=hljs-punctuation>-></span> ! {
+    <span class=hljs-keyword>struct</span> <span class="hljs-title class_">FormatStringPayload</span><<span class=hljs-symbol>'a</span>> { <span class=hljs-comment>/* snip */</span> }
+
+    <span class=hljs-comment>// snip</span>
+
+    <span class=hljs-keyword>unsafe</span> <span class=hljs-keyword>impl</span> <span class="hljs-title class_">PanicPayload</span> <span class=hljs-keyword>for</span> <span class="hljs-title class_">FormatStringPayload</span><<span class=hljs-symbol>'_</span>> {
+        <span class=hljs-keyword>fn</span> <span class="hljs-title function_">take_box</span>(&<span class=hljs-keyword>mut</span> <span class=hljs-keyword>self</span>) <span class=hljs-punctuation>-></span> *<span class="hljs-title function_ invoke__">mut</span> (<span class=hljs-keyword>dyn</span> Any + <span class=hljs-built_in>Send</span>) {
+            <span class=hljs-comment>// We do two allocations here, unfortunately. But (a) they're required with the current</span>
+            <span class=hljs-comment>// scheme, and (b) we don't handle panic + OOM properly anyway (see comment in</span>
+            <span class=hljs-comment>// begin_panic below).</span>
+            <span class=hljs-keyword>let</span> <span class=hljs-variable>contents</span> = mem::<span class="hljs-title function_ invoke__">take</span>(<span class=hljs-keyword>self</span>.<span class="hljs-title function_ invoke__">fill</span>());
+            <span class=hljs-type>Box</span>::<span class="hljs-title function_ invoke__">into_raw</span>(<span class=hljs-type>Box</span>::<span class="hljs-title function_ invoke__">new</span>(contents))
+        }
+
+        <span class=hljs-comment>// snip</span>
+    }
+
+    <span class=hljs-comment>// snip</span>
+
+    crate::sys::backtrace::__rust_end_short_backtrace(<span class=hljs-keyword>move</span> || {
+        <span class=hljs-keyword>if</span> <span class=hljs-keyword>let</span> <span class=hljs-variable>Some</span>(s) = msg.<span class="hljs-title function_ invoke__">as_str</span>() {
+            <span class=hljs-comment>// snip</span>
+        } <span class=hljs-keyword>else</span> {
+            <span class="hljs-title function_ invoke__">rust_panic_with_hook</span>(
+                &<span class=hljs-keyword>mut</span> FormatStringPayload { inner: &msg, string: <span class=hljs-literal>None</span> },
+                loc,
+                info.<span class="hljs-title function_ invoke__">can_unwind</span>(),
+                info.force_no_backtrace(),
+            );
+        }
+    })
+}
+
+
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">rust_panic_with_hook</span>(
+    payload: &<span class=hljs-keyword>mut</span> <span class=hljs-keyword>dyn</span> PanicPayload,
+    location: &Location<<span class=hljs-symbol>'_</span>>,
+    can_unwind: <span class=hljs-type>bool</span>,
+    force_no_backtrace: <span class=hljs-type>bool</span>,
+) <span class=hljs-punctuation>-></span> ! {
+    <span class=hljs-comment>// snip</span>
+    <span class=hljs-keyword>match</span> *HOOK.<span class="hljs-title function_ invoke__">read</span>().<span class="hljs-title function_ invoke__">unwrap_or_else</span>(PoisonError::into_inner) {
+        <span class=hljs-comment>// snip</span>
+        Hook::<span class="hljs-title function_ invoke__">Custom</span>(<span class=hljs-keyword>ref</span> hook) => {
+            <span class="hljs-title function_ invoke__">hook</span>(&PanicHookInfo::<span class="hljs-title function_ invoke__">new</span>(location, payload.<span class="hljs-title function_ invoke__">get</span>(), can_unwind, force_no_backtrace));
+        }
+    }
+    <span class=hljs-comment>// snip</span>
+    <span class="hljs-title function_ invoke__">rust_panic</span>(payload)
+}
+</code></pre><p>Okay, that’s a lot of code, but the gist of it is that we generate a type-erased panic payload object that wraps the format arguments in another type-erased box, among other things, and then we invoke the panic hook that prints the traceback (or does nothing, in our benchmark). All of that before unwinding even starts!<p>Luckily, we can skip most of this machinery by calling <code>std::panic::resume_unwind</code> instead of <code>panic!</code>. This function skips calling the panic hook and takes a <code>Box&LTdyn Any + Send></code> argument instead of an arbitrary format string, so we can shed some load:<pre><code class=language-rust>b.<span class="hljs-title function_ invoke__">iter</span>(|| {
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>_</span> = std::panic::<span class="hljs-title function_ invoke__">catch_unwind</span>(|| std::panic::<span class="hljs-title function_ invoke__">resume_unwind</span>(<span class=hljs-type>Box</span>::<span class="hljs-title function_ invoke__">new</span>(<span class=hljs-string>"Hello, world!"</span>)));
+})
+</code></pre><p><code>1.8379 µs (-23.711%)</code>. That’s better! We’ve only removed indirection and it’s already working significantly better.<p class=next-group><span aria-level=3 class=side-header role=heading><span>More indirection</span></span><code>resume_unwind</code> calls directly into <a href=https://doc.rust-lang.org/1.82.0/src/std/panicking.rs.html#828-850>rust_panic_without_hook</a>:<pre><code class=language-rust><span class=hljs-keyword>pub</span> <span class=hljs-keyword>fn</span> <span class="hljs-title function_">rust_panic_without_hook</span>(payload: <span class=hljs-type>Box</span><<span class=hljs-keyword>dyn</span> Any + <span class=hljs-built_in>Send</span>>) <span class=hljs-punctuation>-></span> ! {
+    panic_count::<span class="hljs-title function_ invoke__">increase</span>(<span class=hljs-literal>false</span>);
+
+    <span class=hljs-keyword>struct</span> <span class="hljs-title class_">RewrapBox</span>(<span class=hljs-type>Box</span><<span class=hljs-keyword>dyn</span> Any + <span class=hljs-built_in>Send</span>>);
+
+    <span class=hljs-keyword>unsafe</span> <span class=hljs-keyword>impl</span> <span class="hljs-title class_">PanicPayload</span> <span class=hljs-keyword>for</span> <span class="hljs-title class_">RewrapBox</span> {
+        <span class=hljs-keyword>fn</span> <span class="hljs-title function_">take_box</span>(&<span class=hljs-keyword>mut</span> <span class=hljs-keyword>self</span>) <span class=hljs-punctuation>-></span> *<span class="hljs-title function_ invoke__">mut</span> (<span class=hljs-keyword>dyn</span> Any + <span class=hljs-built_in>Send</span>) {
+            <span class=hljs-type>Box</span>::<span class="hljs-title function_ invoke__">into_raw</span>(mem::<span class="hljs-title function_ invoke__">replace</span>(&<span class=hljs-keyword>mut</span> <span class=hljs-keyword>self</span>.<span class=hljs-number>0</span>, <span class=hljs-type>Box</span>::<span class="hljs-title function_ invoke__">new</span>(())))
+        }
+        <span class=hljs-comment>// snip</span>
+    }
+    <span class=hljs-comment>// snip</span>
+    <span class="hljs-title function_ invoke__">rust_panic</span>(&<span class=hljs-keyword>mut</span> <span class="hljs-title function_ invoke__">RewrapBox</span>(payload))
+}
+
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">rust_panic</span>(msg: &<span class=hljs-keyword>mut</span> <span class=hljs-keyword>dyn</span> PanicPayload) <span class=hljs-punctuation>-></span> ! {
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>code</span> = <span class=hljs-keyword>unsafe</span> { __rust_start_panic(msg) };
+    rtabort!(<span class=hljs-string>"failed to initiate panic, error {code}"</span>)
+}
+
+<span class=hljs-keyword>extern</span> <span class=hljs-string>"Rust"</span> {
+    <span class=hljs-comment>/// `PanicPayload` lazily performs allocation only when needed (this avoids</span>
+    <span class=hljs-comment>/// allocations when using the "abort" panic runtime).</span>
+    <span class=hljs-keyword>fn</span> <span class="hljs-title function_">__rust_start_panic</span>(payload: &<span class=hljs-keyword>mut</span> <span class=hljs-keyword>dyn</span> PanicPayload) <span class=hljs-punctuation>-></span> <span class=hljs-type>u32</span>;
+}
+</code></pre><p>All we need to know is that there’s still quite a bit of type-erasure here: firstly, the payload is <code>Box&LTdyn Any + Send></code>, and secondly, we cast <code>&mut RewrapBox</code> to <code>&mut dyn PanicPayload</code>. None of this would be necessary if we just wanted to perform statically checked alternate returns. The double-panic protection (<code>panic_count</code>) wouldn’t be necessary in this context either.<p>So what do you say we call <code>__rust_start_panic</code> directly?<pre><code class=language-rust><span class=hljs-meta>#![feature(std_internals)]</span>
+
+<span class=hljs-keyword>use</span> core::any::Any;
+<span class=hljs-keyword>use</span> core::panic::PanicPayload;
+
+<span class=hljs-keyword>struct</span> <span class="hljs-title class_">RewrapBox</span>(<span class=hljs-type>Box</span><<span class=hljs-keyword>dyn</span> Any + <span class=hljs-built_in>Send</span>>);
+
+<span class=hljs-keyword>unsafe</span> <span class=hljs-keyword>impl</span> <span class="hljs-title class_">PanicPayload</span> <span class=hljs-keyword>for</span> <span class="hljs-title class_">RewrapBox</span> {
+    <span class=hljs-keyword>fn</span> <span class="hljs-title function_">take_box</span>(&<span class=hljs-keyword>mut</span> <span class=hljs-keyword>self</span>) <span class=hljs-punctuation>-></span> *<span class="hljs-title function_ invoke__">mut</span> (<span class=hljs-keyword>dyn</span> Any + <span class=hljs-built_in>Send</span> + <span class=hljs-symbol>'static</span>) {
+        <span class=hljs-type>Box</span>::<span class="hljs-title function_ invoke__">into_raw</span>(core::mem::<span class="hljs-title function_ invoke__">replace</span>(&<span class=hljs-keyword>mut</span> <span class=hljs-keyword>self</span>.<span class=hljs-number>0</span>, <span class=hljs-type>Box</span>::<span class="hljs-title function_ invoke__">new</span>(())))
+    }
+
+    <span class=hljs-keyword>fn</span> <span class="hljs-title function_">get</span>(&<span class=hljs-keyword>mut</span> <span class=hljs-keyword>self</span>) <span class=hljs-punctuation>-></span> &(<span class=hljs-keyword>dyn</span> Any + <span class=hljs-built_in>Send</span> + <span class=hljs-symbol>'static</span>) {
+        &*<span class=hljs-keyword>self</span>.<span class=hljs-number>0</span>
+    }
+}
+
+<span class=hljs-keyword>impl</span> <span class="hljs-title class_">core</span>::fmt::Display <span class=hljs-keyword>for</span> <span class="hljs-title class_">RewrapBox</span> {
+    <span class=hljs-keyword>fn</span> <span class="hljs-title function_">fmt</span>(&<span class=hljs-keyword>self</span>, f: &<span class=hljs-keyword>mut</span> core::fmt::Formatter<<span class=hljs-symbol>'_</span>>) <span class=hljs-punctuation>-></span> core::fmt::<span class=hljs-type>Result</span> {
+        f.<span class="hljs-title function_ invoke__">write_str</span>(<span class=hljs-string>"Box&LTdyn Any>"</span>)
+    }
+}
+
+<span class=hljs-keyword>unsafe</span> <span class=hljs-keyword>extern</span> <span class=hljs-string>"Rust"</span> {
+    safe <span class=hljs-keyword>fn</span> <span class="hljs-title function_">__rust_start_panic</span>(payload: &<span class=hljs-keyword>mut</span> <span class=hljs-keyword>dyn</span> PanicPayload) <span class=hljs-punctuation>-></span> <span class=hljs-type>u32</span>;
+}
+
+b.<span class="hljs-title function_ invoke__">iter</span>(|| {
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>_</span> = std::panic::<span class="hljs-title function_ invoke__">catch_unwind</span>(|| {
+        __rust_start_panic(&<span class=hljs-keyword>mut</span> <span class="hljs-title function_ invoke__">RewrapBox</span>(<span class=hljs-type>Box</span>::<span class="hljs-title function_ invoke__">new</span>(<span class=hljs-string>"Hello, world!"</span>)))
+    });
+})
+</code></pre><p><code>580.44 ns (-68.481%)</code>. That’s better. It’s not quite <em>sound</em>, as we’re now messing with the panic counter, but this’ll suffice for a benchmark.<p class=next-group><span aria-level=3 class=side-header role=heading><span>Catching</span></span>We’ve just removed the panic counter increment, so let’s figure out how to remove the mirroring decrement to restore the balance and keep our code sound. We’re looking for <code>std::panic::catch_unwind</code>, which just forwards the call <a href=https://doc.rust-lang.org/1.82.0/src/std/panicking.rs.html#474-584>here</a>. I won’t duplicate all the code, but all I did was add <code>#[inline(always)]</code>, remove <code>#[cold]</code>, and remove the panic count decrement. This results in <code>578.96 ns (-0.2550%)</code>, which is just noise.<p class=next-group><span aria-level=3 class=side-header role=heading><span>panic_unwind</span></span>The next layer of abstraction to peel is these two functions:<pre><code class=language-rust><span class=hljs-keyword>extern</span> <span class=hljs-string>"Rust"</span> <span class=hljs-keyword>fn</span> <span class="hljs-title function_">__rust_start_panic</span>(payload: &<span class=hljs-keyword>mut</span> <span class=hljs-keyword>dyn</span> PanicPayload) <span class=hljs-punctuation>-></span> <span class=hljs-type>u32</span>;
+<span class=hljs-keyword>extern</span> <span class=hljs-string>"C"</span> <span class=hljs-keyword>fn</span> <span class="hljs-title function_">__rust_panic_cleanup</span>(payload: *<span class=hljs-keyword>mut</span> <span class=hljs-type>u8</span>) <span class=hljs-punctuation>-></span> *<span class="hljs-title function_ invoke__">mut</span> (<span class=hljs-keyword>dyn</span> Any + <span class=hljs-built_in>Send</span> + <span class=hljs-symbol>'static</span>);
+</code></pre><p>And the reason they are extern is yet another indirection. Depending on the configuration, Rust panics can either trigger unwinding or abort the program. This behavior is controlled by the <code>-C panic="unwind/abort"</code> rustc flag. Depending on its value, different crates providing these two functions are linked in. The crate we are interested in is <code>panic_unwind</code>. It’s sources aren’t available on rust-lang.org, so we’ll have to use <a href=https://github.com/rust-lang/rust/tree/1.82.0/library/panic_unwind>GitHub</a>.<p>This is where we finally enter platform-dependent code. I’m using Linux, so we’re interested in the Itanium exception handling ABI (called <code>GCC</code> in Rust code). The implementation here is <a href=https://github.com/rust-lang/rust/blob/1.82.0/library/panic_unwind/src/gcc.rs#L61-L106>quite simple</a>:<pre><code class=language-rust><span class=hljs-keyword>pub</span> <span class=hljs-keyword>unsafe</span> <span class=hljs-keyword>fn</span> <span class="hljs-title function_">panic</span>(data: <span class=hljs-type>Box</span><<span class=hljs-keyword>dyn</span> Any + <span class=hljs-built_in>Send</span>>) <span class=hljs-punctuation>-></span> <span class=hljs-type>u32</span> {
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>exception</span> = <span class=hljs-type>Box</span>::<span class="hljs-title function_ invoke__">new</span>(Exception {
+        _uwe: uw::_Unwind_Exception {
+            exception_class: <span class="hljs-title function_ invoke__">rust_exception_class</span>(),
+            exception_cleanup: <span class="hljs-title function_ invoke__">Some</span>(exception_cleanup),
+            private: [core::ptr::<span class="hljs-title function_ invoke__">null</span>(); uw::unwinder_private_data_size],
+        },
+        canary: &CANARY,
+        cause: data,
+    });
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>exception_param</span> = <span class=hljs-type>Box</span>::<span class="hljs-title function_ invoke__">into_raw</span>(exception) <span class=hljs-keyword>as</span> *<span class=hljs-keyword>mut</span> uw::_Unwind_Exception;
+    <span class=hljs-keyword>return</span> uw::_Unwind_RaiseException(exception_param) <span class=hljs-keyword>as</span> <span class=hljs-type>u32</span>;
+
+    <span class=hljs-comment>// snip</span>
+}
+
+<span class=hljs-keyword>pub</span> <span class=hljs-keyword>unsafe</span> <span class=hljs-keyword>fn</span> <span class="hljs-title function_">cleanup</span>(ptr: *<span class=hljs-keyword>mut</span> <span class=hljs-type>u8</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>Box</span><<span class=hljs-keyword>dyn</span> Any + <span class=hljs-built_in>Send</span>> {
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>exception</span> = ptr <span class=hljs-keyword>as</span> *<span class=hljs-keyword>mut</span> uw::_Unwind_Exception;
+    <span class=hljs-keyword>if</span> (*exception).exception_class != <span class="hljs-title function_ invoke__">rust_exception_class</span>() {
+        <span class=hljs-comment>// snip</span>
+    }
+
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>exception</span> = exception.cast::&LTException>();
+    <span class=hljs-comment>// snip</span>
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>exception</span> = <span class=hljs-type>Box</span>::<span class="hljs-title function_ invoke__">from_raw</span>(exception <span class=hljs-keyword>as</span> *<span class=hljs-keyword>mut</span> Exception);
+    exception.cause
+}
+</code></pre><p>To throw a panic, we allocate <em>yet another</em> object on the heap and pass it to <code>_Unwind_RaiseException</code>. To catch a panic, we cast it back to a <code>Box</code> and retrieve the <code>cause</code> field.<p>To simplify this code for out statically annotated code, we can embed the cause directly in the exception object, without wrapping it in <code>Box</code> beforehand. To separate our exceptions from Rust panics, we’ll use our own exception class, too:<pre><code class=language-rust><span class=hljs-meta>#[repr(C)]</span>
+<span class=hljs-keyword>struct</span> <span class="hljs-title class_">UwException</span> {
+    class: <span class=hljs-type>u64</span>,
+    destructor: <span class=hljs-type>Option</span><<span class=hljs-keyword>extern</span> <span class=hljs-string>"C"</span> <span class="hljs-title function_ invoke__">fn</span>(<span class=hljs-type>u32</span>, *<span class=hljs-keyword>mut</span> <span class=hljs-keyword>Self</span>)>,
+    private: [*<span class="hljs-title function_ invoke__">const</span> (); <span class=hljs-number>2</span>],
+}
+
+<span class=hljs-meta>#[repr(C)]</span>
+<span class=hljs-keyword>struct</span> <span class="hljs-title class_">Exception</span>&LTE> {
+    uw: UwException,
+    cause: E,
+}
+
+<span class=hljs-keyword>const</span> CLASS: <span class=hljs-type>u64</span> = <span class=hljs-type>u64</span>::<span class="hljs-title function_ invoke__">from_ne_bytes</span>(*<span class=hljs-string>b"RUSTpurp"</span>);
+
+<span class=hljs-meta>#[inline(always)]</span>
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">throw</span>&LTE>(cause: E) {
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>exception</span> = <span class=hljs-type>Box</span>::<span class="hljs-title function_ invoke__">new</span>(Exception {
+        uw: UwException {
+            class: CLASS,
+            destructor: <span class="hljs-title function_ invoke__">Some</span>(destructor),
+            private: [core::ptr::<span class="hljs-title function_ invoke__">null</span>(); <span class=hljs-number>2</span>],
+        },
+        cause,
+    });
+    <span class=hljs-keyword>unsafe</span> {
+        _Unwind_RaiseException(<span class=hljs-type>Box</span>::<span class="hljs-title function_ invoke__">into_raw</span>(exception).<span class="hljs-title function_ invoke__">cast</span>());
+    }
+    std::process::<span class="hljs-title function_ invoke__">abort</span>();
+}
+
+<span class=hljs-keyword>extern</span> <span class=hljs-string>"C"</span> <span class=hljs-keyword>fn</span> <span class="hljs-title function_">destructor</span>(_code: <span class=hljs-type>u32</span>, _exception: *<span class=hljs-keyword>mut</span> UwException) {
+    std::process::<span class="hljs-title function_ invoke__">abort</span>();
+}
+
+<span class=hljs-meta>#[inline(always)]</span>
+<span class=hljs-keyword>unsafe</span> <span class=hljs-keyword>fn</span> <span class="hljs-title function_">cleanup</span>&LTE>(exception: *<span class=hljs-keyword>mut</span> UwException) <span class=hljs-punctuation>-></span> E {
+    <span class=hljs-keyword>if</span> (*exception).class != CLASS {
+        std::process::<span class="hljs-title function_ invoke__">abort</span>();
+    }
+    <span class=hljs-type>Box</span>::<span class="hljs-title function_ invoke__">from_raw</span>(exception.cast::&LTException&LTE>>()).cause
+}
+
+<span class=hljs-keyword>extern</span> <span class=hljs-string>"C-unwind"</span> {
+    <span class=hljs-keyword>fn</span> <span class="hljs-title function_">_Unwind_RaiseException</span>(exception: *<span class=hljs-keyword>mut</span> UwException) <span class=hljs-punctuation>-></span> <span class=hljs-type>u32</span>;
+}
+
+b.<span class="hljs-title function_ invoke__">iter</span>(|| {
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>_</span> = catch::<_, &<span class=hljs-symbol>'static</span> <span class=hljs-type>str</span>, _>(|| throw::<&<span class=hljs-symbol>'static</span> <span class=hljs-type>str</span>>(<span class=hljs-string>"Hello, world!"</span>));
+})
+</code></pre><p><code>562.69 ns (-3.058%)</code>. This isn’t much, but every bit matters here.<p class=next-group><span aria-level=3 class=side-header role=heading><span>Allocations</span></span>We only have one heap allocation remaining now, storing the exception cause along with the <code>_Unwind_Exception</code> header for the system unwinder.<p>Why can’t we put it on the stack? When <code>throw</code> performs an alternate return, its callframe is popped from the call stack and can be overridden by the catch handlers, such as destructors of locals. So storing the exception object inside the <code>throw</code> callframe will fail.<p>We could store it inside the <code>catch</code> callframe, but then we’d need to pass a pointer to it to <code>throw</code>, which would a) make exceptions non-zero-cost in the happy path, which might be less than ideal, b) complicates the API, requiring the pointer to be passed through the callstack.<p>So instead, we’ll use thread-locals. These are cheaper than heap allocations and not significantly more expensive than stack allocation.<pre><code class=language-rust>thread_local! {
+    <span class=hljs-keyword>static</span> LOCAL: UnsafeCell&LTMaybeUninit<[<span class=hljs-type>u8</span>; <span class=hljs-number>4096</span>]>> = <span class=hljs-keyword>const</span> {
+        UnsafeCell::<span class="hljs-title function_ invoke__">new</span>(MaybeUninit::<span class="hljs-title function_ invoke__">uninit</span>())
+    };
+}
+
+<span class=hljs-keyword>unsafe</span> <span class=hljs-keyword>fn</span> <span class="hljs-title function_">local_write</span>&LTT>(x: T) <span class=hljs-punctuation>-></span> *<span class=hljs-keyword>mut</span> T {
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>p</span> = LOCAL.<span class="hljs-title function_ invoke__">with</span>(|local| local.<span class="hljs-title function_ invoke__">get</span>().cast::&LTT>());
+    <span class=hljs-keyword>unsafe</span> {
+        p.<span class="hljs-title function_ invoke__">write</span>(x);
+    }
+    p
+}
+</code></pre><p>This is just a proof-of-concept that doesn’t work with nested exceptions, larger than 4K exception objects, and so on. The result is <code>556.32 ns (-1.4666%)</code>.<h2>Conclusions</h2><p class=next-group><span aria-level=3 class=side-header role=heading><span>Comparison</span></span>We started with <code>2.3814 µs</code> and arrived at <code>556.32 ns</code>: <eq><math><mn>4.3</mn></math></eq> times faster without loss in functionality. We managed to secure this win without modifying the Rust compiler or the system unwinder. We have figured out that the Rust panic runtime is unoptimized for performance (perhaps by design), but there’s nothing stopping us from performing that optimization.<p class=next-group><span aria-level=3 class=side-header role=heading><span>Use cases</span></span>While unwinding is usually used for exception propagation, that’s not the only use case. For example, if a successful return is more rare than an error, success could be the alternate path, rather than the error. Another application of lightweight unwinding is coroutines. Think outside the box and try to mentally separate unwinding from exceptions.<p class=next-group><span aria-level=3 class=side-header role=heading><span>Projects</span></span>I have released a crate named <a href=https://lib.rs/lithium>Lithium</a> to support efficient unwinding in Rust (light as <code>Li</code>) using the method described in this post. While the API of the crate is mostly suited for exceptions, it’s generic enough to be usable for any unwinding.<p>Compared to the implementation in this post, Lithium also handles:<ul><li>Efficient rethrowing<li>Nested exceptions<li>Large exception objects<li>Targets other than x86-64 Linux, such as Windows, macOS, Emscripten, and WASM<li>Stable compilers with a fallback to (slightly optimized) panics<li>Native Rust panics inside <code>catch</code></ul><p>Please feel free to check it out and open issues <a href=https://github.com/iex-rs/lithium>on GitHub</a>!<p>Some pitfalls to be aware of are:<ul><li>Using <code>lithium::throw</code> inside <code>std::panic::catch_unwind</code> (rather than <code>lithium::catch</code>) is unsound.<li>Nightly Lithium relies on implementation details of std and rustc, so it might theoretically break in nightly if the unwinding implementation is updated. I have a CI set up and monitor changes to rustc, so this should not be a significant issue.<li>The API is in flux and might theoretically undergo non-semver-compatible changes for a while despite the crate version being <code>1.0</code>. This is for interoperability reasons and will not happen unless soundness bugs are found in the very near time, so you should be safe to play around with it.</ul></div></section><footer><div class=viewport-container><h2>Made with my own bare hands (why.)</h2></div></footer><script>window.addEventListener("keydown", e => {
+				if (e.key === "Enter") {
+					if (e.ctrlKey) {
+						window.open("https://github.com/purplesyringa/site/edit/master/blog/bringing-faster-exceptions-to-rust/index.md", "_blank");
+					} else if (
+						e.target.type === "checkbox"
+						&& e.target.parentNode
+						&& e.target.parentNode.className === "expansible-code"
+					) {
+						e.target.click();
+					}
+				}
+			});</script>
