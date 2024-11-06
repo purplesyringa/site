@@ -413,6 +413,7 @@ To make these optimizations accessible, I have released the [Lithium](https://li
 - Efficient rethrowing
 - Nested exceptions
 - Large exception objects
+- Exceptions that aren't `Send + 'static`
 - Broad target support, including Windows, macOS, Emscripten, and WASM
 - Compatibility with the stable compiler, falling back to panics
 - Support for native Rust panics inside `catch`
