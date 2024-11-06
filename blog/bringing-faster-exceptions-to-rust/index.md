@@ -1,6 +1,7 @@
 ---
 title: Bringing faster exceptions to Rust
 time: November 6, 2024
+discussion: https://www.reddit.com/r/rust/comments/1gl050z/bringing_faster_exceptions_to_rust/
 intro: |
   Three months ago, I wrote about why [you might want to use panics for error handling](../you-might-want-to-use-panics-for-error-handling/). Even though it's a catchy title, panics are hardly suited for this goal, even if you try to hack around with macros and libraries. The real star is *the unwinding mechanism*, which powers panics. This post is the first in a series exploring what unwinding is, how to speed it up, and how it can benefit Rust and C++ programmers.
 ---
