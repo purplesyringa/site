@@ -398,7 +398,16 @@ While this is just a proof-of-concept (it doesn't work with nested or greater th
 
 ### Gains
 
-Starting at `2.3814 µs`, we've optimized down to `556.32 ns` -- a $4.3 \times$ speedup without loss in functionality. We secured this win without modifying the Rust compiler or the system unwinder.
+Starting at `2.3814 µs`, we've optimized down to `556.32 ns` -- a $4.3 \times$ speedup without loss in functionality. We secured this win without modifying the Rust compiler or the system unwinder by applying the following optimizations:
+
+- Remove the hook invocation
+- Remove type erasure of format arguments
+- Remove panic counters
+- Get rid of `dyn PanicPayload`
+- Add inlining and mark `catch` code as hot
+- Remove various non-inlined cross-crate invocations
+- Avoid boxing the exception cause
+- Store the exception object in a thread-local
 
 
 ### Beyond EH
@@ -414,7 +423,7 @@ To make these optimizations accessible, I have released the [Lithium](https://li
 - Nested exceptions
 - Large exception objects
 - Exceptions that aren't `Send + 'static`
-- Broad target support, including Windows, macOS, Emscripten, and WASM
+- Broad target support, including Windows, macOS, Emscripten, and WASI
 - Compatibility with the stable compiler, falling back to panics
 - Support for native Rust panics inside `catch`
 - `#![no_std]` support
