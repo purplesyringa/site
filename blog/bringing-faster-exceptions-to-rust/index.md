@@ -428,3 +428,8 @@ There are some caveats:
 - Using `lithium::throw` inside `std::panic::catch_unwind` (rather than `lithium::catch`) is unsound.
 - On nightly, Lithium relies on the implementation details of std and rustc. I monitor changes to unwinding, so this should not be a significant issue.
 - Lithium's API may evolve incompatibly with semver due to interoperability if unsound is discovered in Lithium. I do not expect this to be problematic past the first month.
+
+
+### Stay tuned
+
+In the following posts, we'll explore Itanium and SEH designs, dive into unwinder implementations, and and figure out how to speed up exceptions significantly based on this knowledge. [Subscribe to RSS](/blog/feed.rss) if you are interested.
