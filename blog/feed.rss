@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Wed, 06 Nov 2024 12:50:06 GMT</lastBuildDate>
+		<lastBuildDate>Wed, 06 Nov 2024 13:11:27 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -15,7 +15,7 @@
 			<item>
 				<title>Bringing faster exceptions to Rust</title>
 				<link>https://purplesyringa.moe/blog/./bringing-faster-exceptions-to-rust/</link>
-				<description>Three months ago, I wrote about why you might want to use panics for error handling. Even though a catchy title, panics are badly suited for this goal, even if you try to hack around with macros and libraries. The real star is the unwinding mechanism, which powers panics. This is the first post in a series exploring what unwinding is, how to speed it up, and how it can benefit Rust and C++ programmers</description>
+				<description>Three months ago, I wrote about why you might want to use panics for error handling. Even though it’s a catchy title, panics are hardly suited for this goal, even if you try to hack around with macros and libraries. The real star is the unwinding mechanism, which powers panics. This post is the first in a series exploring what unwinding is, how to speed it up, and how it can benefit Rust and C++ programmers.</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				
 				<guid>https://purplesyringa.moe/blog/./bringing-faster-exceptions-to-rust/</guid>

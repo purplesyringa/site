@@ -2,10 +2,10 @@
 title: Bringing faster exceptions to Rust
 time: November 6, 2024
 intro: |
-    Three months ago, I wrote about why [you might want to use panics for error handling](../you-might-want-to-use-panics-for-error-handling/). Even though a catchy title, panics are badly suited for this goal, even if you try to hack around with macros and libraries. The real star is *the unwinding mechanism*, which powers panics. This is the first post in a series exploring what unwinding is, how to speed it up, and how it can benefit Rust and C++ programmers
+  Three months ago, I wrote about why [you might want to use panics for error handling](../you-might-want-to-use-panics-for-error-handling/). Even though it's a catchy title, panics are hardly suited for this goal, even if you try to hack around with macros and libraries. The real star is *the unwinding mechanism*, which powers panics. This post is the first in a series exploring what unwinding is, how to speed it up, and how it can benefit Rust and C++ programmers.
 ---
 
-Three months ago, I wrote about why [you might want to use panics for error handling](../you-might-want-to-use-panics-for-error-handling/). Even though a catchy title, panics are badly suited for this goal, even if you try to hack around with macros and libraries. The real star is *the unwinding mechanism*, which powers panics. This is the first post in a series exploring what unwinding is, how to speed it up, and how it can benefit Rust and C++ programmers.
+Three months ago, I wrote about why [you might want to use panics for error handling](../you-might-want-to-use-panics-for-error-handling/). Even though it's a catchy title, panics are hardly suited for this goal, even if you try to hack around with macros and libraries. The real star is *the unwinding mechanism*, which powers panics. This post is the first in a series exploring what unwinding is, how to speed it up, and how it can benefit Rust and C++ programmers.
 
 
 ### TL;DR
@@ -43,7 +43,7 @@ fn g() -> () alternate i32 {
 }
 ```
 
-At first glance, this looks straightforward. Returning to an alternate address shouldn't be significantly more expensive than returning to the normal address, so this has to be cheap.
+At first glance, this looks straightforward. Returning to an alternate address shouldn't be significantly more expensive than returning to the default address, so this has to be cheap.
 
 But wait. This alternate return mechanism reminds me of something...
 
@@ -65,12 +65,12 @@ That's just exceptions! And we all know exceptions are slow. How did we get from
 
 ### Dramatis personae
 
-The core of the alternate return mechanism is *the unwinder*, a system library responsible for mapping main return addresses to alternate return addresses, passing alternate return values across calls, and consuming the return values. The specific API differs between operating systems, but on Linux, the main parts are these two functions:
+The core of the alternate return mechanism is *the unwinder*, a system library responsible for mapping default return addresses to alternate return addresses, passing alternate return values across calls, and consuming the return values. The specific API differs between operating systems, but on Linux, the main parts are these two functions:
 
-- `_Unwind_RaiseException(Exception)`: Perform an alternate return, assuming we're currently in a normal return point.
+- `_Unwind_RaiseException(Exception)`: Perform an alternate return, assuming we're currently in a default return point.
 - `_Unwind_Resume(Exception)`: Perform an alternate return, assuming we're currently in an alternate return point.
 
-So, what implementation detail makes panics and exceptions so slow? This is what we'll uncover in this series, and today we'll see if we can speed up the Rust side of panic handling in particular, without modifying the unwinder.
+So, what implementation detail makes panics and exceptions so slow? We'll uncover this in the series, and today, we'll try to speed up the Rust side of panic handling without modifying the unwinder.
 
 
 ## Digging deeper
@@ -115,7 +115,7 @@ pub const fn panic_fmt(fmt: fmt::Arguments<'_>) -> ! {
 }
 ```
 
-The format arguments are type-erased, which prevents certain optimizations.
+The format arguments are type-erased, which prevents some optimizations.
 
 In addition, many Rust builtins panic, so `panic!` is defined in `core`, but the panic mechanism is OS-dependent, so panicking is implemented in `std`. Therefore, `panic_impl` is an extern function crossing crate boundaries, which prevents inlining without LTO.
 
@@ -172,9 +172,9 @@ fn rust_panic_with_hook(
 }
 ```
 
-Here we generate a type-erased panic payload object that wraps the format arguments in another type-erased box, and then we invoke the panic hook -- before unwinding even starts!
+Here, we generate a type-erased panic payload object that wraps the format arguments in another type-erased box, and then we invoke the panic hook -- before unwinding even starts!
 
-Luckily, we can skip most of this logic by calling `std::panic::resume_unwind` instead of `panic!`. This function ignores the panic hook and takes a `Box<dyn Any + Send>` argument instead of an arbitrary format string, so we can shed some load:
+Luckily, we can skip most of this logic by calling `std::panic::resume_unwind` instead of `panic!`. This function ignores the panic hook and takes a `Box<dyn Any + Send>` argument instead of an arbitrary format string, which lets us shed some load:
 
 ```rust
 b.iter(|| {
@@ -217,7 +217,7 @@ extern "Rust" {
 }
 ```
 
-There's still type-erasure here: firstly, the payload is `Box<dyn Any + Send>`, and secondly, we cast `&mut RewrapBox` to `&mut dyn PanicPayload`. None of this is necessary for statically typed alternate returns. The double-panic protection (`panic_count`) wouldn't be necessary in this context either.
+There's still type-erasure here: firstly, the payload is `Box<dyn Any + Send>`, and secondly, we cast `&mut RewrapBox` to `&mut dyn PanicPayload`. None of this is necessary for statically typed alternate returns. The double-panic protection (`panic_count`) wouldn't be required in this context either.
 
 So what do you say we call `__rust_start_panic` directly?
 
@@ -256,12 +256,12 @@ b.iter(|| {
 })
 ```
 
-Result: `580.44 ns`. That's an 68% improvement! It's not *sound*, as we're now messing with the panic counter, but we'll fix this soon.
+Result: `580.44 ns`. That's a 68% improvement! It's not *sound*, as we're now messing with the panic counter, but we'll fix this soon.
 
 
 ### Catching
 
-Let's figure out how to bypass the mirroring decrement of the panic count. We're looking for `std::panic::catch_unwind`, which just forwards the call [here](https://doc.rust-lang.org/1.82.0/src/std/panicking.rs.html#474-584). After adding `#[inline(always)]`, removing `#[cold]`, and removing the panic count decrement, we restore soundness without affecting performance.
+Let's figure out how to bypass the mirroring decrement of the panic count. We're looking for `std::panic::catch_unwind`, which merely forwards the call [here](https://doc.rust-lang.org/1.82.0/src/std/panicking.rs.html#474-584). After adding `#[inline(always)]`, removing `#[cold]`, and removing the panic count decrement, we restore soundness without affecting performance.
 
 
 ### panic_unwind
@@ -273,9 +273,9 @@ extern "Rust" fn __rust_start_panic(payload: &mut dyn PanicPayload) -> u32;
 extern "C" fn __rust_panic_cleanup(payload: *mut u8) -> *mut (dyn Any + Send + 'static);
 ```
 
-Depending on the configuration, Rust panics can either trigger unwinding or abort the program. This behavior is controlled by the `-C panic="unwind/abort"` rustc flag. Depending on its value, different crates providing these two functions are linked in. The crate we are interested in is `panic_unwind`. Its sources are available [on GitHub](https://github.com/rust-lang/rust/tree/1.82.0/library/panic_unwind).
+Depending on the `-C panic="unwind/abort"` rustc flag, different crates providing these functions are linked. The crate we are interested in is `panic_unwind`. Its sources are available [on GitHub](https://github.com/rust-lang/rust/tree/1.82.0/library/panic_unwind).
 
-This is where we finally enter platform-specific code. I'm using Linux, so we're interested in the Itanium exception handling ABI (called `GCC` in Rust code). The implementation is [quite simple](https://github.com/rust-lang/rust/blob/1.82.0/library/panic_unwind/src/gcc.rs#L61-L106):
+Here we finally enter platform-specific code. I'm using Linux, so we're interested in the Itanium exception handling ABI (called `GCC` in Rust code). The implementation is [quite simple](https://github.com/rust-lang/rust/blob/1.82.0/library/panic_unwind/src/gcc.rs#L61-L106):
 
 ```rust
 pub unsafe fn panic(data: Box<dyn Any + Send>) -> u32 {
@@ -307,9 +307,9 @@ pub unsafe fn cleanup(ptr: *mut u8) -> Box<dyn Any + Send> {
 }
 ```
 
-To throw a panic, we allocate *yet another* object on the heap and pass it to `_Unwind_RaiseException`. To catch a panic, we cast it back to a `Box` and retrieve the `cause` field.
+To throw a panic, we allocate *yet another* object on the heap and pass it to `_Unwind_RaiseException`. Catching a panic involves casting it back to a `Box` and retrieving the `cause` field.
 
-To simplify this code for out statically annotated code, we can embed the cause directly in the exception object, without wrapping it in `Box` beforehand. To separate our exceptions from Rust panics, we'll use our own exception class:
+To simplify this code for our statically annotated code, we can embed the cause directly in the exception object without wrapping it in `Box` beforehand. To separate our exceptions from Rust panics, we'll use a custom exception class:
 
 ```rust
 #[repr(C)]
@@ -371,9 +371,9 @@ Result: `562.69 ns`, or a 3% improvement. This isn't much, but every bit matters
 
 We only have one heap allocation remaining now, containing the exception cause next to the `_Unwind_Exception` header for the system unwinder.
 
-Why can't we put it on the stack? When `throw` performs an alternate return, its callframe can be overridden by the catch handlers. We could store it inside the `catch` callframe, but then we'd need to pass a pointer to it to `throw`, which significantly complicates the API.
+Why can't we put it on the stack? When `throw` performs an alternate return, its call frame can be overwritten by the catch handlers. We could store it inside the `catch` call frame, but then we'd need to pass a pointer to it to `throw`, complicating the API.
 
-Thread-locals are a good middle ground, as they are almost as cheap as stack allocation:
+Thread-locals are the perfect middle ground, as they are almost as cheap as stack allocation:
 
 ```rust
 thread_local! {
@@ -391,19 +391,19 @@ unsafe fn local_write<T>(x: T) -> *mut T {
 }
 ```
 
-While this is just a proof-of-concept (it doesn't work with nested or large exceptions), it's a representative of the resulting performance: `556.32 ns`, or a 1.5% improvement.
+While this is just a proof-of-concept (it doesn't work with nested or greater than 4 KiB exceptions), it indicates the resulting performance: `556.32 ns`, or a 1.5% improvement.
 
 
 ## Conclusions
 
 ### Gains
 
-Starting at `2.3814 µs`, we've optimized down to `556.32 ns` -- a $4.3 \times$ speedup without loss in functionality. We managed to secure this win without modifying the Rust compiler or the system unwinder.
+Starting at `2.3814 µs`, we've optimized down to `556.32 ns` -- a $4.3 \times$ speedup without loss in functionality. We secured this win without modifying the Rust compiler or the system unwinder.
 
 
 ### Beyond EH
 
-While unwinding is usually used for exception propagation, that's not the only use case. For example, if a successful return is more rare than an error, success could be the alternate path, rather than the error. Another use of lightweight unwinding is coroutines. Thinking outside the box might help up find other applications in your own projects.
+While unwinding is popular for exception propagation, that's not the only use case. For example, if success is more rare than an error, success could be the alternate path rather than the error. Another use of lightweight unwinding is coroutines. Thinking outside the box might help you find other applications in your projects.
 
 
 ### Lithium
@@ -426,4 +426,4 @@ There are some caveats:
 
 - Using `lithium::throw` inside `std::panic::catch_unwind` (rather than `lithium::catch`) is unsound.
 - On nightly, Lithium relies on the implementation details of std and rustc. I monitor changes to unwinding, so this should not be a significant issue.
-- Lithium's API may evolve in a semver-incompatible way due to interoperability needs if unsoundness is found. I do not expect this to be problematic past the first month.
+- Lithium's API may evolve incompatibly with semver due to interoperability if unsound is discovered in Lithium. I do not expect this to be problematic past the first month.
