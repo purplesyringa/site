@@ -1,5 +1,5 @@
 ---
-title: Designing world's fastest perfect hash
+title: The road to world's fastest perfect hash
 time: November 15, 2024
 intro: |
   I need a hash-table with integer keys. `HashMap<u32, T>`, right? Wrong. *For plot reasons*, I need it to perform at ridiculous speeds. So that's how the journey towards the fastest perfect hash function started.
@@ -216,7 +216,7 @@ None of these are as simple as they look like.
 
 ### Entropy shift
 
-For this, we need a way to measure the uniformity of a distribution. Typical solutions assume the existence of a PDF, but only have access to a sample of the distribution, so we'll use [the KS test](https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test) instead. In layman terms, we just sort the hashes in increasing order, draw a scatter plot, and compare it to a straight line.
+For this, we need a way to measure the uniformity of a distribution. Typical solutions assume the existence of a probability distribution function, but we only have access to a sample of the distribution, so we'll use [the KS test](https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test) instead. In layman terms, we just sort the hashes in increasing order, draw a scatter plot, and compare it to a straight line.
 
 Not that this needs to be particularly performant, but avoiding floating point operations sounds like a nice bonus, so let's do that. We need to compute approximately $\max\limits_{i=0}^{N-1} \left\lvert \frac{h_i}{2^{32}} - \frac{i}{N} \right\rvert$, which we can do as follows:
 
