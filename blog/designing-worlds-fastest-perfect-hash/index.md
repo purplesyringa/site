@@ -357,7 +357,7 @@ fn try_generate_phf(keys: &[u32]) -> Option<Phf> {
     }
 
     // Reserve space for elements, plus 2^16 - 1 for out-of-bounds displacements
-    let mut taken = vec![false; hash_space + u16::MAX as usize];
+    let mut free = vec![true; hash_space + u16::MAX as usize];
 
     // We'll fill this per-bucket array during the course of the algorithm
     let mut displacements = vec![0; b];
@@ -383,15 +383,15 @@ fn try_generate_phf(keys: &[u32]) -> Option<Phf> {
 
         // Find non-colliding displacement. On failure, return None.
         let displacement = (0..=u16::MAX).find(|displacement| {
-            approx_for_bucket.iter().all(|approx| !*unsafe {
-                taken.get_unchecked(mix(*approx, *displacement) as usize)
+            approx_for_bucket.iter().all(|approx| *unsafe {
+                free.get_unchecked(mix(*approx, *displacement) as usize)
             })
         })?;
 
         // Place the bucket
         displacements[bucket] = displacement;
         for approx in approx_for_bucket {
-            *unsafe { taken.get_unchecked_mut(mix(approx, displacement) as usize) } = true;
+            *unsafe { free.get_unchecked_mut(mix(approx, displacement) as usize) } = false;
         }
     }
 
@@ -473,37 +473,37 @@ The second problem is this quadratic loop:
 ```rust
 // Find non-colliding displacement. On failure, return None.
 let displacement = (0..=u16::MAX).find(|displacement| {
-    approx_for_bucket.iter().all(|approx| !*unsafe {
-        taken.get_unchecked(mix(*approx, *displacement) as usize)
+    approx_for_bucket.iter().all(|approx| *unsafe {
+        free.get_unchecked(mix(*approx, *displacement) as usize)
     })
 })?;
 ```
 
 The average displacement is quite large, so the outer loop can perform quite a few iterations. Meanwhile, the inner loop iterates through a small subset of indices all across the memory, which doesn't even always fit in L2.
 
-Luckily, this is easy to fix by simultaneously computing the predicate for *multiple* values of `displacement`, as if by unrolling the loop. But hey, $\mathit{Approx} \oplus 0, \dots, \mathit{Approx} \oplus 7$ exactly covers an 8-aligned slice of `taken`, which means `taken` can cheaply be turned into a bitset!
+Luckily, this is easy to fix by simultaneously computing the predicate for *multiple* values of `displacement`, as if by unrolling the loop. But hey, $\mathit{Approx} \oplus 0, \dots, \mathit{Approx} \oplus 7$ exactly covers an 8-aligned slice of `free`, which means `free` can cheaply be turned into a bitset!
 
 Well... sort of. It *looks* like it should be as simple as
 
 ```rust expansible
-// SAFETY: `taken` must be a bitset large enough to fit `approx ^ displacement`.
-unsafe fn find_valid_displacement(approx_for_bucket: &[u32], taken: &[u8]) -> Option<u16> {
+// SAFETY: `free` must be a bitset large enough to fit `approx ^ displacement`.
+unsafe fn find_valid_displacement(approx_for_bucket: &[u32], free: &[u8]) -> Option<u16> {
     // Outer unrolled loop
     for displacement_base in (0..=u16::MAX).step_by(8) {
-        let mut global_bit_mask = 0;
+        let mut global_bit_mask = u8::MAX;
 
         // Iterate over keys
         for approx in approx_for_bucket {
             let approx = *approx as usize;
             // Inner unrolled loop, aka bitmask logic
             let bit_mask =
-                *unsafe { taken.get_unchecked((approx ^ displacement_base as usize) / 8) };
-            global_bit_mask |= bit_mask as usize;
+                *unsafe { free.get_unchecked((approx ^ displacement_base as usize) / 8) };
+            global_bit_mask &= bit_mask as usize;
         }
 
-        // Find the first applicable displacement (i.e. such that all `taken` values are 0)
-        if global_bit_mask != u8::MAX {
-            let displacement_offset = global_bit_mask.trailing_ones() as u16;
+        // Find the first applicable displacement (i.e. such that all `free` values are 1)
+        if global_bit_mask != 0 {
+            let displacement_offset = global_bit_mask.trailing_zeros() as u16;
             return Some(displacement_base + displacement_offset);
         }
     }
@@ -514,17 +514,17 @@ unsafe fn find_valid_displacement(approx_for_bucket: &[u32], taken: &[u8]) -> Op
 
 But that's actually wrong. We *want* to SIMDify the computation of
 
-- `taken[approx[0] ^ 0] && taken[approx[1] ^ 0] && taken[approx[2] ^ 0] && ...`
-- `taken[approx[0] ^ 1] && taken[approx[1] ^ 1] && taken[approx[2] ^ 1] && ...`
+- `free[approx[0] ^ 0] && free[approx[1] ^ 0] && free[approx[2] ^ 0] && ...`
+- `free[approx[0] ^ 1] && free[approx[1] ^ 1] && free[approx[2] ^ 1] && ...`
 - ...
-- `taken[approx[0] ^ 7] && taken[approx[1] ^ 7] && taken[approx[2] ^ 7] && ...`
+- `free[approx[0] ^ 7] && free[approx[1] ^ 7] && free[approx[2] ^ 7] && ...`
 
 Which we rewrite as
 
-- `taken[approx[0] / 8][(approx[0] & 7) ^ 0] && ...`
-- `taken[approx[0] / 8][(approx[0] & 7) ^ 1] && ...`
+- `free[approx[0] / 8][(approx[0] & 7) ^ 0] && ...`
+- `free[approx[0] / 8][(approx[0] & 7) ^ 1] && ...`
 - ...
-- `taken[approx[0] / 8][(approx[0] & 7) ^ 7] && ...`
+- `free[approx[0] / 8][(approx[0] & 7) ^ 7] && ...`
 
 But note that the bit index $0$ to $7$ needs to be XORed with `approx`, while in our code, we just directly access bits $0$ to $7$ without consideration for the low three bits of `approx`. If we want this scheme to work, we need to *shuffle bits inside a byte* by XORing *the bit index* (rather than the bits themselves) with `approx & 7`:
 
@@ -572,30 +572,28 @@ Okay, that was it for $\oplus$. What about $+$?
 We're in luck: bits $\mathit{Approx} + 0$ to $\mathit{Approx} + 7$ can be extracted simply by performing an unaligned 16-bit read, followed by a bit shift. But we don't have to limit ourselves to validating $8$ displacements at once: we can easily validate $57$ displacements at once!
 
 ```rust expansible
-// SAFETY: `taken` must be large enough to fit `approx + displacement + 8`.
-unsafe fn find_valid_displacement(approx_for_bucket: &[u32], taken: &[u8]) -> Option<u16> {
+// SAFETY: `free` must be large enough to fit `approx + displacement + 8`.
+unsafe fn find_valid_displacement(approx_for_bucket: &[u32], free: &[u8]) -> Option<u16> {
     // Outer unrolled loop
     for displacement_base_index in 0..u16::MAX / 57 {
         // We don't iterate through a few of the top 65536 displacements, but that's noise
         let displacement_base = displacement_base_index * 57;
 
-        let mut global_bit_mask = 0;
+        // Can't trust bits farther than the first 57, because we shift out up to 7 bits, shifting
+        // in meaningless zeros
+        let mut global_bit_mask = (1 << 57) - 1;
 
         // Iterate over keys
         for approx in approx_for_bucket {
             // Inner unrolled loop, aka bitmask logic
             let start = *approx as usize + displacement_base as usize;
-            let bit_mask = unsafe { taken.as_ptr().add(start / 8).cast::<u64>().read_unaligned() }
+            let bit_mask = unsafe { free.as_ptr().add(start / 8).cast::<u64>().read_unaligned() }
                 >> (start % 8);
-            global_bit_mask |= bit_mask;
+            global_bit_mask &= bit_mask;
         }
 
-        // Can't trust bits farther than the first 57, because we shift out up to 7 bits, shifting
-        // in meaningless zeroes
-        global_bit_mask |= u64::MAX << 57;
-
-        if global_bit_mask != u64::MAX {
-            let displacement_offset = global_bit_mask.trailing_ones() as u16;
+        if global_bit_mask != 0 {
+            let displacement_offset = global_bit_mask.trailing_zeros() as u16;
             return Some(displacement_base + displacement_offset);
         }
     }
