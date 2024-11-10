@@ -3,14 +3,14 @@ title: The Rust Trademark Policy is still harmful
 time: November 10, 2024
 discussion: https://www.reddit.com/r/rust/comments/1gnz5sm/the_rust_trademark_policy_is_still_harmful/
 intro: |
-    Four days ago, the Rust Foundation [released](https://blog.rust-lang.org/2024/11/06/trademark-update.html) a new [draft](https://drive.google.com/file/d/1hjTx11Fb-4W7RQLmp3R8BLDACc7zxIpG/view) of the Rust Language Trademark Policy. The previous draft caused division within the community several years ago, prompting its retracting with the aim of creating a new, milder version.
+    Four days ago, the Rust Foundation [released](https://blog.rust-lang.org/2024/11/06/trademark-update.html) a new [draft](https://drive.google.com/file/d/1hjTx11Fb-4W7RQLmp3R8BLDACc7zxIpG/view) of the Rust Language Trademark Policy. The previous draft caused division within the community several years ago, prompting its retraction with the aim of creating a new, milder version.
 
     Well, that failed. While certain issues were addressed (thank you, we appreciate it!), the new version remains excessively restrictive and, in my opinion, will harm both the Rust community as a whole *and* compiler and crate developers. While I expect the stricter rules to not be enforced in practice, I don't want to constantly feel like I'm under threat while contributing to the Rust ecosystem, and this is exactly what it would feel like if this draft is finalized.
 
     Below are some of my core objections to the draft.
 ---
 
-Four days ago, the Rust Foundation [released](https://blog.rust-lang.org/2024/11/06/trademark-update.html) a new [draft](https://drive.google.com/file/d/1hjTx11Fb-4W7RQLmp3R8BLDACc7zxIpG/view) of the Rust Language Trademark Policy. The previous draft caused division within the community several years ago, prompting its retracting with the aim of creating a new, milder version.
+Four days ago, the Rust Foundation [released](https://blog.rust-lang.org/2024/11/06/trademark-update.html) a new [draft](https://drive.google.com/file/d/1hjTx11Fb-4W7RQLmp3R8BLDACc7zxIpG/view) of the Rust Language Trademark Policy. The previous draft caused division within the community several years ago, prompting its retraction with the aim of creating a new, milder version.
 
 Well, that failed. While certain issues were addressed (thank you, we appreciate it!), the new version remains excessively restrictive and, in my opinion, will harm both the Rust community as a whole *and* compiler and crate developers. While I expect the stricter rules to not be enforced in practice, I don't want to constantly feel like I'm under threat while contributing to the Rust ecosystem, and this is exactly what it would feel like if this draft is finalized.
 
@@ -83,7 +83,7 @@ Does the Rust Foundation want people to stop talking about the camps and confere
 
 ### Conclusion
 
-The policy *still* propritizes protecting the Rust Foundation over protecting the legacy of Rust, the language. This is unhealthy, and this was proven time and again to be a bad idea by Borland, Sun, and other companies.
+The policy *still* prioritizes protecting the Rust Foundation over protecting the legacy of Rust, the language. This is unhealthy, and this was proven time and again to be a bad idea by Borland, Sun, and other companies.
 
 I love Rust, and I hope to continue developing ecosystem crates. One day, I hope to contribute to `rustc`. I do this because I want to be part of something that showcases the best of humanity, instead of worrying about how half the countries in the world want me dead and now the Rust Foundation can sue me if I fork a repo. Don't push me out and take away my one way to escape the horrors.
 
