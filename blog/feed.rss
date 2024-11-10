@@ -7,10 +7,22 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Wed, 06 Nov 2024 14:46:34 GMT</lastBuildDate>
+		<lastBuildDate>Sun, 10 Nov 2024 11:41:47 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>The Rust Trademark Policy is still harmful</title>
+				<link>https://purplesyringa.moe/blog/./the-rust-trademark-policy-is-still-harmful/</link>
+				<description>4 days ago, the Rust Foundation has released a new draft of the Rust Language Trademark Policy. The previous draft led to division among the community several years ago, so it was retracted to hopefully make a new, milder draft.
+Well, that failed. While certain problems were resolved (thank you, we appreciate it!), the new version is still exceedingly limiting and, in my opinion, will harm both the Rust community as a whole and compiler and crate developers. While I expect the more limiting rules to not be applied in practice, I don’t want to feel like I’m at a gunpoint while working on the Rust ecosystem, and this is exactly what it’ll feel like if this draft is finalized.
+Below are some of my core objections to the draft.</description>
+				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+				
+				<guid>https://purplesyringa.moe/blog/./the-rust-trademark-policy-is-still-harmful/</guid>
+				<pubDate>Sun, 10 Nov 2024 00:00:00 GMT</pubDate>
+			</item>
 		
 			<item>
 				<title>Bringing faster exceptions to Rust</title>
