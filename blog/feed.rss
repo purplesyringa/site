@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Sun, 10 Nov 2024 11:58:38 GMT</lastBuildDate>
+		<lastBuildDate>Sun, 10 Nov 2024 12:02:29 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -19,7 +19,7 @@
 Well, that failed. While certain issues were addressed (thank you, we appreciate it!), the new version remains excessively restrictive and, in my opinion, will harm both the Rust community as a whole and compiler and crate developers. While I expect the stricter rules to not be enforced in practice, I don’t want to constantly feel like I’m under threat while contributing to the Rust ecosystem, and this is exactly what it would feel like if this draft is finalized.
 Below are some of my core objections to the draft.</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				
+				<comments>https://www.reddit.com/r/rust/comments/1gnz5sm/the_rust_trademark_policy_is_still_harmful/</comments>
 				<guid>https://purplesyringa.moe/blog/./the-rust-trademark-policy-is-still-harmful/</guid>
 				<pubDate>Sun, 10 Nov 2024 00:00:00 GMT</pubDate>
 			</item>

@@ -1,6 +1,7 @@
 ---
 title: The Rust Trademark Policy is still harmful
 time: November 10, 2024
+discussion: https://www.reddit.com/r/rust/comments/1gnz5sm/the_rust_trademark_policy_is_still_harmful/
 intro: |
     Four days ago, the Rust Foundation [released](https://blog.rust-lang.org/2024/11/06/trademark-update.html) a new [draft](https://drive.google.com/file/d/1hjTx11Fb-4W7RQLmp3R8BLDACc7zxIpG/view) of the Rust Language Trademark Policy. The previous draft caused division within the community several years ago, prompting its retracting with the aim of creating a new, milder version.
 
