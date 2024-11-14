@@ -1,18 +1,4 @@
-/*
-Temml.woff2 is a clone of KaTeX_Script-Regular, except that the code points
-have been changed from ASCII to Unicode Mathematical Alphanumeric Symbols Script capitals,
-Unicode range 1D49C to 1D4B5.
-*/
-
-@font-face {
-  font-family: 'Temml';
-  src: url('Temml.woff2') format('woff2');
-  font-weight: normal;
-  font-style: normal;
-}
-
 math {
-  font-family: "Cambria Math", 'STIXTwoMath-Regular', math;
   font-style: normal;
   font-weight: normal;
   line-height: normal;
@@ -33,14 +19,6 @@ math * {
 /* Next line is active in Firefox and Safari.
  * Not in Chromium, which recognizes display: "block math" written inline. */
 math.tml-display { display: block; }
-
-math .mathscr {
-  font-family: "Temml";
-}
-
-mo.tml-prime {
-  font-family: Temml;
-}
 
 mrow.tml-cancel {
   background: linear-gradient(to top left,

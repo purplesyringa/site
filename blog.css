@@ -17,7 +17,13 @@ section h2:nth-child(n + 2) {
 	margin-bottom: -2rem;
 }
 
+@font-face {
+	font-family: "Euler Math";
+	src: url("fonts/Euler-Math.otf") format("opentype");
+}
 math {
+	font-family: "Euler Math";
+	font-size: 1.1rem;
 	color: #8d00d9;
 }
 
