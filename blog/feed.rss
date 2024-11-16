@@ -7,10 +7,21 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Sun, 10 Nov 2024 12:14:19 GMT</lastBuildDate>
+		<lastBuildDate>Sat, 16 Nov 2024 21:18:14 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>Any Python program fits in 30 characters*</title>
+				<link>https://purplesyringa.moe/blog/./any-python-program-fits-in-30-characters/</link>
+				<description>* If you don’t take whitespace into account.
+My friend challenged me to find the shortest solution to a certain Leetcode-style problem in Python. They were generous enough to let me use whitespace for free, so that the code stays readable. So that’s exactly what we’ll abuse to encode any Python program in 30 bytes, ignoring whitespace.</description>
+				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+				
+				<guid>https://purplesyringa.moe/blog/./any-python-program-fits-in-30-characters/</guid>
+				<pubDate>Sun, 17 Nov 2024 00:00:00 GMT</pubDate>
+			</item>
 		
 			<item>
 				<title>The Rust Trademark Policy is still harmful</title>
