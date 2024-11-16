@@ -3,8 +3,8 @@ My friend challenged me to find the shortest solution to a certain Leetcode-styl
     <span class=hljs-string>"[whitespace...]"</span>
         .replace(<span class=hljs-string>" "</span>, <span class=hljs-string>"A"</span>)
         .replace(<span class=hljs-string>"\t"</span>, <span class=hljs-string>"B"</span>)
-        .replace(<span class=hljs-string>"\r"</span>, <span class=hljs-string>"C"</span>)
-        .replace(<span class=hljs-string>"\n"</span>, <span class=hljs-string>"D"</span>)
+        .replace(<span class=hljs-string>"\v"</span>, <span class=hljs-string>"C"</span>)
+        .replace(<span class=hljs-string>"\f"</span>, <span class=hljs-string>"D"</span>)
         ...
 )
 </code></pre><p>Unicode has quite a lot of whitespace characters, so this should be possible, in theory. Unfortunately, this takes even more bytes in practice. Under 50 characters, we can fit just two <code>replace</code> calls:<pre><code class=language-python><span class=hljs-built_in>exec</span>(<span class=hljs-string>"[whitespace...]"</span>.replace(<span class=hljs-string>" "</span>,<span class=hljs-string>"A"</span>).replace(<span class=hljs-string>"\t"</span>,<span class=hljs-string>"B"</span>))

@@ -28,8 +28,8 @@ exec(
     "[whitespace...]"
         .replace(" ", "A")
         .replace("\t", "B")
-        .replace("\r", "C")
-        .replace("\n", "D")
+        .replace("\v", "C")
+        .replace("\f", "D")
         ...
 )
 ```
