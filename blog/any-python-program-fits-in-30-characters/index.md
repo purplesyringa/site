@@ -87,13 +87,13 @@ That's $30$ characters (plus whitespace).
 
 ### Optimization
 
-There's just one problem: the output of PyFuck is *exponential* in the count of non-`exc(0)` characters in the input code. So to encode realistic programs with just `exc('%0)`, we need to pass code through *a nested encoder* before passing it to PyFuck. The decoder looks like this:
+There's just one problem: the output of PyFuck is *exponential* in the count of non-`exc(0)` characters in the input code. So to encode realistic programs with just `exc('%0)`, we need to pass code through *a nested encoder* before passing it to PyFuck. The optimized nested code looks like this:
 
 ```python
 exec(int("[bits of code]".replace("(","0").replace(")","1"),2).to_bytes([length of code]))
 ```
 
-We store bits as `(` and `)`, so there's only a fixed cost due to PyFuck (about $400$ KiB). Plus bits of the code, taking $8 \times$ more than the original bytes, but that's nothing compared to the PyFuck overhead.
+We store bits as `(` and `)`, so there's only a fixed cost due to PyFuck (about $400$ KiB). The bits of code take $8 \times$ more space than the original bytes, but that's nothing compared to the PyFuck overhead.
 
 
 ### The end
