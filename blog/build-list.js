@@ -37,6 +37,9 @@ const addFromDir = dir => {
 
 		const [_, yamlHeader, markdown] = fileText.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)/);
 		const parsedYamlHeader = YAML.parse(yamlHeader);
+		if (parsedYamlHeader.draft) {
+			continue;
+		}
 		posts.push({
 			...parsedYamlHeader,
 			path: `${dir}/${name}`,

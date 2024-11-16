@@ -1,6 +1,7 @@
 ---
 title: The road to world's fastest perfect hash
 time: November 15, 2024
+draft: true
 intro: |
   I need a hash-table with integer keys. `HashMap<u32, T>`, right? Wrong. *For plot reasons*, I need it to perform at ridiculous speeds. So that's how the journey towards the fastest perfect hash function started.
 ---
