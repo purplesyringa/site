@@ -63,7 +63,7 @@ exec(
 )
 ```
 
-The characters `ABCDEFGHIJ` are located at indices $9, 11, 12, 28, 29, 30, 31, 32, 133, 160$ -- all whitespace code points below $256$ except CR and LF, which are invalid in a string. While this code is long, most of it is just whitespace, which we ignore. After removing whitespace, it's just only $32$ characters:
+The characters `ABCDEFGHIJ` are located at indices $9, 11, 12, 28, 29, 30, 31, 32, 133, 160$ -- all whitespace code points below $256$ except CR and LF, which are invalid in a string. While this code is long, most of it is just whitespace, which we ignore. After removing whitespace, it's only $32$ characters:
 
 ```python
 exec("".translate("ABCDEFGHIJ"))
@@ -72,7 +72,7 @@ exec("".translate("ABCDEFGHIJ"))
 
 ### Alphabet
 
-We can now evaluate any Python programs that use at most $10$ different characters.
+We can now encode any Python program that uses at most $10$ different characters.
 
 This would be more than enough for JavaScript: [JSFuck](https://jsfuck.com/) can transform any JS program to an equivalent JS program that only uses characters from the 6-character set `[]()!+`. Does anything like this exist for Python?
 
