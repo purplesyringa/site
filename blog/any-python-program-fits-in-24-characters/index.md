@@ -11,7 +11,7 @@ intro: |
 
 My friend challenged me to find the shortest solution to a certain Leetcode-style problem in Python. They were generous enough to let me use whitespace for free, so that the code stays readable. So that's exactly what we'll abuse to encode *any* Python program in $24$ bytes, ignoring whitespace.
 
-> This post originally stated that $30$ characters are always enough. Since then, [commandz](https://github.com/commandblockguy) and another person from the codegolf Discord server have devised a better solution, reaching $24$ bytes. After a few minor modifications, it satisfies the requirements of this problem, so I publish it here too.
+> This post originally stated that $30$ characters are always enough. Since then, [commandz](https://github.com/commandblockguy) and xnor from the [Code Golf](https://code.golf) Discord server have devised a better solution, reaching $24$ bytes. After a few minor modifications, it satisfies the requirements of this problem, so I publish it here too.
 
 
 ### Bits
@@ -79,7 +79,7 @@ We can now encode any Python program that uses at most $10$ different characters
 
 But it turns out there's another way to translate whitespace to non-whitespace.
 
-> This solution was found by a reader of my blog -- thanks!
+> This solution was found by readers of my blog -- thanks!
 
 When `repr` is applied to Unicode strings, it replaces the Unicode codepoints with their `\uXXXX` representations. For example, `U+2001 Em Quad` is encoded as `'\u2001'`. All in all, Unicode whitespace gives us unlimited supply of `\`, `x`, and the whole hexadecimal alphabet (plus two instances of `'`).
 
