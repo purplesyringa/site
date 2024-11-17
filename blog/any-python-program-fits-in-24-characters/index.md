@@ -11,7 +11,7 @@ intro: |
 
 My friend challenged me to find the shortest solution to a certain Leetcode-style problem in Python. They were generous enough to let me use whitespace for free, so that the code stays readable. So that's exactly what we'll abuse to encode *any* Python program in $24$ bytes, ignoring whitespace.
 
-> This post originally stated that $30$ characters are always enough. Since then, someone on the codegolf Discord server has devised a better solution, reaching $24$ bytes. After a few minor modifications, it satisfies the requirements of this problem, so I publish it here too.
+> This post originally stated that $30$ characters are always enough. Since then, [commandz](https://github.com/commandblockguy) and another person from the codegolf Discord server have devised a better solution, reaching $24$ bytes. After a few minor modifications, it satisfies the requirements of this problem, so I publish it here too.
 
 
 ### Bits
