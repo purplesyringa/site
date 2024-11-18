@@ -38,7 +38,7 @@ Ensuring that the hash is high-quality for any choice of the splitting algorithm
 
 As realistic inputs often contain easily extractable entropy, we can often cut corners by not using a high-quality method for producing $h$, as long as it doesn't lead to problems on the training set.
 
-We thus process the hashing methods in order of tiers. The word "tier" comes from tiered JIT compilation, where compilers of different tiers provide faster code at expense of compilation time. The first hash function of sufficient quality is returned, with a fallback to further tiers if the function is ruled unusable for some reason.
+We thus support various hashing methods, ordered into tiers. The word "tier" comes from tiered JIT compilation, where compilers of different tiers provide faster code at expense of compilation time. The first tier quickly produces a quality hash function that's slow in runtime. The next tiers try to decrease the runtime while preserving quality at the cost of increased compilation time.
 
 
 ### Quality
@@ -64,69 +64,77 @@ What this means is that we can replace the array of size $N_j$ with a hash table
 
 ### Groups
 
-Often, we need to hash short data whose properties can be analyzed in reasonable time. Suppose for a moment that we have a slowish but generic way to hash a vector of $N$-bit words into one $N$-bit word, and our goal is to reduce the workload (i.e. input length) of this algorithm.
+Often, we need to hash short data whose properties can be analyzed in reasonable time.
 
-Firstly, we note that we don't have to produce $h_1, \dots, h_n$ from one $N$-bit hash. Instead, we can split the input words into several groups, hash each group individually, and extract each $h_i$ from one of the groups. Of course, some words may be dropped altogether if the other words suffice entropy-wise.
+Firstly, note that we don't have to hash all input into one number and then produce $h_1, \dots, h_n$ from it. Instead, we can split the input words into several groups, hash each group individually, and extract each $h_i$ from one of the groups. Some words may be dropped altogether if the other words suffice entropy-wise.
 
-Note that the mapping from $h_i$ to groups is not injective: for example, if $h_1$ and $h_2$ need to be independent, but the input contains just one word, we'll have to extract them both from the hash of that word. Nevertheless, when such a split is possible, it allows several hashes to be computed independently in parallel, using the superscalar architecture of modern CPUs.
-
-After computing the group hash $u$, we can extract $h_1, \dots, h_k$ from $u$ iteratively as follows:
-
-$$
-\begin{align*}
-u_1 &= u, \\
-h_i &= u_i n_i \mathop{div} 2^N, \\
-u_{i + 1} &= u_i n_i \bmod 2^N.
-\end{align*}
-$$
-
-For power-of-two $n_i$, we can either reuse this approach with multiplication optimized to shifts, or improve latency by simultaneously extracting bit groups from the bottom of $u$. This way, we extract entropy from two ends, reducing the likelyhood of correlation between power-of-two $n_i$s and non-power-of-two $n_i$s.
+Note that the mapping from $h_i$ to groups is not injective: for example, if $h_1$ and $h_2$ need to be independent, but the input contains just one word, we'll have to extract them both from the hash of that word. Nevertheless, when such a split is possible, it allows several hashes to be computed independently in parallel, relying on the superscalar architecture of modern CPUs.
 
 
-### General case
+### Generic hash
 
-So what generic hash do we use? The kernel of our method is the mixing function
-
-$$
-\mathrm{mum}(x, y) = (xy \bmod 2^N) \oplus (xy \mathop{div} 2^N),
-$$
-
-called "multiply and mix" or "folded multiply". Unlike typical multiplication, $\mathrm{mum}$ has full avalanche, meaning that no finalization step is necessary to make all bits usable and independent. As far as we are aware, deficiencies of this mixer have not been explored; possible DoS attacks nonwithstanding, this function works fine in practice and is used as a key component of [wyhash](https://github.com/wangyi-fudan/wyhash), among others.
-
-On Alder Lake, $\mathrm{mum}$ has latency $5$, so absorbing input iteratively with $\mathrm{mum}$ is not an option for short data. Instead, we introduce a parallelizable hash
-
-$$
-u(x_0, \dots, x_{2k-1}) = \sum_{i=0}^{k-1} \mathrm{mum}(x_{2i} \oplus a_{2i}, x_{2i+1} \oplus a_{2i+1}) \pmod{2^N},
-$$
-
-where both inputs $x_i$ and the output $u$ are $N$ bits long, and $a_i$ are random $N$-bit values. To hash an odd number of words, we add $\mathrm{mum}(a_{2k}, x_{2k})$ to $u$. The arbitrary choices of $\oplus$ vs $+$ were made with a goal of minimizing linearity in both $\mathbb{Z} / 2 \mathbb{Z}$ and $\mathbb{Z} / 2^{64} \mathbb{Z}$.
-
-This design is based on [the universal NH family](https://www.cs.ucdavis.edu/~rogaway/papers/umac-full.pdf), which computes
+So how do we hash the individual groups? Our design is based on [the universal NH family](https://www.cs.ucdavis.edu/~rogaway/papers/umac-full.pdf), which computes
 
 $$
 u(x_0, \dots, x_{2k-1}) = \sum_{i=0}^{k-1} ((x_{2i} + a_{2i}) \bmod 2^N) ((x_{2i+1} + a_{2i+1}) \bmod 2^N) \pmod{2^{2N}}
 $$
 
-for random *odd* $a_0, \dots, a_{2k-1}$ and adds $a_{2k} x_{2k}$ for odd number of words. NH has a good proven bound on the collision rate, so as long as we believe that $\mathrm{mum}$ behaves "as well as" $2N$-bit multiplication, our scheme is of high quality, too. As another point of comparison, if $+$/$\oplus$ and $\mathrm{mum}$ were replaced with addition and multiplication in $GF(2^N)$, respectively, the scheme would clearly be $2^{-N}$-almost universal. To be clear, this is mostly speculation and it is unknown whether this scheme is almost universal, even though it seems to be so in practice. Real cryptanalysis is more than welcome.
+for random odd $a_0, \dots, a_{2k-1}$ and adds $x_{2k}$ for an odd number of words. NH is provably almost universal, meaning that it has good collision rate. We reuse this approach with $N \times N \to 2N$ multiplication replaced with $N \times N \to N$ folded multiplication to simplify the calculations:
 
-On Alder Lake, $u(x_0, \dots, x_{2k-1})$ has latency $6 + \lceil \log_2 k \rceil$ as long as there are enough registers; increment $k$ by one for odd-length data. When the input is just one word, $u(x)$ has latency $5$.
+$$
+\mathrm{mum}(x, y) = (xy \bmod 2^N) \oplus (xy \mathop{div} 2^N),
+$$
+
+$$
+u(x_0, \dots, x_{2k-1}) = \sum_{i=0}^{k-1} \mathrm{mum}(x_{2i} \oplus a_{2i}, x_{2i+1} \oplus a_{2i+1}) \pmod{2^N}.
+$$
+
+Here, both the inputs $x_i$ and the output $u$ are $N$ bits long, and $a_i$ are random (not necessarily odd) $N$-bit values. To hash an odd number of words, we add $x_{2k}$ to the sum.
+
+Purely for intuition, consider that if $+$/$\oplus$ and $\mathrm{mum}$ were replaced with addition and multiplication in $GF(2^N)$, respectively, the scheme would clearly be $2^{-N}$-almost universal. To be clear, we can only speculate on the quality of this replacement, therefore we don't claim any kind of DoS resistance. It seems to work well in practice, but real cryptanalysis is necessary to make any formal claims.
+
+The arbitrary choices of $\oplus$ vs $+$ were made with a goal of minimizing linearity in both $\mathbb{Z} / 2 \mathbb{Z}$ and $\mathbb{Z} / 2^N \mathbb{Z}$.
+
+As another point of comparison, [wyhash](https://github.com/wangyi-fudan/wyhash) successfully uses $\mathrm{mum}$ as a mixer. We use a parallelizable scheme instead, as $\mathrm{mum}$ has a high latency ($5$ ticks on Alder Lake), so absorbing input iteratively with $\mathrm{mum}$ (like `wyhash` does) is slow for short data. On Alder Lake, $u(x_0, \dots, x_{2k-1})$ has latency $6 + \lceil \log_2 k \rceil$ as long as there are enough registers; increment $k$ by one for odd-length data. When the input is just one word, $u(x) = x$.
+
+
+### Extraction
+
+While we might trust this scheme to be almost universal, that doesn't mean its bits are independent. Even though $\mathrm{mum}$ has full avalanche, it has some very predictable $\Delta$s.
+
+If we only care about the collisions in $h_1, (h_1, h_2), \dots, (h_1, \dots, h_k)$, i.e. just prefixes, we can compute $v_1 = bu \pmod 2^N$ for a random odd $b$ and extract $h_1, \dots, h_k$ iteratively as follows:
+
+$$
+\begin{align*}
+h_i &= v_i n_i \mathop{div} 2^N, \\
+v_{i + 1} &= v_i n_i \bmod 2^N.
+\end{align*}
+$$
+
+For power-of-two $n_i$, we can optimize multiplication to shifts. This is a generalization of [the multiply-shift scheme](https://en.wikipedia.org/wiki/Universal_hashing#Avoiding_modular_arithmetic), and it provides guaranteed bounds on the collision rate of $(h_1, \dots, h_i)$.
+
+When the extracted $h_i$ need to be independent, a separate finalization step is necessary. [Various bit mixers are available for this](http://mostlymangling.blogspot.com/2019/01/better-stronger-mixer-and-test-procedure.html). With such a high-quality output, we don't need to worry about extracting entropy from the top specifically, and can simultaneously extract bit groups from the bottom for power-of-two $n_i$s.
 
 
 ### Optimizations
 
-Our next goal is to improve performance of this generic hash by removing some operations or replacing them with faster ones, utilizing patterns observed in the training set.
+So that was our Tier 1. How do we optimize it?
 
-Our main tool is to mix individual words with faster algorithms than multiplication if the words are independent in some fashion. Several smaller-than-$N$ inputs can be merged together with shifting and addition injectively. (On a relevant note, if we need to produce a $32$-bit hash, merging inputs into $64$-bit words and then truncating the hash is going to be more efficient than working with $N = 32$.) Multiple uncorrelated $N$-bit inputs can often be mixed simply with $+$ or $\oplus$. Correlated inputs can be "decorrelated" by bit-rotating or byte-swapping.
+We're looking for ways to remove some operations or replace them with faster ones, utilizing patterns observed in the training set.
+
+Our main tool is to mix individual words faster than with multiplication if the words are independent in some fashion. Several smaller-than-$N$ inputs can be merged together with shifting and addition injectively. (On a relevant note, if we need to produce a $32$-bit hash, merging inputs into $64$-bit words and then truncating the hash is going to be more efficient than working with $N = 32$.) Multiple uncorrelated $N$-bit inputs can often be mixed simply with $+$ or $\oplus$. Correlated inputs can be "decorrelated" by bit-rotating or byte-swapping.
 
 Once a smaller vector $(y_0, \dots, y_{k-1})$ is obtained such that no two $y_i, y_j$ can be mixed together cheaply without increasing the collision rate significantly, we hash the vector with the function $u$.
 
-If $k = 1$, we consider extracting entropy from the word directly with a `pext` instruction, which saves one AND when all $n_i$ are powers of two.
+We then try to find a word that we can directly add/xor into the output of $u$ instead of passing it as an argument $u$. Bit-rotating or byte-swapping $y_i$ might also be useful here. How successful this is depends on the data.
 
-We then try to find a word that has enough entropy in the places where we extract $h_i$ from, so that we can avoid hashing it with $u$ and instead directly xor/add it to the result of $u$. How successful this is depends on how $h_i$ is extracted; bit-rotating or byte-swapping $y_i$ might also be useful here.
+We then consider optimizing individual $\mathrm{mum}$ calls. For uniform inputs, $\oplus a_i$ can be omitted, saving one or more xors. Alternatively, they can sometimes be reused across invocations, which is a positive, as $64$-bit constants have to be loaded into registers manually. Finally, if the input is somewhat uniform, $\mathrm{mum}$ can sometimes be replaced with just the low half of the multiplication, which has latency $3$ rather than $5$.
 
-We then consider optimizing individual $\mathrm{mum}$ calls. For uniform inputs, $\oplus a_i$ can be omitted, saving one or more xors. Alternatively, they can sometimes be reused across invocations, which is a positive, as $64$-bit constants have to be loaded into registers manually. Finally, when $h_i$ is extracted from the top bits rather than the bottom bits, or if the input is somewhat uniform, $\mathrm{mum}$ can sometimes be replaced with just the low half of the multiplication, which has latency $3$ rather than $5$. When replacing $\mathrm{num}(a, x)$ with $ax$, we need to use odd $a$; in fact, it is provable that as long as $k = 1$, this is a safe replacement.
+We then check if the hash function works well with the finalizer omitted, or perhaps only applied to the $+ y_{2k}$ part to reduce latency.
 
-Now, if $u$ has an odd number of arguments, we can sometimes cheat by replacing $\mathrm{mum}(a, x)$ with $\mathrm{crc32}(x)$, which performs faster by $1$ or $2$ ticks on x86-64 while still achieving full avalanche. On x86-64, the instruction `crc32 a, b` computes CRC32 of $a \oplus b$, allowing us to save $1$ more tick when $x$ is a xor-mix of several input words. Clearly, CRC32 outputs a $32$-bit hash, so when extracting entropy from the top half of the output, it needs to be shifted; alternatively, if this is the only summand in $u$, we can use $32$-bit arithmetic directly.
+We then optimize the finalizer. We iterate through faster and worse bit mixers, attempting to rotate bits of the hash (or just of the $+ y_{2k}$ part) for better result. We consider extracting entropy from the word directly with a `pext` instruction when all $n_i$ are powers of two, saving one AND.
+
+Finally, we try to use CRC32 as the finalizer, which performs as fast as multiplication while achieving full avalanche on x86-64. The instruction `crc32 a, b` computes CRC32 of $a \oplus b$, allowing us to save $1$ more tick when $x$ is a xor-mix. This produces a $32$-bit hash, so we need to adapt the extraction logic.
 
 
 ### Long data
