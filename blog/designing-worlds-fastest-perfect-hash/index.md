@@ -1,24 +1,73 @@
 ---
-title: The road to world's fastest perfect hash
-time: November 15, 2024
+title: "h: Practical, efficient perfect hash functions"
+time: November 25, 2024
 draft: true
 intro: |
-  I need a hash-table with integer keys. `HashMap<u32, T>`, right? Wrong. *For plot reasons*, I need it to perform at ridiculous speeds. So that's how the journey towards the fastest perfect hash function started.
+    I need a hash-table with integer keys. `HashMap<u32, T>`, right? Wrong. *For plot reasons*, I need it to perform at ridiculous speeds. So that's how the journey towards the fastest perfect hash function started.
 ---
 
-I need a hash-table with integer keys. `HashMap<u32, T>`, right? Wrong. *For plot reasons*, I need it to perform at ridiculous speeds. So that's how the journey towards the fastest perfect hash function started.
+Hash tables are frequently used in programming. Often, they are mostly static and only require read-only access after building. At this point, we encounter a tradeoff between build time and access time.
+
+[For plot reasons](http://127.0.0.1:8000/blog/you-might-want-to-use-panics-for-error-handling/), I need a static hash table with integer keys with blazingly fast access times. `HashMap<u32, T>` is quite slow, and, surprisingly, so is [phf](https://docs.rs/phf/latest/phf/) -- the default solution for this problem in the Rust ecosystem.
+
+I tried to replace the hash functions in the official benchmarks with no-ops, and still got $5$ ns per access -- more than I'm willing to pay. In addition, the build time for `phf` sucks. Sure, I can spend some time preprocessing the table, but I'd like it to not take much more than a second to process a few million keys.
 
 
-### Setting the stage
+### h
 
-Okay, so a little bit of context is necessary.
+:::aside
+I'm notorious for developing projects so that I can get a claim to their name rather than to make something good; that's just a common side effect.
 
-I'm working with a file containing structured data, and I need to attach metadata to some of the entries. Entries don't have any natural keys, so I have to use the file offset as the key. I'm allowed to spend a long time preprocessing the file, but after that, mapping the offset to the metadata needs to be near-instantaneous.
+`h` stands for hydrogen, because `h` is supposed to be as lightweight as reasonably possible on modern architectures. If you need a longer name, use `hPHF`, where `h` can either stand for hydrogen or "hybrid", as the math behind `h` is based on taking the best from several known approaches to building PHFs.
+:::
+
+So I made [a better perfect hash: h](https://lib.rs/h).
+
+<aside-inline-here />
+
+...
+
+
+### Comparison
+
+In my opinion, `h` is quite competitive. It's not very mathematically rigorous at the moment, although I believe this can be fixed with enough effort.
+
+The `phf` crate takes $4.3$ seconds to build a PHF with $10^6$ integer $32$-bit keys. (That's with SipHash, which I couldn't avoid because any faster lazy hashes I tried to throw at `phf` lead to hangs and infinite loops.) In comparison, `h` does that in $140$ ms -- $30 \times$ faster. (It scales worse than linearly for larger sizes due to cache effects, but still reasonably well.)
+
+`phf` takes $14.5$ ns to resolve an element in a $26$-element hash map keyed by random $32$-bit integers generated with a proc macro. If you hack the code and replace the hash with the fastest one that works, the time falls down to $3.9$ ns. In contrast, `h` takes $2.3$ ns to resolve it with the map *generated in runtime*, i.e. without constant propagation, and $2.0$ ns with compile time generation.
+
+Unlike `phf` and `boomphf`, `h` is not a *minimal* PHF, but *a* PHF. This means that `h` wastes some memory in the hash table by design. In return, `h` takes less space for control information, so the overall memory use stays about the same for small objects and large datasets.
+
+For the same reason, `h` is significantly less picky about the quality of the underlying imperfect hash than `phf`, which requires SipHash. This enables faster hashes like `wyhash` to be used.
+
+Much like `phf`, the memory utilization is spread between two arrays, storing data and control information separately. The sizes of the arrays are, however, much more skewed than in `phf`, leading to better performance when only the smaller control array fits in cache.
+
+`boomphf` builds hash functions $2$ -- $3 \times$ faster than `h`, but its access time stays at around $40$ ns per key regardless of the hash function. This can be easily explained: `boomphf` has variable-time access performance and requires quite a bit of pointer jumping. In contrast, `h` supports constant-time accesses and performs just one memory read apart from the accessed entry.
+
+On large data, `h` takes about $5 \times$ more time to build than `HashMap`.
+
+
+### Scope
+
+`h` does not support all key types, and manually implementing a custom `PortableHash` trait (similar to `Hash` from std) might be necessary.
+
+Although `h` was originally tuned to small integer keys, it provides good performance with any keys. Even if the access time turns out to be similar to alternatives, `h` takes relatively little to build. This matters for hashing large data, programmatically generated data, and building in runtime.
+
+Finally, `h` provides constant access time, which is important for real-time systems and predictable performance.
+
+
+## Theory
+
+### Intro
+
+If you're interested, .
+
+> I'm experimenting with writing styles. This is not as formal as I'd like it to be (I'm hoping to write a paper on this topic eventually), but I wanted this to be an introduction to PHF construction too. We'll see how it goes.
 
 
 ### PHFs
 
-Problems like this are typically solved is by using *perfect hash functions*. These are hash functions trained on a particular key set, with a lucky property that the hashes of these keys don't collide.
+*Perfect hash functions* are hash functions trained on a particular key set, with a lucky property that the hashes of these keys don't collide.
 
 For example, for the key set $\{12534, 12421, 123567\}$, $H(x) = x \& 3$ is a valid PHF, because the hashes of the set are $\{3, 2, 1\}$ with no collisions. Note that collisions may arise if *other* unlisted keys are hashed: this is not considered a problem.
 
@@ -44,24 +93,12 @@ fn get(key: u32) -> Option<Value> {
 }
 ```
 
-:::aside
-Okay, I'm overreacting. These crates aren't really tuned towards my usecase, and they shine when used for string keys. But that doesn't help *me*.
-:::
-
-There's just one problem: all the classical PHFs are damn slow for my usecase! The [phf](https://docs.rs/phf/latest/phf/) and [boomphf](https://docs.rs/boomphf/latest/boomphf/) crates both take `14 ns` per access, perhaps because they use wyhash for internal hashing. We have 4 GHz CPUs these days, and these crates can't even hash 100M integers per second!
-
-<aside-inline-here />
-
-Are you pondering what I'm pondering? We're going to design a $10 \times$ faster PHF.
-
-
-## Theory
 
 ### Spooky math
 
 The hash function clearly can't be perfect for *all* keys, so it should depend on the key space. There's many different key spaces, so there must be many different PHFs, and that means they have to store *data* that somehow corresponds to the key space. So a PHF is not just *code*, but also a set of *lookup-up tables*.
 
-Most constant-time PHFs (and we do need constant time, because any unpredictable conditional jumps are going to hurt performance) use the following approach. Firstly, two *imperfect* random hash functions are chosen: $\mathit{Approx}$ and $\mathit{Bucket}$. $\mathit{Approx}$ maps the key to its approximate hash (i.e. position in the hash table), while $\mathit{Bucket}$ maps the key to its bucket ID. For each bucket, a *displacement* value is stored in the look-up table, which is mixed with the approximate hash to obtain the final hash.
+Most constant-time PHFs (and we do need constant time, because any unpredictable conditional jumps are fatal at this scale) use the following approach. Firstly, two *imperfect* random hash functions are chosen: $\mathit{Approx}$ and $\mathit{Bucket}$. $\mathit{Approx}$ maps the key to its approximate hash (i.e. position in the hash table), while $\mathit{Bucket}$ maps the key to its bucket ID. For each bucket, a *displacement* value is stored in the look-up table, which is mixed with the approximate hash to obtain the final hash.
 
 The idea is that while $\mathit{Approx}$ hashes might collide, as long as the colliding keys are from different buckets, we can choose different displacements to avoid the collision. If a particular $(\mathit{Approx}, \mathit{Bucket})$ combination still leads to collisions, we just choose another pair of imperfect hash functions and try again.
 
@@ -112,7 +149,7 @@ There are many approaches to displacing the hash. As the approximate hash is uni
 While $+$ and $\oplus$ (i.e. XOR) seem similar, they actually differ in several characteristics:
 
 - Space utilization (better for $\oplus$)
-- Build success probability (better for $+$)
+- Build success probability (better for $+$ for small load factors or $\oplus$ for large load factors)
 - Build time (better for $+$)
 
 For approximate hash $h$ and displacement $d$, we can either have $h \oplus d$ or $h + d$ as the final hash, and the former is clearly less in the general case. For large $h$ and small $d$, this is not a big problem, but for smaller hash tables, using $\oplus$ reduces the hash table size.
@@ -131,70 +168,49 @@ For bucket of size $b$ and current load factor is $\alpha$, we can expect a succ
 
 ## Implementation
 
-### Uniformity
-
-Popular non-cryptographic hash functions are a big no-no due to performance considerations, and preferably, we should avoid them altogether.
-
-To do this, we need to inspect the input data. As a quick reminder, the keys are data structure offsets. The offsets aren't uniformly random (why would they be, with a variable-length format?), but some bits have more entropy than others. Lower bits have little entropy due to alignment, higher bits have little entropy due to the structure, but some bits inbetween work well as an entropy source.
-
-Here's a distribution plot for 1.5 M keys, rotated by different amounts of bits:
-
-![32 distribution plots, for shifts from 0 to 31 inclusive. For shift 0, the plot is clearly non-uniform, but looks close to that of a continuous function. For shifts 1 to 6, the plot shows increasingly many visible peaks with nothing inbetween. For shifts 7 to 12, these peaks grow in number until the plot becomes visibly uniform. For shifts 13 to 16, the plot is uniform. For shifts 17 to 31, uniformity slowly breaks down and the plot slowly starts to look closer to the original non-uniform almost-continuous plot.](distribution.png)
-
-With [the KS test](https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test) we can ensure that the most uniform result (on a large scale; low bits, of course, stay non-uniform) is produced by rotation by $14$ bits (and, surprisingly, by $11$), differing from a real uniform distribution by only $0.8\%$ max. With just *one* instruction, we've turned the input into a suitable hash! On x86-64, that takes one tick.
-
-But then I had a very good idea. I used [uops.info](https://uops.info/table.html). See, using uops.info gave me a whole new perspective and I was able to see an instruction I couldn't have seen before.
-
-It turns out that rotation is not the best one-tick way to increase uniformity. This ought to be surprising, because there's very few one-tick instructions, and they typically perform linear arithmetic, which doesn't shuffle bits in any way. But there's *one* instruction that does: `bswap`. It swaps bits inside of a 32-bit register, and with certain inputs, it generates more entropy than rotation does. So in practice, we need to choose whether to use rotation or `bswap` depending on the data.
-
-
 ### Hash functions
 
-*Finally* we're getting closer to writing some code. We need to design $\mathit{Approx}$ and $\mathit{Bucket}$, the functions for mapping keys to approximate hashes and for mapping keys to buckets.
+Now we need to design $\mathit{Approx}$ and $\mathit{Bucket}$, the functions for mapping keys to approximate hashes and for mapping keys to buckets.
 
-Now here's a problem. We've got a "uniform" $32$-bit number, but $\mathit{Approx}$ needs to output a number between $0$ and $M = 1.01 N$, which isn't necessarily a power of two, so we'll need to perform another calculation to scale the uniform hash. Scale, you say? That's just fixed-point multiplication: $(h \times M) >> 32$ maps $h \in [0; 2^{32})$ to $[0; M)$, which is precisely what we need.
+Assume that we already have a fast $64$-bit hash function $\mathit{Uniform}$ with much entropy in the top bits. This is the only place that needs to be done separately for different kinds of data. I'll omit this section, as it's irrelevant to the PHF itself.
 
-What about $\mathit{Bucket}$? I'd rather avoid yet another multiplication, so we'll have to bite the bullet and round the bucket count to a power of two (buckets take little space per key, so that's okay). We can then use the *lower* half of the $32 \times 32$ multiplication, shifted to the right, as a bucket index.
+Now here's a problem. Say we've got a "uniform" $64$-bit number, but $\mathit{Approx}$ needs to output a number between $0$ and $M = 1.01 N$, which isn't necessarily a power of two, so we'll need to perform another calculation to scale the uniform hash. Scale, you say? That's just fixed-point multiplication: $(h \times M) >> 64$ maps $h \in [0; 2^{64})$ to $[0; M)$, which is precisely what we need.
 
-On x86-64, multiplication takes 3 ticks, and the two shifts (to obtain the high part and to get the bucket index) can be computed in parallel, taking 1 tick each.
+What about $\mathit{Bucket}$? I'd rather avoid yet another multiplication, so we'll have to bite the bullet and round the bucket count to a power of two (buckets take little space per key, so that's okay). We can then use the *lower* half of the $64 \times 64$ multiplication, shifted to the right, as a bucket index.
 
-So that's, uh, a good hash with a 5 tick latency:
+On x86-64, multiplication takes 3 ticks to produce the low half, and 4 ticks to produce the high half. In parallel, a 1-tick shift can be performed to get the bucket index. So that's, uh, a good hash with a 4 tick latency:
 
 ```rust
 struct Precomputed {
-    entropy_shift: u32,
-    hash_space: u32,
-    bucket_shift: u32,
+    hash_space: u64,
+    bucket_shift: u64,
 }
 
 struct Hash {
-    approx: u32,
-    bucket: u32,
+    approx: u64,
+    bucket: u64,
 }
 
-fn hash(key: u32, precomputed: Precomputed) -> Hash {
-    let h = key.rotate_right(precomputed.entropy_shift); // 1 tick
-    // Alternatively: let h = key.swap_bytes(); // 1 tick
-    let product = h as u64 * precomputed.hash_space as u64; // 3 ticks
+fn hash(h: u64, precomputed: Precomputed) -> Hash {
+    let product = h as u128 * precomputed.hash_space as u128; // 3 ticks
     Hash {
-        approx: (product >> 32) as u32, // 1 tick
-        bucket: (product as u32) >> precomputed.bucket_shift, // 1 tick (computed concurrently)
+        approx: (product >> 64) as u64, // 1 tick
+        bucket: (product as u64) >> precomputed.bucket_shift, // 1 tick (computed concurrently)
     }
 }
 ```
 
-Nevermind the memory loads; these will go away after inlining:
+Nevermind the `mov`s; these will go away after inlining:
 
 ```x86asm
 hash:
-    movzx   ecx, byte ptr [rsi]
-    ror     edi, cl ; 1 tick
-    mov     edx, dword ptr [rsi + 4]
-    imul    rdx, rdi ; 3 ticks
+    mov     rcx, rdx
+    mov     rax, rsi
+    mul     rdi
+    mov     rsi, rax
+    shr     rsi, cl
     mov     rax, rdx
-    movzx   ecx, byte ptr [rsi + 8]
-    shr     edx, cl ; 1 tick
-    shr     rax, 32 ; 1 tick (computed concurrently)
+    mov     rdx, rsi
     ret
 ```
 
@@ -207,68 +223,11 @@ Now all we have to do is compute the final hash with $\mathrm{mix}(\mathit{Appro
 
 Okay, now how do we *generate* the table in the first place? We need to decide on:
 
-- `entropy_shift` (or to switch to `swap_bytes`)
 - `hash_space`
 - `bucket_shift`
 - The displacement LUT
 
 None of these are as simple as they look like.
-
-
-### Entropy shift
-
-For this, we need a way to measure the uniformity of a distribution. Typical solutions assume the existence of a probability distribution function, but we only have access to a sample of the distribution, so we'll use [the KS test](https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test) instead. In layman terms, we just sort the hashes in increasing order, draw a scatter plot, and compare it to a straight line.
-
-Not that this needs to be particularly performant, but avoiding floating point operations sounds like a nice bonus, so let's do that. We need to compute approximately $\max\limits_{i=0}^{N-1} \left\lvert \frac{h_i}{2^{32}} - \frac{i}{N} \right\rvert$, which we can do as follows:
-
-```rust
-fn compute_ks_for_sorted(hashes: &[u32]) -> f32 {
-    let scaled_abs = hashes
-        .into_iter()
-        .enumerate()
-        .map(|(i, hash)| (*hash as u64 * hashes.len() as u64).abs_diff((i as u64) << 32))
-        .max()
-        .unwrap();
-    (scaled_abs >> 32) as f32 / hashes.len() as f32
-}
-```
-
-This takes $1.5$ ns per key to compute, so it's fine, I guess?
-
-Now we just need to figure out how to sort the hashes for 32 different shift amounts without sorting the array 32 times. Luckily, this is easy to do: when a sorted array is rotated to the left by one bit, the two halves (split by the highest bit pre-rotate and by the lowest bit post-rotate) are still sorted, so we can just merge them together in $O(n)$:
-
-```rust expansible
-fn rotate_left_sorted(source: &[u32], target: &mut [u32]) {
-    assert_eq!(source.len(), target.len());
-
-    let middle = source.partition_point(|key| (key >> 31) == 0);
-    let mut i = 0;
-    let mut j = middle;
-
-    // Sorry, itertools, this is faster
-    while i < middle && j < source.len() {
-        let i_value = source[i].rotate_left(1);
-        let j_value = source[j].rotate_left(1);
-        if i_value < j_value {
-            target[i + j - middle] = i_value;
-            i += 1;
-        } else {
-            target[i + j - middle] = j_value;
-            j += 1;
-        }
-    }
-    while i < middle {
-        target[i + j - middle] = source[i].rotate_left(1);
-        i += 1;
-    }
-    while j < source.len() {
-        target[i + j - middle] = source[j].rotate_left(1);
-        j += 1;
-    }
-}
-```
-
-This takes $2$ ns per key. Good enough.
 
 
 ### Hash space
@@ -277,7 +236,7 @@ This looks trivial: just round $1.01 n$ up. But there's three pitfalls here.
 
 The easier one is that multiplying by an even number shifts entropy to the left, so there might not be enough entropy left for $\mathit{Bucket}$. Thus `hash_space` needs to be odd.
 
-The medium one is that this makes hash calculation completely deterministic. Do you remember that PHF building is a probabilistic process, and if too many collisions arise from the imperfect hash functions $\mathit{Approx}, \mathit{Bucket}$, we need to regenerate them? Well, among all the variables we can easily control, our hash functions depend exclusively on `entropy_shift` and `hash_space`. We *really* want to play around with them, so we'll have to try different `hash_space` values out: perhaps $1.01 n, 1.02 n, 1.03 n, \dots$. This also has a bonus of decreasing the load factor, thus offsetting the effect of a limited displacement range.
+The medium one is that due to a limited displacement range, $1.01 n$ might not be enough. This effect is exacerbated by large table sizes. Therefore, we try different `hash_space` values out: $1.01 n, 1.02 n, 1.03 n, \dots$, and increase the starting value based on the the number of elements. If we reach a power-of-two `hash_space` value, we're in luck: although we're now wasting memory, multiplication by `hash_space` has just become a shift, reducing latency by 2 ticks; this in turn allows us to try better $\mathit{Uniform}$ functions.
 
 The harder one is that while $\mathit{Approx}$ can be in-bounds, $\mathrm{mix}(\mathit{Approx}, \mathit{Disp}[\mathit{Bucket}])$ can be out-of-bounds. For example, for hash table size $5$, a key with approximate hash $4$ and displacement $2$ has final index $6$ (for both $+$ and $\oplus$ mixing functions). Handling this case as wrap-around is a performance hazard, and forbidding such out-of-bounds accesses decreases the probability of a successful build. The solution is to keep the output space of $\mathit{Approx}$ (i.e. `hash_space`) limited to $1.01 n$ (or another multiple of $n$), but pad the resulting hash table to the right such that all possible accesses are in-bounds.
 
@@ -285,7 +244,7 @@ There's a conundrum here. Do we make *accesses to existing elements* in-bounds, 
 
 For the $+$ mixing function, this is just $M + \max\limits_{i=0}^{B-1} \mathit{Disp}_i$. For $\oplus$, a tighter boundary is possible; I'm a nerd, so we're going to solve this Leetcode problem now. Skip to the next section if you despise that sort of thing.
 
-We're looking for a way to calculate $\max\limits_{x=0}^X x \oplus Y$ in $O(1)$ for different $Y$ values. I won't bore you with details, but it works like this:
+We're looking for a way to calculate $\max\limits_{x=0}^X x \oplus Y$ in $\mathcal{O}(1)$ for different $Y$ values. I won't bore you with details, but it works like this:
 
 ```rust
 fn max_xor(x: usize, y: usize) -> usize {
@@ -303,32 +262,11 @@ Proving this is left as an exercise to the reader. I have no intuition for why t
 <aside-inline-here />
 
 
-### Fallback
-
-Before we continue talking about generation parameters, we need to talk about generating a *family* of hash functions again. As a reminder, we need to generate new $\mathit{Approx}, \mathit{Bucket}$ hashes if the current ones lead to collisions. We can affect `hash_space` and `entropy_shift`, which is a nice hack, but it doesn't always work, because it does not completely reshuffle the key hashes; rather, it tweaks them slightly, barely enough that the collision *might* go away.
-
-So here's how the fallback implementation works. The reason we have a slow multiplication calculation is that `hash_space` is not a power of two; if we *fail* to generate a small enough non-power-of-two table, we round `hash_space` up to a power of two, replacing the multiplication with a bitwise operation. This frees up 2 ticks, enabling us to bring a multiplication *back*. You see, multiplication by an odd number shuffles the bits quite well, so we can just multiply `h` by an honest-to-God random number:
-
-```rust
-fn hash(key: u32, precomputed: Precomputed) -> Hash {
-    let h = key.rotate_right(precomputed.entropy_shift); // 1 tick
-    // Alternatively: let h = key.swap_bytes(); // 1 tick
-    let h = h as u64 * precomputed.random_factor as u64; // 3 ticks
-    Hash {
-        approx: (h >> 32) as u32 & precomputed.hash_space_minus_one, // 2 ticks
-        bucket: (h as u32) >> precomputed.bucket_shift, // 1 tick (computed concurrently)
-    }
-}
-```
-
-`random_factor` does not affect performance characteristics like `hash_space` did, so we can use an arbtirary factor. This significantly increases the chances of a successful generation, only decreasing fallback performance by 1 tick.
-
-
 ### Bucket shift
 
 I lied, this one's actually simple. A good change of pace. Do you feel relieved? Please feel relieved.
 
-If you still remember, we compute $\mathit{Bucket}$ of a key as `(product as u32) >> bucket_shift`, so `bucket_shift` is just $32 - \log_2 B$, and the bucket count is $\frac15 N$ (shamelessly stolen from CHD), rounded up to a power of two.
+If you still remember, we compute $\mathit{Bucket}$ of a key as `(product as u64) >> bucket_shift`, so `bucket_shift` is just $64 - \log_2 B$, and the bucket count is $\frac15 N$ (shamelessly stolen from CHD), rounded up to a power of two.
 
 
 ### Displacements
@@ -339,12 +277,12 @@ The basic idea of what we're trying to do is this:
 
 ```rust expansible
 struct Phf {
-    hash_space: u32,
-    bucket_shift: u32,
+    hash_space: u64,
+    bucket_shift: u64,
     displacements: Vec<u16>,
 }
 
-fn try_generate_phf(keys: &[u32]) -> Option<Phf> {
+fn try_generate_phf(keys: &[u64]) -> Option<Phf> {
     // Hash space. TODO: Increase on failure.
     let hash_space = (keys.len() + keys.len().div_ceil(100)) | 1;
 
@@ -352,11 +290,11 @@ fn try_generate_phf(keys: &[u32]) -> Option<Phf> {
     let b = (keys.len().div_ceil(5) + 1).next_power_of_two();
 
     // Split keys into buckets
-    let bucket_shift = 32 - b.ilog2();
+    let bucket_shift = 64 - b.ilog2();
     let mut keys_per_bucket = vec![Vec::new(); b];
     for key in keys {
-        // TODO: Apply entropy shift.
-        let bucket = key.wrapping_mul(hash_space as u32) >> bucket_shift;
+        // TODO: Apply Uniform to key.
+        let bucket = key.wrapping_mul(hash_space as u64) >> bucket_shift;
         keys_per_bucket[bucket as usize].push(*key);
     }
 
@@ -371,9 +309,9 @@ fn try_generate_phf(keys: &[u32]) -> Option<Phf> {
     bucket_order.sort_unstable_by_key(|bucket| core::cmp::Reverse(keys_per_bucket[*bucket].len()));
     for bucket in bucket_order {
         // Compute all Approx values preemptively
-        let mut approx_for_bucket: Vec<u32> = keys_per_bucket[bucket]
+        let mut approx_for_bucket: Vec<u64> = keys_per_bucket[bucket]
             .drain(..)
-            .map(|key| ((key as u64 * hash_space as u64) >> 32) as u32)
+            .map(|key| ((key as u128 * hash_space as u128) >> 64) as u64)
             .collect();
 
         // Ensure that Approx values don't collide inside the bucket
@@ -400,14 +338,20 @@ fn try_generate_phf(keys: &[u32]) -> Option<Phf> {
     }
 
     Some(Phf {
-        hash_space: hash_space as u32,
+        hash_space: hash_space as u64,
         bucket_shift,
         displacements,
     })
 }
 ```
 
-This code works, but takes around $280$ ns per key. We can do better.
+:::aside
+The reason I'm not saying any specific numbers is that the per-key performance depends on how well the data fits in cache. Different sizes lead to different performance characteristics; make sure to benchmark your usecases. During this optimization stage, all I can provide without lying is approximate relative numbers.
+:::
+
+This code works, but quite slow. Luckily, there's opportunities for optimization.
+
+<aside-inline-here />
 
 
 ## Faster bucket logic
@@ -426,7 +370,7 @@ let mut sorted_by_bucket = keys.to_vec();
 radsort::sort_by_key(&mut sorted_by_bucket, |key| key_to_bucket(*key));
 
 // We'll store per-size bucket lists here
-let mut buckets_by_size: Vec<Vec<(u32, usize)>> = Vec::new();
+let mut buckets_by_size: Vec<Vec<(u64, usize)>> = Vec::new();
 
 // A manual group_by implementation
 let mut left = 0;
@@ -437,12 +381,12 @@ while left < keys.len() {
     let mut product;
     while right < keys.len() && {
         // Keep going while the key has the same bucket as the previous one
-        product = sorted_by_bucket[right] as u64 * hash_space as u64;
-        bucket == product as u32 >> bucket_shift
+        product = sorted_by_bucket[right] as u128 * hash_space as u128;
+        bucket == product as u64 >> bucket_shift
     } {
         // Replace the key with its Approx value in-place for future use. We have already computed
         // the product, so this is cheap.
-        sorted_by_bucket[right] = (product >> 32) as u32;
+        sorted_by_bucket[right] = (product >> 64) as u64;
         right += 1;
     }
     left = right;
@@ -467,7 +411,7 @@ for (size, buckets) in buckets_by_size.iter().enumerate().rev() {
 }
 ```
 
-This alone increases performance almost twofold, to $145$ ns per key. `radsort` is not the best radix sort implementation, but it's the only ready one I found that supports stateful `sort_by_key`, so we'll have to live with it unless someone wants to contribute to [voracious_sort](https://github.com/lakwet/voracious_sort).
+This alone increases performance almost twofold. `radsort` might not be the best radix sort implementation, but it's the only one I found that supports stateful `sort_by_key`, so we'll have to live with it.
 
 
 ### Displacements (XOR)
@@ -491,7 +435,7 @@ Well... sort of. It *looks* like it should be as simple as
 
 ```rust expansible
 // SAFETY: `free` must be a bitset large enough to fit `approx ^ displacement`.
-unsafe fn find_valid_displacement(approx_for_bucket: &[u32], free: &[u8]) -> Option<u16> {
+unsafe fn find_valid_displacement(approx_for_bucket: &[u64], free: &[u8]) -> Option<u16> {
     // Outer unrolled loop
     for displacement_base in (0..=u16::MAX).step_by(8) {
         let mut global_bit_mask = u8::MAX;
@@ -502,7 +446,7 @@ unsafe fn find_valid_displacement(approx_for_bucket: &[u32], free: &[u8]) -> Opt
             // Inner unrolled loop, aka bitmask logic
             let bit_mask =
                 *unsafe { free.get_unchecked((approx ^ displacement_base as usize) / 8) };
-            global_bit_mask &= bit_mask as usize;
+            global_bit_mask &= bit_mask;
         }
 
         // Find the first applicable displacement (i.e. such that all `free` values are 1)
@@ -561,23 +505,21 @@ const BIT_INDEX_XOR_LUT: [[u8; 256]; 8] = {
     lut
 };
 
-global_bit_mask |= BIT_INDEX_XOR_LUT[approx % 8][bit_mask as usize];
+global_bit_mask &= BIT_INDEX_XOR_LUT[approx % 8][bit_mask as usize];
 ```
 
-This brings build time down to $65$ ns per key, more than $2 \times$ faster than before.
-
-Unfortunately, increasing this performance further is a lot harder. Increasing the step to 16 bits would either require a 2 MiB LUT, which is not really a good idea for many reasons, or introduce conditionals into the `global_bit_mask |= ...` calculation -- hardly a positive change.
+This again brings build time down twofold. Unfortunately, increasing the performance further is a lot harder. Increasing the step to 16 bits would either require a 2 MiB LUT, which is not really a good idea for many reasons, or introduce conditionals into the `global_bit_mask &= ...` calculation -- hardly a positive change.
 
 
 ### Displacements (+)
 
-Okay, that was it for $\oplus$. What about $+$?
+So that's it for $\oplus$. What about $+$?
 
 We're in luck: bits $\mathit{Approx} + 0$ to $\mathit{Approx} + 7$ can be extracted simply by performing an unaligned 16-bit read, followed by a bit shift. But we don't have to limit ourselves to validating $8$ displacements at once: we can easily validate $57$ displacements at once!
 
 ```rust expansible
 // SAFETY: `free` must be large enough to fit `approx + displacement + 8`.
-unsafe fn find_valid_displacement(approx_for_bucket: &[u32], free: &[u8]) -> Option<u16> {
+unsafe fn find_valid_displacement(approx_for_bucket: &[u64], free: &[u8]) -> Option<u16> {
     // Outer unrolled loop
     for displacement_base_index in 0..u16::MAX / 57 {
         // We don't iterate through a few of the top 65536 displacements, but that's noise
@@ -606,4 +548,4 @@ unsafe fn find_valid_displacement(approx_for_bucket: &[u32], free: &[u8]) -> Opt
 }
 ```
 
-This increases performance to $40$ ns per key.
+This is approximately twice as fast as the XOR logic.
