@@ -526,6 +526,6 @@ I've been designing fast hash-based data structures for several months before re
 
 The obvious way forward is to bring the structure of the data back into the picture. If the hasher knew it's hashing fixed-size data, it could use the $a_i$ approach. If the hasher knew it's hashing an array, it could vectorize the computation of individual hashes. If the hasher knew the types of the fields in the structure it's hashing, it could prevent tearing, or perhaps merge small fields into 64-bit blocks efficiently. Alas, the hasher is clueless...
 
-In my opinion, `Hasher` and `Hash` are a wrong abstraction. Instead of the `Hash` driving the `Hasher` ~~insane~~, it should be the other way round: `Hash` providing introspection facilities and `Hasher` navigating the hashed objects recursively.
+In my opinion, `Hasher` and `Hash` are a wrong abstraction. Instead of the `Hash` driving the `Hasher` ~~insane~~, it should be the other way round: `Hash` providing introspection facilities and `Hasher` navigating the hashed objects recursively. As a bonus, this could enable (opt-in) portable hashers.
 
 How this API should look like and whether it can be shoehorned into the existing interfaces remains to be seen. I have not started work on the design yet, and perhaps this article might be a bit premature, but I'd love to hear your thoughts on how I missed something really obvious (or, indeed, on how Rust is fast enough and no one cares).
