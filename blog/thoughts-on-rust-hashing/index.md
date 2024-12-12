@@ -1,6 +1,6 @@
 ---
 title: Thoughts on Rust hashing
-time: December 11, 2024
+time: December 12, 2024
 intro: |
     In languages like Python, Java, or C++, values are hashed by calling a "hash me" method on them, implemented by the type author. This fixed-hash size is then immediately used by the hash table or what have you. This design suffers from some obvious problems, like:
 
@@ -118,14 +118,14 @@ This is just a multiplicative hash, not unlike FNV-1, but consuming $8$ bytes at
 
 Now what happens if you try to hash two 32-bit integers with this hash? With padding, that will compile to two multiplications even though one would work. This halves throughput and increases latency.
 
-Practical hashes uses much larger blocks. `rapidhash` has a $24$-byte state and can absorb $48$ bytes at once. `ahash` has a $48$-byte state and absorbs $64$-byte blocks. `meowhash` has a $128$-byte state and absorbs $256$ bytes. (I only selected these particular hashes because I'm familiar with their kernels; others have similar designs.)
+Practical hashes use much larger blocks. `rapidhash` has a $24$-byte state and can absorb $48$ bytes at once. `ahash` has a $48$-byte state and absorbs $64$-byte blocks. `meowhash` has a $128$-byte state and absorbs $256$ bytes. (I only selected these particular hashes because I'm familiar with their kernels; others have similar designs.)
 
 These are some of the fastest non-cryptographic hashes in the world. Do you really want to nuke their performance by padding $8$-byte inputs to $48$, $64$, or $256$ bytes? Probably not.
 
 
 ### Chains
 
-Okay, but what if we cheated and modified the hash functions to absorb small data somewhat more efficiently than absorbing a full block?
+Okay, but what if we cheated and modified the hash functions to absorb small data somewhat more efficiently than by absorbing a full block?
 
 Say, the `rapidhash` kernel is effectively *this*:
 
@@ -156,7 +156,7 @@ Why does `rapidhash` even use three independent chains in the first place? That'
 
 Okay, so padding is a terrible idea. Can we accumulate a buffer instead? How much hashes I had to scroll through in SMHasher before I found *one* Rust implementation that took this approach is a warning bell.
 
-[The implementation I found](https://docs.rs/farmhash/1.1.5/src/farmhash/lib.rs.html#92-110), of course, stores a `Vec<u8>` and passes it to the underlying hasher in `finish`. I believe I don't need to explain why allocating during hash function is not the brightest idea.
+[The implementation I found](https://docs.rs/farmhash/1.1.5/src/farmhash/lib.rs.html#92-110), of course, stores a `Vec<u8>` and passes it to the underlying hasher in `finish`. I believe I don't need to explain why allocating in a hash function is not the brightest idea.
 
 Let's consider [another implementation](https://docs.rs/highway/1.2.0/src/highway/portable.rs.html#272-288) that stores a fixed-size buffer instead. Huh, that's a lot of `if`s and `for`s. I wonder what Godbolt will say about this. Let's try something very simple:
 
@@ -512,14 +512,16 @@ $$
 \mathrm{mix}(x, y) = (x \cdot y \bmod 2^{64}) \oplus (x \cdot y \mathop{div} 2^{64}).
 $$
 
-This is a combination of certain well-known primitives. The problem here is that $a_i$ needs to be precomputed beforehand. This is not a problem for fixed-length keys, like structs of integers -- something often used in, say, `rustc`.
+This is a UMAC-style combination of certain well-known primitives. The problem here is that $a_i$ needs to be precomputed beforehand. This is not a problem for fixed-length keys, like structs of integers -- something often used in, say, `rustc`.
 
 Unfortunately, Rust forces each hasher to handle *all* possible inputs, including of different lengths, so this scheme can't work. The hasher isn't even parametrized by the type of the hashed object. Four well-layouted 64-bit integers that can easily be mixed together with just two full-width multiplications? Nah, `write_u64` goes brrrrrrrrrrrr-
 
 
 ### Stop bitching
 
-I've been designing fast hash-based data structures for several months before realizing they are almost unusable because of these design decisions. *Surely* something that isn't a problem in C++ and Python won't be a problem in Rust, I thought. I deserve a little bitching, okay?
+I've been designing fast hash-based data structures for several months before realizing they are, in fact, not fast, purely because of the hashing performance. *Surely* something that isn't a problem in C++ and Python won't be a problem in Rust, I thought.
+
+But yeah, sorry for whining.
 
 
 ### Actually how
@@ -529,3 +531,56 @@ The obvious way forward is to bring the structure of the data back into the pict
 In my opinion, `Hasher` and `Hash` are a wrong abstraction. Instead of the `Hash` driving the `Hasher` ~~insane~~, it should be the other way round: `Hash` providing introspection facilities and `Hasher` navigating the hashed objects recursively. As a bonus, this could enable (opt-in) portable hashers.
 
 How this API should look like and whether it can be shoehorned into the existing interfaces remains to be seen. I have not started work on the design yet, and perhaps this article might be a bit premature, but I'd love to hear your thoughts on how I missed something really obvious (or, indeed, on how Rust is fast enough and no one cares).
+
+
+## Non-solutions
+
+### Like C++
+
+I'd like to note that the way Java, C++, and Python take is not without its own share of problems. The good news is that fields in a product type are hashed the same way regardless of the values of other fields. For example, hashing `(Vec<T>, U)` always applies the same hash to `U` and the mixes it with the hash of `Vec<T>`, unlike Rust.
+
+However, this approach is suboptimal in the general case. Let's get back to the UMAC example. Hashing $((a, b), c)$ as $\mathrm{mix}(\mathrm{mix}(a, b), c)$ has a higher latency than necessary: computing $\mathrm{mix}(a, b) \oplus \mathrm{mix}(c, 0)$ would suffice. But, again, applying this rule generally as $\mathrm{mix}(a, 0) \oplus \mathrm{mix}(b, 0) \oplus \mathrm{mix}(c, 0)$ is suboptimal too.
+
+This odd $\mathrm{mix}(a, b)$/$\mathrm{mix}(a, 0)$ duality arises because the block size of the UMAC-style approach is, at its minimum, two $64$-bit words, while hashes take $64$ bits. This distinction gets much worse for larger block sizes.
+
+
+### Specialization
+
+After this article was published, several people advised me to look into specialization. I'd like to comment a bit on why this does not solve the problem either.
+
+Specialization does not support efficient hashing of nested objects. Although `(u8, u8, u8, u8)` can be specialized to be hashed with `write_u32`, this gets complicated with types like:
+
+```rust
+struct S {
+    a: (u8, u16),
+    b: u8,
+}
+```
+
+The best way to serialize this type is to fit `b` into the padding byte of `a`. We can't do that during layouting, but we can when hashing. This is very hard to do automatically just with specialization, and next to impossible if people implement `Hash` manually.
+
+
+### Rule of thumb
+
+The bottom line is: hashing a product type can only be efficient if it's linearized. Hashing a structure composed of structures *needs* to consider the nested fields. Each such field *needs* to be associated with a static index, so that it can be associated with a constant from a pool, an offset in the block, or what have you.
+
+Fields that are stored in the structure after variable-length fields like `&[T]`/`Vec<T>` needs to have static indices regardless.
+
+This applies to arrays: hashing `[T; 2]` by performing two calls into `T::hash` is suboptimal, because that leads to reuse of constants, which in turn requires more thorough mixing for acceptable hash quality.
+
+It also applies to *slices*: hashing `[T]` needs to split the slice into fixed-size chunks, where each chunk is hashed as a single block. Extending the API to emit start/end annotations for `[T]` slices does not help *either*, because the indices of fields inside each `T` need to be predictable, too. If `Hash for T` emits $3$ words and the block size is $8$ words, this will vectorize *badly* due to the misalignment.
+
+As much as these rules apply to product types, they apply to sum types. Hashing a `Result<T, E>` needs to either produce $h_1(\mathrm{ok})$ or $h_2(\mathrm{err})$, where $h_i$ are different elements of a hash family. This can be *simulated* by prepending the discriminant, but this is suboptimal. Perhaps more clearly, `Option<T>` should either hash its element or return a random (but static) constant for `None`.
+
+These rules apply to objects that contain non-primitives too. Hashing
+
+```rust
+struct Key {
+    top: u64,
+    middle: u64,
+    low: u64,
+    meta: Option<String>,
+}
+```
+
+shouldn't be slower than hashing `[u64; 3]` in the cases where `meta` is `None`, and should be barely slower than that if it's `Some`, as long as the string is short. This isn't magic -- Rust just can't represent the solution in the type system.
