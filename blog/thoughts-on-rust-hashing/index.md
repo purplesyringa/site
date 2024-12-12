@@ -1,13 +1,12 @@
 ---
 title: Thoughts on Rust hashing
 time: December 12, 2024
+discussion: https://www.reddit.com/r/rust/comments/1hclif3/thoughts_on_rust_hashing/
 intro: |
     In languages like Python, Java, or C++, values are hashed by calling a "hash me" method on them, implemented by the type author. This fixed-hash size is then immediately used by the hash table or what have you. This design suffers from some obvious problems, like:
 
     How do you hash an integer? If you use a no-op hasher (booo), DoS attacks on hash tables are inevitable. If you hash it thoroughly, consumers that only cache hashes to optimize equality checks lose out of performance.
 ---
-
-### Intro
 
 In languages like Python, Java, or C++, values are hashed by calling a "hash me" method on them, implemented by the type author. This fixed-hash size is then immediately used by the hash table or what have you. This design suffers from some obvious problems, like:
 

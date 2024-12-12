@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Thu, 12 Dec 2024 13:24:05 GMT</lastBuildDate>
+		<lastBuildDate>Thu, 12 Dec 2024 14:50:16 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -18,7 +18,7 @@
 				<description>In languages like Python, Java, or C++, values are hashed by calling a “hash me” method on them, implemented by the type author. This fixed-hash size is then immediately used by the hash table or what have you. This design suffers from some obvious problems, like:
 How do you hash an integer? If you use a no-op hasher (booo), DoS attacks on hash tables are inevitable. If you hash it thoroughly, consumers that only cache hashes to optimize equality checks lose out of performance.</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				
+				<comments>https://www.reddit.com/r/rust/comments/1hclif3/thoughts_on_rust_hashing/</comments>
 				<guid>https://purplesyringa.moe/blog/./thoughts-on-rust-hashing/</guid>
 				<pubDate>Thu, 12 Dec 2024 00:00:00 GMT</pubDate>
 			</item>
