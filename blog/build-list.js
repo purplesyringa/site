@@ -55,24 +55,27 @@ addFromDir("ru");
 posts.sort((a, b) => b.parsedDate - a.parsedDate);
 
 let content = posts.map(post => {
+	const discussion = post.discussion.map(url => {
+		const space = (
+			url.startsWith("https://internals.rust-lang.org") ? "IRLO" :
+				url.startsWith("https://news.ycombinator.com") ? "Hacker News" :
+					url.startsWith("https://codeforces.com") ? "Codeforces" :
+						url.startsWith("https://www.reddit.com") ? "Reddit" :
+							url.startsWith("https://lobste.rs") ? "Lobsters" :
+								url.startsWith("https://t.me") ? "Telegram" :
+									"???"
+		);
+		return `<a class="discussion" href="${escapeHTML(url)}"><i class="nf nf-md-comment" title="Comment"></i> ${space}</a>`;
+	}).join("");
+	const translation = Object.entries(post.translation || {}).map(([language, url]) => {
+		return `<a class="discussion" href="${escapeHTML(url)}"><i class="nf nf-md-translate" title="Translation"></i> ${language}</a>`;
+	}).join("");
 	return `
 		<div class="post-entry">
 			<h2><a href="${escapeHTML(post.path)}/">${escapeHTML(post.title)}</a></h2>
 			<time>${escapeHTML(post.time)}</time>
-			${post.discussion.map(url => {
-				const space = (
-					url.startsWith("https://news.ycombinator.com") ? "Hacker News" :
-						url.startsWith("https://codeforces.com") ? "Codeforces" :
-							url.startsWith("https://www.reddit.com") ? "Reddit" :
-								url.startsWith("https://lobste.rs") ? "Lobsters" :
-									url.startsWith("https://t.me") ? "Telegram" :
-										"???"
-				);
-				return `<a class="discussion" href="${escapeHTML(url)}"><i class="nf nf-md-comment" title="Comment"></i> ${space}</a>`;
-			}).join("")}
-			${Object.entries(post.translation || {}).map(([language, url]) => {
-				return `<a class="discussion" href="${escapeHTML(url)}"><i class="nf nf-md-translate" title="Translation"></i> ${language}</a>`;
-			}).join("")}
+			${discussion}
+			${translation}
 			${md.render(post.intro || "")}
 			<p>
 				<a href="${escapeHTML(post.path)}/">Keep reading</a>

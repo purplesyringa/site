@@ -121,12 +121,13 @@ html = html.replace(
 	/{{ discussion }}/g,
 	discussion.map(url => {
 		const space = (
-			url.startsWith("https://news.ycombinator.com") ? "Hacker News" :
-				url.startsWith("https://codeforces.com") ? "Codeforces" :
-					url.startsWith("https://www.reddit.com") ? "Reddit" :
-						url.startsWith("https://lobste.rs") ? "Lobsters" :
-							url.startsWith("https://t.me") ? "Telegram" :
-								"???"
+			url.startsWith("https://internals.rust-lang.org") ? "IRLO" :
+				url.startsWith("https://news.ycombinator.com") ? "Hacker News" :
+					url.startsWith("https://codeforces.com") ? "Codeforces" :
+						url.startsWith("https://www.reddit.com") ? "Reddit" :
+							url.startsWith("https://lobste.rs") ? "Lobsters" :
+								url.startsWith("https://t.me") ? "Telegram" :
+									"???"
 		);
 		return `<a class="discussion" href="${escapeHTML(url)}"><i class="nf nf-md-comment" title="Comment"></i> ${space}</a>`;
 	}).join("")

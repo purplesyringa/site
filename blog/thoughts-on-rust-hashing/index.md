@@ -1,7 +1,9 @@
 ---
 title: Thoughts on Rust hashing
 time: December 12, 2024
-discussion: https://www.reddit.com/r/rust/comments/1hclif3/thoughts_on_rust_hashing/
+discussion:
+    - https://www.reddit.com/r/rust/comments/1hclif3/thoughts_on_rust_hashing/
+    - https://internals.rust-lang.org/t/low-latency-hashing/22010
 intro: |
     In languages like Python, Java, or C++, values are hashed by calling a "hash me" method on them, implemented by the type author. This fixed-hash size is then immediately used by the hash table or what have you. This design suffers from some obvious problems, like:
 
