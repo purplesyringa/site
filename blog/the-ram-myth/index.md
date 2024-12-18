@@ -15,7 +15,7 @@ intro: |
 
     Indeed, it's linear (i.e. asymptotically optimal), and we have to access random indices anyway, so cache isn't going to help us in any case.
 
-    In reality, this is leaving a lot of performance on the table, and certain *asymptotically slower* algorithms can perform sharding significantly faster on large input. They are mostly used by on-disk databases, but, surprisingly, they are useful even for in-RAM data.
+    In reality, when the number of groups is high, this is leaving a lot of performance on the table, and certain *asymptotically slower* algorithms can perform sharding significantly faster. They are mostly used by on-disk databases, but, surprisingly, they are useful even for in-RAM data.
 ---
 
 The RAM myth is a belief that modern computer memory resembles perfect random-access memory. Cache is seen as an optimization for small data: if it fits in L2, it's going to be processed faster; if it doesn't, there's nothing we can do.
@@ -30,12 +30,12 @@ for element in elements:
 
 Indeed, it's linear (i.e. asymptotically optimal), and we have to access random indices anyway, so cache isn't going to help us in any case.
 
-In reality, this is leaving a lot of performance on the table, and certain *asymptotically slower* algorithms can perform sharding significantly faster on large input. They are mostly used by on-disk databases, but, surprisingly, they are useful even for in-RAM data.
+In reality, when the number of groups is high, this is leaving a lot of performance on the table, and certain *asymptotically slower* algorithms can perform sharding significantly faster. They are mostly used by on-disk databases, but, surprisingly, they are useful even for in-RAM data.
 
 
 ### Solution
 
-The algorithm from above has $\Theta(n)$ cache misses on random input (where $n$ is the number of elements). The only way to reduce this number is to make the memory accesses more ordered. If you can ensure the elements are ordered by `group`, that's great. If you can't, you can still sort the accesses before the `for` loop:
+The algorithm from above has an almost-guaranteed cache miss on every iteration. The only way to prevent cache misses is to make the memory accesses more ordered. If you can ensure the elements are ordered by `group`, that's great. If you can't, you can still sort the accesses before the `for` loop:
 
 ```python
 elements.sort(key = lambda element: element.group)

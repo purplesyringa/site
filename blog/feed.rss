@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Wed, 18 Dec 2024 22:34:10 GMT</lastBuildDate>
+		<lastBuildDate>Wed, 18 Dec 2024 23:33:26 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -22,7 +22,7 @@ for element in elements:
 groups[element.group].append(element)
 
 Indeed, it’s linear (i.e. asymptotically optimal), and we have to access random indices anyway, so cache isn’t going to help us in any case.
-In reality, this is leaving a lot of performance on the table, and certain asymptotically slower algorithms can perform sharding significantly faster on large input. They are mostly used by on-disk databases, but, surprisingly, they are useful even for in-RAM data.</description>
+In reality, when the number of groups is high, this is leaving a lot of performance on the table, and certain asymptotically slower algorithms can perform sharding significantly faster. They are mostly used by on-disk databases, but, surprisingly, they are useful even for in-RAM data.</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				<comments>https://www.reddit.com/r/programming/comments/1hhds9c/the_ram_myth/</comments>
 				<guid>https://purplesyringa.moe/blog/./the-ram-myth/</guid>
