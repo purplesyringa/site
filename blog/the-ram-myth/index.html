@@ -1,0 +1,95 @@
+<!doctypehtml><html prefix="og: http://ogp.me/ns#"lang=en_US><meta charset=utf-8><meta content=width=device-width,initial-scale=1 name=viewport><title>The RAM myth | purplesyringa's blog</title><link href=../../favicon.ico?v=2 rel=icon><link href=../../all.css rel=stylesheet><link href=../../blog.css rel=stylesheet><link href=../../vendor/Temml-Local.css rel=stylesheet><link crossorigin href=https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&family=Slabo+27px&display=swap rel=stylesheet><link href=../../fonts/webfont.css rel=stylesheet><link media="screen and (prefers-color-scheme: dark"href=../../vendor/atom-one-dark.min.css rel=stylesheet><link media="screen and (prefers-color-scheme: light"href=../../vendor/a11y-light.min.css rel=stylesheet><link title="Blog posts"href=../../blog/feed.rss rel=alternate type=application/rss+xml><meta content="The RAM myth"property=og:title><meta content=article property=og:type><meta content=https://purplesyringa.moe/blog/the-ram-myth/og.png property=og:image><meta content=https://purplesyringa.moe/blog/the-ram-myth/ property=og:url><meta content="The RAM myth is a belief that modern computer memory resembles perfect random-access memory. Cache is seen as an optimization for small data: if it fits in L2, it’s going to be processed faster; if it doesn’t, there’s nothing we can do.
+Most likely, you believe that code like this is the fastest way to shard data:
+groups = [[] for _ in range(n_groups)]
+for element in elements:
+groups[element.group].append(element)
+
+Indeed, it’s linear (i.e. asymptotically optimal), and we have to access random indices anyway, so cache isn’t going to help us in any case.
+In reality, this is leaving a lot of performance on the table, and certain asymptotically slower algorithms can perform sharding significantly faster on large input. They are mostly used by on-disk databases, but, surprisingly, they are useful even for in-RAM data."property=og:description><meta content=en_US property=og:locale><meta content="purplesyringa's blog"property=og:site_name><meta content=summary_large_image name=twitter:card><meta content=https://purplesyringa.moe/blog/the-ram-myth/og.png name=twitter:image><script data-website-id=0da1961d-43f2-45cc-a8e2-75679eefbb69 defer src=https://zond.tei.su/script.js></script><body><header><div class=viewport-container><div class=media><a href=https://github.com/purplesyringa><img alt=GitHub src=../../images/github-mark-white.svg></a></div><h1><a href=/>purplesyringa</a></h1><nav><a href=../..>about</a><a class=current href=../../blog/>blog</a><a href=../../sink/>kitchen sink</a></nav></div></header><section><div class=viewport-container><h2>The RAM myth</h2><time>December 19, 2024</time><p>The RAM myth is a belief that modern computer memory resembles perfect random-access memory. Cache is seen as an optimization for small data: if it fits in L2, it’s going to be processed faster; if it doesn’t, there’s nothing we can do.<p>Most likely, you believe that code like this is the fastest way to shard data:<pre><code class=language-python>groups = [[] <span class=hljs-keyword>for</span> _ <span class=hljs-keyword>in</span> <span class=hljs-built_in>range</span>(n_groups)]
+<span class=hljs-keyword>for</span> element <span class=hljs-keyword>in</span> elements:
+    groups[element.group].append(element)
+</code></pre><p>Indeed, it’s linear (i.e. asymptotically optimal), and we have to access random indices anyway, so cache isn’t going to help us in any case.<p>In reality, this is leaving a lot of performance on the table, and certain <em>asymptotically slower</em> algorithms can perform sharding significantly faster on large input. They are mostly used by on-disk databases, but, surprisingly, they are useful even for in-RAM data.<p class=next-group><span aria-level=3 class=side-header role=heading><span>Solution</span></span>The algorithm from above has <eq><math><mrow><mrow><mi mathvariant=normal>Θ</mi></mrow><mo form=prefix stretchy=false>(</mo><mi>n</mi><mo form=postfix stretchy=false>)</mo></mrow></math></eq> cache misses on random input. The only way to reduce this number is to make the memory accesses more ordered. If you can ensure the elements are ordered by <code>group</code>, that’s great. If you can’t, you can still sort the accesses before the <code>for</code> loop:<pre><code class=language-python>elements.sort(key = <span class=hljs-keyword>lambda</span> element: element.group)
+</code></pre><p>Sorting costs some time, but in return, removes cache misses from the <code>for</code> loop entirely. If the data is large enough that it doesn’t fit in cache, this is a net win. As a bonus, creating individual lists can be replaced with a group-by operation:<pre><code class=language-python>elements.sort(key = <span class=hljs-keyword>lambda</span> element: element.group)
+groups = [
+    group_elements
+    <span class=hljs-keyword>for</span> _, group_elements
+    <span class=hljs-keyword>in</span> itertools.groupby(elements, key = <span class=hljs-keyword>lambda</span> element: element.group)
+]
+</code></pre><p>There’s many cache-aware sorting algorithms, but as indices are just integers, radix sort works best here. Among off-the-shelf implementations, <a href=https://docs.rs/radsort/latest/radsort/>radsort</a> worked the best for me in Rust.<h2>Speedups</h2><p class=next-group><span aria-level=3 class=side-header role=heading><span></span></span>This is already better than the straightforward algorithm on large data, but there’s many tricks to make it faster.<p class=next-group><span aria-level=3 class=side-header role=heading><span>Generators</span></span>Sorting APIs try to make it seem like the data is sorted in-place, even when that’s not the case. This requires sorted data to be explicitly written to memory in a particular format. But if we only need to iterate over groups, generators or callbacks help avoid this:<pre><code class=language-python><span class=hljs-comment># Assuming 32-bit indices</span>
+<span class=hljs-keyword>def</span> <span class="hljs-title function_">radix_sort</span>(<span class=hljs-params>elements, bits = <span class=hljs-number>32</span></span>):
+    <span class=hljs-comment># Base case -- nothing to sort or all indices are equal</span>
+    <span class=hljs-keyword>if</span> <span class=hljs-built_in>len</span>(elements) <= <span class=hljs-number>1</span> <span class=hljs-keyword>or</span> bits <= <span class=hljs-number>0</span>:
+        <span class=hljs-keyword>yield</span> <span class=hljs-keyword>from</span> elements
+        <span class=hljs-keyword>return</span>
+
+    <span class=hljs-comment># Split by most significant byte of index we haven't seen yet</span>
+    buckets = [[] <span class=hljs-keyword>for</span> _ <span class=hljs-keyword>in</span> <span class=hljs-built_in>range</span>(<span class=hljs-number>256</span>)]
+    <span class=hljs-keyword>for</span> element <span class=hljs-keyword>in</span> elements:
+        buckets[(element.index >> <span class=hljs-built_in>max</span>(<span class=hljs-number>0</span>, bits - <span class=hljs-number>8</span>)) & <span class=hljs-number>0xff</span>].append(element)
+
+    <span class=hljs-comment># Sort buckets recursively</span>
+    <span class=hljs-keyword>for</span> bucket <span class=hljs-keyword>in</span> buckets:
+        <span class=hljs-keyword>yield</span> <span class=hljs-keyword>from</span> radix_sort(bucket, bits - <span class=hljs-number>8</span>)
+</code></pre><p>We can even remove the <code>groupby</code> step by yielding individual groups:<pre><code class=language-python><span class=hljs-comment># Base case -- nothing to sort or all indices are equal</span>
+<span class=hljs-keyword>if</span> bits <= <span class=hljs-number>0</span>:
+    <span class=hljs-keyword>if</span> elements:
+        <span class=hljs-comment># Group!</span>
+        <span class=hljs-keyword>yield</span> elements
+    <span class=hljs-keyword>return</span>
+</code></pre><p class=next-group><span aria-level=3 class=side-header role=heading><span>Reallocs</span></span>The next problem with this code is constantly reallocating the <code>bucket</code> arrays on <code>append</code>. This invokes <code>memcpy</code> more often than necessary and is bad for cache. A common fix is to compute sizes beforehand:<pre><code class=language-python><span class=hljs-keyword>def</span> <span class="hljs-title function_">get_bucket</span>(<span class=hljs-params>element</span>):
+    <span class=hljs-keyword>return</span> (element.index >> <span class=hljs-built_in>max</span>(<span class=hljs-number>0</span>, bits - <span class=hljs-number>8</span>)) & <span class=hljs-number>0xff</span>
+
+sizes = Counter(<span class=hljs-built_in>map</span>(get_bucket, elements))
+
+<span class=hljs-comment># Python can't really reserve space for lists, but pretend `reserve` did that anyway. In C++, this</span>
+<span class=hljs-comment># is `std::vector::reserve`. In Rust, it's `Vec::with_capacity`.</span>
+buckets = [reserve(sizes[i]) <span class=hljs-keyword>for</span> i <span class=hljs-keyword>in</span> <span class=hljs-built_in>range</span>(<span class=hljs-number>256</span>)]
+<span class=hljs-keyword>for</span> element <span class=hljs-keyword>in</span> elements:
+    buckets[get_bucket(element)].append(element)
+</code></pre><p>This, however, requires two iterations, and ideally we’d keep the code single-pass. If the index is random, we can have our cake and eat it too: <em>estimate</em> the size of each bucket as <code>len(elements) / 256</code> and reserve that much space. There’s going to be some leftovers if we underestimate, which we’ll store in a small separate storage:<pre><code class=language-python><span class=hljs-keyword>class</span> <span class="hljs-title class_">Bucket</span>:
+    reserved: <span class=hljs-built_in>list</span>
+    leftovers: <span class=hljs-built_in>list</span>
+
+    <span class=hljs-keyword>def</span> <span class="hljs-title function_">__init__</span>(<span class=hljs-params>self, capacity</span>):
+        self.reserved = reserve(capacity) <span class=hljs-comment># pseudocode</span>
+        self.leftovers = []
+
+    <span class=hljs-keyword>def</span> <span class="hljs-title function_">append</span>(<span class=hljs-params>self, element</span>):
+        <span class=hljs-keyword>if</span> <span class=hljs-built_in>len</span>(self.reserved) < self.reserved.capacity(): <span class=hljs-comment># pseudocode</span>
+            self.reserved.append(element)
+        <span class=hljs-keyword>else</span>:
+            self.leftovers.append(element)
+
+    <span class=hljs-keyword>def</span> <span class="hljs-title function_">__len__</span>(<span class=hljs-params>self</span>):
+        <span class=hljs-keyword>return</span> <span class=hljs-built_in>len</span>(self.reserved) + <span class=hljs-built_in>len</span>(self.leftovers)
+
+    <span class=hljs-keyword>def</span> <span class="hljs-title function_">__iter__</span>(<span class=hljs-params>self</span>):
+        <span class=hljs-keyword>yield</span> <span class=hljs-keyword>from</span> self.reserved
+        <span class=hljs-keyword>yield</span> <span class=hljs-keyword>from</span> self.leftovers
+</code></pre><p>The probability distribution plays ball here: on large input, only a tiny percentage of the elements overflow into <code>leftovers</code>, so the memory overhead is pretty small, reallocations on pushing into <code>leftovers</code> are fast, and bucketing (and iterating over a bucket) is cache-friendly.<p class=next-group><span aria-level=3 class=side-header role=heading><span>Partitioning</span></span>One simple micro-optimization is to allocate once and split the returned memory into chunks instead of invoking <code>malloc</code> (or creating vectors) multiple times. Allocations are pretty slow, and this is a cheap way to reduce the effect.<p class=next-group><span aria-level=3 class=side-header role=heading><span>Base case</span></span>Switching to the straightforward algorithm on small inputs increases performance, as the effects of <eq><math><mrow><mi class=mathcal>𝒪</mi><mo form=prefix stretchy=false>(</mo><mi>n</mi><mrow><mspace width=0.1667em></mspace><mi>log</mi><mo>⁡</mo><mspace width=0.1667em></mspace></mrow><mi>n</mi><mo form=postfix stretchy=false>)</mo></mrow></math></eq> code are more pronounced there. However, as <code>radix_sort</code> is recursive, we can perform this check on every level of recursion, scoring a win even on large data:<pre><code class=language-python><span class=hljs-comment># Base case -- small enough to use a straightforward algorithm</span>
+<span class=hljs-keyword>if</span> <span class=hljs-built_in>len</span>(elements) <= CUTOFF <span class=hljs-keyword>or</span> bits <= <span class=hljs-number>8</span>:
+    counts = [<span class=hljs-number>0</span>] * <span class=hljs-number>256</span>
+    <span class=hljs-keyword>for</span> element <span class=hljs-keyword>in</span> elements:
+        counts[element.index & <span class=hljs-number>0xff</span>] += <span class=hljs-number>1</span>
+
+    groups = [[] <span class=hljs-keyword>for</span> _ <span class=hljs-keyword>in</span> <span class=hljs-built_in>range</span>(<span class=hljs-number>256</span>)]
+    <span class=hljs-keyword>for</span> element <span class=hljs-keyword>in</span> elements:
+        groups[get_bucket(element)].append(element)
+
+    <span class=hljs-keyword>for</span> group <span class=hljs-keyword>in</span> groups:
+        <span class=hljs-keyword>if</span> group:
+            <span class=hljs-keyword>yield</span> group
+    <span class=hljs-keyword>return</span>
+</code></pre><p>The optimal <code>CUTOFF</code> is heavily machine-dependent. It depends on the relative speed of cache levels and RAM, as well as cache size and data types. For 64-bit integers, I’ve seen machines where the optimal value was <code>50k</code>, <code>200k</code>, and <code>1M</code>. The best way to determine it is to benchmark in runtime – an acceptable solution for long-running software, like databases.<h2>Benchmark</h2><p class=next-group><span aria-level=3 class=side-header role=heading><span>Setup</span></span>Here’s a small benchmark.<p>The input data is an array of random 64-bit integers. We want to group them by a simple multiplicative hash and perform a simple analysis on the buckets – say, compute the sum of minimums among buckets. (In reality, you’d consume the buckets with some other cache-friendly algorithm down the pipeline.)<p>We’ll compare two implementations:<ol><li>The straightforward algorithm with optimized allocations.<li>Radix sort-based grouping, with all optimizations from above and the optimal cutoff.</ol><p>The average group size is <eq><math><mn>10</mn></math></eq>.<p>The code is available on <a href=https://github.com/purplesyringa/site/blob/master/blog/the-ram-myth/benchmark.rs>GitHub</a>.<p class=next-group><span aria-level=3 class=side-header role=heading><span>Results</span></span>The relative efficiency of the optimized algorithm grows as the data gets larger. Both the straightforward algorithm and the optimized one eventually settle at a fixed throughput. Depending on the machine, the improvement can be anywhere between <eq><math><mrow><mn>2.5</mn><mo>×</mo></mrow></math></eq> and <eq><math><mrow><mn>9</mn><mo>×</mo></mrow></math></eq> in the limit.<p>The results are (<code>A</code>, <code>Y</code>, <code>M</code> indicate different devices):<p><div class=diagram><img alt="Grouping performance is benchmarked on three devices on element counts from 80k to 40M (with power-of-two steps). The cutoffs are 50k for A, 200k for Y, and 1M for M. On all three device, the throughput of the two algorithms is equivalent up to the cutoff, with radix sort getting faster and faster above the cutoff. The throughput of the straightforward algorithm degrades faster, while radix sort is way more stable."title="Grouping performance is benchmarked on three devices on element counts from 80k to 40M (with power-of-two steps). The cutoffs are 50k for A, 200k for Y, and 1M for M. On all three device, the throughput of the two algorithms is equivalent up to the cutoff, with radix sort getting faster and faster above the cutoff. The throughput of the straightforward algorithm degrades faster, while radix sort is way more stable."src=./benchmark.svg></div><p><div class=diagram><img alt="Performance improvement of the new algorithm on different element counts, as measured on three devices. On A, the improvement slowly increases from 1x to 3x up to 5M elements and then quickly raises to 8x at 40M elements. On Y and M, the improvement is not so drastic, slowly but surely raising to 2.5x -- 3x."title="Performance improvement of the new algorithm on different element counts, as measured on three devices. On A, the improvement slowly increases from 1x to 3x up to 5M elements and then quickly raises to 8x at 40M elements. On Y and M, the improvement is not so drastic, slowly but surely raising to 2.5x -- 3x."src=./improvement.svg></div><p class=next-group><span aria-level=3 class=side-header role=heading><span>Conclusion</span></span>Is it worth it? If you absolutely need performance and sharding is a large part of your pipeline, by all means, use this. For example, I use this to find a collision-free hash on a given dataset. But just like with any optimization, you need to consider if increasing the code complexity is worth the hassle.<p>At the very least, if you work with big data, this trick is good to keep in mind.<p>Here’s another takeaway lesson. Everyone knows that, when working with on-disk data, you shouldn’t just map it to memory and run typical in-memory algorithms. It’s <em>possible</em>, but the performance are going to be bad. The take-away lesson here is that this applies to RAM and cache too: if you’ve got more than, say, <eq><math><mn>32</mn></math></eq> MiB of data, you need to seriously consider partitioning your data or switching to external memory algorithms.</div></section><footer><div class=viewport-container><h2>Made with my own bare hands (why.)</h2></div></footer><script>window.addEventListener("keydown", e => {
+				if (e.key === "Enter") {
+					if (e.ctrlKey) {
+						window.open("https://github.com/purplesyringa/site/edit/master/blog/the-ram-myth/index.md", "_blank");
+					} else if (
+						e.target.type === "checkbox"
+						&& e.target.parentNode
+						&& e.target.parentNode.className === "expansible-code"
+					) {
+						e.target.click();
+					}
+				}
+			});</script>
