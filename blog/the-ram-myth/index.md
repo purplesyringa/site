@@ -4,7 +4,7 @@ time: December 19, 2024
 intro: |
     The RAM myth is a belief that modern computer memory resembles perfect random-access memory. Cache is seen as an optimization for small data: if it fits in L2, it's going to be processed faster; if it doesn't, there's nothing we can do.
 
-    Most likely, you believe that pseudocode like this is the fastest way to shard data:
+    Most likely, you believe that code like this is the fastest way to shard data (I'm using Python as pseudocode; pretend I used your favorite low-level language):
 
     ```python
     groups = [[] for _ in range(n_groups)]
@@ -19,7 +19,7 @@ intro: |
 
 The RAM myth is a belief that modern computer memory resembles perfect random-access memory. Cache is seen as an optimization for small data: if it fits in L2, it's going to be processed faster; if it doesn't, there's nothing we can do.
 
-Most likely, you believe that pseudocode like this is the fastest way to shard data:
+Most likely, you believe that code like this is the fastest way to shard data (I'm using Python as pseudocode; pretend I used your favorite low-level language):
 
 ```python
 groups = [[] for _ in range(n_groups)]
