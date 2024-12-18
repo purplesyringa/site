@@ -35,7 +35,7 @@ In reality, this is leaving a lot of performance on the table, and certain *asym
 
 ### Solution
 
-The algorithm from above has $\Theta(n)$ cache misses on random input (where $n$ is the number of elements). The only way to reduce this number is to make the memory accesses more ordered. If you can ensure the elements are ordered by `group`, that's great. If you can't, you can still sort the accesses before the `for` loop:
+The algorithm from above has $\Theta(n)$ cache misses on random input (where $n$ is the number of groups). The only way to reduce this number is to make the memory accesses more ordered. If you can ensure the elements are ordered by `group`, that's great. If you can't, you can still sort the accesses before the `for` loop:
 
 ```python
 elements.sort(key = lambda element: element.group)
