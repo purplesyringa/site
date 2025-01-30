@@ -34,7 +34,7 @@ In both cases, asking for forgiveness (dereferencing a null pointer and then rec
 
 Let's ignore undefined behavior for now and assume that the dereference is not optimized out.
 
-Before virtual memory was a thing, almost all memory was accessible. For example, x86 in real mode stored interrupt tables at addresses from `0` to `256`. From the hardware point of view, dereferencing a null pointer is no different from dereferencing other pointers, and as such, it simply accessed memory at address `0`.
+Before virtual memory was a thing, almost all memory was accessible. For example, x86 in real mode stored interrupt tables at addresses from `0` to `1024`. From the hardware point of view, dereferencing a null pointer is no different from dereferencing other pointers, and as such, it simply accessed memory at address `0`.
 
 This is still the case on many embedded platforms. Dereferencing a null pointer is still considered UB, so if, for whatever reason, you need to access address `0`, there are two major ways to do this:
 
