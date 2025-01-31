@@ -3,6 +3,7 @@ title: Falsehoods programmers believe about null pointers
 time: January 30, 2025
 discussion:
   - https://www.reddit.com/r/programming/comments/1ieagxg/falsehoods_programmers_believe_about_null_pointers/
+  - https://news.ycombinator.com/item?id=42886189
 intro: |
     Null pointers look simple on the surface, and that's why they're so dangerous. As compiler optimizations, intuitive but incorrect simplifications, and platform-specific quirks have piled on, the odds of making a wrong assumption have increased, leading to the proliferation of bugs and vulnerabilities.
 
