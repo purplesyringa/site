@@ -187,6 +187,8 @@ Segmented addressing is a common example, but pointer authentication is a more m
 
 CHERI is even weirder. CHERI pointers store $128$-bit capabilities in addition to the $64$-bit address we're used to to protect against UAF and OOB accesses. Any pointer with address `0` is considered a null pointer, so there are effectively $2^{128}$-ish different null pointers, only one of which is all-zero. (This also means that comparing pointers for equality can yield different results than comparing their binary representations.)
 
+If you extend the definition of pointers to include pointers to class members, this gets even more realistic. Pointers to members are, in effect, offsets to fields (at least if we aren't taking methods into account), and `0` is a valid offset, so `(int Class::*)nullptr` is usually stored as `-1`.
+
 
 ### Conclusion
 
