@@ -111,7 +111,7 @@ If you know what pointer provenance is, pointers with the same bitwise represent
 ```c
 int x[1];
 int y = 0;
-int *p = &x + 1;
+int *p = x + 1;
 // This may evaluate to true
 if (p == &y) {
     // But this will be UB even though p and &y are equal
