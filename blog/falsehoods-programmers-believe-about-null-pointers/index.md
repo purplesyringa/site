@@ -132,7 +132,7 @@ int y = *q; // UB
 
 **On platforms where the null pointer has address `0`, `int x = 0; (void*)x` is a null pointer.**
 
-The result of an integer-to-pointer conversion is implementation-defined. While a null pointer is an obvious candidate, this can also produce an invalid pointer or even a dereferenceable pointer to an object at address `0`. Certain compilers encouraged this pattern for accessing memory at address `0` soundly:
+The result of an integer-to-pointer conversion is implementation-defined. While a null pointer is an obvious candidate, this can also produce an invalid pointer or even a dereferenceable pointer to an object at address `0`. Certain compilers [encouraged](https://c-faq.com/.xx/q5.19.html) this pattern for accessing memory at address `0` soundly:
 
 ```c
 int *p = (void*)0; // Must produce a NULL pointer
