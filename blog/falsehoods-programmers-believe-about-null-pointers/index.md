@@ -8,6 +8,8 @@ intro: |
     This article explores common misconceptions about null pointers held by many programmers, starting with simple fallacies and working our way up to the weirdest cases. Some of them will be news only to beginners, while others may lead experts down the path of meticulous fact-checking. Without further ado, let's dive in.
 ---
 
+> *Added on February 1*: This article assumes you know what UB is and why you shouldn't trigger it, very basic knowledge of how CPUs work, and a ability to take exact context into account without overgeneralizing specifics. These falsehoods are misconceptions because they don't apply globally, not because their inverse applies globally. If any of that is a problem to you, reading this will do more harm than good to your software engineering capabilities, and I'd advise against interacting with this post. Check out the comments on Reddit for what can go wrong if you attempt that regardless.
+
 Null pointers look simple on the surface, and that's why they're so dangerous. As compiler optimizations, intuitive but incorrect simplifications, and platform-specific quirks have piled on, the odds of making a wrong assumption have increased, leading to the proliferation of bugs and vulnerabilities.
 
 This article explores common misconceptions about null pointers held by many programmers, starting with simple fallacies and working our way up to the weirdest cases. Some of them will be news only to beginners, while others may lead experts down the path of meticulous fact-checking. Without further ado, let's dive in.
