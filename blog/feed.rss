@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Tue, 29 Apr 2025 12:16:18 GMT</lastBuildDate>
+		<lastBuildDate>Tue, 29 Apr 2025 18:15:58 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -18,7 +18,7 @@
 				<description>I’m not talking about skill, knowledge, or convincing a world focused on radical acceleration that optimization is necessary. Performance optimization is hard because it’s fundamentally a brute-force task, and there’s nothing you can do about it.
 This post is a bit of a rant on my frustrations with code optimization. I’ll also try to give actionable advice, which I hope enchants your experience.</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				<comments>https://www.reddit.com/r/programming/comments/1kam686/why_performance_optimization_is_hard_work/</comments>
+				<comments>https://news.ycombinator.com/item?id=43831705</comments>
 				<guid>https://purplesyringa.moe/blog/./why-performance-optimization-is-hard-work/</guid>
 				<pubDate>Tue, 29 Apr 2025 00:00:00 GMT</pubDate>
 			</item>
