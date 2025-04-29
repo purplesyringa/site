@@ -1,6 +1,7 @@
 ---
 title: Why performance optimization is hard work
 time: April 29, 2025
+discussion: https://www.reddit.com/r/programming/comments/1kam686/why_performance_optimization_is_hard_work/
 intro: |
     I'm not talking about skill, knowledge, or convincing a world focused on radical acceleration that optimization is necessary. Performance optimization is hard because it's fundamentally a brute-force task, and there's nothing you can do about it.
 
