@@ -12,6 +12,7 @@ import YAML from "yaml";
 const md = markdownit({
 	html: true,
 	typographer: true,
+	linkify: true,
 	highlight(code, language) {
 		return language === "" ? "" : hljs.highlight(code, { language }).value;
 	},

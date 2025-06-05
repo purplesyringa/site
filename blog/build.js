@@ -47,6 +47,7 @@ let spoilerId = 0;
 const md = markdownit({
 	html: true,
 	typographer: true,
+	linkify: true,
 	highlight(code, language, opts) {
 		if (language === "") {
 			return "";
