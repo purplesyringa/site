@@ -5,6 +5,9 @@ intro: |
   I'm working on a Java decompiler because I'm not satisfied with the performance of other solutions. I've always heard that decompiling JVM bytecode is a solved problem, but I've concluded that the decompilation methods used by CFR and Vineflower are hacky, inefficient, and sometimes don't even work. The existing solutions are haphazard and inadequate compared to alternative approaches.
 
   Specifically, I have beef with the control flow extraction strategies employed by most decompilers. I haven't tackled decompilation *as a whole* yet, but I've found an approach to control flow recovery that works in isolation, is quite modular, and addresses common frustrations. I don't claim to be the first person to think of this method, but I haven't seen it mentioned anywhere, so this post describes it hoping that it's useful to someone else.
+discussion:
+  - https://www.reddit.com/r/programming/comments/1l4y5zm/recovering_control_flow_structures_without_cfgs/
+  - https://lobste.rs/s/guet32/recovering_control_flow_structures
 tikzThemes:
   light: |
     \colorlet{Arrow}{red!80}
