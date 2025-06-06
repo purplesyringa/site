@@ -82,7 +82,13 @@ Trust me, there's a *ton* of special cases in real-world Java bytecode. I've tri
 
 The CFG is effectively a high-level overview of the control flow situation, and the general approach here is to find simple patterns inside the graph. For example, an `if` conditional amoutns to a node splitting into two nodes, which are then reunited. No more javac-specific hard-coding! ...or that's how the story was supposed to go.
 
+:::aside
+To be clear: this is typically not a problem for *compilers*, as compilers have information about loops and usually only have to handle reducible control flow. This is why LLVM's [WASM stackification implementation](https://github.com/llvm/llvm-project/blob/8f7e57485ee73205e108d74abb5565d5c63beaca/llvm/lib/Target/WebAssembly/WebAssemblyCFGStackify.cpp#L434) is so short and fast. *Decompilers*, on the other hand, do not have such a luxury. If you're aware of an alternative algorithm that soundly handles *any* CFG in quasilinear time while at the same time producing high-quality code for reducible CFGs, please do share.
+:::
+
 CFG is messy. You can't recover constructs from inside out because an `if` might contain a `continue` and you'd have no idea how to handle such a split, as you don't even know if it's a `continue` or a different control flow construct yet. But if you attempt to parse the CFG in the opposite order, you'll quickly realize that you need to track connectivity and similar properties. This means that you have to re-run the analysis each time you find a new construct, and suddenly your decompiler is frustratingly slow.
+
+<aside-inline-here />
 
 
 ### My idea
