@@ -7,10 +7,21 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Tue, 29 Apr 2025 18:15:58 GMT</lastBuildDate>
+		<lastBuildDate>Fri, 06 Jun 2025 11:57:36 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>Recovering control flow structures without CFGs</title>
+				<link>https://purplesyringa.moe/blog/./recovering-control-flow-structures-without-cfgs/</link>
+				<description>I’m working on a Java decompiler because I’m not satisfied with the performance of other solutions. I’ve always heard that decompiling JVM bytecode is a solved problem, but I’ve concluded that the decompilation methods used by CFR and Vineflower are hacky, inefficient, and sometimes don’t even work. The existing solutions are haphazard and inadequate compared to alternative approaches.
+Specifically, I have beef with the control flow extraction strategies employed by most decompilers. I haven’t tackled decompilation as a whole yet, but I’ve found an approach to control flow recovery that works in isolation, is quite modular, and addresses common frustrations. I don’t claim to be the first person to think of this method, but I haven’t seen it mentioned anywhere, so this post describes it hoping that it’s useful to someone else.</description>
+				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+				
+				<guid>https://purplesyringa.moe/blog/./recovering-control-flow-structures-without-cfgs/</guid>
+				<pubDate>Fri, 06 Jun 2025 00:00:00 GMT</pubDate>
+			</item>
 		
 			<item>
 				<title>Why performance optimization is hard work</title>
