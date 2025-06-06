@@ -42,6 +42,9 @@ th, td {
 	border: 0.25rem solid #ffffff;
 }
 
+figure {
+	margin: 0;
+}
 pre {
 	margin-left: -7rem;
 	width: 52rem;

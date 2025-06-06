@@ -49,6 +49,17 @@ const md = markdownit({
 	typographer: true,
 	linkify: true,
 	highlight(code, language, opts) {
+		if (language === "diagram") {
+			let altText = "";
+			if (code.startsWith("!alt ")) {
+				let ignore;
+				[ignore, altText, code] = code.match(/^!alt (.*?)\n([\s\S]*)/);
+			}
+			return {
+				indexOf: () => 0,
+				toString: () => `<figure title="${escapeHTML(altText)}"><pre aria-hidden="true"><code>${escapeHTML(code)}</code></pre></figure>`,
+			};
+		}
 		if (language === "") {
 			return "";
 		}
