@@ -89,7 +89,7 @@ ${code}
 				// childProcess.execFileSync("pdflatex", ["-interaction=batchmode", `-output-directory=${outputDir}`, "diagram.tex"]);
 				// childProcess.execFileSync("libreoffice", ["--convert-to", "svg", "--outdir", outputDir, `${outputDir}/diagram.pdf`]);
 				childProcess.execFileSync("latex", ["-interaction=batchmode", `-output-directory=${outputDir}`, "diagram.tex"]);
-				childProcess.execFileSync("dvisvgm", ["--optimize", "--no-fonts", `--output=${outputDir}/diagram`, `${outputDir}/diagram.dvi`]);
+				childProcess.execFileSync("dvisvgm", ["--no-fonts", `--output=${outputDir}/diagram`, `${outputDir}/diagram.dvi`]);
 				let svg = fs.readFileSync(`${outputDir}/diagram.svg`, "utf-8");
 				svg = svg.replace(/<\/svg>/, `<title>${escapeHTML(altText)}</title></svg>`);
 				svg = svg.replace(/<\?xml.*?\?>/, "");

@@ -200,7 +200,7 @@ aside > :last-child {
 		display: none;
 	}
 	.only-dark {
-		display: block;
+		display: flex;
 	}
 }
 
