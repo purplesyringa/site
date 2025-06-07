@@ -33,7 +33,7 @@ fn u52_to_f64(x: u64) -> f64 {
     f64::from_bits(x ^ magic) - f64::from_bits(magic)
 }
 
-/// Convert a float in range [-0.25; 2^23] to the nearest integer with rounding ties to even.
+/// Convert a float in range [-0.25; 2^23] to the nearest integer, rounding ties to even.
 ///
 /// Produces an incorrect result for floats outside the range or `NaN`s. Rounds just like
 /// `x.round_ties_even()`.
@@ -42,13 +42,22 @@ fn f32_to_u23_rounding(x: f32) -> u32 {
     (x + magic).to_bits() ^ magic.to_bits()
 }
 
-/// Convert a double in range [-0.25; 2^52] to the nearest integer with rounding ties to even.
+/// Convert a double in range [-0.25; 2^52] to the nearest integer, rounding ties to even.
 ///
 /// Produces an incorrect result for doubles outside the range or `NaN`s. Rounds just like
 /// `x.round_ties_even()`.
 fn f64_to_u52_rounding(x: f64) -> u64 {
     let magic = (1u64 << 52) as f64;
     (x + magic).to_bits() ^ magic.to_bits()
+}
+
+/// Convert a double in range [-0.25; 2^32 - 0.5) to the nearest integer, rounding ties to even.
+///
+/// Produces an incorrect result for doubles outside the range or `NaN`s. Rounds just like
+/// `x.round_ties_even()`.
+fn f64_to_u32_rounding(x: f64) -> u32 {
+    let magic = (1u64 << 52) as f64;
+    (x + magic).to_bits() as u32
 }
 ```
 
@@ -64,5 +73,7 @@ In `u23_to_f32`, $x$ is a $23$-bit integer. $x \oplus \mathrm{magic}$ is thus an
 In `f32_to_u23`, $x$ is usually a non-negative number with exponent $< 23$. Adding $2^{23}$ thus produces a number with exponent exactly $23$. Its mantissa is therefore $(2^{23} + x) - 2^{23} = x$. XORing the number with $\mathrm{magic}$, which has the same exponent but a zero mantissa, leaves around just the mantissa $x$. Rounding matches the rounding of $+$. It works for $-0.25 \le x < 0$ because $+$ rounds such sums to $2^{23}$ exactly. It works for $x = 2^{23}$ because the effect of the exponent changing from $23$ to $24$ happens to flip the bit just before the mantissa from $0$ to $1$.
 
 The situation for doubles and $64$-bit integers is similar.
+
+`f64_to_u32_rounding` is equivalent to `f64_to_u52_rounding(x) as u32`; it's mentioned explicitly because the bottom $32$ bits of $\mathrm{magic}$ are zero, and thus the XOR can be optimized out.
 
 In cases where two different constants would make more intuitive sense, $\mathrm{magic}$ is used twice to improve code size and reduce register pressure.
