@@ -77,3 +77,5 @@ The situation for doubles and $64$-bit integers is similar.
 `f64_to_u32_rounding` is equivalent to `f64_to_u52_rounding(x) as u32`; it's mentioned explicitly because the bottom $32$ bits of $\mathrm{magic}$ are zero, and thus the XOR can be optimized out. This trick was probably authored by [deft_code](https://stackoverflow.com/a/429812/5417677).
 
 In cases where two different constants would make more intuitive sense, $\mathrm{magic}$ is used twice to improve code size and reduce register pressure.
+
+By changing the exponent of the magic, you can also divide or multiply the float by a power of two at no additional cost; this is occasionally useful.
