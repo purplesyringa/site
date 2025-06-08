@@ -61,7 +61,7 @@ fn f64_to_u32_rounding(x: f64) -> u32 {
 }
 ```
 
-No alternatives for flooring are explicitly provided; if you have access to AVX-512, changing the rounding of addition in the last two methods to flooring should work.
+No alternatives for flooring are explicitly provided; if you have access to AVX-512, changing the rounding of addition in the last three methods to flooring should work.
 
 
 ### How this works
