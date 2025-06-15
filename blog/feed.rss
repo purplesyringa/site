@@ -7,10 +7,22 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Sat, 07 Jun 2025 09:53:28 GMT</lastBuildDate>
+		<lastBuildDate>Sun, 15 Jun 2025 04:41:11 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>Splitting independent variables without SSA</title>
+				<link>https://purplesyringa.moe/blog/./splitting-independent-variables-without-ssa/</link>
+				<description>I’m making progress on the Java decompiler I’ve mentioned in a previous post, and I want to share the next couple of tricks I’m using to speed it up.
+Java bytecode is a stack-based language, and so data flow is a bit cursed, especially when the control flow is complicated. I need to analyze data flow globally for expression inlining and some other stuff. Single-static assignment produces basically everything I need as a byproduct… but it’s not very fast.
+For one thing, it typically mutates the IR instead of returning data separately, and the resulting IR has imperative code mixed with functional code, which is a little unpleasant to work with. SSA has multiple implementations with very different performance characteristics and conditions, and each of them forces me to make a tradeoff I’m not positive about.</description>
+				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+				
+				<guid>https://purplesyringa.moe/blog/./splitting-independent-variables-without-ssa/</guid>
+				<pubDate>Sun, 15 Jun 2025 00:00:00 GMT</pubDate>
+			</item>
 		
 			<item>
 				<title>Fast limited-range conversion between ints and floats</title>

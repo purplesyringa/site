@@ -1,0 +1,141 @@
+<!doctypehtml><html prefix="og: http://ogp.me/ns#"lang=en_US><meta charset=utf-8><meta content=width=device-width,initial-scale=1 name=viewport><title>Splitting independent variables without SSA | purplesyringa's blog</title><link href=../../favicon.ico?v=2 rel=icon><link href=../../all.css rel=stylesheet><link href=../../blog.css rel=stylesheet><link href=../../vendor/Temml-Local.css rel=stylesheet><link crossorigin href=https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&family=Slabo+27px&display=swap rel=stylesheet><link href=../../fonts/webfont.css rel=stylesheet><link media="screen and (prefers-color-scheme: dark"href=../../vendor/atom-one-dark.min.css rel=stylesheet><link media="screen and (prefers-color-scheme: light"href=../../vendor/a11y-light.min.css rel=stylesheet><link title="Blog posts"href=../../blog/feed.rss rel=alternate type=application/rss+xml><meta content="Splitting independent variables without SSA"property=og:title><meta content=article property=og:type><meta content=https://purplesyringa.moe/blog/splitting-independent-variables-without-ssa/og.png property=og:image><meta content=https://purplesyringa.moe/blog/splitting-independent-variables-without-ssa/ property=og:url><meta content="I’m making progress on the Java decompiler I’ve mentioned in a previous post, and I want to share the next couple of tricks I’m using to speed it up.
+Java bytecode is a stack-based language, and so data flow is a bit cursed, especially when the control flow is complicated. I need to analyze data flow globally for expression inlining and some other stuff. Single-static assignment produces basically everything I need as a byproduct… but it’s not very fast.
+For one thing, it typically mutates the IR instead of returning data separately, and the resulting IR has imperative code mixed with functional code, which is a little unpleasant to work with. SSA has multiple implementations with very different performance characteristics and conditions, and each of them forces me to make a tradeoff I’m not positive about."property=og:description><meta content=en_US property=og:locale><meta content="purplesyringa's blog"property=og:site_name><meta content=summary_large_image name=twitter:card><meta content=https://purplesyringa.moe/blog/splitting-independent-variables-without-ssa/og.png name=twitter:image><script data-website-id=0da1961d-43f2-45cc-a8e2-75679eefbb69 defer src=https://zond.tei.su/script.js></script><body><header><div class=viewport-container><div class=media><a href=https://github.com/purplesyringa><img alt=GitHub src=../../images/github-mark-white.svg></a></div><h1><a href=/>purplesyringa</a></h1><nav><a href=../..>about</a><a class=current href=../../blog/>blog</a><a href=../../sink/>kitchen sink</a></nav></div></header><section><div class=viewport-container><h2>Splitting independent variables without SSA</h2><time>Jun 15, 2025</time><p>I’m making progress on the Java decompiler I’ve mentioned <a href=../recovering-control-flow-structures-without-cfgs/>in a previous post</a>, and I want to share the next couple of tricks I’m using to speed it up.<p>Java bytecode is a stack-based language, and so data flow is a bit cursed, especially when the control flow is complicated. I need to analyze data flow globally for expression inlining and some other stuff. <a href=https://en.wikipedia.org/wiki/Static_single-assignment_form>Single-static assignment</a> produces basically everything I need as a byproduct… but it’s not very fast.<p>For one thing, it typically mutates the IR instead of returning data separately, and the resulting IR has imperative code mixed with functional code, which is a little unpleasant to work with. SSA has <a href=https://bernsteinbear.com/blog/ssa/>multiple implementations</a> with very different performance characteristics and conditions, and each of them forces me to make a tradeoff I’m not positive about.<ul><li><a href=https://bernsteinbear.com/assets/img/cytron-ssa.pdf>Cytron’s SSA</a> needs to precompute dominance frontiers which I don’t need for any other pass,<li><a href=https://bernsteinbear.com/assets/img/brandis-single-pass.pdf>Brandis and Mössenböck’s SSA</a> only works on structured control flow graphs,<li><a href=https://bernsteinbear.com/assets/img/sreedhar-ssa.pdf>Sreedhar and Gao’s SSA</a> is just… <em>complex</em> and uses a custom data structure,<li><a href=https://bernsteinbear.com/assets/img/aycock-horspool-ssa.pdf>Aycock and Horspool’s SSA</a> has questionable performance characteristics, not least because it inserts <eq><math><mi>ϕ</mi></math></eq> functions <em>everywhere</em>, wasting a ton of memory, and then removes them iteratively,<li><a href=https://bernsteinbear.com/assets/img/bebenita-ssa.pdf>Bebenita’s SSA</a> is intuitive and only relies on the <a href=https://en.wikipedia.org/wiki/Disjoint-set_data_structure>union-find</a> data structure, but has a fixed time complexity and doesn’t provide for any special-case optimizations,<li>etc.</ul><p>SSA is not a bad choice by any means, but I was thinking that maybe I could integrate ideas from SSA implementations into algorithms my decompiler actually needs, without computing SSA itself.<p class=next-group><span aria-level=3 class=side-header role=heading><span>Motivation</span></span>Java decompilation involves translating JVM’s stack operations to Java’s operations on variables. This is quite simple: by mapping the stack element at height <eq><math><mi>n</mi></math></eq> to variable <eq><math><msub><mi>a</mi><mi>n</mi></msub></math></eq>, we ensure that each instruction maps to one assignment. For example:<pre><code class=language-java>push(<span class=hljs-number>1</span>);
+push(<span class=hljs-number>2</span>);
+add();
+<span class=hljs-comment>// translates to:</span>
+a0 = <span class=hljs-number>1</span>;
+a1 = <span class=hljs-number>2</span>;
+a0 = a0 + a1;
+</code></pre><p>To collapse such long chains into simpler ones, like <code>a0 = 1 + 2</code>, I need to track, for each stack read, which write produced the corresponding value. This seems very easy until you realize that branching exists:<pre><code class=language-java><span class=hljs-keyword>if</span> (cond) {
+    push(<span class=hljs-number>1</span>);
+} <span class=hljs-keyword>else</span> {
+    push(<span class=hljs-number>2</span>);
+}
+push(<span class=hljs-number>3</span>);
+add();
+<span class=hljs-comment>// translates to:</span>
+<span class=hljs-keyword>if</span> (cond) {
+    a0 = <span class=hljs-number>1</span>;
+} <span class=hljs-keyword>else</span> {
+    a0 = <span class=hljs-number>2</span>;
+}
+a1 = <span class=hljs-number>3</span>;
+a0 = a0 + a1; <span class=hljs-comment>// where does a0 in RHS come from here?</span>
+</code></pre><p>If you wanted to keep things simple, you’d recurse into the preceding basic blocks and merge the sources of <code>a0</code> they return, but that has horrible time complexity and quickly gets out of hand.<p class=next-group><span aria-level=3 class=side-header role=heading><span>Independence</span></span>There isn’t a way to efficiently track, for each use, <em>precisely</em> which definitions that use can see, without SSA. But I don’t need that kind of precision: I’m not writing an optimizing compiler that would benefit from such analysis. I can make do with two pieces of information:<ul><li>I want to track whether a given use comes from a <em>single</em> definition, and if true, precisely which definition it is, and<li>I want to split variables that have multiple non-interfering live ranges.</ul><p>The former is necessary for inlining expressions. The latter would benefit from an example. Suppose that I have code like this:<pre><code class=language-java>a0 = f();
+g(a0, a0);
+a0 = h();
+i(a0, a0);
+</code></pre><p>I obviously can’t inline <code>f()</code> into <code>g(...)</code>, so I have to retain <code>a0</code> as a variable. But as <code>f()</code> and <code>h()</code> can have different return types, I want the first two and the last two lines to access different variables, e.g.:<pre><code class=language-java>a0v1 = f();
+g(a0v1, a0v1);
+a0v2 = h();
+i(a0v2, a0v2);
+</code></pre><p>The key idea is: all definitions visible to a given use need to access the same instance of the variable. A straightforward implementation would iterate over uses, query which definitions each use sees, and then merge them via <a href=https://en.wikipedia.org/wiki/Disjoint-set_data_structure>union-find</a>. The individual components would map to independent variables.<p class=next-group><span aria-level=3 class=side-header role=heading><span>Approach</span></span>Let’s discuss how to do this enumeration and querying efficiently.<p>All def-use chains within a single basic block can be resolved statically, perhaps even while populating the basic block. We’re left with tracking def-use chains across basic blocks.<p>Consider a graph whose vertices are (basic block, variable name) pairs. Entering vertex <code>(bb, var)</code> indicates that we’re interested in finding definitions of <code>var</code> that are visible on entry to <code>bb</code>. For each predecessor <code>pred</code> of <code>bb</code>, we can either find the definition of <code>var</code> within <code>bb</code>, or recurse to <code>(pred, var)</code>. The algorithm starts with a DFS over such a graph.<p>Here’s how I accumulate the located definitions. We create a node in union-find for each mention of a variable, i.e. for both uses and definitions. For each use <code>use</code> of <code>var</code> that doesn’t have a matching definition in its basic block <code>bb</code>, we enter the vertex <code>(bb, var)</code> with the request for the answer to be merged into the component <code>use</code> of union-find. This “output” argument is propagated recursively and cached as the answer for each visited vertex. Whenever any given vertex <code>(bb, var)</code> is entered for the second time, the current and the cached output arguments are merged, and recursive traversal is skipped.<p>The implementation via iterative DFS fits on a napkin:<pre><code class=language-rust><span class=hljs-comment>// We could just store `bb` on the stack, but `var` and `use` will come in handy a bit later.</span>
+stack.<span class="hljs-title function_ invoke__">push</span>((bb, var, use_));
+
+<span class=hljs-keyword>while</span> <span class=hljs-keyword>let</span> <span class=hljs-variable>Some</span>((bb, var, use_)) = stack.<span class="hljs-title function_ invoke__">pop</span>() {
+    <span class=hljs-keyword>match</span> cached.<span class="hljs-title function_ invoke__">entry</span>((bb, var)) {
+        Entry::<span class="hljs-title function_ invoke__">Occupied</span>(entry) => {
+            union_find.<span class="hljs-title function_ invoke__">merge</span>(use_, *entry.<span class="hljs-title function_ invoke__">get</span>());
+            <span class=hljs-keyword>continue</span>;
+        }
+        Entry::<span class="hljs-title function_ invoke__">Vacant</span>(entry) => entry.<span class="hljs-title function_ invoke__">insert</span>(use_),
+    }
+
+    <span class=hljs-keyword>for</span> <span class=hljs-variable>pred</span> <span class=hljs-keyword>in</span> &predecessors[bb] {
+        <span class=hljs-keyword>if</span> <span class=hljs-keyword>let</span> <span class=hljs-variable>Some</span>(def) = active_defs_at_end[pred].<span class="hljs-title function_ invoke__">get</span>(&var) {
+            union_find.<span class="hljs-title function_ invoke__">merge</span>(use_, def);
+        } <span class=hljs-keyword>else</span> {
+            stack.<span class="hljs-title function_ invoke__">push</span>((pred, var, use_));
+        }
+    }
+}
+</code></pre><p>Note that we save <code>use</code> into cache before recursing. This allows the algorithm to work correctly on cyclic CFGs: even though vertices of a strongly connected component may refer to different node IDs, the nodes will correspond to the same component in union-find.<p>The worst-case time complexity is <eq><math><mrow><mi class=mathcal>𝒪</mi><mo form=prefix stretchy=false>(</mo><msub><mi>n</mi><mtext>basic blocks</mtext></msub><mo>⋅</mo><msub><mi>n</mi><mtext>vars</mtext></msub><mo>⋅</mo><mi>α</mi><mo form=prefix stretchy=false>(</mo><msub><mi>n</mi><mtext>uses</mtext></msub><mo form=postfix stretchy=false>)</mo><mo>+</mo><msub><mi>n</mi><mtext>uses</mtext></msub><mo form=postfix stretchy=false>)</mo></mrow></math></eq>. This isn’t even quasilinear, but it does match the usual time complexity of SSA algorithms, so it’s not the end of the world. (Yes, some SSA algorithms don’t have the <eq><math><mi>α</mi></math></eq> factor, but union-find is fast enough that this algorithm is faster than linear SSA in practice.)<p>However, the important part is that the big-O constant is quite low because it’s a single DFS. Moreover, this bound can be tightened in some common cases, because only basic blocks lying along the paths between the uses and the definitions are visited. This means that, for instance, that in code structured like<pre><code class=language-java>var0 = ...;
+<span class=hljs-comment>// &LTbb boundary></span>
+f(var0);
+<span class=hljs-comment>// &LTbb boundary></span>
+var1 = ...;
+<span class=hljs-comment>// &LTbb boundary></span>
+f(var1);
+<span class=hljs-comment>// &LTbb boundary></span>
+var2 = ...;
+<span class=hljs-comment>// &LTbb boundary></span>
+f(var2);
+<span class=hljs-comment>// ...</span>
+</code></pre><p>…where the number of basic blocks within use-def is bounded, the time complexity is quasi-linear. As an additional data point, if analyzing two programs <eq><math><mi>A</mi></math></eq> and <eq><math><mi>B</mi></math></eq> takes time <eq><math><msub><mi>T</mi><mi>A</mi></msub></math></eq> and <eq><math><msub><mi>T</mi><mi>B</mi></msub></math></eq> respectively and uses in <eq><math><mi>B</mi></math></eq> never see definitions from <eq><math><mi>A</mi></math></eq>, analyzing the concatenation of <eq><math><mi>A</mi></math></eq> and <eq><math><mi>B</mi></math></eq> takes time <eq><math><mrow><msub><mi>T</mi><mi>A</mi></msub><mo>+</mo></mrow><mrow><msub><mi>T</mi><mi>B</mi></msub><mo>+</mo></mrow><mrow><mi class=mathcal>𝒪</mi><mo form=prefix stretchy=false>(</mo><mn>1</mn><mo form=postfix stretchy=false>)</mo></mrow></math></eq>. This basically means that you’re only paying for cross-program data flow, unlike with some simple SSA algorithms.<p>Note that the graph is implicit and never manifests in memory. I’ve considered replacing union-find with an offline DFS scan, but I think it’d actually be slower. First, the time loss from allocating data structures to store the graph will probably outweigh the speed up from not having to touch union-find. Second, union-find allocates one word per node, while building the graph dynamically requires nested vectors and stores two words per <em>edge</em>, so DFS would have extremely questionable memory locality.<p class=next-group><span aria-level=3 class=side-header role=heading><span>Dead stores</span></span>You can extend this algorithm to eliminate dead definitions within the same pass. Dead definitions are definitions that no side effect uses transitively. The required modifications are:<ol><li>Only initially trigger DFS on <code>(bb, var)</code> if the corresponding <code>use</code> is from a side effect, and<li>When a matching definition is found in <code>active_defs_at_end</code>, push every use inside the definition to stack. (<code>var</code> and <code>use</code> will come from the uses inside the definition, not the defined variable itself, which is why <code>stack</code> doesn’t just contain a <code>bb</code> field.)</ol><p>Any definition that was left untouched is a dead store.<p class=next-group><span aria-level=3 class=side-header role=heading><span>Inlining</span></span>With this approach in mind, let’s return to inlining. We want to, for each use, determine if it comes from just a single definition. But because the algorithm described above only gives us information about <em>components</em>, we can only learn the <em>component</em> of the definition, which can contain definitions that this particular use does not see (but some others do).<p>This analysis is similar to the one described above on a basic level. We can navigate the same graph recursively, but instead of accumulating definitions in union-find, DFS should return either “undefined”, or “defined at <eq><math><mrow><mtext></mtext><mi>def</mi></mrow></math></eq>”, or “many definitions”. We can’t use iterative DFS because we need to update the state of a node based on the state of its children, rather than the other way round.<pre><code class=language-rust><span class=hljs-keyword>enum</span> <span class="hljs-title class_">Source</span> {
+    Undefined,
+    <span class="hljs-title function_ invoke__">DefinedAt</span>(Definition),
+    ManyDefinitions,
+}
+
+<span class=hljs-keyword>impl</span> <span class="hljs-title class_">Source</span> {
+    <span class=hljs-keyword>fn</span> <span class="hljs-title function_">merge</span>(&<span class=hljs-keyword>mut</span> <span class=hljs-keyword>self</span>, other: Source) { <span class=hljs-comment>/* ... */</span> }
+}
+
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">visit</span>(bb: <span class=hljs-type>usize</span>, var: <span class=hljs-type>usize</span>) <span class=hljs-punctuation>-></span> Source {
+    <span class=hljs-keyword>let</span> <span class=hljs-keyword>mut </span><span class=hljs-variable>source</span> = <span class=hljs-keyword>match</span> cached.<span class="hljs-title function_ invoke__">entry</span>((bb, var)) {
+        Entry::<span class="hljs-title function_ invoke__">Occupied</span>(entry) => <span class=hljs-keyword>return</span> *entry.<span class="hljs-title function_ invoke__">get</span>(),
+        Entry::<span class="hljs-title function_ invoke__">Vacant</span>(entry) => *entry.<span class="hljs-title function_ invoke__">insert</span>(Source::Undefined),
+    };
+
+    <span class=hljs-keyword>for</span> <span class=hljs-variable>pred</span> <span class=hljs-keyword>in</span> &predecessors[bb] {
+        <span class=hljs-keyword>if</span> <span class=hljs-keyword>let</span> <span class=hljs-variable>Some</span>(def) = active_defs_at_end[*pred].<span class="hljs-title function_ invoke__">get</span>(&var) {
+            source.<span class="hljs-title function_ invoke__">merge</span>(Source::<span class="hljs-title function_ invoke__">DefinedAt</span>(def));
+        } <span class=hljs-keyword>else</span> {
+            source.<span class="hljs-title function_ invoke__">merge</span>(<span class="hljs-title function_ invoke__">visit</span>(*pred, var));
+        }
+    }
+
+    *cached.<span class="hljs-title function_ invoke__">get_mut</span>(&(bb, var)).<span class="hljs-title function_ invoke__">unwrap</span>() = source;
+    source
+}
+</code></pre><p>There’s only a problem: if the CFG is cyclic, only the first node in an <a href=https://en.wikipedia.org/wiki/Strongly_connected_component>SCC</a> is guaranteed to see all the uses. For example, consider the following graph:<section><eqn><math style="display:block math;"class=tml-display display=block><mrow><msub><mrow><mtext></mtext><mi>def</mi></mrow><mn>1</mn></msub><mo stretchy=false>→</mo><msub><mrow><mtext></mtext><mi>use</mi></mrow><mn>1</mn></msub><mo stretchy=false>↔</mo><msub><mrow><mtext></mtext><mi>use</mi></mrow><mn>2</mn></msub><mo stretchy=false>←</mo><msub><mrow><mtext></mtext><mi>def</mi></mrow><mn>2</mn></msub></mrow></math></eqn></section><p>If we enter <eq><math><msub><mrow><mtext></mtext><mi>use</mi></mrow><mn>1</mn></msub></math></eq> and then visit <eq><math><msub><mrow><mtext></mtext><mi>use</mi></mrow><mn>2</mn></msub></math></eq>, <eq><math><msub><mrow><mtext></mtext><mi>use</mi></mrow><mn>2</mn></msub></math></eq> will only see the definition in <eq><math><msub><mrow><mtext></mtext><mi>def</mi></mrow><mn>2</mn></msub></math></eq>, even though <eq><math><msub><mrow><mtext></mtext><mi>def</mi></mrow><mn>1</mn></msub></math></eq> is reachable – because <eq><math><msub><mrow><mtext></mtext><mi>use</mi></mrow><mn>2</mn></msub></math></eq> refuses to visit the already visited node <eq><math><msub><mrow><mtext></mtext><mi>use</mi></mrow><mn>1</mn></msub></math></eq>.<p>We could <a href=https://en.wikipedia.org/wiki/Strongly_connected_component#Definitions>condense</a> the graph, but that would be a separate pass. But how else would we spread <code>source</code> among the whole strongly connected component? <a href=https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm>Tarjan’s algorithm</a> comes to the rescue: it’s based on DFS as well, <em>and</em> it tells you when you’re exiting the strongly connected component, <em>and</em> it provides you with the list of nodes in the component. The implementation grows a bit larger, but it’s still a single, very fast pass:<pre><code class=language-rust><div class=expansible-code><input id=expansible1 type=checkbox><div class=highlighted><span class=hljs-keyword>fn</span> <span class="hljs-title function_">visit</span>(bb: <span class=hljs-type>usize</span>, var: <span class=hljs-type>usize</span>) <span class=hljs-punctuation>-></span> DfsNodeState {
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>index</span> = tarjan_stack.<span class="hljs-title function_ invoke__">len</span>();
+
+    <span class=hljs-keyword>let</span> <span class=hljs-keyword>mut </span><span class=hljs-variable>state</span> = <span class=hljs-keyword>match</span> cached.<span class="hljs-title function_ invoke__">entry</span>((bb, var)) {
+        Entry::<span class="hljs-title function_ invoke__">Occupied</span>(entry) => <span class=hljs-keyword>return</span> *entry.<span class="hljs-title function_ invoke__">get</span>(),
+        Entry::<span class="hljs-title function_ invoke__">Vacant</span>(entry) => *entry.<span class="hljs-title function_ invoke__">insert</span>(DfsNodeState {
+            low_link: index,
+            source: Source::Undefined,
+        }),
+    };
+
+    tarjan_stack.<span class="hljs-title function_ invoke__">push</span>((bb, var));
+
+    <span class=hljs-keyword>for</span> <span class=hljs-variable>pred</span> <span class=hljs-keyword>in</span> &predecessors[bb] {
+        <span class=hljs-keyword>if</span> <span class=hljs-keyword>let</span> <span class=hljs-variable>Some</span>(def) = active_defs_at_end[*pred].<span class="hljs-title function_ invoke__">get</span>(&var) {
+            state.source.<span class="hljs-title function_ invoke__">merge</span>(Source::<span class="hljs-title function_ invoke__">DefinedAt</span>(def));
+        } <span class=hljs-keyword>else</span> {
+            <span class=hljs-keyword>let</span> <span class=hljs-variable>pred_state</span> = <span class="hljs-title function_ invoke__">visit</span>(*pred, var);
+            state.source.<span class="hljs-title function_ invoke__">merge</span>(pred_state.source);
+            state.low_link = state.low_link.<span class="hljs-title function_ invoke__">min</span>(pred_state.low_link);
+        }
+    }
+
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>is_scc_root</span> = state.low_link == index;
+    <span class=hljs-keyword>if</span> is_scc_root {
+        <span class=hljs-keyword>for</span> <span class=hljs-variable>scc_node</span> <span class=hljs-keyword>in</span> tarjan_stack.<span class="hljs-title function_ invoke__">drain</span>(index..) {
+            *cached.<span class="hljs-title function_ invoke__">get_mut</span>(&scc_node).<span class="hljs-title function_ invoke__">unwrap</span>() = DfsNodeState {
+                low_link: <span class=hljs-type>usize</span>::MAX,
+                source: state.source,
+            };
+        }
+    } <span class=hljs-keyword>else</span> {
+        *cached.<span class="hljs-title function_ invoke__">get_mut</span>(&(bb, var)).<span class="hljs-title function_ invoke__">unwrap</span>() = state;
+    }
+
+    state
+}
+</div><label for=expansible1>Expand</label></div></code></pre><p>This is a solid implementation that can also be extended to track values through copies like <code>a = b</code>, or verify that a use can never read undefined memory, etc.<p class=next-group><span aria-level=3 class=side-header role=heading><span>Outro</span></span>So that’s what I’m working with at the moment. I have an optimized (but not necessarily inlined) IR, I know how to structure control flow, I know how to inline expressions and detect common control flow structures; now I just need to glue all of this together. And also figure out exceptions.<p>When decompiling a Minecraft server, the passes I’ve already implemented take <eq><math><mn>600</mn></math></eq> ms in total and use <eq><math><mn>11</mn></math></eq> MiB of RAM. These numbers will grow as I add passes, but there’s still plenty of room for optimization (e.g. <a href=https://docs.rs/noak/>noak</a> is quite slow, and I’m not sure if that’s due to lack of cross-crate inlining or for a different reason), so it might even out.<p>Hopefully I’ll get something else working by the time I publish the next post on this topic. j</div></section><footer><div class=viewport-container><h2>Made with my own bare hands (why.)</h2></div></footer><script>window.addEventListener("keydown", e => {
+				if (e.key === "Enter") {
+					if (e.ctrlKey) {
+						window.open("https://github.com/purplesyringa/site/edit/master/blog/splitting-independent-variables-without-ssa/index.md", "_blank");
+					} else if (
+						e.target.type === "checkbox"
+						&& e.target.parentNode
+						&& e.target.parentNode.className === "expansible-code"
+					) {
+						e.target.click();
+					}
+				}
+			});</script>
