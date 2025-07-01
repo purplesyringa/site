@@ -1,6 +1,6 @@
 ---
 title: Recovering control flow structures without CFGs
-time: Jun 6, 2025
+time: June 6, 2025
 intro: |
   I'm working on a Java decompiler because I'm not satisfied with the performance of other solutions. I've always heard that decompiling JVM bytecode is a solved problem, but I've concluded that the decompilation methods used by CFR and Vineflower are hacky, inefficient, and sometimes don't even work. The existing solutions are haphazard and inadequate compared to alternative approaches.
 

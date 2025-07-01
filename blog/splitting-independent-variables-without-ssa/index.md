@@ -1,6 +1,6 @@
 ---
 title: Splitting independent variables without SSA
-time: Jun 15, 2025
+time: June 15, 2025
 intro: |
     I'm making progress on the Java decompiler I've mentioned [in a previous post](../recovering-control-flow-structures-without-cfgs/), and I want to share the next couple of tricks I'm using to speed it up.
 
@@ -257,4 +257,3 @@ So that's what I'm working with at the moment. I have an optimized (but not nece
 When decompiling a Minecraft server, the passes I've already implemented take $600$ ms in total and use $11$ MiB of RAM. These numbers will grow as I add passes, but there's still plenty of room for optimization (e.g. [noak](https://docs.rs/noak/) is quite slow, and I'm not sure if that's due to lack of cross-crate inlining or for a different reason), so it might even out.
 
 Hopefully I'll get something else working by the time I publish the next post on this topic.
-j

@@ -1,6 +1,6 @@
 ---
 title: Fast limited-range conversion between ints and floats
-time: Jun 7, 2025
+time: June 7, 2025
 intro: |
   This post is about a popular but niche technique I can never find a succinct reference for. I didn't invent it, I just need a page I can link when giving optimization advice.
 
