@@ -1,5 +1,5 @@
 ---
-title: Lithium and hidden complexity
+title: Hidden complexity in software development
 time: July 2, 2025
 intro: |
     This is a tech phenomenon that I keep getting blindsided by no matter how much I try to anticipate it.

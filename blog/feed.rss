@@ -7,14 +7,14 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Wed, 02 Jul 2025 01:38:22 GMT</lastBuildDate>
+		<lastBuildDate>Wed, 02 Jul 2025 02:01:51 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
 		
 			<item>
-				<title>Lithium and hidden complexity</title>
-				<link>https://purplesyringa.moe/blog/./lithium-and-hidden-complexity/</link>
+				<title>Hidden complexity in software development</title>
+				<link>https://purplesyringa.moe/blog/./hidden-complexity-in-software-development/</link>
 				<description>This is a tech phenomenon that I keep getting blindsided by no matter how much I try to anticipate it.
 Physical work feels difficult. You can look at someone and realize you don’t have nearly as much stamina, and even if you did, it still feels demanding.
 Research feels difficult. You’re tasked with thinking about something no one else has considered yet. That rarely happens even outside of science – try to tell a unique joke.
@@ -25,7 +25,7 @@ lol. lmao, even.
 Experience shows that it’s anything but easy, but it’s always been hard for me to pinpoint exactly why that is the case. And I think I’ve finally found a good answer.</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				
-				<guid>https://purplesyringa.moe/blog/./lithium-and-hidden-complexity/</guid>
+				<guid>https://purplesyringa.moe/blog/./hidden-complexity-in-software-development/</guid>
 				<pubDate>Wed, 02 Jul 2025 00:00:00 GMT</pubDate>
 			</item>
 		
