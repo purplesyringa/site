@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Wed, 02 Jul 2025 02:01:51 GMT</lastBuildDate>
+		<lastBuildDate>Wed, 02 Jul 2025 06:51:34 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -24,7 +24,7 @@ lol. lmao, even.
 
 Experience shows that it’s anything but easy, but it’s always been hard for me to pinpoint exactly why that is the case. And I think I’ve finally found a good answer.</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				
+				<comments>https://www.reddit.com/r/programming/comments/1lpk0fc/hidden_complexity_in_software_development/</comments>
 				<guid>https://purplesyringa.moe/blog/./hidden-complexity-in-software-development/</guid>
 				<pubDate>Wed, 02 Jul 2025 00:00:00 GMT</pubDate>
 			</item>
