@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Mon, 14 Jul 2025 04:10:32 GMT</lastBuildDate>
+		<lastBuildDate>Mon, 14 Jul 2025 14:39:36 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -18,7 +18,7 @@
 				<description>In contemporary “AI” discourse, people often make a point that LLM output cannot be trusted, since it contains hallucinations, often doesn’t handle edge cases properly, causes vulnerabilities, and so on. This is seen as an argument to never use LLM-generated code in production. Others argue that the benefits AI grants them are worth the risk.
 These groups are talking past each other. The problem was never about AI, it’s only the catalyst. To discuss what problems AI causes in software development is to completely miss the point, since those same arguments have been milked to death even before LLMs were a thing.</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				
+				<comments>https://news.ycombinator.com/item?id=44558358</comments>
 				<guid>https://purplesyringa.moe/blog/./ai-discourse-is-a-joke/</guid>
 				<pubDate>Mon, 14 Jul 2025 00:00:00 GMT</pubDate>
 			</item>
