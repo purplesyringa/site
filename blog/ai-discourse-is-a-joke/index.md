@@ -1,6 +1,6 @@
 ---
 title: '"AI discourse" is a joke'
-time: July 13, 2025
+time: July 14, 2025
 intro: |
   In contemporary "AI" discourse, people often make a point that LLM output cannot be trusted, since it contains hallucinations, often doesn't handle edge cases properly, causes vulnerabilities, and so on. This is seen as an argument to never use LLM-generated code in production. Others argue that the benefits AI grants them are worth the risk.
 
