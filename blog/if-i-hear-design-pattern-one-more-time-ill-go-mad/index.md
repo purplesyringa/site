@@ -1,6 +1,7 @@
 ---
 title: If I hear "design pattern" one more time, I'll go mad
 time: September 4, 2025
+discussion: https://www.reddit.com/r/programming/comments/1n8nb8z/if_i_hear_design_pattern_one_more_time_ill_go_mad/
 intro: |
     Here, read the intro of the Wikipedia page for [Command pattern](https://en.wikipedia.org/wiki/Command_pattern) with me:
 

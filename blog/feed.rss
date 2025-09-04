@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Thu, 04 Sep 2025 16:43:53 GMT</lastBuildDate>
+		<lastBuildDate>Thu, 04 Sep 2025 21:50:54 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -29,7 +29,7 @@ const command = () => object.method(arg1, arg2);
 
 Every time I hear about a design pattern I don’t recognize, I get afraid that I’m missing some crucial idea, and then I Google it and find out that I’ve been unknowingly using it since I started programming. Yeah, bro, I used the data store pattern earlier today (a variable).</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				
+				<comments>https://www.reddit.com/r/programming/comments/1n8nb8z/if_i_hear_design_pattern_one_more_time_ill_go_mad/</comments>
 				<guid>https://purplesyringa.moe/blog/./if-i-hear-design-pattern-one-more-time-ill-go-mad/</guid>
 				<pubDate>Thu, 04 Sep 2025 00:00:00 GMT</pubDate>
 			</item>
