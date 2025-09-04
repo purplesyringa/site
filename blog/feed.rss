@@ -7,10 +7,32 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Mon, 14 Jul 2025 14:39:36 GMT</lastBuildDate>
+		<lastBuildDate>Thu, 04 Sep 2025 16:43:53 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>If I hear &quot;design pattern&quot; one more time, I&#39;ll go mad</title>
+				<link>https://purplesyringa.moe/blog/./if-i-hear-design-pattern-one-more-time-ill-go-mad/</link>
+				<description>Here, read the intro of the Wikipedia page for Command pattern with me:
+
+In object-oriented programming, the command pattern is a behavioral design pattern in which an object is used to encapsulate all information needed to perform an action or trigger an event at a later time.
+
+You know what I call this? A function.
+
+This information includes the method name, the object that owns the method and values for the method parameters.
+
+Here’s your command:
+const command = () => object.method(arg1, arg2);
+// or in PHP, or in Rust, or in C++...
+
+Every time I hear about a design pattern I don’t recognize, I get afraid that I’m missing some crucial idea, and then I Google it and find out that I’ve been unknowingly using it since I started programming. Yeah, bro, I used the data store pattern earlier today (a variable).</description>
+				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+				
+				<guid>https://purplesyringa.moe/blog/./if-i-hear-design-pattern-one-more-time-ill-go-mad/</guid>
+				<pubDate>Thu, 04 Sep 2025 00:00:00 GMT</pubDate>
+			</item>
 		
 			<item>
 				<title>&quot;AI discourse&quot; is a joke</title>
