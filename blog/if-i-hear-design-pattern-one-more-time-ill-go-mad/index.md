@@ -79,12 +79,14 @@ Occasionally, we even get funny situations like the prototype pattern having lit
 
 If the name *does* match the ecosystem standard, please go ahead and use it. If you have a trait for iteration over a tree structure, you might as well call it `Visitor`. You shouldn't *need* traits like `Factory`, since first-class functions are prevalent in the 21st century, but if for whatever reason you do, feel free to call it that. But don't think of them as *patterns* -- think of them as idiomatic names.
 
-Overall, there is value in simplicity. "`fn new` in a trait" is *longer*, but it can still be *easier* to interpret than "abstract factory" if there's no translation step. Regardless of what wording you prefer, please do me a favor and tell me your intent directly.
+Overall, there is value in simplicity. "`fn new` in a trait" is *longer*, but it can still be *easier* to interpret than "abstract factory" if there's no translation step.
 
 
 ### Transferrable?
 
-I want to know the problem you're solving, like "decoupling X from Y". I don't want you to tell me the pattern you chose to solve it, since that's typically self-evident. It's also entirely language-dependent. Patterns don't really form a shared vocabulary in this manner, unlike goals.
+Regardless of what wording you prefer, please do me a favor and tell me your intent directly. I want to know the problem you're solving, like "decoupling X from Y". I don't want you to tell me the pattern you chose to solve it, since that's typically self-evident.
+
+It's also entirely language-dependent. Patterns don't really form a shared vocabulary in this manner, unlike goals.
 
 For example, lazy initialization does not just affect the implementation when you switch a functional language -- it stops making any sense if the language has no mutability, since that means there's no initialization as a concept at all. Lazy *calculations* might exist, sure, but that's not the same thing.
 
@@ -106,7 +108,9 @@ To understand this paragraph, I have to focus on individual sub-sentences *reall
 - "uses the generic interface of the factory" -- so the factory itself is behind a trait.
 - "to create the concrete objects that are part of the family" -- this might mean that the return types should be considered part of the factory trait, and we're actually talking `fn new_foo() -> impl FooTrait` or, alternatively, `type Foo: FooTrait; fn new_foo() -> Self::Foo;`.
 
-Now that I can see the signature, I understand that it's incredibly obvious. So why does the article have 10 pages of text, a UML diagram, a dense paragraph of overview, and a long-winded implementation example? Isn't it ironic that an article about patterns is overengineered? Was there *really* no way to write this better? If I wanted to go mad thinking abstractly about trivial things, I'd study category theory.
+Now that I can see the signature, I understand that it's incredibly obvious. And that makes it *useless*, since I would've converged on the same approach by straightforward iterative design.
+
+So why does the article have 10 pages of text, a UML diagram, a dense paragraph of overview, and a long-winded implementation example? Isn't it ironic that an article about patterns is overengineered? Was there *really* no way to write this better? If I wanted to go mad thinking abstractly about trivial things, I'd study category theory.
 
 
 ### Principles
