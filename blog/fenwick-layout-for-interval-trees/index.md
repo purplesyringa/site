@@ -76,7 +76,7 @@ When combined, the benefits are so high that this works better than any kind of 
 
 ### Bottom-up
 
-Before we move on, I want to highlight one last feature of segment trees. Since the layout is pre-determined, we can immediately compute the index of node $[x; x + 1)$ as $v = n + x$, where $k$ is the depth of the tree. We can also compute the parent of a given node as $\lfloor \frac{v}{2} \rfloor$. This allows us to iterate through nodes containing $x$ in the bottom-up order rather than the typical top-down order, thus saving on comparisons/branches typically required to decide which child to recurse into.
+Before we move on, I want to highlight one last feature of segment trees. Since the layout is pre-determined, we can immediately compute the index of node $[x; x + 1)$ as $v = n + x$, where $n$ is the size of the array. We can also compute the parent of a given node as $\lfloor \frac{v}{2} \rfloor$. This allows us to iterate through nodes containing $x$ in the bottom-up order rather than the typical top-down order, thus saving on comparisons/branches typically required to decide which child to recurse into.
 
 But wait, I thought we were going to use Fenwick trees rather than segment trees as the basis?
 
