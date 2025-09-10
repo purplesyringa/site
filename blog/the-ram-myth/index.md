@@ -4,6 +4,8 @@ time: December 19, 2024
 discussion:
     - https://www.reddit.com/r/programming/comments/1hhds9c/the_ram_myth/
     - https://news.ycombinator.com/item?id=42456310
+translation:
+    Russian: https://habr.com/ru/articles/868452/
 intro: |
     The RAM myth is a belief that modern computer memory resembles perfect random-access memory. Cache is seen as an optimization for small data: if it fits in L2, it's going to be processed faster; if it doesn't, there's nothing we can do.
 
