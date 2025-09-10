@@ -7,10 +7,23 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Thu, 04 Sep 2025 21:50:54 GMT</lastBuildDate>
+		<lastBuildDate>Wed, 10 Sep 2025 01:49:17 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>Fenwick layout for interval trees</title>
+				<link>https://purplesyringa.moe/blog/./fenwick-layout-for-interval-tree/</link>
+				<description>Fenwick trees and interval trees are well-known data structures in computer science. Interval trees in particular are commonly used in bioinformatics and computational geometry, and Fenwick trees are useful for keeping statistics.
+This post describes how the two can be merged to obtain a worst-case faster implementation of an interval tree. This approach is probably not very useful in these areas due to their specific requirements, but it’s still a well-rounded general-purpose implementation, and it’s so neat and short I can’t help but share it.
+TL;DR if you’re familiar with the topics: You can index the nodes of an interval tree by their unique center and use fast Fenwick-like navigation over the tree. A sample implementation is available on GitHub.
+The rest of the post describes what this means in more detail. It assumes familiarity with DSA, but not necessarily with the data structures mentioned above.</description>
+				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+				
+				<guid>https://purplesyringa.moe/blog/./fenwick-layout-for-interval-tree/</guid>
+				<pubDate>Wed, 10 Sep 2025 00:00:00 GMT</pubDate>
+			</item>
 		
 			<item>
 				<title>If I hear &quot;design pattern&quot; one more time, I&#39;ll go mad</title>
