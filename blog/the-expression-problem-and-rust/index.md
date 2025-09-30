@@ -338,7 +338,7 @@ We're effectively lifting traits to types via `dyn` and simulating supertrait re
 
 ### Linking crates
 
-But we're still naming operations, even if only once. If you think about this, it's kind of similar to when we experimented with `parse` returning an `enum` vs taking `Node: From<Integer> + From<String> + ..`. An exhaustive list isn't necessarily bad architecture, it might just be an explicit annotation of what would otherwise be forwarded implicitly.
+But we're still naming operations, even if only once. If you think about this, it's kind of similar to when we experimented with `parse` returning an `enum` vs taking `Node: From<Integer> + From<Str> + ..`. An exhaustive list isn't necessarily bad architecture, it might just be an explicit annotation of what would otherwise be forwarded implicitly.
 
 In fact, if all listed operations are ones that the high-level crate itself utilizes, it's not a big deal at all. If there's a direct correspondence between this list and function invocations in the same crate, it's a bit ugly, but ultimately not a maintenance hazard or an expressiveness gap.
 
