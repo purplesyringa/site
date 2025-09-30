@@ -336,7 +336,7 @@ impl Deref for AstNode {
 We're effectively lifting traits to types via `dyn` and simulating supertrait relationships with `dyn Trait1: Trait2`.
 
 
-### Naming operations
+### Linking crates
 
 But we're still naming operations, even if only once. If you think about this, it's kind of similar to when we experimented with `parse` returning an `enum` vs taking `Node: From<Integer> + From<String> + ..`. An exhaustive list isn't necessarily bad architecture, it might just be an explicit annotation of what would otherwise be forwarded implicitly.
 
