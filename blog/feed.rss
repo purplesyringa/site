@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Tue, 30 Sep 2025 09:35:04 GMT</lastBuildDate>
+		<lastBuildDate>Tue, 30 Sep 2025 14:03:45 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -18,7 +18,7 @@
 				<description>A few days ago, I stumbled upon a Hacker News discussion about the expression problem – a conundrum that occasionally arises in software design. Some of the commenters noted that Rust completely avoids this problem thanks to trait objects, and initially I agreed with them, but I’m now realizing it’s not at all as straightforward as it looks.
 The goal of this post is to explain what the expression problem is, how Rust seemingly avoids it, why this solution doesn’t actually work, and what a Rusty solution might look like.</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				
+				<comments>https://www.reddit.com/r/rust/comments/1nubge5/the_expression_problem_and_rust/</comments>
 				<guid>https://purplesyringa.moe/blog/./the-expression-problem-and-rust/</guid>
 				<pubDate>Tue, 30 Sep 2025 00:00:00 GMT</pubDate>
 			</item>
