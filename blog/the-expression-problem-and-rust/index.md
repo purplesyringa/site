@@ -394,16 +394,16 @@ where
 }
 ```
 
-Of course, Rust doesn't support generic trait parameters, but nightly Rust has `CoerceUnsized`, which allows us to represent the notion of upcasting to an arbitrary trait object:
+Of course, Rust doesn't support generic trait parameters, but nightly Rust has [Unsize](https://doc.rust-lang.org/stable/std/marker/trait.Unsize.html), which allows us to represent the notion of coercing a type to a generic *trait object*:
 
 ```rust
-#![feature(coerce_unsized)]
+#![feature(unsize)]
 
 impl<T: ?Sized> AsRef<T> for AstNode
 where
-    for<'a> &'a Integer: CoerceUnsized<&'a T>,
-    for<'a> &'a Str: CoerceUnsized<&'a T>,
-    for<'a> &'a Array<AstNode>: CoerceUnsized<&'a T>,
+    Integer: Unsize<T>,
+    Str: Unsize<T>,
+    Array<AstNode>: Unsize<T>,
     ..
 {
     fn as_ref(&self) -> &T {
@@ -450,6 +450,6 @@ For the latter, consider that `AstNode` acts as a broker between producers of da
 
 ### Con(cl|f)usion
 
-This is a weird pattern. It *works*, I guess, but I'm pretty sure I was happier before I realized how `CoerceUnsized` can be applied here. It feels like overengineering, and it probably is. Until Rust supports some of the necessary features natively, I'd say that the cost of maintaining this glue code and teaching people how to work with types like `AstNode` can easily outweigh the benefits of orthogonality.
+This is a weird pattern. It *works*, I guess, but I'm pretty sure I was happier before I realized how `Unsize` can be applied here. It feels like overengineering, and it probably is. Until Rust supports some of the necessary features natively, I'd say that the cost of maintaining this glue code and teaching people how to work with types like `AstNode` can easily outweigh the benefits of orthogonality.
 
 So, honestly, maybe you just shouldn't do that. If you want an idiomatic solution, you should probably look for a dynamically typed language. But sometimes you simply don't need all the expressive power and are better off committing to opinionated choices. And at least for Rust, I think that's the best way forward.
