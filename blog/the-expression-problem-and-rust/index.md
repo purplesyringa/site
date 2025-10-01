@@ -3,6 +3,7 @@ title: The expression problem and Rust
 time: September 30, 2025
 discussion:
   - https://www.reddit.com/r/rust/comments/1nubge5/the_expression_problem_and_rust/
+  - https://lobste.rs/s/yfmq0d/expression_problem_rust
 intro: |
   A few days ago, I stumbled upon [a Hacker News discussion](https://news.ycombinator.com/item?id=45155877) about the expression problem -- a conundrum that occasionally arises in software design. Some of the commenters noted that Rust completely avoids this problem thanks to trait objects, and initially I agreed with them, but I'm now realizing it's not at all as straightforward as it looks.
 
