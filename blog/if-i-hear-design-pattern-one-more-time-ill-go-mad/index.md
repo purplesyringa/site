@@ -4,6 +4,8 @@ time: September 4, 2025
 discussion:
     - https://lobste.rs/s/atvx0k
     - https://www.reddit.com/r/programming/comments/1n8nb8z/if_i_hear_design_pattern_one_more_time_ill_go_mad/
+translation:
+    Korean: https://rosettalens.com/s/ko/if-i-hear-design-pattern-one-more-time-ill-go-mad
 intro: |
     Here, read the intro of the Wikipedia page for [Command pattern](https://en.wikipedia.org/wiki/Command_pattern) with me:
 
