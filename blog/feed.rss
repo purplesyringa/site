@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Sun, 02 Nov 2025 21:05:11 GMT</lastBuildDate>
+		<lastBuildDate>Sun, 02 Nov 2025 21:07:35 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -15,7 +15,8 @@
 			<item>
 				<title>JVM exceptions are weird: a decompiler perspective</title>
 				<link>https://purplesyringa.moe/blog/./jvm-exceptions-are-weird-a-decompiler-perspective/</link>
-				<description></description>
+				<description>Some time ago, I played around with decompiling Java class files in a more efficient manner than traditional solutions like Vineflower allow. Eventually, I wrote an article on my approach to decompiling control flow, which was a great performance boost for my prototype.
+At the time, I believed that this method can be straightforwardly extended to handling exceptional control flow, i.e. decompiling try…catch blocks. In retrospect, I should’ve known it wouldn’t be so easy. It turns out that there are many edge cases, ranging from strange javac behavior to consequences of the JVM design and the class file format, that significantly complicate this. In this post, I’ll cover these details, why simple solutions don’t work, and what approach I’ve eventually settled on.</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				
 				<guid>https://purplesyringa.moe/blog/./jvm-exceptions-are-weird-a-decompiler-perspective/</guid>
