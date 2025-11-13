@@ -8,6 +8,8 @@ intro: |
 discussion:
   - https://news.ycombinator.com/item?id=45808899
   - https://lobste.rs/s/ooxamp/jvm_exceptions_are_weird_decompiler
+translation:
+    ru: https://habr.com/ru/articles/965922/
 tikzThemes:
   light: |
     \colorlet{Arrow}{red!80}
@@ -280,7 +282,7 @@ Exception table:
 
 (This also means that the code between `to` and `target` is not always just a `goto` or a `return` -- it may also include the contents of the `finally` block, which are not guaranteed to be non-throwing.)
 
-Perhaps the most confusing implication is that while exception handling ranges can cross control flow constructs (e.g. it's possible for `from` to be located outside an `if` and for `to` br inside an `if`), ranges of *exemption* from EH correspond to single positions in source code, and thus cannot cross control flow. So in the eyes of a decompiler, the code above should be parsed like this:
+Perhaps the most confusing implication is that while exception handling ranges can cross control flow constructs (e.g. it's possible for `from` to be located outside an `if` and for `to` to be inside an `if`), ranges of *exemption* from EH correspond to single positions in source code, and thus cannot cross control flow. So in the eyes of a decompiler, the code above should be parsed like this:
 
 ```java
 try #1 {
