@@ -9,7 +9,7 @@ discussion:
   - https://news.ycombinator.com/item?id=45808899
   - https://lobste.rs/s/ooxamp/jvm_exceptions_are_weird_decompiler
 translation:
-    ru: https://habr.com/ru/articles/965922/
+    Russian: https://habr.com/ru/articles/965922/
 tikzThemes:
   light: |
     \colorlet{Arrow}{red!80}
