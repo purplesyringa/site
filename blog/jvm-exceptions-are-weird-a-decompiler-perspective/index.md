@@ -7,6 +7,7 @@ intro: |
     At the time, I believed that this method can be straightforwardly extended to handling exceptional control flow, i.e. decompiling `try`..`catch` blocks. In retrospect, I should've known it wouldn't be so easy. It turns out that there are many edge cases, ranging from strange `javac` behavior to consequences of the JVM design and the class file format, that significantly complicate this. In this post, I'll cover these details, why simple solutions don't work, and what approach I've eventually settled on.
 discussion:
   - https://news.ycombinator.com/item?id=45808899
+  - https://www.reddit.com/r/programming/comments/1oy5r4o/jvm_exceptions_are_weird_a_decompiler_perspective/
   - https://lobste.rs/s/ooxamp/jvm_exceptions_are_weird_decompiler
 translation:
     Russian: https://habr.com/ru/articles/965922/
