@@ -26,6 +26,9 @@ math {
 	font-size: 1.1rem;
 	color: #8d00d9;
 }
+eqn {
+	overflow: auto;
+}
 
 .table-wrapper {
 	margin-left: -7rem;
@@ -225,7 +228,7 @@ aside > :last-child {
 }
 
 @media screen and (max-width: 1000px) {
-	pre, .diagram, .table-wrapper {
+	eqn, pre, .diagram, .table-wrapper {
 		margin-left: 0;
 		width: 100%;
 	}
