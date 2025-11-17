@@ -124,7 +124,7 @@ let html = fs.readFileSync("_template.html", "utf-8");
 html = html.replace(/{{ root }}/g, escapeHTML(path.relative(articleDirectory, process.cwd() + "/..")));
 html = html.replace(/{{ title }}/g, escapeHTML(parsedYamlHeader.title));
 html = html.replace(/{{ path }}/g, escapeHTML(relPath));
-html = html.replace(/{{ description }}/g, stripHtml(md.render(parsedYamlHeader.intro || "")).result);
+html = html.replace(/{{ description }}/g, escapeHTML(stripHtml(md.render(parsedYamlHeader.intro || "")).result));
 html = html.replace(/{{ time }}/g, escapeHTML(parsedYamlHeader.time));
 html = html.replace(/{{ locale }}/g, locale);
 
