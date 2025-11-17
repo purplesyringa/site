@@ -7,10 +7,33 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Thu, 13 Nov 2025 07:44:09 GMT</lastBuildDate>
+		<lastBuildDate>Mon, 17 Nov 2025 11:00:32 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>Finding duplicated code with tools from your CS course</title>
+				<link>https://purplesyringa.moe/blog/./finding-duplicated-code-with-tools-from-your-cs-course/</link>
+				<description>Suppose that you’re writing a static analyzer and you want to write a diagnostic for match arms with equal bodies:
+match number {
+1 => { // <--</span>
+let x = 1;
+f(x)
+}
+2 => f(g(h())),
+3 => "",
+4 => { // <--</span>
+let x = 1;
+f(x)
+}
+_ => unreachable!(),
+}</description>
+				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+				
+				<guid>https://purplesyringa.moe/blog/./finding-duplicated-code-with-tools-from-your-cs-course/</guid>
+				<pubDate>Mon, 17 Nov 2025 00:00:00 GMT</pubDate>
+			</item>
 		
 			<item>
 				<title>JVM exceptions are weird: a decompiler perspective</title>
