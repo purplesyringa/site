@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Mon, 17 Nov 2025 11:00:32 GMT</lastBuildDate>
+		<lastBuildDate>Mon, 17 Nov 2025 11:07:27 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -15,20 +15,22 @@
 			<item>
 				<title>Finding duplicated code with tools from your CS course</title>
 				<link>https://purplesyringa.moe/blog/./finding-duplicated-code-with-tools-from-your-cs-course/</link>
-				<description>Suppose that you’re writing a static analyzer and you want to write a diagnostic for match arms with equal bodies:
-match number {
-1 => { // <--</span>
-let x = 1;
-f(x)
+				<description>&lt;p&gt;Suppose that you’re writing a static analyzer and you want to write a diagnostic for &lt;code&gt;match&lt;/code&gt; arms with equal bodies:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rust&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;match&lt;/span&gt; number {
+    &lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt; =&amp;gt; { &lt;span class=&quot;hljs-comment&quot;&gt;// &amp;lt;--&lt;/span&gt;
+        &lt;span class=&quot;hljs-keyword&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;hljs-variable&quot;&gt;x&lt;/span&gt; = &lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;;
+        &lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;f&lt;/span&gt;(x)
+    }
+    &lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt; =&amp;gt; &lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;f&lt;/span&gt;(&lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;g&lt;/span&gt;(&lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;h&lt;/span&gt;())),
+    &lt;span class=&quot;hljs-number&quot;&gt;3&lt;/span&gt; =&amp;gt; &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;&amp;quot;&lt;/span&gt;,
+    &lt;span class=&quot;hljs-number&quot;&gt;4&lt;/span&gt; =&amp;gt; { &lt;span class=&quot;hljs-comment&quot;&gt;// &amp;lt;--&lt;/span&gt;
+        &lt;span class=&quot;hljs-keyword&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;hljs-variable&quot;&gt;x&lt;/span&gt; = &lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;;
+        &lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;f&lt;/span&gt;(x)
+    }
+    _ =&amp;gt; &lt;span class=&quot;hljs-built_in&quot;&gt;unreachable!&lt;/span&gt;(),
 }
-2 => f(g(h())),
-3 => "",
-4 => { // <--</span>
-let x = 1;
-f(x)
-}
-_ => unreachable!(),
-}</description>
+&lt;/code&gt;&lt;/pre&gt;
+</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				
 				<guid>https://purplesyringa.moe/blog/./finding-duplicated-code-with-tools-from-your-cs-course/</guid>
@@ -38,8 +40,9 @@ _ => unreachable!(),
 			<item>
 				<title>JVM exceptions are weird: a decompiler perspective</title>
 				<link>https://purplesyringa.moe/blog/./jvm-exceptions-are-weird-a-decompiler-perspective/</link>
-				<description>Some time ago, I played around with decompiling Java class files in a more efficient manner than traditional solutions like Vineflower allow. Eventually, I wrote an article on my approach to decompiling control flow, which was a great performance boost for my prototype.
-At the time, I believed that this method can be straightforwardly extended to handling exceptional control flow, i.e. decompiling try…catch blocks. In retrospect, I should’ve known it wouldn’t be so easy. It turns out that there are many edge cases, ranging from strange javac behavior to consequences of the JVM design and the class file format, that significantly complicate this. In this post, I’ll cover these details, why simple solutions don’t work, and what approach I’ve eventually settled on.</description>
+				<description>&lt;p&gt;Some time ago, I played around with decompiling Java class files in a more efficient manner than traditional solutions like &lt;a href=&quot;https://github.com/Vineflower/vineflower&quot;&gt;Vineflower&lt;/a&gt; allow. Eventually, I wrote &lt;a href=&quot;../recovering-control-flow-structures-without-cfgs/&quot;&gt;an article&lt;/a&gt; on my approach to decompiling control flow, which was a great performance boost for my prototype.&lt;/p&gt;
+&lt;p&gt;At the time, I believed that this method can be straightforwardly extended to handling exceptional control flow, i.e. decompiling &lt;code&gt;try&lt;/code&gt;…&lt;code&gt;catch&lt;/code&gt; blocks. In retrospect, I should’ve known it wouldn’t be so easy. It turns out that there are many edge cases, ranging from strange &lt;code&gt;javac&lt;/code&gt; behavior to consequences of the JVM design and the class file format, that significantly complicate this. In this post, I’ll cover these details, why simple solutions don’t work, and what approach I’ve eventually settled on.&lt;/p&gt;
+</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				<comments>https://news.ycombinator.com/item?id=45808899</comments>
 				<guid>https://purplesyringa.moe/blog/./jvm-exceptions-are-weird-a-decompiler-perspective/</guid>
@@ -49,8 +52,9 @@ At the time, I believed that this method can be straightforwardly extended to ha
 			<item>
 				<title>The expression problem and Rust</title>
 				<link>https://purplesyringa.moe/blog/./the-expression-problem-and-rust/</link>
-				<description>A few days ago, I stumbled upon a Hacker News discussion about the expression problem – a conundrum that occasionally arises in software design. Some of the commenters noted that Rust completely avoids this problem thanks to trait objects, and initially I agreed with them, but I’m now realizing it’s not at all as straightforward as it looks.
-The goal of this post is to explain what the expression problem is, how Rust seemingly avoids it, why this solution doesn’t actually work, and what a Rusty solution might look like.</description>
+				<description>&lt;p&gt;A few days ago, I stumbled upon &lt;a href=&quot;https://news.ycombinator.com/item?id=45155877&quot;&gt;a Hacker News discussion&lt;/a&gt; about the expression problem – a conundrum that occasionally arises in software design. Some of the commenters noted that Rust completely avoids this problem thanks to trait objects, and initially I agreed with them, but I’m now realizing it’s not at all as straightforward as it looks.&lt;/p&gt;
+&lt;p&gt;The goal of this post is to explain what the expression problem is, how Rust seemingly avoids it, why this solution doesn’t actually work, and what a Rusty solution might look like.&lt;/p&gt;
+</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				<comments>https://www.reddit.com/r/rust/comments/1nubge5/the_expression_problem_and_rust/</comments>
 				<guid>https://purplesyringa.moe/blog/./the-expression-problem-and-rust/</guid>
@@ -60,10 +64,11 @@ The goal of this post is to explain what the expression problem is, how Rust see
 			<item>
 				<title>Fenwick layout for interval trees</title>
 				<link>https://purplesyringa.moe/blog/./fenwick-layout-for-interval-trees/</link>
-				<description>Fenwick trees and interval trees are well-known data structures in computer science. Interval trees in particular are commonly used in bioinformatics and computational geometry, and Fenwick trees are useful for keeping statistics.
-This post describes how the two can be merged to obtain a worst-case faster implementation of an interval tree. This approach is probably not very useful in these areas due to their specific requirements, but it’s still a well-rounded general-purpose implementation, and it’s so neat and short I can’t help but share it.
-TL;DR if you’re familiar with the topics: You can index the nodes of an interval tree by their unique center and use fast Fenwick-like navigation over the tree. A sample implementation is available on GitHub.
-The rest of the post describes what this means in more detail. It assumes familiarity with DSA, but not necessarily with the data structures mentioned above.</description>
+				<description>&lt;p&gt;Fenwick trees and interval trees are well-known data structures in computer science. Interval trees in particular are commonly used in bioinformatics and computational geometry, and Fenwick trees are useful for keeping statistics.&lt;/p&gt;
+&lt;p&gt;This post describes how the two can be merged to obtain a worst-case faster implementation of an interval tree. This approach is probably not very useful in these areas due to their specific requirements, but it’s still a well-rounded general-purpose implementation, and it’s so neat and short I can’t help but share it.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; if you’re familiar with the topics: You can index the nodes of an interval tree by their unique center and use fast Fenwick-like navigation over the tree. A sample implementation is available &lt;a href=&quot;https://github.com/purplesyringa/brickingot/blob/baa3cab1e9686e7209a291a58f90f1810cbbdce0/src/interval_tree.rs&quot;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The rest of the post describes what this means in more detail. It assumes familiarity with DSA, but not necessarily with the data structures mentioned above.&lt;/p&gt;
+</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				
 				<guid>https://purplesyringa.moe/blog/./fenwick-layout-for-interval-trees/</guid>
@@ -73,19 +78,20 @@ The rest of the post describes what this means in more detail. It assumes famili
 			<item>
 				<title>If I hear &quot;design pattern&quot; one more time, I&#39;ll go mad</title>
 				<link>https://purplesyringa.moe/blog/./if-i-hear-design-pattern-one-more-time-ill-go-mad/</link>
-				<description>Here, read the intro of the Wikipedia page for Command pattern with me:
-
-In object-oriented programming, the command pattern is a behavioral design pattern in which an object is used to encapsulate all information needed to perform an action or trigger an event at a later time.
-
-You know what I call this? A function.
-
-This information includes the method name, the object that owns the method and values for the method parameters.
-
-Here’s your command:
-const command = () => object.method(arg1, arg2);
-// or in PHP, or in Rust, or in C++...
-
-Every time I hear about a design pattern I don’t recognize, I get afraid that I’m missing some crucial idea, and then I Google it and find out that I’ve been unknowingly using it since I started programming. Yeah, bro, I used the data store pattern earlier today (a variable).</description>
+				<description>&lt;p&gt;Here, read the intro of the Wikipedia page for &lt;a href=&quot;https://en.wikipedia.org/wiki/Command_pattern&quot;&gt;Command pattern&lt;/a&gt; with me:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;In object-oriented programming, the command pattern is a behavioral design pattern in which an object is used to encapsulate all information needed to perform an action or trigger an event at a later time.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;You know what I call this? A function.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;This information includes the method name, the object that owns the method and values for the method parameters.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Here’s your command:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-javascript&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;hljs-title function_&quot;&gt;command&lt;/span&gt; = (&lt;span class=&quot;hljs-params&quot;&gt;&lt;/span&gt;) =&amp;gt; object.&lt;span class=&quot;hljs-title function_&quot;&gt;method&lt;/span&gt;(arg1, arg2);
+&lt;span class=&quot;hljs-comment&quot;&gt;// or in PHP, or in Rust, or in C++...&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Every time I hear about a design pattern I don’t recognize, I get afraid that I’m missing some crucial idea, and then I Google it and find out that I’ve been unknowingly using it since I started programming. Yeah, bro, I used the data store pattern earlier today (a variable).&lt;/p&gt;
+</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				<comments>https://lobste.rs/s/atvx0k</comments>
 				<guid>https://purplesyringa.moe/blog/./if-i-hear-design-pattern-one-more-time-ill-go-mad/</guid>
@@ -95,8 +101,9 @@ Every time I hear about a design pattern I don’t recognize, I get afraid that 
 			<item>
 				<title>&quot;AI discourse&quot; is a joke</title>
 				<link>https://purplesyringa.moe/blog/./ai-discourse-is-a-joke/</link>
-				<description>In contemporary “AI” discourse, people often make a point that LLM output cannot be trusted, since it contains hallucinations, often doesn’t handle edge cases properly, causes vulnerabilities, and so on. This is seen as an argument to never use LLM-generated code in production. Others argue that the benefits AI grants them are worth the risk.
-These groups are talking past each other. The problem was never about AI, it’s only the catalyst. To discuss what problems AI causes in software development is to completely miss the point, since those same arguments have been milked to death even before LLMs were a thing.</description>
+				<description>&lt;p&gt;In contemporary “AI” discourse, people often make a point that LLM output cannot be trusted, since it contains hallucinations, often doesn’t handle edge cases properly, causes vulnerabilities, and so on. This is seen as an argument to never use LLM-generated code in production. Others argue that the benefits AI grants them are worth the risk.&lt;/p&gt;
+&lt;p&gt;These groups are talking past each other. The problem was never about AI, it’s only the catalyst. To discuss what problems AI causes in software development is to completely miss the point, since those same arguments have been milked to death even before LLMs were a thing.&lt;/p&gt;
+</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				<comments>https://news.ycombinator.com/item?id=44558358</comments>
 				<guid>https://purplesyringa.moe/blog/./ai-discourse-is-a-joke/</guid>
@@ -106,14 +113,15 @@ These groups are talking past each other. The problem was never about AI, it’s
 			<item>
 				<title>Hidden complexity in software development</title>
 				<link>https://purplesyringa.moe/blog/./hidden-complexity-in-software-development/</link>
-				<description>This is a tech phenomenon that I keep getting blindsided by no matter how much I try to anticipate it.
-Physical work feels difficult. You can look at someone and realize you don’t have nearly as much stamina, and even if you did, it still feels demanding.
-Research feels difficult. You’re tasked with thinking about something no one else has considered yet. That rarely happens even outside of science – try to tell a unique joke.
-But non-algorithmic programming? You’re telling a machine that precisely follows instructions what you want it to do. At best, you’re a technical translator. You’re not working towards a PhD degree. You’re just wiring things together without creating anything intrinsically new. It looks simple, and so it feels easy.
-
-lol. lmao, even.
-
-Experience shows that it’s anything but easy, but it’s always been hard for me to pinpoint exactly why that is the case. And I think I’ve finally found a good answer.</description>
+				<description>&lt;p&gt;This is a tech phenomenon that I keep getting blindsided by no matter how much I try to anticipate it.&lt;/p&gt;
+&lt;p&gt;Physical work &lt;em&gt;feels&lt;/em&gt; difficult. You can look at someone and realize you don’t have nearly as much stamina, and even if you did, it still &lt;em&gt;feels&lt;/em&gt; demanding.&lt;/p&gt;
+&lt;p&gt;Research &lt;em&gt;feels&lt;/em&gt; difficult. You’re tasked with thinking about something no one else has considered yet. That rarely happens even outside of science – try to tell a unique joke.&lt;/p&gt;
+&lt;p&gt;But non-algorithmic programming? You’re telling a machine that precisely follows instructions what you want it to do. At best, you’re a technical translator. You’re not working towards a PhD degree. You’re just wiring things together without creating anything intrinsically &lt;em&gt;new&lt;/em&gt;. It looks &lt;em&gt;simple&lt;/em&gt;, and so it &lt;em&gt;feels&lt;/em&gt; easy.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;lol. lmao, even.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Experience shows that it’s anything but easy, but it’s always been hard for me to pinpoint exactly why that is the case. And I think I’ve finally found a good answer.&lt;/p&gt;
+</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				<comments>https://www.reddit.com/r/programming/comments/1lpk0fc/hidden_complexity_in_software_development/</comments>
 				<guid>https://purplesyringa.moe/blog/./hidden-complexity-in-software-development/</guid>
@@ -123,9 +131,10 @@ Experience shows that it’s anything but easy, but it’s always been hard for 
 			<item>
 				<title>Splitting independent variables without SSA</title>
 				<link>https://purplesyringa.moe/blog/./splitting-independent-variables-without-ssa/</link>
-				<description>I’m making progress on the Java decompiler I’ve mentioned in a previous post, and I want to share the next couple of tricks I’m using to speed it up.
-Java bytecode is a stack-based language, and so data flow is a bit cursed, especially when the control flow is complicated. I need to analyze data flow globally for expression inlining and some other stuff. Single-static assignment produces basically everything I need as a byproduct… but it’s not very fast.
-For one thing, it typically mutates the IR instead of returning data separately, and the resulting IR has imperative code mixed with functional code, which is a little unpleasant to work with. SSA has multiple implementations with very different performance characteristics and conditions, and each of them forces me to make a tradeoff I’m not positive about.</description>
+				<description>&lt;p&gt;I’m making progress on the Java decompiler I’ve mentioned &lt;a href=&quot;../recovering-control-flow-structures-without-cfgs/&quot;&gt;in a previous post&lt;/a&gt;, and I want to share the next couple of tricks I’m using to speed it up.&lt;/p&gt;
+&lt;p&gt;Java bytecode is a stack-based language, and so data flow is a bit cursed, especially when the control flow is complicated. I need to analyze data flow globally for expression inlining and some other stuff. &lt;a href=&quot;https://en.wikipedia.org/wiki/Static_single-assignment_form&quot;&gt;Single-static assignment&lt;/a&gt; produces basically everything I need as a byproduct… but it’s not very fast.&lt;/p&gt;
+&lt;p&gt;For one thing, it typically mutates the IR instead of returning data separately, and the resulting IR has imperative code mixed with functional code, which is a little unpleasant to work with. SSA has &lt;a href=&quot;https://bernsteinbear.com/blog/ssa/&quot;&gt;multiple implementations&lt;/a&gt; with very different performance characteristics and conditions, and each of them forces me to make a tradeoff I’m not positive about.&lt;/p&gt;
+</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				
 				<guid>https://purplesyringa.moe/blog/./splitting-independent-variables-without-ssa/</guid>
@@ -135,8 +144,9 @@ For one thing, it typically mutates the IR instead of returning data separately,
 			<item>
 				<title>Fast limited-range conversion between ints and floats</title>
 				<link>https://purplesyringa.moe/blog/./fast-limited-range-conversion-between-ints-and-floats/</link>
-				<description>This post is about a popular but niche technique I can never find a succinct reference for. I didn’t invent it, I just need a page I can link when giving optimization advice.
-Integer ↔ float casts that utilize specialized processor instructions, i.e. those that compilers use by default, typically have worse throughput and higher latency than alternatives based on applying bit tricks to the IEEE-754 format. (Please benchmark them anyway, I’ve seen them decrease performance occasionally.) Unfortunately, these bit tricks only work over a reduced range, e.g. numbers up to 2 23 or 2 52 as opposed to the full 2 32 or 2 64 range. Still, they can be very useful in specialized tasks.</description>
+				<description>&lt;p&gt;This post is about a popular but niche technique I can never find a succinct reference for. I didn’t invent it, I just need a page I can link when giving optimization advice.&lt;/p&gt;
+&lt;p&gt;Integer &lt;eq&gt;&lt;math&gt;&lt;mo stretchy=&quot;false&quot; lspace=&quot;0em&quot; rspace=&quot;0em&quot;&gt;↔&lt;/mo&gt;&lt;/math&gt;&lt;/eq&gt; float casts that utilize specialized processor instructions, i.e. those that compilers use by default, typically have worse throughput and higher latency than alternatives based on applying bit tricks to the IEEE-754 format. (Please benchmark them anyway, I’ve seen them decrease performance occasionally.) Unfortunately, these bit tricks only work over a reduced range, e.g. numbers up to &lt;eq&gt;&lt;math&gt;&lt;msup&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mn&gt;23&lt;/mn&gt;&lt;/msup&gt;&lt;/math&gt;&lt;/eq&gt; or &lt;eq&gt;&lt;math&gt;&lt;msup&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mn&gt;52&lt;/mn&gt;&lt;/msup&gt;&lt;/math&gt;&lt;/eq&gt; as opposed to the full &lt;eq&gt;&lt;math&gt;&lt;msup&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mn&gt;32&lt;/mn&gt;&lt;/msup&gt;&lt;/math&gt;&lt;/eq&gt; or &lt;eq&gt;&lt;math&gt;&lt;msup&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mn&gt;64&lt;/mn&gt;&lt;/msup&gt;&lt;/math&gt;&lt;/eq&gt; range. Still, they can be very useful in specialized tasks.&lt;/p&gt;
+</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				
 				<guid>https://purplesyringa.moe/blog/./fast-limited-range-conversion-between-ints-and-floats/</guid>
@@ -146,8 +156,9 @@ Integer ↔ float casts that utilize specialized processor instructions, i.e. th
 			<item>
 				<title>Recovering control flow structures without CFGs</title>
 				<link>https://purplesyringa.moe/blog/./recovering-control-flow-structures-without-cfgs/</link>
-				<description>I’m working on a Java decompiler because I’m not satisfied with the performance of other solutions. I’ve always heard that decompiling JVM bytecode is a solved problem, but I’ve concluded that the decompilation methods used by CFR and Vineflower are hacky, inefficient, and sometimes don’t even work. The existing solutions are haphazard and inadequate compared to alternative approaches.
-Specifically, I have beef with the control flow extraction strategies employed by most decompilers. I haven’t tackled decompilation as a whole yet, but I’ve found an approach to control flow recovery that works in isolation, is quite modular, and addresses common frustrations. I don’t claim to be the first person to think of this method, but I haven’t seen it mentioned anywhere, so this post describes it hoping that it’s useful to someone else.</description>
+				<description>&lt;p&gt;I’m working on a Java decompiler because I’m not satisfied with the performance of other solutions. I’ve always heard that decompiling JVM bytecode is a solved problem, but I’ve concluded that the decompilation methods used by CFR and Vineflower are hacky, inefficient, and sometimes don’t even work. The existing solutions are haphazard and inadequate compared to alternative approaches.&lt;/p&gt;
+&lt;p&gt;Specifically, I have beef with the control flow extraction strategies employed by most decompilers. I haven’t tackled decompilation &lt;em&gt;as a whole&lt;/em&gt; yet, but I’ve found an approach to control flow recovery that works in isolation, is quite modular, and addresses common frustrations. I don’t claim to be the first person to think of this method, but I haven’t seen it mentioned anywhere, so this post describes it hoping that it’s useful to someone else.&lt;/p&gt;
+</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				<comments>https://news.ycombinator.com/item?id=44202355</comments>
 				<guid>https://purplesyringa.moe/blog/./recovering-control-flow-structures-without-cfgs/</guid>
@@ -157,8 +168,9 @@ Specifically, I have beef with the control flow extraction strategies employed b
 			<item>
 				<title>Why performance optimization is hard work</title>
 				<link>https://purplesyringa.moe/blog/./why-performance-optimization-is-hard-work/</link>
-				<description>I’m not talking about skill, knowledge, or convincing a world focused on radical acceleration that optimization is necessary. Performance optimization is hard because it’s fundamentally a brute-force task, and there’s nothing you can do about it.
-This post is a bit of a rant on my frustrations with code optimization. I’ll also try to give actionable advice, which I hope enchants your experience.</description>
+				<description>&lt;p&gt;I’m not talking about skill, knowledge, or convincing a world focused on radical acceleration that optimization is necessary. Performance optimization is hard because it’s fundamentally a brute-force task, and there’s nothing you can do about it.&lt;/p&gt;
+&lt;p&gt;This post is a bit of a rant on my frustrations with code optimization. I’ll also try to give actionable advice, which I hope enchants your experience.&lt;/p&gt;
+</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				<comments>https://news.ycombinator.com/item?id=43831705</comments>
 				<guid>https://purplesyringa.moe/blog/./why-performance-optimization-is-hard-work/</guid>
@@ -168,8 +180,9 @@ This post is a bit of a rant on my frustrations with code optimization. I’ll a
 			<item>
 				<title>Falsehoods programmers believe about null pointers</title>
 				<link>https://purplesyringa.moe/blog/./falsehoods-programmers-believe-about-null-pointers/</link>
-				<description>Null pointers look simple on the surface, and that’s why they’re so dangerous. As compiler optimizations, intuitive but incorrect simplifications, and platform-specific quirks have piled on, the odds of making a wrong assumption have increased, leading to the proliferation of bugs and vulnerabilities.
-This article explores common misconceptions about null pointers held by many programmers, starting with simple fallacies and working our way up to the weirdest cases. Some of them will be news only to beginners, while others may lead experts down the path of meticulous fact-checking. Without further ado, let’s dive in.</description>
+				<description>&lt;p&gt;Null pointers look simple on the surface, and that’s why they’re so dangerous. As compiler optimizations, intuitive but incorrect simplifications, and platform-specific quirks have piled on, the odds of making a wrong assumption have increased, leading to the proliferation of bugs and vulnerabilities.&lt;/p&gt;
+&lt;p&gt;This article explores common misconceptions about null pointers held by many programmers, starting with simple fallacies and working our way up to the weirdest cases. Some of them will be news only to beginners, while others may lead experts down the path of meticulous fact-checking. Without further ado, let’s dive in.&lt;/p&gt;
+</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				<comments>https://news.ycombinator.com/item?id=42894220</comments>
 				<guid>https://purplesyringa.moe/blog/./falsehoods-programmers-believe-about-null-pointers/</guid>
@@ -179,14 +192,15 @@ This article explores common misconceptions about null pointers held by many pro
 			<item>
 				<title>The RAM myth</title>
 				<link>https://purplesyringa.moe/blog/./the-ram-myth/</link>
-				<description>The RAM myth is a belief that modern computer memory resembles perfect random-access memory. Cache is seen as an optimization for small data: if it fits in L2, it’s going to be processed faster; if it doesn’t, there’s nothing we can do.
-Most likely, you believe that code like this is the fastest way to shard data (I’m using Python as pseudocode; pretend I used your favorite low-level language):
-groups = [[] for _ in range(n_groups)]
-for element in elements:
-groups[element.group].append(element)
-
-Indeed, it’s linear (i.e. asymptotically optimal), and we have to access random indices anyway, so cache isn’t going to help us in any case.
-In reality, when the number of groups is high, this is leaving a lot of performance on the table, and certain asymptotically slower algorithms can perform sharding significantly faster. They are mostly used by on-disk databases, but, surprisingly, they are useful even for in-RAM data.</description>
+				<description>&lt;p&gt;The RAM myth is a belief that modern computer memory resembles perfect random-access memory. Cache is seen as an optimization for small data: if it fits in L2, it’s going to be processed faster; if it doesn’t, there’s nothing we can do.&lt;/p&gt;
+&lt;p&gt;Most likely, you believe that code like this is the fastest way to shard data (I’m using Python as pseudocode; pretend I used your favorite low-level language):&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-python&quot;&gt;groups = [[] &lt;span class=&quot;hljs-keyword&quot;&gt;for&lt;/span&gt; _ &lt;span class=&quot;hljs-keyword&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;hljs-built_in&quot;&gt;range&lt;/span&gt;(n_groups)]
+&lt;span class=&quot;hljs-keyword&quot;&gt;for&lt;/span&gt; element &lt;span class=&quot;hljs-keyword&quot;&gt;in&lt;/span&gt; elements:
+    groups[element.group].append(element)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Indeed, it’s linear (i.e. asymptotically optimal), and we have to access random indices anyway, so cache isn’t going to help us in any case.&lt;/p&gt;
+&lt;p&gt;In reality, when the number of groups is high, this is leaving a lot of performance on the table, and certain &lt;em&gt;asymptotically slower&lt;/em&gt; algorithms can perform sharding significantly faster. They are mostly used by on-disk databases, but, surprisingly, they are useful even for in-RAM data.&lt;/p&gt;
+</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				<comments>https://www.reddit.com/r/programming/comments/1hhds9c/the_ram_myth/</comments>
 				<guid>https://purplesyringa.moe/blog/./the-ram-myth/</guid>
@@ -196,8 +210,9 @@ In reality, when the number of groups is high, this is leaving a lot of performa
 			<item>
 				<title>Thoughts on Rust hashing</title>
 				<link>https://purplesyringa.moe/blog/./thoughts-on-rust-hashing/</link>
-				<description>In languages like Python, Java, or C++, values are hashed by calling a “hash me” method on them, implemented by the type author. This fixed-hash size is then immediately used by the hash table or what have you. This design suffers from some obvious problems, like:
-How do you hash an integer? If you use a no-op hasher (booo), DoS attacks on hash tables are inevitable. If you hash it thoroughly, consumers that only cache hashes to optimize equality checks lose out of performance.</description>
+				<description>&lt;p&gt;In languages like Python, Java, or C++, values are hashed by calling a “hash me” method on them, implemented by the type author. This fixed-hash size is then immediately used by the hash table or what have you. This design suffers from some obvious problems, like:&lt;/p&gt;
+&lt;p&gt;How do you hash an integer? If you use a no-op hasher (booo), DoS attacks on hash tables are inevitable. If you hash it thoroughly, consumers that only cache hashes to optimize equality checks lose out of performance.&lt;/p&gt;
+</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				<comments>https://www.reddit.com/r/rust/comments/1hclif3/thoughts_on_rust_hashing/</comments>
 				<guid>https://purplesyringa.moe/blog/./thoughts-on-rust-hashing/</guid>
@@ -207,8 +222,9 @@ How do you hash an integer? If you use a no-op hasher (booo), DoS attacks on has
 			<item>
 				<title>Any Python program fits in 24 characters*</title>
 				<link>https://purplesyringa.moe/blog/./any-python-program-fits-in-24-characters/</link>
-				<description>* If you don’t take whitespace into account.
-My friend challenged me to find the shortest solution to a certain Leetcode-style problem in Python. They were generous enough to let me use whitespace for free, so that the code stays readable. So that’s exactly what we’ll abuse to encode any Python program in 24 bytes, ignoring whitespace.</description>
+				<description>&lt;p&gt;&lt;em&gt;* If you don’t take whitespace into account.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;My friend challenged me to find the shortest solution to a certain Leetcode-style problem in Python. They were generous enough to let me use whitespace for free, so that the code stays readable. So that’s exactly what we’ll abuse to encode &lt;em&gt;any&lt;/em&gt; Python program in &lt;eq&gt;&lt;math&gt;&lt;mn&gt;24&lt;/mn&gt;&lt;/math&gt;&lt;/eq&gt; bytes, ignoring whitespace.&lt;/p&gt;
+</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				
 				<guid>https://purplesyringa.moe/blog/./any-python-program-fits-in-24-characters/</guid>
@@ -218,9 +234,10 @@ My friend challenged me to find the shortest solution to a certain Leetcode-styl
 			<item>
 				<title>The Rust Trademark Policy is still harmful</title>
 				<link>https://purplesyringa.moe/blog/./the-rust-trademark-policy-is-still-harmful/</link>
-				<description>Four days ago, the Rust Foundation released a new draft of the Rust Language Trademark Policy. The previous draft caused division within the community several years ago, prompting its retraction with the aim of creating a new, milder version.
-Well, that failed. While certain issues were addressed (thank you, we appreciate it!), the new version remains excessively restrictive and, in my opinion, will harm both the Rust community as a whole and compiler and crate developers. While I expect the stricter rules to not be enforced in practice, I don’t want to constantly feel like I’m under threat while contributing to the Rust ecosystem, and this is exactly what it would feel like if this draft is finalized.
-Below are some of my core objections to the draft.</description>
+				<description>&lt;p&gt;Four days ago, the Rust Foundation &lt;a href=&quot;https://blog.rust-lang.org/2024/11/06/trademark-update.html&quot;&gt;released&lt;/a&gt; a new &lt;a href=&quot;https://drive.google.com/file/d/1hjTx11Fb-4W7RQLmp3R8BLDACc7zxIpG/view&quot;&gt;draft&lt;/a&gt; of the Rust Language Trademark Policy. The previous draft caused division within the community several years ago, prompting its retraction with the aim of creating a new, milder version.&lt;/p&gt;
+&lt;p&gt;Well, that failed. While certain issues were addressed (thank you, we appreciate it!), the new version remains excessively restrictive and, in my opinion, will harm both the Rust community as a whole &lt;em&gt;and&lt;/em&gt; compiler and crate developers. While I expect the stricter rules to not be enforced in practice, I don’t want to constantly feel like I’m under threat while contributing to the Rust ecosystem, and this is exactly what it would feel like if this draft is finalized.&lt;/p&gt;
+&lt;p&gt;Below are some of my core objections to the draft.&lt;/p&gt;
+</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				<comments>https://www.reddit.com/r/rust/comments/1gnz5sm/the_rust_trademark_policy_is_still_harmful/</comments>
 				<guid>https://purplesyringa.moe/blog/./the-rust-trademark-policy-is-still-harmful/</guid>
@@ -230,7 +247,8 @@ Below are some of my core objections to the draft.</description>
 			<item>
 				<title>Bringing faster exceptions to Rust</title>
 				<link>https://purplesyringa.moe/blog/./bringing-faster-exceptions-to-rust/</link>
-				<description>Three months ago, I wrote about why you might want to use panics for error handling. Even though it’s a catchy title, panics are hardly suited for this goal, even if you try to hack around with macros and libraries. The real star is the unwinding mechanism, which powers panics. This post is the first in a series exploring what unwinding is, how to speed it up, and how it can benefit Rust and C++ programmers.</description>
+				<description>&lt;p&gt;Three months ago, I wrote about why &lt;a href=&quot;../you-might-want-to-use-panics-for-error-handling/&quot;&gt;you might want to use panics for error handling&lt;/a&gt;. Even though it’s a catchy title, panics are hardly suited for this goal, even if you try to hack around with macros and libraries. The real star is &lt;em&gt;the unwinding mechanism&lt;/em&gt;, which powers panics. This post is the first in a series exploring what unwinding is, how to speed it up, and how it can benefit Rust and C++ programmers.&lt;/p&gt;
+</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				<comments>https://www.reddit.com/r/rust/comments/1gl050z/bringing_faster_exceptions_to_rust/</comments>
 				<guid>https://purplesyringa.moe/blog/./bringing-faster-exceptions-to-rust/</guid>
@@ -240,8 +258,9 @@ Below are some of my core objections to the draft.</description>
 			<item>
 				<title>We built the best &quot;Bad Apple!!&quot; in Minecraft</title>
 				<link>https://purplesyringa.moe/blog/./we-built-the-best-bad-apple-in-minecraft/</link>
-				<description>Demoscene is the art of pushing computers to perform tasks they weren’t designed to handle. One recurring theme in demoscene is the shadow-art animation “Bad Apple!!”. We’ve played it on the Commodore 64, Vectrex (a unique game console utilizing only vector graphics), Impulse Tracker, and even exploited Super Mario Bros. to play it.
-But how about Bad Apple!!.. in Minecraft?</description>
+				<description>&lt;p&gt;Demoscene is the art of pushing computers to perform tasks they weren’t designed to handle. One recurring theme in demoscene is the shadow-art animation “Bad Apple!!”. We’ve played it on the Commodore 64, &lt;a href=&quot;https://en.wikipedia.org/wiki/Vectrex&quot;&gt;Vectrex&lt;/a&gt; (a unique game console utilizing only vector graphics), &lt;a href=&quot;https://www.youtube.com/watch?v=SDvk3aL78fI&quot;&gt;Impulse Tracker&lt;/a&gt;, and even &lt;a href=&quot;https://tasvideos.org/6012M&quot;&gt;exploited Super Mario Bros.&lt;/a&gt; to play it.&lt;/p&gt;
+&lt;p&gt;But how about Bad Apple!!.. in Minecraft?&lt;/p&gt;
+</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				<comments>https://news.ycombinator.com/item?id=41798369</comments>
 				<guid>https://purplesyringa.moe/blog/./we-built-the-best-bad-apple-in-minecraft/</guid>
@@ -251,10 +270,11 @@ But how about Bad Apple!!.. in Minecraft?</description>
 			<item>
 				<title>Minecraft сравнивает массивы за куб</title>
 				<link>https://purplesyringa.moe/blog/ru/minecraft-compares-arrays-in-cubic-time/</link>
-				<description>Коллизии в играх обнаруживаются тяжелыми алгоритмами. Для примера попробуйте представить себе, насколько сложно это для просто двух произвольно повернутых кубов в пространстве. Они могут контактировать двумя ребрами, вершиной и гранью или еще как-то более сложно.
-В майнкрафте вся геометрия хитбоксов параллельна осям координат, т.е. наклона не бывает. Это сильно упрощает поиск коллизий.
-Я бы такое писала просто. Раз хитбокс блока — это объединение нескольких параллелепипедов, то можно его так и хранить: как список 6-элементных тьюплов. В подавляющем большинстве случаев этот список будет очень коротким. Для обычных кубов его длина — 1, для стеклопаналей может достигать 2, наковальня, о боги, состоит из 3 элементов, а стены могут иметь их аж целых 4. Для проверки хитбоксов на пересечение достаточно перебрать пары параллелепипедов двух хитбоксов (кажется, их может быть максимум 16). Для параллелепипедов с параллельными осями задача решается тривиально.
-Но Minecraft JE писала не я, поэтому там реализация иная.</description>
+				<description>&lt;p&gt;Коллизии в играх обнаруживаются тяжелыми алгоритмами. Для примера попробуйте представить себе, насколько сложно это для просто двух произвольно повернутых кубов в пространстве. Они могут контактировать двумя ребрами, вершиной и гранью или еще как-то более сложно.&lt;/p&gt;
+&lt;p&gt;В майнкрафте вся геометрия хитбоксов параллельна осям координат, т.е. наклона не бывает. Это сильно упрощает поиск коллизий.&lt;/p&gt;
+&lt;p&gt;Я бы такое писала просто. Раз хитбокс блока — это объединение нескольких параллелепипедов, то можно его так и хранить: как список 6-элементных тьюплов. В подавляющем большинстве случаев этот список будет очень коротким. Для обычных кубов его длина — 1, для стеклопаналей может достигать 2, наковальня, о боги, состоит из 3 элементов, а стены могут иметь их аж целых 4. Для проверки хитбоксов на пересечение достаточно перебрать пары параллелепипедов двух хитбоксов (кажется, их может быть максимум 16). Для параллелепипедов с параллельными осями задача решается тривиально.&lt;/p&gt;
+&lt;p&gt;Но Minecraft JE писала не я, поэтому там реализация иная.&lt;/p&gt;
+</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				<comments>https://t.me/alisa_rummages/156</comments>
 				<guid>https://purplesyringa.moe/blog/ru/minecraft-compares-arrays-in-cubic-time/</guid>
@@ -264,8 +284,9 @@ But how about Bad Apple!!.. in Minecraft?</description>
 			<item>
 				<title>WebP: The WebPage compression format</title>
 				<link>https://purplesyringa.moe/blog/./webp-the-webpage-compression-format/nojs.html</link>
-				<description>I want to provide a smooth experience to my site visitors, so I work on accessibility and ensure it works without JavaScript enabled. I care about page load time because some pages contain large illustrations, so I minify my HTML.
-But one thing makes turning my blog light as a feather a pain in the ass.</description>
+				<description>&lt;p&gt;I want to provide a smooth experience to my site visitors, so I work on accessibility and ensure it works without JavaScript enabled. I care about page load time because some pages contain large illustrations, so I minify my HTML.&lt;/p&gt;
+&lt;p&gt;But one &lt;em&gt;thing&lt;/em&gt; makes turning my blog light as a feather a pain in the ass.&lt;/p&gt;
+</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				<comments>https://news.ycombinator.com/item?id=41475124</comments>
 				<guid>https://purplesyringa.moe/blog/./webp-the-webpage-compression-format/</guid>
@@ -275,22 +296,23 @@ But one thing makes turning my blog light as a feather a pain in the ass.</descr
 			<item>
 				<title>Division is hard, but it doesn&#39;t have to be</title>
 				<link>https://purplesyringa.moe/blog/./division-is-hard-but-it-does-not-have-to-be/</link>
-				<description>Developers don’t usually divide numbers all the time, but hashmaps often need to compute remainders modulo a prime. Hashmaps are really common, so fast division is useful.
-For instance, rolling hashes might compute u128 % u64 with a fixed divisor. Compilers just drop the ball here:
-fn modulo(n: u128) -> u64 {
-(n % 0xffffffffffffffc5) as u64
+				<description>&lt;p&gt;Developers don’t usually divide numbers all the time, but hashmaps often need to compute &lt;a href=&quot;https://en.wikipedia.org/wiki/Remainder&quot;&gt;remainders&lt;/a&gt; modulo a prime. Hashmaps are really common, so fast division is useful.&lt;/p&gt;
+&lt;p&gt;For instance, rolling hashes might compute &lt;code&gt;u128 % u64&lt;/code&gt; with a fixed divisor. Compilers just drop the ball here:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rust&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;fn&lt;/span&gt; &lt;span class=&quot;hljs-title function_&quot;&gt;modulo&lt;/span&gt;(n: &lt;span class=&quot;hljs-type&quot;&gt;u128&lt;/span&gt;) &lt;span class=&quot;hljs-punctuation&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;hljs-type&quot;&gt;u64&lt;/span&gt; {
+    (n % &lt;span class=&quot;hljs-number&quot;&gt;0xffffffffffffffc5&lt;/span&gt;) &lt;span class=&quot;hljs-keyword&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;hljs-type&quot;&gt;u64&lt;/span&gt;
 }
-
-modulo:
-push rax
-mov rdx, -59
-xor ecx, ecx
-call qword ptr [rip + __umodti3@GOTPCREL]
-pop rcx
-ret
-
-__umodti3 is a generic long division implementation, and it’s slow and ugly.
-I prefer my code the opposite of slow and ugly.</description>
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&quot;language-x86asm&quot;&gt;&lt;span class=&quot;hljs-symbol&quot;&gt;modulo:&lt;/span&gt;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;push&lt;/span&gt;    &lt;span class=&quot;hljs-built_in&quot;&gt;rax&lt;/span&gt;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;mov&lt;/span&gt;     &lt;span class=&quot;hljs-built_in&quot;&gt;rdx&lt;/span&gt;, -&lt;span class=&quot;hljs-number&quot;&gt;59&lt;/span&gt;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;xor&lt;/span&gt;     &lt;span class=&quot;hljs-built_in&quot;&gt;ecx&lt;/span&gt;, &lt;span class=&quot;hljs-built_in&quot;&gt;ecx&lt;/span&gt;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;call&lt;/span&gt;    &lt;span class=&quot;hljs-built_in&quot;&gt;qword&lt;/span&gt; &lt;span class=&quot;hljs-built_in&quot;&gt;ptr&lt;/span&gt; [&lt;span class=&quot;hljs-built_in&quot;&gt;rip&lt;/span&gt; + __umodti3@GOTPCREL]
+    &lt;span class=&quot;hljs-keyword&quot;&gt;pop&lt;/span&gt;     &lt;span class=&quot;hljs-built_in&quot;&gt;rcx&lt;/span&gt;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;ret&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;__umodti3&lt;/code&gt; is a generic long division implementation, and it’s slow and ugly.&lt;/p&gt;
+&lt;p&gt;I prefer my code the opposite of slow and ugly.&lt;/p&gt;
+</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				<comments>https://www.reddit.com/r/programming/comments/1f0n8sk/division_is_hard_but_it_doesnt_have_to_be/</comments>
 				<guid>https://purplesyringa.moe/blog/./division-is-hard-but-it-does-not-have-to-be/</guid>
@@ -300,9 +322,10 @@ I prefer my code the opposite of slow and ugly.</description>
 			<item>
 				<title>I sped up serde_json strings by 20%</title>
 				<link>https://purplesyringa.moe/blog/./i-sped-up-serde-json-strings-by-20-percent/</link>
-				<description>I have recently done some performance work and realized that reading about my experience could be entertaining. Teaching to think is just as important as teaching to code, but this is seldom done; I think something I’ve done last month is a great opportunity to draw the curtain a bit.
-serde is the Rust framework for serialization and deserialization. Everyone uses it, and it’s the default among the ecosystem. serde_json is the official serde “mixin” for JSON, so when people need to parse stuff, that’s what they use instinctively. There are other libraries for JSON parsing, like simd-json, but serde_json is overwhelmingly used: it has 26916 dependents at the time of this post, compared to only 66 for simd-json.
-This makes serde_json a good target (not in a Jia Tan way) for optimization. Chances are, many of those 26916 users would profit from switching to simd-json, but as long as they aren’t doing that, smaller optimizations are better than nothing, and such improvements are reapt across the ecosystem.</description>
+				<description>&lt;p&gt;I have recently done some performance work and realized that reading about my experience could be entertaining. Teaching to &lt;em&gt;think&lt;/em&gt; is just as important as teaching to &lt;em&gt;code&lt;/em&gt;, but this is seldom done; I think something I’ve done last month is a great opportunity to draw the curtain a bit.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;serde&lt;/code&gt; is &lt;em&gt;the&lt;/em&gt; Rust framework for serialization and deserialization. Everyone uses it, and it’s the default among the ecosystem. &lt;code&gt;serde_json&lt;/code&gt; is the official &lt;code&gt;serde&lt;/code&gt; “mixin” for JSON, so when people need to parse stuff, that’s what they use instinctively. There are other libraries for JSON parsing, like &lt;a href=&quot;https://lib.rs/crates/simd-json&quot;&gt;simd-json&lt;/a&gt;, but &lt;code&gt;serde_json&lt;/code&gt; is overwhelmingly used: it has &lt;a href=&quot;https://crates.io/crates/serde_json/reverse_dependencies&quot;&gt;26916&lt;/a&gt; dependents at the time of this post, compared to only &lt;a href=&quot;https://crates.io/crates/simd-json/reverse_dependencies&quot;&gt;66&lt;/a&gt; for &lt;code&gt;simd-json&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;This makes &lt;code&gt;serde_json&lt;/code&gt; a good target &lt;s&gt;(not in a Jia Tan way)&lt;/s&gt; for optimization. Chances are, many of those 26916 users would profit from switching to &lt;code&gt;simd-json&lt;/code&gt;, but as long as they aren’t doing that, smaller optimizations are better than nothing, and such improvements are reapt across the ecosystem.&lt;/p&gt;
+</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				<comments>https://www.reddit.com/r/rust/comments/1eyxspu/i_sped_up_serde_json_strings_by_20/</comments>
 				<guid>https://purplesyringa.moe/blog/./i-sped-up-serde-json-strings-by-20-percent/</guid>
@@ -312,13 +335,14 @@ This makes serde_json a good target (not in a Jia Tan way) for optimization. Cha
 			<item>
 				<title>The sentinel trick</title>
 				<link>https://purplesyringa.moe/blog/./the-sentinel-trick/</link>
-				<description>The sentinel trick underlies a data structure with the following requirements:
-
-Read element by index in O ( 1 ) ,
-Write element by index in O ( 1 ) ,
-Replace all elements with a given value in O ( 1 ) .
-
-It is not a novel technique by any means, but it doesn’t seem on everyone’s lips, so some of you might find it interesting.</description>
+				<description>&lt;p&gt;The sentinel trick underlies a data structure with the following requirements:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Read element by index in &lt;eq&gt;&lt;math&gt;&lt;mrow&gt;&lt;mi&gt;O&lt;/mi&gt;&lt;mo form=&quot;prefix&quot; stretchy=&quot;false&quot;&gt;(&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo form=&quot;postfix&quot; stretchy=&quot;false&quot;&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/eq&gt;,&lt;/li&gt;
+&lt;li&gt;Write element by index in &lt;eq&gt;&lt;math&gt;&lt;mrow&gt;&lt;mi&gt;O&lt;/mi&gt;&lt;mo form=&quot;prefix&quot; stretchy=&quot;false&quot;&gt;(&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo form=&quot;postfix&quot; stretchy=&quot;false&quot;&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/eq&gt;,&lt;/li&gt;
+&lt;li&gt;Replace all elements with a given value in &lt;eq&gt;&lt;math&gt;&lt;mrow&gt;&lt;mi&gt;O&lt;/mi&gt;&lt;mo form=&quot;prefix&quot; stretchy=&quot;false&quot;&gt;(&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo form=&quot;postfix&quot; stretchy=&quot;false&quot;&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/eq&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;It is not a novel technique by any means, but it doesn’t seem on everyone’s lips, so some of you might find it interesting.&lt;/p&gt;
+</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				<comments>https://t.me/alisa_rummages/148</comments>
 				<guid>https://purplesyringa.moe/blog/./the-sentinel-trick/</guid>
@@ -328,8 +352,9 @@ It is not a novel technique by any means, but it doesn’t seem on everyone’s 
 			<item>
 				<title>You might want to use panics for error handling</title>
 				<link>https://purplesyringa.moe/blog/./you-might-want-to-use-panics-for-error-handling/</link>
-				<description>Rust’s approach to error handling comes at a cost. The Result type often doesn’t fit in CPU registers, and callers of fallible functions have to check whether the returned value is Ok or Err. That’s a stack spill, a comparison, a branch, and a lot of error handling code intertwined with the hot path that just shouldn’t be here, which inhibits inlining, the most important optimization of all.
-Exceptions and panics make it easy to forget about the occasional error, but they don’t suffer from inefficiency. Throwing an exception unwinds the stack automatically, without any cooperation from the functions except the one that throws the exception and the one that catches it. Wouldn’t it be neat if a mechanism with the performance of panic! and the ergonomics of Result existed?</description>
+				<description>&lt;p&gt;Rust’s approach to error handling comes at a cost. The &lt;code&gt;Result&lt;/code&gt; type often doesn’t fit in CPU registers, and callers of fallible functions have to check whether the returned value is &lt;code&gt;Ok&lt;/code&gt; or &lt;code&gt;Err&lt;/code&gt;. That’s a stack spill, a comparison, a branch, and a lot of error handling code intertwined with the hot path that &lt;em&gt;just shouldn’t be here&lt;/em&gt;, which inhibits inlining, the most important optimization of all.&lt;/p&gt;
+&lt;p&gt;Exceptions and panics make it easy to forget about the occasional error, but they don’t suffer from inefficiency. Throwing an exception unwinds the stack automatically, without any cooperation from the functions except the one that throws the exception and the one that catches it. Wouldn’t it be &lt;em&gt;neat&lt;/em&gt; if a mechanism with the performance of &lt;code&gt;panic!&lt;/code&gt; and the ergonomics of &lt;code&gt;Result&lt;/code&gt; existed?&lt;/p&gt;
+</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				
 				<guid>https://purplesyringa.moe/blog/./you-might-want-to-use-panics-for-error-handling/</guid>
@@ -339,15 +364,17 @@ Exceptions and panics make it easy to forget about the occasional error, but the
 			<item>
 				<title>У base64 есть неподвижная точка</title>
 				<link>https://purplesyringa.moe/blog/ru/base64-has-a-fixed-point/</link>
-				<description>$ base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 \
-| base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 \
-| base64 | head -1
+				<description>&lt;pre&gt;&lt;code class=&quot;language-shell&quot;&gt;&lt;span class=&quot;hljs-meta prompt_&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;language-bash&quot;&gt;&amp;lt;/dev/urandom &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; \
+     | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; \
+     | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;head&lt;/span&gt; -1&lt;/span&gt;
 Vm0wd2QyUXlVWGxWV0d4V1YwZDRWMVl3WkRSV01WbDNXa1JTVjAxV2JETlhhMUpUVmpBeFYySkVU
-
-$ base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 \
-| base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 | base64 \
-| base64 | head -1
-Vm0wd2QyUXlVWGxWV0d4V1YwZDRWMVl3WkRSV01WbDNXa1JTVjAxV2JETlhhMUpUVmpBeFYySkVU</description>
+&lt;span class=&quot;hljs-meta prompt_&quot;&gt;
+$ &lt;/span&gt;&lt;span class=&quot;language-bash&quot;&gt;&amp;lt;/dev/urandom &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; \
+     | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; \
+     | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;head&lt;/span&gt; -1&lt;/span&gt;
+Vm0wd2QyUXlVWGxWV0d4V1YwZDRWMVl3WkRSV01WbDNXa1JTVjAxV2JETlhhMUpUVmpBeFYySkVU
+&lt;/code&gt;&lt;/pre&gt;
+</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				<comments>https://t.me/alisa_rummages/146</comments>
 				<guid>https://purplesyringa.moe/blog/ru/base64-has-a-fixed-point/</guid>
@@ -357,12 +384,13 @@ Vm0wd2QyUXlVWGxWV0d4V1YwZDRWMVl3WkRSV01WbDNXa1JTVjAxV2JETlhhMUpUVmpBeFYySkVU</de
 			<item>
 				<title>I thought I was smart enough to play with fire</title>
 				<link>https://purplesyringa.moe/blog/./i-thought-i-was-smart-enough-to-play-with-fire/</link>
-				<description>blazingio cuts corners by design. It keeps the constant factor small and uses long forgotten algorithms people used before processors supported SIMD and integer division. But another limitation made this task much harder.
-Size.
-Professional libraries start exceeding the Codeforces limit of 64 KiB really fast. Code minification barely helps, and neither does resorting to ugly code. So I cut a corner I don’t typically cut.
-Undefined Behavior.
-These two words make a seasoned programmer shudder. But sidestepping UB increases code size so much the library can hardly be used on CF. So I took a gamble. I meticulously scanned every instance of UB I used intentionally and made sure the compiler had absolutely no reason to miscompile it. I wrote excessive tests and run them on CI on all architecture and OS combinations I could think of. I released the library without so much as a flaw. It worked like clockwork.
-And then, 3 months later, I updated README, and all hell broke loose.</description>
+				<description>&lt;p&gt;&lt;a href=&quot;https://codeforces.com/blog/entry/126390&quot;&gt;blazingio&lt;/a&gt; cuts corners by design. It keeps the constant factor small and uses long forgotten algorithms people used before processors supported SIMD and integer division. But another limitation made this task much harder.&lt;/p&gt;
+&lt;p&gt;Size.&lt;/p&gt;
+&lt;p&gt;Professional libraries start exceeding the &lt;a href=&quot;https&quot;&gt;Codeforces&lt;/a&gt; limit of 64 KiB really fast. Code minification barely helps, and neither does resorting to ugly code. So I cut a corner I don’t typically cut.&lt;/p&gt;
+&lt;p&gt;Undefined Behavior.&lt;/p&gt;
+&lt;p&gt;These two words make a seasoned programmer shudder. But sidestepping UB increases code size so much the library can hardly be used on CF. So I took a gamble. I meticulously scanned every instance of UB I used intentionally and made sure the compiler had absolutely no reason to miscompile it. I wrote excessive tests and run them on CI on all architecture and OS combinations I could think of. I released the library without so much as a flaw. It worked like clockwork.&lt;/p&gt;
+&lt;p&gt;And then, 3 months later, I updated README, and all hell broke loose.&lt;/p&gt;
+</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				<comments>https://codeforces.com/blog/entry/130661</comments>
 				<guid>https://purplesyringa.moe/blog/./i-thought-i-was-smart-enough-to-play-with-fire/</guid>
@@ -372,9 +400,10 @@ And then, 3 months later, I updated README, and all hell broke loose.</descripti
 			<item>
 				<title>Recovering garbled Bitcoin addresses</title>
 				<link>https://purplesyringa.moe/blog/./recovering-garbled-bitcoin-addresses/</link>
-				<description>ZeroNet is a decentralized network that enables dynamic sites, such as blogs and forums, unlike popular content-addressed storage networks that came later. Sites aren’t addressed by immutable hashes; instead, site updates are signed by Bitcoin addresses.
-A moot point is that Bitcoin addresses are case-sensitive, and people are used to addresses being case-insensitive. Mistakes happen, and sometimes the only trail you have is a lower-cased address, like 1lbcfr7sahtd9cgdqo3htmtkv8lk4znx71.
-Losing valuable information is a bad thing when you’re an archivist. Have we really lost access to the site if we only know the lower-cased address? Can we recover the original address somehow?</description>
+				<description>&lt;p&gt;&lt;a href=&quot;https://zeronet.io/&quot;&gt;ZeroNet&lt;/a&gt; is a decentralized network that enables dynamic sites, such as blogs and forums, unlike popular content-addressed storage networks that came later. Sites aren’t addressed by immutable hashes; instead, site updates are signed by Bitcoin addresses.&lt;/p&gt;
+&lt;p&gt;A moot point is that Bitcoin addresses are case-sensitive, and people are used to addresses being case-insensitive. Mistakes happen, and sometimes the only trail you have is a lower-cased address, like &lt;code&gt;1lbcfr7sahtd9cgdqo3htmtkv8lk4znx71&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Losing valuable information is a bad thing when you’re an archivist. Have we &lt;em&gt;really&lt;/em&gt; lost access to the site if we only know the lower-cased address? Can we recover the original address somehow?&lt;/p&gt;
+</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				<comments>https://t.me/alisa_rummages/111</comments>
 				<guid>https://purplesyringa.moe/blog/./recovering-garbled-bitcoin-addresses/</guid>

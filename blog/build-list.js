@@ -5,7 +5,6 @@ import hljs from "highlight.js";
 import markdownit from "markdown-it";
 import markdownitTexMath from "markdown-it-texmath";
 import minifyHtml from "@minify-html/node";
-import { stripHtml } from "string-strip-html";
 import temml from "temml";
 import YAML from "yaml";
 
@@ -109,7 +108,7 @@ fs.writeFileSync("feed.rss", `<?xml version="1.0" encoding="UTF-8" ?>
 			<item>
 				<title>${escapeHTML(post.title)}</title>
 				<link>${escapeHTML(`https://purplesyringa.moe/blog/${post.path}/${post.path === "./webp-the-webpage-compression-format" ? "nojs.html" : ""}`)}</link>
-				<description>${stripHtml(md.render(post.intro || "")).result}</description>
+				<description>${escapeHTML(md.render(post.intro || ""))}</description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				${post.discussion.length > 0 ? `<comments>${escapeHTML(post.discussion[0])}</comments>` : ""}
 				<guid>${escapeHTML(`https://purplesyringa.moe/blog/${post.path}/`)}</guid>
