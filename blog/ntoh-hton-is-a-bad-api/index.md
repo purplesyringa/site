@@ -1,6 +1,7 @@
 ---
 title: ntoh*/hton* is a bad API
 time: November 18, 2025
+discussion: https://lobste.rs/s/xxq1kw/ntoh_hton_is_bad_api
 intro: |
     Say you want to send a list of consumer records to another microservice over network via JSON. There are three concepts at play in this process:
 

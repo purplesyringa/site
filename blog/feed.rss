@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Tue, 18 Nov 2025 19:31:35 GMT</lastBuildDate>
+		<lastBuildDate>Mon, 24 Nov 2025 11:29:51 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -29,7 +29,7 @@
 &lt;/ol&gt;
 </description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				
+				<comments>https://lobste.rs/s/xxq1kw/ntoh_hton_is_bad_api</comments>
 				<guid>https://purplesyringa.moe/blog/./ntoh-hton-is-a-bad-api/</guid>
 				<pubDate>Tue, 18 Nov 2025 00:00:00 GMT</pubDate>
 			</item>
