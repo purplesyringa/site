@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Tue, 25 Nov 2025 18:10:16 GMT</lastBuildDate>
+		<lastBuildDate>Tue, 25 Nov 2025 18:59:25 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -19,7 +19,7 @@
 &lt;p&gt;I heard tales of old Rust before, but not of how the language felt to programmers. So I thought it’d be cool to give a (relatively) quick summary of Rust as presented in the tutorial and yap a bit about how far we’ve come since then.&lt;/p&gt;
 </description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				
+				<comments>https://www.reddit.com/r/rust/comments/1p6k380/a_look_at_rust_from_2012/</comments>
 				<guid>https://purplesyringa.moe/blog/./a-look-at-rust-from-2012/</guid>
 				<pubDate>Tue, 25 Nov 2025 00:00:00 GMT</pubDate>
 			</item>
