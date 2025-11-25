@@ -7,10 +7,22 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Mon, 24 Nov 2025 11:29:51 GMT</lastBuildDate>
+		<lastBuildDate>Tue, 25 Nov 2025 18:10:16 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>A look at Rust from 2012</title>
+				<link>https://purplesyringa.moe/blog/./a-look-at-rust-from-2012/</link>
+				<description>&lt;p&gt;Recently I was scrolling through &lt;a href=&quot;https://brson.github.io/rust-qdb/&quot;&gt;brson’s Rust quote database&lt;/a&gt; and stumbled upon a link to the &lt;a href=&quot;https://web.archive.org/web/20130118053116/http://static.rust-lang.org/doc/tutorial.html&quot;&gt;official Rust tutorial&lt;/a&gt; from the very beginning of 2013. It says Rust 0.6 in the corner, but it lists many things that were removed in 0.6, so it’s likely closer to 0.5.&lt;/p&gt;
+&lt;p&gt;I heard tales of old Rust before, but not of how the language felt to programmers. So I thought it’d be cool to give a (relatively) quick summary of Rust as presented in the tutorial and yap a bit about how far we’ve come since then.&lt;/p&gt;
+</description>
+				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+				
+				<guid>https://purplesyringa.moe/blog/./a-look-at-rust-from-2012/</guid>
+				<pubDate>Tue, 25 Nov 2025 00:00:00 GMT</pubDate>
+			</item>
 		
 			<item>
 				<title>ntoh*/hton* is a bad API</title>

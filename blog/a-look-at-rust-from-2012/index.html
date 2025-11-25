@@ -1,0 +1,206 @@
+<!doctypehtml><html prefix="og: http://ogp.me/ns#"lang=en_US><meta charset=utf-8><meta content=width=device-width,initial-scale=1 name=viewport><title>A look at Rust from 2012 | purplesyringa's blog</title><link href=../../favicon.ico?v=2 rel=icon><link href=../../all.css rel=stylesheet><link href=../../blog.css rel=stylesheet><link href=../../vendor/Temml-Local.css rel=stylesheet><link crossorigin href=https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&family=Slabo+27px&display=swap rel=stylesheet><link href=../../fonts/webfont.css rel=stylesheet><link media="screen and (prefers-color-scheme: dark"href=../../vendor/atom-one-dark.min.css rel=stylesheet><link media="screen and (prefers-color-scheme: light"href=../../vendor/a11y-light.min.css rel=stylesheet><link title="Blog posts"href=../../blog/feed.rss rel=alternate type=application/rss+xml><meta content="A look at Rust from 2012"property=og:title><meta content=article property=og:type><meta content=https://purplesyringa.moe/blog/a-look-at-rust-from-2012/og.png property=og:image><meta content=https://purplesyringa.moe/blog/a-look-at-rust-from-2012/ property=og:url><meta content="Recently I was scrolling through brson’s Rust quote database and stumbled upon a link to the official Rust tutorial from the very beginning of 2013. It says Rust 0.6 in the corner, but it lists many things that were removed in 0.6, so it’s likely closer to 0.5.
+I heard tales of old Rust before, but not of how the language felt to programmers. So I thought it’d be cool to give a (relatively) quick summary of Rust as presented in the tutorial and yap a bit about how far we’ve come since then."property=og:description><meta content=en_US property=og:locale><meta content="purplesyringa's blog"property=og:site_name><meta content=summary_large_image name=twitter:card><meta content=https://purplesyringa.moe/blog/a-look-at-rust-from-2012/og.png name=twitter:image><script data-website-id=0da1961d-43f2-45cc-a8e2-75679eefbb69 defer src=https://zond.tei.su/script.js></script><body><header><div class=viewport-container><div class=media><a href=https://github.com/purplesyringa><img alt=GitHub src=../../images/github-mark-white.svg></a></div><h1><a href=/>purplesyringa</a></h1><nav><a href=../..>about</a><a class=current href=../../blog/>blog</a><a href=../../sink/>kitchen sink</a></nav></div></header><section><div class=viewport-container><h2>A look at Rust from 2012</h2><time>November 25, 2025</time><p>Recently I was scrolling through <a href=https://brson.github.io/rust-qdb/>brson’s Rust quote database</a> and stumbled upon a link to the <a href=https://web.archive.org/web/20130118053116/http://static.rust-lang.org/doc/tutorial.html>official Rust tutorial</a> from the very beginning of 2013. It says Rust 0.6 in the corner, but it lists many things that were removed in 0.6, so it’s likely closer to 0.5.<p>I heard tales of old Rust before, but not of how the language felt to programmers. So I thought it’d be cool to give a (relatively) quick summary of Rust as presented in the tutorial and yap a bit about how far we’ve come since then.<p class=next-group><span aria-level=3 class=side-header role=heading><span>Installation</span></span>First impressions matter, and Rust doesn’t disappoint:<blockquote><p>The Rust compiler currently must be built from a tarball, unless you are on Windows, in which case using the installer is recommended.</blockquote><p>…followed by the classical <code>./configure && make && make install</code> tutorial. The building process also relied on Python 2.6. Installing Rust on Windows also required manually installing MinGW. Modern <code>rustup</code> is a blessing!<p class=next-group><span aria-level=3 class=side-header role=heading><span>Hello, world!</span></span>Here’s our “Hello, world!”:<pre><code class=language-rust><span class=hljs-keyword>fn</span> <span class="hljs-title function_">main</span>() {
+    io::<span class="hljs-title function_ invoke__">println</span>(<span class=hljs-string>"hello?"</span>);
+}
+</code></pre><p><code>io</code> was part of <code>core</code>, and modules from <code>core</code> were globally visible. There was no <code>alloc</code>, so e.g. <code>vec</code> was part of <code>core</code>. The difference between <code>core</code> and <code>std</code> was more about low vs high level than objective limitations.<p>There were no pretty errors yet – <a href=https://kobzol.github.io/rust/rustc/2025/05/16/evolution-of-rustc-errors.html>the helpful diagnostics were a later addition</a>:<pre><code>hello.rs:2:4: 2:16 error: unresolved name: io::print_with_unicorns
+hello.rs:2     io::print_with_unicorns("hello?");
+               ^~~~~~~~~~~~~~~~~~~~~~~
+</code></pre><p>There was no <code>println!</code>, but there was <code>fmt!</code>, which took an <code>sprintf</code>-like format string (glad we moved away from that):<pre><code class=language-rust>io::<span class="hljs-title function_ invoke__">println</span>(fmt!(<span class=hljs-string>"%s is %d"</span>, <span class=hljs-string>"the answer"</span>, <span class=hljs-number>43</span>));
+
+<span class=hljs-comment>// %? will conveniently print any type</span>
+io::<span class="hljs-title function_ invoke__">println</span>(fmt!(<span class=hljs-string>"what is this thing: %?"</span>, mystery_object));
+</code></pre><p>On the topic of macros, it’s surprising how little <a href=https://web.archive.org/web/20130225044101/http://static.rust-lang.org/doc/tutorial-macros.html>the <code>macro_rules!</code> syntax</a> has changed. Present-day macros were called “syntax extensions”, and “macros” only referred to declarative macros.<p class=next-group><span aria-level=3 class=side-header role=heading><span>Syntax</span></span>IMO, the book focused too much on syntax and not enough on ownership and borrowing – which makes sense, since the current model didn’t exist back then. Modern Rustbook gets to the point faster and does a better job integrating realistic examples between sections.<p><code>usize</code> was written <code>uint</code> and <code>isize</code> was written <code>int</code>, which I can imagine causing much confusion to C developers. Unconstrainted integer literals defaulted to <code>int</code> instead of <code>i32</code>. <code>()</code> was inconsistently called “nil type” or “unit type”.<p>There was a Python-style <code>assert</code> statement:<pre><code class=language-rust><span class=hljs-keyword>let</span> <span class=hljs-variable>x</span>: float = <span class=hljs-number>4.0</span>;
+<span class=hljs-keyword>let</span> <span class=hljs-variable>y</span>: uint = x <span class=hljs-keyword>as</span> uint;
+assert y == <span class=hljs-number>4</span>u;
+</code></pre><p><code>continue</code> was called <code>loop</code> for some reason:<blockquote><p>Inside a loop, the keyword <code>break</code> aborts the loop, and <code>loop</code> aborts the current iteration and continues with the next.</blockquote><p><code>enum</code> variants were unscoped, just like in C:<blockquote><pre><code class=language-rust><span class=hljs-keyword>enum</span> <span class="hljs-title class_">Direction</span> {
+    North,
+    East,
+    South,
+    West
+}
+</code></pre><p>This declaration defines <code>North</code>, <code>East</code>, <code>South</code>, and <code>West</code> as constants, all of which have type <code>Direction</code>.</blockquote><p>Since the variants were unscoped, <code>enum</code>s could be used to simulate tuple-like structs:<blockquote><p>There is a special case for enums with a single variant, which are sometimes called “newtype-style enums” (after Haskell’s “newtype” feature). […] If you say:<pre><code class=language-rust><span class=hljs-keyword>enum</span> <span class="hljs-title class_">GizmoId</span> = int;
+</code></pre><p>That is a shorthand for this:<pre><code class=language-rust><span class=hljs-keyword>enum</span> <span class="hljs-title class_">GizmoId</span> { <span class="hljs-title function_ invoke__">GizmoId</span>(int) }
+</code></pre></blockquote><p>Why was this useful? As far as I can tell, neither tuples nor tuple-like structs could have fewer than 2 elements! <code>(T,)</code> didn’t exist, and <code>()</code> wasn’t considered a tuple. There was no <code>.0</code> syntax, so you had to use destructuring to access tuple contents. Alternatively, newtype-style enums could be dereferenced with <code>*</code>.<p>We’re getting ahead of ourselves, but there was a <code>copy</code> operator instead of <code>.clone()</code>:<blockquote><p>If you really want to copy an owned box you must say so explicitly.<pre><code class=language-rust><span class=hljs-keyword>let</span> <span class=hljs-variable>x</span> = ~<span class=hljs-number>10</span>; <span class=hljs-comment>// NOTE(purplesyringa): don't worry about it :)</span>
+<span class=hljs-keyword>let</span> <span class=hljs-variable>y</span> = copy x;
+
+<span class=hljs-keyword>let</span> <span class=hljs-variable>z</span> = *x + *y;
+assert z == <span class=hljs-number>20</span>;
+</code></pre></blockquote><p>All arrays were called “vectors”. <code>[T; N]</code> was <code>[T * N]</code>, eventually changed to enable the <code>[expr; N]</code> syntax:<pre><code class=language-rust><span class=hljs-comment>// A fixed-size stack vector</span>
+<span class=hljs-keyword>let</span> <span class=hljs-variable>stack_crayons</span>: [Crayon * <span class=hljs-number>3</span>] = [Almond, AntiqueBrass, Apricot];
+</code></pre><p>Trait implementations were written <code>impl Type: Trait</code>. I actually quite like it.<pre><code class=language-rust><span class=hljs-keyword>impl</span> <span class="hljs-title class_">TimeBomb</span> : <span class=hljs-built_in>Drop</span> {
+    <span class=hljs-keyword>fn</span> <span class="hljs-title function_">finalize</span>(&<span class=hljs-keyword>self</span>) {
+        <span class=hljs-keyword>for</span> <span class="hljs-title class_">iter</span>::<span class="hljs-title function_ invoke__">repeat</span>(<span class=hljs-keyword>self</span>.explosivity) { <span class=hljs-comment>// NOTE(purplesyringa): don't mind this :)</span>
+            io::<span class="hljs-title function_ invoke__">println</span>(<span class=hljs-string>"blam!"</span>);
+        }
+    }
+}
+</code></pre><p><code>Drop</code>’s method was called <code>finalize</code>, which will make sense in a bit.<p><code>Self</code> was written <code>self</code>, which added confusion:<pre><code class=language-rust><span class=hljs-comment>// In a trait, `self` refers both to the self argument</span>
+<span class=hljs-comment>// and to the type implementing the trait</span>
+<span class=hljs-keyword>trait</span> <span class="hljs-title class_">Eq</span> {
+    <span class=hljs-keyword>fn</span> <span class="hljs-title function_">equals</span>(&<span class=hljs-keyword>self</span>, other: &<span class=hljs-keyword>self</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>bool</span>;
+}
+</code></pre><p>There were no pluses between trait bounds:<pre><code class=language-rust><span class=hljs-keyword>fn</span> <span class="hljs-title function_">print_all</span>&LTT: Printable <span class=hljs-built_in>Copy</span>>(printable_things: ~[T]) {
+    <span class=hljs-comment>// [...]</span>
+}
+</code></pre><p>Before <code>use path as alias</code>, there was <code>use alias = path</code>. I don’t know which one I prefer: <code>as</code> allows multiple imports to be on one line, but why isn’t it spelled <code>:</code> like in patterns?<pre><code class=language-rust><span class=hljs-comment>// Bring `chicken` into scope</span>
+<span class=hljs-keyword>use</span> farm::chicken;
+
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">chicken_farmer</span>() {
+    <span class=hljs-comment>// The same, but name it `my_chicken`</span>
+    <span class=hljs-keyword>use</span> my_chicken = farm::chicken;
+    ...
+}
+</code></pre><p class=next-group><span aria-level=3 class=side-header role=heading><span>Trait objects</span></span>There was no <code>dyn Trait</code>, just <code>Trait</code>, so it wasn’t explicit which pointers were fat. This was abused: instead of <code>Fn*</code> traits, there was <code>fn()</code>, roughly identical to <code>dyn FnMut()</code>. You’d usually write <code>&fn(...) -> ...</code> as a callback type. <code>move</code> in closures was inferred.<p>I think <code>&</code> before <code>fn()</code> was implied if there was no sigil, but you also didn’t have to write <code>&</code> in the callee, so call sites looked just like today despite dynamic dispatch:<pre><code class=language-rust><span class=hljs-keyword>fn</span> <span class="hljs-title function_">call_closure_with_ten</span>(b: <span class="hljs-title function_ invoke__">fn</span>(int)) { <span class="hljs-title function_ invoke__">b</span>(<span class=hljs-number>10</span>); }
+
+<span class=hljs-keyword>let</span> <span class=hljs-variable>captured_var</span> = <span class=hljs-number>20</span>;
+<span class=hljs-keyword>let</span> <span class=hljs-variable>closure</span> = |arg| <span class="hljs-title function_ invoke__">println</span>(fmt!(<span class=hljs-string>"captured_var=%d, arg=%d"</span>, captured_var, arg));
+
+<span class="hljs-title function_ invoke__">call_closure_with_ten</span>(closure);
+</code></pre><p class=next-group><span aria-level=3 class=side-header role=heading><span>Blocks</span></span>Did you know that Rust had a feature for implementing control flow structures?<blockquote><p>The <code>do</code> expression provides a way to treat higher-order functions (functions that take closures as arguments) as control structures. […] Consider this function that iterates over a vector of integers, passing in a pointer to each integer in the vector:<pre><code class=language-rust><span class=hljs-keyword>fn</span> <span class="hljs-title function_">each</span>(v: &[int], op: <span class="hljs-title function_ invoke__">fn</span>(v: &int)) {
+    <span class=hljs-keyword>let</span> <span class=hljs-keyword>mut </span><span class=hljs-variable>n</span> = <span class=hljs-number>0</span>;
+    <span class=hljs-keyword>while</span> n < v.<span class="hljs-title function_ invoke__">len</span>() {
+        <span class="hljs-title function_ invoke__">op</span>(&v[n]);
+        n += <span class=hljs-number>1</span>;
+    }
+}
+</code></pre><p>As a caller, if we use a closure to provide the final operator argument, we can write it in a way that has a pleasant, block-like structure.<pre><code class=language-rust><span class="hljs-title function_ invoke__">each</span>([<span class=hljs-number>1</span>, <span class=hljs-number>2</span>, <span class=hljs-number>3</span>], |n| {
+    <span class="hljs-title function_ invoke__">do_some_work</span>(n);
+});
+</code></pre><p>This is such a useful pattern that Rust has a special form of function call that can be written more like a built-in control structure:<pre><code class=language-rust><span class=hljs-keyword>do</span> <span class="hljs-title function_ invoke__">each</span>([<span class=hljs-number>1</span>, <span class=hljs-number>2</span>, <span class=hljs-number>3</span>]) |n| {
+    <span class="hljs-title function_ invoke__">do_some_work</span>(n);
+}
+</code></pre></blockquote><p>It’s still supported by languages like Ruby and Kotlin, and it’s pretty cool. But the <em>really</em> interesting implication of this pattern being natively supported is push iterators:<pre><code class=language-rust><span class=hljs-keyword>fn</span> <span class="hljs-title function_">each</span>(v: &[int], op: <span class="hljs-title function_ invoke__">fn</span>(v: &int) <span class=hljs-punctuation>-></span> <span class=hljs-type>bool</span>) { <span class=hljs-comment>// NOTE(purplesyringa): named argument in `fn(...)`!</span>
+    <span class=hljs-keyword>let</span> <span class=hljs-keyword>mut </span><span class=hljs-variable>n</span> = <span class=hljs-number>0</span>;
+    <span class=hljs-keyword>while</span> n < v.<span class="hljs-title function_ invoke__">len</span>() {
+        <span class=hljs-keyword>if</span> !<span class="hljs-title function_ invoke__">op</span>(&v[n]) {
+            <span class=hljs-keyword>break</span>;
+        }
+        n += <span class=hljs-number>1</span>;
+    }
+}
+
+<span class=hljs-comment>// [...]</span>
+
+<span class=hljs-keyword>for</span> <span class="hljs-title class_">each</span>([<span class=hljs-number>2</span>, <span class=hljs-number>4</span>, <span class=hljs-number>8</span>, <span class=hljs-number>5</span>, <span class=hljs-number>16</span>]) |n| {
+    <span class=hljs-keyword>if</span> *n % <span class=hljs-number>2</span> != <span class=hljs-number>0</span> {
+        <span class="hljs-title function_ invoke__">println</span>(<span class=hljs-string>"found odd number!"</span>);
+        <span class=hljs-keyword>break</span>;
+    }
+}
+</code></pre><p>The <code>for</code> loop uses the same mechanism, adding only a <code>bool</code> to support <code>break</code> and <code>return</code> from the loop body. Why did Rust switch to pull iterators? I don’t know! I couldn’t find any corroborating source, so I’d love to hear your thoughts.<p class=next-group><span aria-level=3 class=side-header role=heading><span>Tasks</span></span>Old Rust had green threads. I think it was closer to Erlang than any other language.<blockquote><p>Rust’s lightweight tasks do not share memory, instead communicating through messages.<p>(from <a href=https://web.archive.org/web/20130225044058/http://static.rust-lang.org/doc/tutorial-tasks.html>Rust Tasks and Communication Tutorial</a>) Rust tasks have dynamically sized stacks. A task begins its life with a small amount of stack space (currently in the low thousands of bytes, depending on platform), and acquires more stack as needed.</blockquote><p>Panics were called exceptions and were triggered with <code>fail!()</code>. They brought down the whole task, and there was no <code>std::panic::catch_unwind</code>, but you could spawn a lightweight task just to catch its panics:<pre><code class=language-rust><span class=hljs-keyword>let</span> <span class=hljs-variable>result</span>: <span class=hljs-type>Result</span>&LTint, ()> = <span class=hljs-keyword>do</span> task::<span class=hljs-keyword>try</span> {
+    <span class=hljs-keyword>if</span> <span class="hljs-title function_ invoke__">some_condition</span>() {
+        <span class="hljs-title function_ invoke__">calculate_result</span>()
+    } <span class=hljs-keyword>else</span> {
+        die!(~<span class=hljs-string>"oops!"</span>);
+    }
+};
+assert result.<span class="hljs-title function_ invoke__">is_err</span>();
+</code></pre><p>…though there was no <code>Box&LTdyn Any + Send + 'static></code> error yet. Note the use of <code>do</code>.<p>There was a built-in <code>spsc</code> pipe, and tasks could automatically halt other tasks:<blockquote><p>In Rust parlance, a <em>channel</em> is a sending endpoint of a pipe, and a <em>port</em> is the receiving endpoint. […] All tasks are, by default, <em>linked</em> to each other. That means that the fates of all tasks are intertwined: if one fails, so do all the others.</blockquote><pre><code class=language-rust><span class=hljs-keyword>let</span> (receiver, sender): (Port&LTint>, Chan&LTint>) = <span class="hljs-title function_ invoke__">stream</span>();
+<span class=hljs-keyword>do</span> spawn |<span class=hljs-keyword>move</span> receiver| {  <span class=hljs-comment>// Bidirectionally linked</span>
+    <span class=hljs-comment>// Wait for the supervised child task to exist.</span>
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>message</span> = receiver.<span class="hljs-title function_ invoke__">recv</span>();
+    <span class=hljs-comment>// Kill both it and the parent task.</span>
+    assert message != <span class=hljs-number>42</span>;
+}
+<span class=hljs-keyword>do</span> <span class=hljs-keyword>try</span> |<span class=hljs-keyword>move</span> sender| {  <span class=hljs-comment>// Unidirectionally linked</span>
+    sender.<span class="hljs-title function_ invoke__">send</span>(<span class=hljs-number>42</span>);
+    <span class="hljs-title function_ invoke__">sleep_forever</span>();  <span class=hljs-comment>// Will get woken up by force</span>
+}
+<span class=hljs-comment>// Flow never reaches here -- parent task was killed too.</span>
+</code></pre><p>The decision to remove tasks arguably shaped the Rust’s future more than any other change. It eventually allowed Rust to drop the language runtime, allowing it to be used integerated in embedded, OS kernels, and existing C codebases. And now that it’s low-level enough, stackful coroutines can be brought back <a href=https://docs.rs/may/latest/may/>with library code</a>.<p class=next-group><span aria-level=3 class=side-header role=heading><span>Crates</span></span>There was no cargo and thus no <code>Cargo.toml</code>. Crate metadata was specified in the root file, called <code>&LTcratename>.rc</code>, which acted like today’s <code>lib.rs</code>/<code>main.rs</code>:<pre><code class=language-rust><span class=hljs-comment>// Crate linkage metadata</span>
+<span class=hljs-meta>#[link(name = <span class=hljs-string>"farm"</span>, vers = <span class=hljs-string>"2.5"</span>, author = <span class=hljs-string>"mjh"</span>)]</span>;
+
+<span class=hljs-comment>// Make a library ("bin" is the default)</span>
+<span class=hljs-meta>#[crate_type = <span class=hljs-string>"lib"</span>]</span>;
+
+<span class=hljs-comment>// Turn on a warning</span>
+<span class=hljs-meta>#[warn(non_camel_case_types)]</span>
+
+<span class=hljs-comment>// Link to the standard library</span>
+<span class=hljs-keyword>extern</span> <span class=hljs-keyword>mod</span> std;
+
+<span class=hljs-comment>// Load some modules from other files</span>
+<span class=hljs-keyword>mod</span> cow;
+<span class=hljs-keyword>mod</span> chicken;
+<span class=hljs-keyword>mod</span> horse;
+
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">main</span>() {
+    ...
+}
+</code></pre><p>Note the explicit linking to <code>std</code> and the use of <code>extern mod</code> instead of <code>extern crate</code>. It could also search crates by specific criteria:<pre><code class=language-rust><span class=hljs-keyword>extern</span> <span class=hljs-keyword>mod</span> farm;
+<span class=hljs-keyword>extern</span> <span class=hljs-keyword>mod</span> <span class="hljs-title function_ invoke__">my_farm</span> (name = <span class=hljs-string>"farm"</span>, vers = <span class=hljs-string>"2.5"</span>);
+<span class=hljs-keyword>extern</span> <span class=hljs-keyword>mod</span> <span class="hljs-title function_ invoke__">my_auxiliary_farm</span> (name = <span class=hljs-string>"farm"</span>, author = <span class=hljs-string>"mjh"</span>);
+</code></pre><p>…though you had to compile them with <code>rustc</code> and pass the library path by hand.<p class=next-group><span aria-level=3 class=side-header role=heading><span>Structs</span></span>Since there was no <code>#[repr]</code>, all <code>struct</code>s were C-compatible:<blockquote><p>Structs are quite similar to C structs and are even laid out the same way in memory (so you can read from a Rust struct in C, and vice-versa).</blockquote><p><code>struct</code> fields could be marked as mutable with <code>mut</code>. This affected the rest of the type system: instead of <code>&</code> and <code>&mut</code> like we have today, there were <code>&</code>, <code>&mut</code>, and <code>&const</code>:<ul><li><code>&const</code> was read-only, like today’s <code>&</code>. You could take <code>&const</code> to any binding.<li><code>&mut</code> allowed replacing the entire object like today’s <code>&mut</code>. You could only take <code>&mut</code> to <code>let mut</code> bindings or <code>mut</code> fields, together known as <em>mutable memory</em>.<li><code>&</code> allowed modifying <code>mut</code> fields, but not immutable fields, and could only be taken to <code>let</code> bindings or immutable fields (immutable memory). This is why <code>&fn</code> allowed the closure to mutate its environment, for example. This also meant that adding mutability did not monotonically increase capabilities, i.e. <code>let</code> vs <code>let mut</code> affected <a href=https://internals.rust-lang.org/t/lack-of-mut-in-bindings-as-a-deny-by-default-lint/15818>more than a lint</a>.</ul><p><code>&</code> was reasonably universal and thus the “default” reference type. Most methods took <code>&self</code>, so the receiver parameter was optional. You would often see this <a href=https://web.archive.org/web/20130121044500/http://static.rust-lang.org/doc/std/index.html>in the documentation</a>. On the flip side, associated methods had to be annotated explicitly:<blockquote><p>Implementations may also define <em>static</em> methods, which don’t have an explicit <code>self</code> argument. The <code>static</code> keyword distinguishes static methods from methods that have a <code>self</code>:<pre><code class=language-rust><span class=hljs-keyword>impl</span> <span class="hljs-title class_">Circle</span> {
+    <span class=hljs-keyword>fn</span> <span class="hljs-title function_">area</span>(&<span class=hljs-keyword>self</span>) <span class=hljs-punctuation>-></span> float { ... }
+    <span class=hljs-keyword>static</span> <span class=hljs-keyword>fn</span> <span class="hljs-title function_">new</span>(area: float) <span class=hljs-punctuation>-></span> Circle { ... }
+}
+</code></pre></blockquote><p>Fields and methods were <code>pub</code> by default, so there was also the <code>priv</code> visibility:<pre><code class=language-rust><span class=hljs-keyword>mod</span> farm {
+    <span class=hljs-keyword>pub</span> <span class=hljs-keyword>struct</span> <span class="hljs-title class_">Farm</span> {
+        <span class=hljs-keyword>priv</span> <span class=hljs-keyword>mut</span> chickens: ~[Chicken],
+        <span class=hljs-keyword>priv</span> <span class=hljs-keyword>mut</span> cows: ~[Cow],
+        farmer: Human
+    }
+
+    <span class=hljs-comment>// Note - visibility modifiers on impls currently have no effect</span>
+    <span class=hljs-keyword>impl</span> <span class="hljs-title class_">Farm</span> {
+        <span class=hljs-keyword>priv</span> <span class=hljs-keyword>fn</span> <span class="hljs-title function_">feed_chickens</span>(&<span class=hljs-keyword>self</span>) { ... }
+        <span class=hljs-keyword>priv</span> <span class=hljs-keyword>fn</span> <span class="hljs-title function_">feed_cows</span>(&<span class=hljs-keyword>self</span>) { ... }
+        <span class=hljs-keyword>fn</span> <span class="hljs-title function_">add_chicken</span>(&<span class=hljs-keyword>self</span>, c: Chicken) { ... }
+    }
+
+    <span class=hljs-comment>// [...]</span>
+}
+</code></pre><p class=next-group><span aria-level=3 class=side-header role=heading><span>Memory model</span></span><code>&T</code> wasn’t the only kind of references. The other two kinds, <code>@T</code> and <code>~T</code>, seem to be almost singlehandedly responsible for people’s hate of sigils (sharing the throne with <a href=https://smallcultfollowing.com/babysteps/blog/2011/12/08/why-not-modes/>modes</a>, which were already phased out by 0.6).<p><code>@T</code> corresponded to objects on the task-local garbage-collected heap. Such references could be freely copied, but not sent to other tasks. This is most similar to today’s <code>Rc&LTT></code> and simplied the garbage collector. <code>~T</code> was for global, sendable objects with a unique owner, i.e. <code>Box&LTT></code>. Both could be converted to <code>&T</code>, which was not sendable, so the only way to communicate across tasks was with <code>~T</code>.<pre><code class=language-rust><span class=hljs-comment>// A fixed-size stack vector</span>
+<span class=hljs-keyword>let</span> <span class=hljs-variable>stack_crayons</span>: [Crayon * <span class=hljs-number>3</span>] = [Almond, AntiqueBrass, Apricot];
+
+<span class=hljs-comment>// A borrowed pointer to stack allocated vector</span>
+<span class=hljs-keyword>let</span> <span class=hljs-variable>stack_crayons</span>: &[Crayon] = &[Aquamarine, Asparagus, AtomicTangerine];
+
+<span class=hljs-comment>// A local heap (managed) vector of crayons</span>
+<span class=hljs-keyword>let</span> <span class=hljs-variable>local_crayons</span>: @[Crayon] = @[BananaMania, Beaver, Bittersweet];
+
+<span class=hljs-comment>// An exchange heap (owned) vector of crayons</span>
+<span class=hljs-keyword>let</span> <span class=hljs-variable>exchange_crayons</span>: ~[Crayon] = ~[Black, BlizzardBlue, Blue];
+</code></pre><p>The meaning of <code>~T</code>/<code>@T</code> was mostly controlled by the type <code>T</code>. <code>~[T]</code> corresponded to <code>Vec&LTT></code>, not <code>Box<[T]></code>. <code>String</code> was spelled <code>~str</code>. <code>@[T]</code>/<code>@str</code> didn’t seem to work well:<blockquote><p><em><strong>Note:</strong></em> […] Some operations on slices and stack vectors are not yet well-supported. Owned vectors are often the most usable.</blockquote><p class=next-group><span aria-level=3 class=side-header role=heading><span>Lifetimes</span></span>There was no NLL. Lifetimes, back then often called “regions”, were lexical and corresponded to specific blocks in source code:<pre><code class=language-rust><span class=hljs-keyword>fn</span> <span class="hljs-title function_">example3</span>() <span class=hljs-punctuation>-></span> int {
+    <span class=hljs-keyword>let</span> <span class=hljs-keyword>mut </span><span class=hljs-variable>x</span> = ~{f: <span class=hljs-number>3</span>};
+    <span class=hljs-keyword>if</span> <span class="hljs-title function_ invoke__">some_condition</span>() {
+        <span class=hljs-keyword>let</span> <span class=hljs-variable>y</span> = &x.f;      <span class=hljs-comment>// -+ L</span>
+        <span class=hljs-keyword>return</span> *y;         <span class=hljs-comment>//  |</span>
+    }                      <span class=hljs-comment>// -+</span>
+    x = ~{f: <span class=hljs-number>4</span>};
+    ...
+}
+</code></pre><p>Lifetime annotations looked like <code>&r/Point</code>, not <code>&'r Point</code>, where the lifetime name <code>r</code> didn’t have to be explicitly listed as a generic parameter of the function:<pre><code class=language-rust><span class=hljs-keyword>struct</span> <span class="hljs-title class_">Point</span> {x: float, y: float}
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">get_x</span>(p: &r/Point) <span class=hljs-punctuation>-></span> &r/float { &p.x }
+</code></pre><p>That was actually consistent, since types couldn’t have lifetime parameters either. If you wanted to store pointers to local data, you’d use <code>@T</code> instead of <code>&T</code>.<p class=next-group><span aria-level=3 class=side-header role=heading><span>Aliasing</span></span>The rest of the post is me trying to make sense of <a href=https://web.archive.org/web/20130225044051/http://static.rust-lang.org/doc/tutorial-borrowed-ptr.html#borrowing-unique-boxes>the tutorial on borrowing</a>. It has fried my brain and negatively affected my skills in modern Rust, so be wary. I’m <em>soooo</em> happy <a href=https://smallcultfollowing.com/babysteps/blog/2012/11/18/imagine-never-hearing-the-phrase-aliasable/>Niko Matsakis</a> replaced this mess with aliasing XOR mutability.<p>References were mostly used to track validity, not to prevent aliasing. Not even <code>&mut</code> implied unique access. You could take two <code>&mut</code> references to one object and write to both, or two <code>&</code> references and write to mutable fields through both. Old <code>&T</code> was most similar to today’s <code>&UnsafeCell&LTT></code>.<p>You might ask why writing through a <code>&T</code> (or <code>&mut T</code>) wasn’t racy. Since <code>&T</code> was task-local, it must have been borrowed earlier in the same task from <code>@T</code> (also task-local) or <code>~T</code> (whose uniqueness guaranteed that only one task could access the object), so references could only alias within one task.<p>What about UAF? Since you couldn’t take <code>&</code> to mutable memory, if you were given a <code>&T</code>, you’d know that the object wouldn’t be replaced. Hence it was safe to project through <code>&T</code> to <code>struct</code> fields, <code>enum</code> variants, array elements, and <code>~</code>/<code>@</code> as long as there were no mutable fields or bindings in the projection path, as the <code>enum</code> variant couldn’t be changed and the boxes could not be rebound without replacing the object.<p>If the path passed through <code>@T</code> in mutable memory, the <code>@T</code> was temporarily cloned locally for the duration of the borrow to ensure the refcount of the referenced object stayed positive, and mutability in that prefix could be ignored.<p>If mutable memory was still involved, the compiler made sure no operations could invalidate the borrow. Since such operations could only be task-local, borrowck only had to look for reassignments in the region where the borrow was taken:<pre><code class=language-rust><span class=hljs-keyword>fn</span> <span class="hljs-title function_">example3</span>() <span class=hljs-punctuation>-></span> int {
+    <span class=hljs-keyword>struct</span> <span class="hljs-title class_">R</span> { g: int }
+    <span class=hljs-keyword>struct</span> <span class="hljs-title class_">S</span> { <span class=hljs-keyword>mut</span> f: ~R }
+
+    <span class=hljs-keyword>let</span> <span class=hljs-keyword>mut </span><span class=hljs-variable>x</span> = ~S {<span class=hljs-keyword>mut</span> f: ~R {g: <span class=hljs-number>3</span>}};
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>y</span> = &x.f.g;
+    x = ~S {<span class=hljs-keyword>mut</span> f: ~R {g: <span class=hljs-number>4</span>}}; <span class=hljs-comment>// Error reported here.</span>
+    x.f = ~R {g: <span class=hljs-number>5</span>};           <span class=hljs-comment>// Error reported here.</span>
+    *y
+}
+</code></pre><p>If the new reference was obtained by only passing through fields and <code>~</code>, like in the previous example, it was guaranteed to be a unique path, and so borrowck could match paths straightforwardly. For example, this could get you from <code>~mut [T]</code> to <code>&T</code>.<p>But if the reference originated from <code>@</code> or <code>&</code>, the path might have been non-unique. To prevent the borrow from becoming dangling due to some reassignment through a different reference, mutations in the region were not allowed to use <code>@</code>/<code>&</code>. Permitted operations were called <em>pure</em> and could only access data owned by the current frame. You could annotate functions as <code>pure</code> to make them usable in this context; since their arguments were validated by the caller, the callee could access <code>&T</code>s from parameters:<pre><code class=language-rust><span class=hljs-keyword>struct</span> <span class="hljs-title class_">R</span> { g: int }
+<span class=hljs-keyword>struct</span> <span class="hljs-title class_">S</span> { <span class=hljs-keyword>mut</span> f: ~R }
+
+pure <span class=hljs-keyword>fn</span> <span class="hljs-title function_">add_one</span>(x: &int) <span class=hljs-punctuation>-></span> int { *x + <span class=hljs-number>1</span> }
+
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">example5a</span>(x: @S) <span class=hljs-punctuation>-></span> int {
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>y</span> = &x.f.g;
+    <span class="hljs-title function_ invoke__">add_one</span>(y) <span class=hljs-comment>// wouldn't be allowed without `pure`</span>
+}
+</code></pre><p>As you can probably tell, different reference types didn’t really compose. If you tried to go from <code>&~[T]</code> to <code>&T</code>, you could do that, but you were limited to pure functions to prevent the vector from being accidentally cleared. The fix was to use <code>~[T]</code> or <code>&[T]</code>.<p class=next-group><span aria-level=3 class=side-header role=heading><span>Conclusion</span></span>Compared to whatever we’ve just been through, I’m happy with how Rust turned out. It’s in good hands. Thanks to all those who worked on it over the years and made it as user-friendly and simple as it is today.</div></section><footer><div class=viewport-container><h2>Made with my own bare hands (why.)</h2></div></footer><script>window.addEventListener("keydown", e => {
+				if (e.key === "Enter") {
+					if (e.ctrlKey) {
+						window.open("https://github.com/purplesyringa/site/edit/master/blog/a-look-at-rust-from-2012/index.md", "_blank");
+					} else if (
+						e.target.type === "checkbox"
+						&& e.target.parentNode
+						&& e.target.parentNode.className === "expansible-code"
+					) {
+						e.target.click();
+					}
+				}
+			});</script>
