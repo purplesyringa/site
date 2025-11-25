@@ -54,7 +54,12 @@ pre {
 	font-size: 0.85rem;
 	padding: 0.75rem;
 	overflow: auto;
-	background-color: #00000008;
+	background-color: #80004010;
+}
+blockquote pre {
+	margin-left: 0;
+	width: 100%;
+	background-color: #ffffff50;
 }
 pre code {
 	font-family: 'Roboto Mono', monospace;
@@ -181,7 +186,7 @@ aside > :last-child {
 		border-left-color: #9c2254;
 		background-color: #4e2554;
 	}
-	pre {
+	pre, blockquote pre {
 		background-color: #00000080;
 	}
 	th, td {
