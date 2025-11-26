@@ -333,7 +333,7 @@ Since there was no `#[repr]`, all `struct`s were C-compatible:
 `struct` fields could be marked as mutable with `mut`. This affected the rest of the type system: instead of `&` and `&mut` like we have today, there were `&`, `&mut`, and `&const`:
 
 - `&const` was read-only, like today's `&`. You could take `&const` to any binding.
-- `&mut` allowed replacing the entire object like today's `&mut`. You could only take `&mut` to `let mut` bindings or `mut` fields, together known as *mutable memory*.
+- `&mut` allowed replacing the entire object, like today's `&mut`. You could only take `&mut` to `let mut` bindings or `mut` fields, together known as *mutable memory*.
 - `&` allowed modifying `mut` fields, but not immutable fields, and could only be taken to `let` bindings or immutable fields (immutable memory). This is why `&fn` allowed the closure to mutate its environment, for example. This also meant that adding mutability did not monotonically increase capabilities, i.e. `let` vs `let mut` affected [more than a lint](https://internals.rust-lang.org/t/lack-of-mut-in-bindings-as-a-deny-by-default-lint/15818).
 
 `&` was reasonably universal and thus the "default" reference type. Most methods took `&self`, so the receiver parameter was optional. You would often see this [in the documentation](https://web.archive.org/web/20130121044500/http://static.rust-lang.org/doc/std/index.html). On the flip side, associated methods had to be annotated explicitly:
