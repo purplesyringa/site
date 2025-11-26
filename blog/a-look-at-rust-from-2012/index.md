@@ -283,7 +283,7 @@ do try |move sender| {  // Unidirectionally linked
 // Flow never reaches here -- parent task was killed too.
 ```
 
-The decision to remove tasks arguably shaped the Rust's future more than any other change. It eventually allowed Rust to drop the language runtime, allowing it to be used integerated in embedded, OS kernels, and existing C codebases. And now that it's low-level enough, stackful coroutines can be brought back [with library code](https://docs.rs/may/latest/may/).
+The decision to remove tasks arguably shaped the Rust's future more than any other change. It eventually allowed Rust to drop the language runtime, allowing it to be integrated in embedded, OS kernels, and existing C codebases. And now that it's low-level enough, stackful coroutines can be brought back [with library code](https://docs.rs/may/latest/may/).
 
 
 ### Crates
