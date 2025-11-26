@@ -1,7 +1,9 @@
 ---
 title: A look at Rust from 2012
 time: November 25, 2025
-discussion: https://www.reddit.com/r/rust/comments/1p6k380/a_look_at_rust_from_2012/
+discussion:
+    - https://www.reddit.com/r/rust/comments/1p6k380/a_look_at_rust_from_2012/
+    - https://lobste.rs/s/0rvqxt/look_at_rust_from_2012
 intro: |
     Recently I was scrolling through [brson's Rust quote database](https://brson.github.io/rust-qdb/) and stumbled upon a link to the [official Rust tutorial](https://web.archive.org/web/20130118053116/http://static.rust-lang.org/doc/tutorial.html) from the very beginning of 2013. It says Rust 0.6 in the corner, but it lists many things that were removed in 0.6, so it's likely closer to 0.5.
 
