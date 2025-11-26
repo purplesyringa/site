@@ -375,7 +375,7 @@ mod farm {
 
 `&T` wasn't the only kind of references. The other two kinds, `@T` and `~T`, seem to be almost singlehandedly responsible for people's hate of sigils (sharing the throne with [modes](https://smallcultfollowing.com/babysteps/blog/2011/12/08/why-not-modes/), which were already phased out by 0.6).
 
-`@T` corresponded to objects on the task-local garbage-collected heap. Such references could be freely copied, but not sent to other tasks. This is most similar to today's `Rc<T>` and simplied the garbage collector. `~T` was for global, sendable objects with a unique owner, i.e. `Box<T>`. Both could be converted to `&T`, which was not sendable, so the only way to communicate across tasks was with `~T`.
+`@T` corresponded to objects on the task-local garbage-collected heap. Such references could be freely copied, but not sent to other tasks. This is most similar to today's `Rc<T>` and simplified the garbage collector. `~T` was for global, sendable objects with a unique owner, i.e. `Box<T>`. Both could be converted to `&T`, which was not sendable, so the only way to communicate across tasks was with `~T`.
 
 ```rust
 // A fixed-size stack vector
