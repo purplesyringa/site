@@ -242,6 +242,8 @@ for each([2, 4, 8, 5, 16]) |n| {
 
 The `for` loop uses the same mechanism, adding only a `bool` to support `break` and `return` from the loop body. Why did Rust switch to pull iterators? I don't know! I couldn't find any corroborating source, so I'd love to hear your thoughts.
 
+> *Edited on November 26*: [This post on the mailing list](https://web.archive.org/web/20140716172928/https://mail.mozilla.org/pipermail/rust-dev/2013-June/004599.html) seemingly was the catalyst of this change. The argument was that multi-iterator transforms like `zip` didn't work with push iterators, that iterator state couldn't be saved (and would thus eventually be incompatible with async), and that pull iterators could be simulated with coroutines when those were added. Here we are, still waiting for that last bit.
+
 
 ### Tasks
 
