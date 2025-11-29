@@ -291,7 +291,7 @@ This is a lot to take in, so let me put it in code so that we're on the same pag
 ```python
 range_of_expr: dict[Expr, tuple[int, int]] = {}
 variable_nesting: dict[VariableName, int] = {}
-variable_accesses: dict[VariableName, list[tuple[Expr, int]]] = {}
+variable_accesses: dict[VariableName, list[tuple[int, int]]] = {}
 current_location: int = 0
 
 def collect_locations(expr: Expr, nesting: int):
