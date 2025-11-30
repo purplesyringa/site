@@ -256,7 +256,7 @@ Notes:
 
 1. The algorithm is linear even under the presence of collisions. The mapping $(t_2, u_2) \mapsto u'$ will be defined over a smaller set of pairs than with perfect hashes, since the algorithm will abort at some point, but will stay injective.
 
-2. The arguments $u_1, t_1$ to `compare` are not taken into consideration during the proof. `compare` can be transformed to `serialize`, which lists non-entered terms as either hash values or backrefs, followed by an assertion that the serialized strings of all terms within a group are equal. This still takes linear time because the total string length is linear. This algorithm can resolve hash collisions locally by splitting groups, but is more complex and requires more memory.
+2. The arguments $u_1, t_1$ to `compare` are not taken into consideration during the proof. `compare` can be transformed to `serialize`, which lists non-entered terms as either hash values or backrefs, followed by an assertion that the serialized strings of all terms within a group are equal. This still takes linear time because the total string length is linear. This algorithm can resolve hash collisions locally by splitting groups in expected linear time, but is more complex and requires more memory.
 
 3. The only reason a `serialize`-based algorithm needs to be pre-fed with hashes is to determine which terms are pivots -- the exact hashes or even collisions between pivots are inconsequential. Pivots mostly matter because of the assumption that the path $t \leadsto p$ does not contain other pivots. Hashing is an overkill, but we are not aware of any algorithm for detecting pivots without it.
 
