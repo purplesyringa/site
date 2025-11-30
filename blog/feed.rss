@@ -7,10 +7,21 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Wed, 26 Nov 2025 07:29:24 GMT</lastBuildDate>
+		<lastBuildDate>Sun, 30 Nov 2025 12:53:20 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>Faster comparison modulo α-equivalence</title>
+				<link>https://purplesyringa.moe/blog/./faster-comparison-modulo-alpha-equivalence/</link>
+				<description>&lt;p&gt;This article is a technical counterpart of my previous post &lt;a href=&quot;/blog/finding-duplicated-code-with-tools-from-your-cs-course/&quot;&gt;Finding duplicated code with tools from your CS course&lt;/a&gt;. It is deliberately written in a terse manner, and I’m not going to hold your hand. Consider reading the previous post first and coming back here later.&lt;/p&gt;
+</description>
+				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+				
+				<guid>https://purplesyringa.moe/blog/./faster-comparison-modulo-alpha-equivalence/</guid>
+				<pubDate>Sun, 30 Nov 2025 00:00:00 GMT</pubDate>
+			</item>
 		
 			<item>
 				<title>A look at Rust from 2012</title>

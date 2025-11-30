@@ -1,23 +1,9 @@
 ---
 title: Faster comparison modulo α-equivalence
 ogTitle: Faster comparison modulo alpha-equivalence
-time: November 27, 2025
-draft: true
+time: November 30, 2025
 intro: |
-    Given a $\lambda$-calculus expression, suppose we want to quickly find all of its $\alpha$-equivalent subterms, i.e. subexpressions that are syntactically identical up to renaming variables defined inside the expression.
-
-    For example, consider:
-
-    $$
-    \lambda a. (\lambda x. a x) (\lambda t. (\lambda y. a y) (\lambda b. \lambda x. b x))
-    $$
-
-    The terms $\lambda x. a x$ and $\lambda y. a y$ are $\alpha$-equivalent, since $x$ can be renamed to $y$, and both $x$ and $y$ are declared within the corresponding terms. The terms $\lambda x. a x$ and $\lambda x. b x$ are not $\alpha$-equivalent, since $a$ and $b$ are distinct variables declared outside the terms.
-
-    This article describes how to:
-
-    1. Calculate hashes of subterms in $\mathcal{O}(n)$ time, such that hashes of $\alpha$-equivalent subterms are guaranteed to match, and hashes of non-$\alpha$-equivalent subterms don't match with high probability.
-    2. Calculate equivalence classes in $\mathcal{O}(n \log n)$ so that the comparison can be performed without risk of false positive.
+    This article is a technical counterpart of my previous post [Finding duplicated code with tools from your CS course](/blog/finding-duplicated-code-with-tools-from-your-cs-course/). It is deliberately written in a terse manner, and I'm not going to hold your hand. Consider reading the previous post first and coming back here later.
 ---
 
 This article is a technical counterpart of my previous post [Finding duplicated code with tools from your CS course](../finding-duplicated-code-with-tools-from-your-cs-course/). It is deliberately written in a terse manner, and I'm not going to hold your hand. Consider reading the previous post first and coming back here later.
@@ -35,6 +21,8 @@ This article describes:
 2. A linear-time algorithm for validating the resulting hashes for lack of collisions. Together with 1., this produces a reliable classification algorithm with expected linear runtime.
 3. An algorithm for computing $\alpha$-equivalence classes in $\mathcal{O}(n \log n)$ guaranteed time, as a deterministic alternative to 1.+2.
 
+Over the course of the article, we use Python-like pseudocode. A common pattern in the pseudocode is using `dict[...]` to associate temporary data with terms or variables. This should be read as using linear arrays addressed by unique term/variable indices, or alternatively ad-hoc fields in data types, as opposed to a hash table access.
+
 
 ### Prior art
 
@@ -50,7 +38,9 @@ The third algorithm is an adaptation of:
 
 > Lasse Blaauwbroek, Miroslav Olšák, and Herman Geuvers. 2024. [Hashing Modulo Context-Sensitive α-Equivalence](https://arxiv.org/abs/2401.02948). Proc. ACM Program. Lang. 8, PLDI, Article 229 (June 2024), 24 pages. https://doi.org/10.1145/3656459
 
-Our algorithm has the same asymptotic complexity as described in the paper, but is adjusted to non-context-sensitive $\alpha$-equivalence and simplified, which hopefully leads to easier intuitive understanding and faster practical performance.
+Our algorithm has the same asymptotic complexity as described in the paper, but is adjusted to non-context-sensitive $\alpha$-equivalence and simplified, which hopefully leads to easier intuitive understanding and faster practical performance. To guarantee deterministic $\mathcal{O}(n \log n)$ time, we replace hash consing with an approach similar to:
+
+> Michalis Christou, Maxime Crochemore, Tomáš Flouri, Costas S. Iliopoulos, Jan JanoušEk, BořIvoj Melichar, and Solon P. Pissis. 2012. Computing all subtree repeats in ordered trees. Inf. Process. Lett. 112, 24 (December, 2012), 958–962. https://doi.org/10.1016/j.ipl.2012.09.001
 
 
 ### Hashing
@@ -151,6 +141,12 @@ calculate_hashes(root)
 The probabilistic guarantees of this scheme depend entirely on the choice of the hash. The collision probability of rolling hashes typically scales linearly with the length of the input. In this case, the length of the input exactly matches the number of subterms $n$, and each element of the input is a $\log n + \mathcal{O}(1)$-bit number (assuming binary logarithm from now on).
 
 For polynomial hashes, the collision probability is $\le \frac{n - 1}{p}$, assuming $b$ is chosen randomly. If $b$ is instead fixed and $p$ is chosen randomly, the probability is $\le C \frac{n \log n}{p}$, where $C$ depends on how wide the range $p$ is chosen from is. For Rabin fingerprints, the probability is $\lesssim \frac{n \log n}{2^{\deg p(x)}}$.
+
+Since there are $\frac{n (n - 1)}{2}$ possibly colliding pairs of terms, the probability of at least one collision among all terms is, for polynomial hashes, bounded from above by:
+
+$$
+P \le \frac{n - 1}{p} \cdot \frac{n (n - 1)}{2} \le \frac{n^3}{2p}.
+$$
 
 
 ### Verification
@@ -267,102 +263,148 @@ Notes:
 
 ### Classes
 
-To compute equivalence classes, we use the opposite approach of the one we used for hashing. We start with de Bruijn indices, compute the equivalence class of the root term using hash consing, and recurse, replacing de Bruijn indices with names as necessary.
+The high-level overview of our deterministic algorithm for computing equivalence classes is as follows.
 
-```python
-def rec(t: Term) -> int:
-    classes[t] = calculate_class(t)
-    match t:
-        case Variable(_):
-            pass
-        case Application(t1, t2):
-            rec(t1)
-            rec(t2)
-        case Abstraction(x, u):
-            replace_mentions(x, u)
-            rec(u)
+We start with the root term $t$ and generate an auxiliary forest $F$ of terms, where some variable accesses use names and others use indices, such that for each non-unique subterm $u$ of $t$ (i.e. a subterm that has an $\alpha$-equivalent copy in $t$), there is a subtree $u'$ within $F$ that syntactically matches the locally nameless form of $u$. For example, for $t = (\lambda x. x \, x) (\lambda y. y \, y)$, $F$ might contain three root terms: $(\lambda. \underline1 \, \underline1) (\lambda. \underline1 \, \underline1)$, $x$, and $y$. Two distinct terms $u_1$, $u_2$ are $\alpha$-equivalent if and only if they both have $u_1'$, $u_2'$, and the corresponding subtrees $u_1'$, $u_2'$ are equal. After $F$ is built, we apply a general-purpose algorithm to compute syntactic equivalence classes of subtrees of $F$, and then lift those classes back to $t$.
 
-# Not implemented: calculate the equivalence class of `t` with hash consing.
-def calculate_class(t: Term) -> int: ...
+The algorithms we propose build $F$ in $\mathcal{O}(n \log n)$ time, ensure $F$ has $\mathcal{O}(n \log n)$ nodes, and compute syntactic equivalence classes in $\mathcal{O}(\left\lvert F \right\rvert) = \mathcal{O}(n \log n)$.
 
-# Not implemented: replace all de Bruijn indices corresponding to `x` within `t` with variable name
-# of `x`.
-def replace_mentions(x: Variable, t: Term): ...
-```
+Our algorithm for building $F$ is recursive. It receives a term $t$ in a locally nameless representation (initially just the root term) and guarantees that all of its non-unique subterms will have locally nameless forms in $F$ on exit.
 
-The time complexity of `calculate_class` is $\mathcal{O} \left( \left\lvert t \right\rvert \right)$, where $\left\lvert \cdot \right\rvert$ denotes the number of subterms of $t$, resulting in quadratic time complexity in total.
-
-To fix this, we adjust `rec` to compute not just the class of $t$, but also of some subterms $u$ of $t$, at no additional asymptotic cost, with a trick described below. In particular, we ensure that the classes of all subterms $u$ such that $\left\lvert u \right\rvert \ge \frac12 \left\lvert t \right\rvert$ are guaranteed to be computed. We then recurse into unhandled subterms, which are guaranteed to have size $\left\lvert u \right\rvert < \frac12 \left\lvert t \right\rvert$.
-
-Since $\left\lvert t \right\rvert$ is at worst halved during each recursive invocation, there are at most $\log n$ levels of recursion. Since each subterm only contributes $\mathcal{O}(1)$ amortized to the time complexity per each recursion invocation it's part of, there can be at most $\log n$ such invocations. Hence the total time complexity is $\mathcal{O}(n \log n)$.
-
-The rest of the section explains how to efficiently compute classes of all "large" subterms of $t$.
-
-First, we adjust `calculate_class` to save the hash-consed classes of all subterms of $t$ in `aux_class`. Not all of those classes will be valid answers: for example, in $\lambda. \lambda. a \, \underline1$, the class of the first subterm will be computed as the class of string $\lambda. a \, \underline1$, which has a dangling de Bruijn index ($\lambda. a x$ would be correct).
-
-However, these classes are guaranteed to be valid for all *locally closed* subterms, i.e. subterms without dangling indices. Such subterms can access both variables declared outside $t$ (by name) and variables declared inside themselves (by index), but not variables declared inbetween. To detect locally closed subterms, we calculate the topmost variable that each subterm accesses by the de Bruijn index (`max_index`). If, for a given subterm $u$, the top variable is within $u$, we know $u$ is locally closed.
-
-Now that we've handled all locally closed subterms, it turns out that large non-locally-closed subterms are guaranteed to be globally unique, and thus we can assign an anonymous equivalence class to them without relying on hash consing. Indeed: each non-locally-closed subterm $u$ refers to variables defined within $t$, and can thus only be $\alpha$-equivalent to other subterms of $t$. But since $\left\lvert u \right\rvert \ge \frac12 \left\lvert t \right\rvert$, there isn't enough space within $t$ for another subterm of matching size.
-
-The pseudo-code for the complete algorithm is shown below.
+We start by adding an exact copy $t'$ of $t$ to $F$. We map $u \mapsto u'$ for all *locally closed* subterms $u$ of $t$, i.e. subterms that only access variables free in $t$ or bound in $u$; this includes $t$ itself, mapping $t \mapsto t'$. Among non-locally-closed subterms, we recognize that "large" subterms of size $\left\lvert u \right\rvert \ge \frac12 \left\lvert t \right\rvert$ are guaranteed to be unique and don't have to be mapped, since their $\alpha$-equivalent copies could only be located within $t$, but there isn't enough space within $t$ for another subterm of matching size. This leaves "small" non-locally-closed subterms. To cover them, we adjust variable mentions so that the top-level subterms of this kind are in the locally nameless representation and recurse.
 
 ```python expansible
 size: dict[Term, int] = {}
-aux_class: dict[Term, int] = {}
 max_index: dict[Term, int] = {}
-out_index: dict[Term, int] = {}
+forest: list[Term] = []
+term_to_node: dict[Term, Term] = {}
 
-def rec(t: Term) -> int:
-    dfs1(t)
-    dfs2(t, size[t])
+def build_forest(t: Term) -> int:
+    t_prime = deep_copy(t)
+    forest.append(t_prime)
+    compute_term_properties(t)
+    recurse(t, t_prime, size[t])
 
-def dfs1(t: Term):
+def compute_term_properties(t: Term):
     match t:
         case Variable(x):
             size[t] = 1
-            aux_class[t] = hash_cons(x)
             if x is a de Bruijn index:
                 max_index[t] = x
             else:  # x is a variable name
                 max_index[t] = -1
         case Abstraction(x, u):
-            dfs1(u)
+            compute_term_properties(u)
             size[t] = 1 + size[u]
-            aux_class[t] = hash_cons((aux_class[u],))
             max_index[t] = max_index[u] - 1
         case Application(t1, t2):
-            dfs1(t1)
-            dfs1(t2)
+            compute_term_properties(t1)
+            compute_term_properties(t2)
             size[t] = 1 + size[t1] + size[t2]
-            aux_class[t] = hash_cons((aux_class[t1], aux_class[t2]))
             max_index[t] = max(max_index[t1], max_index[t2])
 
-def dfs2(t: Term, root_size: int):
+def recurse(t: Term, t_prime: Term, root_size: int):
     if max_index[t] < 0:  # locally closed
-        out_class[t] = aux_class[t]
+        term_to_node[t] = t_prime
     else:
-        if 2 * size[t] < root_size:
-            rec(t)
+        if 2 * size[t] < root_size:  # small
+            build_forest(t)
             return
-        out_class[t] = anonymous_class()
+
+    match (t, t_prime):
+        case (Abstraction(x, u), Abstraction(_, u_prime)):
+            replace_mentions(x)  # not shown: replace all mentions of x in t with names
+            recurse(u, u_prime, root_size)
+        case (Application(u1, u2), Application(u1_prime, u2_prime)):
+            recurse(u1, u1_prime, root_size)
+            recurse(u2, u2_prime, root_size)
+
+build_forest(root_t)
+```
+
+Since $\left\lvert t \right\rvert$ is at worst halved during each recursive invocation, there are at most $\log n$ levels of recursion. Excluding recursion, each invocation of `build_forest` takes $\mathcal{O}(\left\lvert t \right\rvert)$ time, which can be amortized as $\mathcal{O}(1)$ per subterm $u$ of $t$. Since each $u$ only takes part in $\mathcal{O}(\log n)$ recursive invocations, the total time complexity is $\mathcal{O}(n \log n)$, implying $\left\lvert F \right\rvert = \mathcal{O}(n \log n)$.
+
+To calculate syntactic equivalence classes of subterms of $F$, we partition subterms by subtree size and iterate over groups in order of increasing size. Within each group, the equivalence classes of direct descendants of terms are already known, so each term can be associated with a short finite vector, such that syntactically equal terms have equal vectors. Further partitioning terms within the group by vectors using a radix sort-like approach produces subgroups corresponding to equivalence classes.
+
+```python expansible
+@dataclass
+class SizeGroup:
+    # variable accesses are not stored explicitly
+    abstractions: list[Term]
+    applications: list[Term]
+
+by_size: list[SizeGroup] = [SizeGroup([], []) for _ in range(n + 1)]
+node_classes: dict[Term, int] = {}
+next_class: int = n_variables * 2  # leave space to easily number variable accesses
+
+def populate_size_groups(t: Term) -> int:
+    match t:
+        case Variable(x):
+            # Populate classes of leaf nodes immediately.
+            if x is a de Bruijn index:
+                node_classes[t] = x
+            else:  # x is a variable name, assuming an integer from 0 to `n_variables - 1`
+                node_classes[t] = n_variables + x
+            return 1
+        case Abstraction(_, u):
+            size = 1 + populate_size_groups(u)
+            by_size[size].abstractions.append(t)
+            return size
+        case Application(t1, t2):
+            size = 1 + populate_size_groups(t1) + populate_size_groups(t2)
+            by_size[size].applications.append(t)
+            return size
+
+for t in forest:
+    populate_size_groups(t)
+
+temporary_storage: list[list[Term]] = []
+
+def group_by(nodes: list[Term], key: Callable[[Term], int]) -> list[list[Term]]:
+    present_keys: list[int] = []
+    for t in nodes:
+        k = key(t)
+        while k >= len(temporary_storage):  # amortized O(|F|)
+            temporary_storage.append([])
+        if not temporary_storage[k]:
+            present_keys.append(k)
+        temporary_storage[k].append(t)
+    result = [temporary_storage[k] for k in present_keys]
+    for k in present_keys:
+        temporary_storage[k] = []
+    return result
+
+for group in by_size:
+    for subgroup in group_by(group.abstractions, lambda t: node_classes[t.body]):
+        for t in subgroup:
+            node_classes[t] = next_class
+        next_class += 1
+
+    for subgroup1 in group_by(group.applications, lambda t: node_classes[t.function]):
+        for subgroup2 in group_by(subgroup1, lambda t: node_classes[t.argument]):
+            for t in subgroup2:
+                node_classes[t] = next_class
+            next_class += 1
+```
+
+Term classes can then be populated from node classes.
+
+```python
+term_classes: dict[Term, int] = {}
+
+def populate_term_classes(t: Term):
+    if t in term_to_node:
+        term_classes[t] = node_classes[term_to_node[t]]
+    else:  # guaranteed to be unique (non-locally-closed and "big")
+        term_classes[t] = next_class
+        next_class += 1
 
     match t:
-        case Variable(_):
-            pass
-        case Abstraction(x, u):
-            replace_mentions(x, u)
-            dfs2(u, root_size)
+        case Abstraction(_, u):
+            populate_term_classes(u)
         case Application(t1, t2):
-            dfs2(t1, root_size)
-            dfs2(t2, root_size)
+            populate_term_classes(t1)
+            populate_term_classes(t2)
 
-@functools.cache  # memoize
-def hash_cons(arg) -> int:
-    return anonymous_class()
-
-last_class = 0
-def anonymous_class() -> int:
-    global last_class
-    last_class += 1
-    return last_class
+populate_term_classes(root_t)
 ```

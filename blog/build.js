@@ -33,7 +33,7 @@ image.print(
 	100,
 	100,
 	{
-		text: locale === "en_US" ? parsedYamlHeader.title : "purplesyringa's blog",
+		text: locale === "en_US" ? (parsedYamlHeader.ogTitle || parsedYamlHeader.title) : "purplesyringa's blog",
 		alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
 		alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE,
 	},
