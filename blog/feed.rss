@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Sun, 30 Nov 2025 12:53:20 GMT</lastBuildDate>
+		<lastBuildDate>Sun, 30 Nov 2025 12:54:36 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -85,7 +85,7 @@
 			<item>
 				<title>JVM exceptions are weird: a decompiler perspective</title>
 				<link>https://purplesyringa.moe/blog/./jvm-exceptions-are-weird-a-decompiler-perspective/</link>
-				<description>&lt;p&gt;Some time ago, I played around with decompiling Java class files in a more efficient manner than traditional solutions like &lt;a href=&quot;https://github.com/Vineflower/vineflower&quot;&gt;Vineflower&lt;/a&gt; allow. Eventually, I wrote &lt;a href=&quot;../recovering-control-flow-structures-without-cfgs/&quot;&gt;an article&lt;/a&gt; on my approach to decompiling control flow, which was a great performance boost for my prototype.&lt;/p&gt;
+				<description>&lt;p&gt;Some time ago, I played around with decompiling Java class files in a more efficient manner than traditional solutions like &lt;a href=&quot;https://github.com/Vineflower/vineflower&quot;&gt;Vineflower&lt;/a&gt; allow. Eventually, I wrote &lt;a href=&quot;/blog/recovering-control-flow-structures-without-cfgs/&quot;&gt;an article&lt;/a&gt; on my approach to decompiling control flow, which was a great performance boost for my prototype.&lt;/p&gt;
 &lt;p&gt;At the time, I believed that this method can be straightforwardly extended to handling exceptional control flow, i.e. decompiling &lt;code&gt;try&lt;/code&gt;…&lt;code&gt;catch&lt;/code&gt; blocks. In retrospect, I should’ve known it wouldn’t be so easy. It turns out that there are many edge cases, ranging from strange &lt;code&gt;javac&lt;/code&gt; behavior to consequences of the JVM design and the class file format, that significantly complicate this. In this post, I’ll cover these details, why simple solutions don’t work, and what approach I’ve eventually settled on.&lt;/p&gt;
 </description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
@@ -176,7 +176,7 @@
 			<item>
 				<title>Splitting independent variables without SSA</title>
 				<link>https://purplesyringa.moe/blog/./splitting-independent-variables-without-ssa/</link>
-				<description>&lt;p&gt;I’m making progress on the Java decompiler I’ve mentioned &lt;a href=&quot;../recovering-control-flow-structures-without-cfgs/&quot;&gt;in a previous post&lt;/a&gt;, and I want to share the next couple of tricks I’m using to speed it up.&lt;/p&gt;
+				<description>&lt;p&gt;I’m making progress on the Java decompiler I’ve mentioned &lt;a href=&quot;/blog/recovering-control-flow-structures-without-cfgs/&quot;&gt;in a previous post&lt;/a&gt;, and I want to share the next couple of tricks I’m using to speed it up.&lt;/p&gt;
 &lt;p&gt;Java bytecode is a stack-based language, and so data flow is a bit cursed, especially when the control flow is complicated. I need to analyze data flow globally for expression inlining and some other stuff. &lt;a href=&quot;https://en.wikipedia.org/wiki/Static_single-assignment_form&quot;&gt;Single-static assignment&lt;/a&gt; produces basically everything I need as a byproduct… but it’s not very fast.&lt;/p&gt;
 &lt;p&gt;For one thing, it typically mutates the IR instead of returning data separately, and the resulting IR has imperative code mixed with functional code, which is a little unpleasant to work with. SSA has &lt;a href=&quot;https://bernsteinbear.com/blog/ssa/&quot;&gt;multiple implementations&lt;/a&gt; with very different performance characteristics and conditions, and each of them forces me to make a tradeoff I’m not positive about.&lt;/p&gt;
 </description>
@@ -292,7 +292,7 @@
 			<item>
 				<title>Bringing faster exceptions to Rust</title>
 				<link>https://purplesyringa.moe/blog/./bringing-faster-exceptions-to-rust/</link>
-				<description>&lt;p&gt;Three months ago, I wrote about why &lt;a href=&quot;../you-might-want-to-use-panics-for-error-handling/&quot;&gt;you might want to use panics for error handling&lt;/a&gt;. Even though it’s a catchy title, panics are hardly suited for this goal, even if you try to hack around with macros and libraries. The real star is &lt;em&gt;the unwinding mechanism&lt;/em&gt;, which powers panics. This post is the first in a series exploring what unwinding is, how to speed it up, and how it can benefit Rust and C++ programmers.&lt;/p&gt;
+				<description>&lt;p&gt;Three months ago, I wrote about why &lt;a href=&quot;/blog/you-might-want-to-use-panics-for-error-handling/&quot;&gt;you might want to use panics for error handling&lt;/a&gt;. Even though it’s a catchy title, panics are hardly suited for this goal, even if you try to hack around with macros and libraries. The real star is &lt;em&gt;the unwinding mechanism&lt;/em&gt;, which powers panics. This post is the first in a series exploring what unwinding is, how to speed it up, and how it can benefit Rust and C++ programmers.&lt;/p&gt;
 </description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				<comments>https://www.reddit.com/r/rust/comments/1gl050z/bringing_faster_exceptions_to_rust/</comments>

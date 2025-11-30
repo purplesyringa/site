@@ -2,7 +2,7 @@
 title: Splitting independent variables without SSA
 time: June 15, 2025
 intro: |
-    I'm making progress on the Java decompiler I've mentioned [in a previous post](../recovering-control-flow-structures-without-cfgs/), and I want to share the next couple of tricks I'm using to speed it up.
+    I'm making progress on the Java decompiler I've mentioned [in a previous post](/blog/recovering-control-flow-structures-without-cfgs/), and I want to share the next couple of tricks I'm using to speed it up.
 
     Java bytecode is a stack-based language, and so data flow is a bit cursed, especially when the control flow is complicated. I need to analyze data flow globally for expression inlining and some other stuff. [Single-static assignment](https://en.wikipedia.org/wiki/Static_single-assignment_form) produces basically everything I need as a byproduct... but it's not very fast.
 

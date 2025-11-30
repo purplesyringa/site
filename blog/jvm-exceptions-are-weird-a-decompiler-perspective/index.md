@@ -2,7 +2,7 @@
 title: "JVM exceptions are weird: a decompiler perspective"
 time: November 2, 2025
 intro: |
-    Some time ago, I played around with decompiling Java class files in a more efficient manner than traditional solutions like [Vineflower](https://github.com/Vineflower/vineflower) allow. Eventually, I wrote [an article](../recovering-control-flow-structures-without-cfgs/) on my approach to decompiling control flow, which was a great performance boost for my prototype.
+    Some time ago, I played around with decompiling Java class files in a more efficient manner than traditional solutions like [Vineflower](https://github.com/Vineflower/vineflower) allow. Eventually, I wrote [an article](/blog/recovering-control-flow-structures-without-cfgs/) on my approach to decompiling control flow, which was a great performance boost for my prototype.
 
     At the time, I believed that this method can be straightforwardly extended to handling exceptional control flow, i.e. decompiling `try`..`catch` blocks. In retrospect, I should've known it wouldn't be so easy. It turns out that there are many edge cases, ranging from strange `javac` behavior to consequences of the JVM design and the class file format, that significantly complicate this. In this post, I'll cover these details, why simple solutions don't work, and what approach I've eventually settled on.
 discussion:
