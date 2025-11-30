@@ -75,7 +75,7 @@ $$
 
 A character at index $i$ can be changed from $x$ to $y$ by adding $(y - x) b^i$ to the hash value. The hash of $\lambda. \mathrm{repr}(t)$ and the "patch" replacing each mention of $x$ with a de Bruijn index can be computed separately and then merged at the abstraction, since the offset of a given variable mention within the corresponding abstraction can be calculated efficiently, and patches can be merged by adding them together.
 
-An implementation of the algorithm is reproduced below:
+An implementation of the algorithm is reproduced below. To avoid handling parentheses, we implicitly translate terms to postfix notation, denoting calls with `!`.
 
 ```python expansible
 range_of_expr: dict[Expr, tuple[int, int]] = {}
@@ -92,16 +92,16 @@ def collect_locations(expr: Expr, nesting: int):
             current_location += 1
             variable_accesses[x].append((start, nesting - variable_nesting[x]))
         case Abstraction(x, body):
-            # \, body
-            current_location += 1
+            # body, \
             variable_nesting[x] = nesting
             variable_accesses[x] = []
             collect_locations(body, nesting + 1)
-        case Application(f, a):
-            # length, f, a
             current_location += 1
+        case Application(f, a):
+            # f, a, !
             collect_locations(f, nesting)
             collect_locations(a, nesting)
+            current_location += 1
     end = current_location
     range_of_expr[expr] = (start, end)
 
@@ -115,12 +115,12 @@ def shift(h: int, count: int) -> int:
         powers_of_b.append(powers_of_b[-1] * b % p)
     return h * powers_of_b[count] % p
 
-# Functions capable of hashing variable names, de Bruijn indices, lengths, and the character \
-# without collisions.
-def hash_lambda() -> int: return 0
-def hash_variable_name(x: VariableName) -> int: return x.int_id * 3 + 1
-def hash_de_bruijn_index(i: int) -> int: return i * 3 + 2
-def hash_length(l: int) -> int: return l * 3 + 3
+# Functions capable of hashing variable names, de Bruijn indices, and the characters \, ! without
+# collisions.
+def hash_lambda() -> int: return 1
+def hash_call() -> int: return 2
+def hash_variable_name(x: VariableName) -> int: return x.int_id * 2 + 3
+def hash_de_bruijn_index(i: int) -> int: return i * 2 + 4
 
 def calculate_hashes(expr: Expr) -> int:
     start, end = range_of_expr[expr]
@@ -128,7 +128,7 @@ def calculate_hashes(expr: Expr) -> int:
         case Variable(x):
             h = hash_variable_name(x)
         case Abstraction(x, body):
-            h = hash_lambda() + shift(calculate_hashes(body), 1)
+            h = calculate_hashes(body) + shift(hash_lambda(), end - start - 1)
             for location, de_bruijn_index in variable_accesses[x]:
                 h += shift(
                     hash_de_bruijn_index(de_bruijn_index) - hash_variable_name(x),
@@ -137,9 +137,9 @@ def calculate_hashes(expr: Expr) -> int:
                 h %= p
         case Application(f, a):
             h = (
-                hash_length(end - start)
-                + shift(calculate_hashes(f), 1)
+                calculate_hashes(f)
                 + shift(calculate_hashes(a), range_of_expr[a][0] - start)
+                + shift(hash_call(), end - start - 1)
             )
     h %= p
     print("The hash of", expr, "is", h)
