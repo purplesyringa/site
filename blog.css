@@ -65,6 +65,9 @@ pre code {
 	font-family: 'Roboto Mono', monospace;
 	color: #000000;
 }
+pre * {
+	-webkit-text-size-adjust: 100%; /* fix different font size in nested spans in mobile Safari */
+}
 
 .expansible-code {
 	position: relative;
