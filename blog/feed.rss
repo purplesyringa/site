@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Mon, 15 Dec 2025 06:06:11 GMT</lastBuildDate>
+		<lastBuildDate>Mon, 15 Dec 2025 21:01:32 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -22,7 +22,7 @@
 &lt;li&gt;There are almost no opaque hashes, meaning that it’s easier to make a hypothetical alternative Rust compiler produce identical mangled names.&lt;/li&gt;
 &lt;li&gt;Mangled names no longer include characters like &lt;code&gt;$&lt;/code&gt; and &lt;code&gt;.&lt;/code&gt;, which some platforms don’t support.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;That’s pretty interesting, but not very deep. I want to highlight some non-obious details that weren’t mentioned in the post.&lt;/p&gt;
+&lt;p&gt;That’s pretty interesting, but not very deep. I want to highlight some non-obvious details that weren’t mentioned in the post.&lt;/p&gt;
 </description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				

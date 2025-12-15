@@ -10,7 +10,7 @@ intro: |
     - There are almost no opaque hashes, meaning that it's easier to make a hypothetical alternative Rust compiler produce identical mangled names.
     - Mangled names no longer include characters like `$` and `.`, which some platforms don't support.
 
-    That's pretty interesting, but not very deep. I want to highlight some non-obious details that weren't mentioned in the post.
+    That's pretty interesting, but not very deep. I want to highlight some non-obvious details that weren't mentioned in the post.
 ---
 
 :::aside
@@ -29,19 +29,19 @@ About a month ago, [Rust switched to symbol mangling v0 on nightly](https://blog
 - There are almost no opaque hashes, meaning that it's easier to make a hypothetical alternative Rust compiler produce identical mangled names.
 - Mangled names no longer include characters like `$` and `.`, which some platforms don't support.
 
-That's pretty interesting, but not very deep. I want to highlight some non-obious details that weren't mentioned in the post.
+That's pretty interesting, but not very deep. I want to highlight some non-obvious details that weren't mentioned in the post.
 
 
 ### Why v0?
 
 Why is the old mangling called `legacy` and the new mangling is called `v0`, instead of the more sensible `v1` and `v2`?
 
-The new standard includes the mangling version in the symbol name. If the scheme ever needs to updated, the general encoding structure will be reused and the version field will be incremented. The distinction is not between old and new schemes, but rather between the pre-versioning and post-versioning eras. The current version is 0.
+The new standard includes the mangling version in the symbol name. If the scheme ever needs to be updated, the general encoding structure will be reused and the version field will be incremented. The distinction is not between old and new schemes, but rather between the pre-versioning and post-versioning eras. The current version is 0.
 
 
 ### Punycode
 
-[Punycode](https://en.wikipedia.org/wiki/Punycode) is used to fit identifiers with Unicode into the `[a-zA-Z0-9_]` range. You're likely familar with Punycode from DNS, which only supports pure-ASCII hostnames. For example, `münchen.de` is encoded as `xn--mnchen-3ya.de`.
+[Punycode](https://en.wikipedia.org/wiki/Punycode) is used to fit identifiers with Unicode into the `[a-zA-Z0-9_]` range. You're likely familiar with Punycode from DNS, which only supports pure-ASCII hostnames. For example, `münchen.de` is encoded as `xn--mnchen-3ya.de`.
 
 Unlike `base64`, Punycode keeps the ASCII portion of the string readable (`mnchen` in the previous example) and only encodes the non-ASCII subsequence. This improves human readability of mangled symbols. Punycode is also highly optimized for space.
 
@@ -113,7 +113,7 @@ Since `STATIC` isn't monomorphized, it will be named `<_ as Trait<_>>::f::STATIC
 
 ### Lifetimes
 
-Due to HRTB, two types can be distinct in runtime, but only differ only in lifetimes. Compare:
+Due to HRTB, two types can be distinct in runtime, but only differ in lifetimes. Compare:
 
 ```rust
 type T1 = for<'a> fn(&'a mut i32, &'a mut i32);
