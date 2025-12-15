@@ -451,7 +451,7 @@ Unfortunately, we had to use hashes, which means that there's a small chance of 
 
 4. If you don't like randomness, there's a deterministic algorithm producing collision-free hashes in guaranteed $\mathcal{O}(n \log n)$ time.
 
-The algorithms in 3. and 4. are tricky, and this post is already quite long, so I'll cover them in a later, more technical post. [Subscribe to my RSS](../feed.rss) if you don't want to miss it.
+The algorithms in 3. and 4. are tricky, and this post is already quite long, so they are covered in a more technical post: [Faster comparison modulo $\alpha$-equivalence](../faster-comparison-modulo-alpha-equivalence/).
 
 
 ### References
