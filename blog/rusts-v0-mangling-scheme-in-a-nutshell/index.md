@@ -1,6 +1,9 @@
 ---
 title: Rust's v0 mangling scheme in a nutshell
 time: December 15, 2025
+discussion:
+  - https://www.reddit.com/r/rust/comments/1pn08ja/v0_mangling_scheme_in_a_nutshell/
+  - https://lobste.rs/s/khozwx/rust_s_v0_mangling_scheme_nutshell
 intro: |
     Functions in binary files need to have unique names, so Rust needs to decide what to call its functions and `static`s. This format needs to be standardized so that debuggers and profilers can recover the full names (e.g. `alloc::vec::Vec` instead of just `Vec`).
 

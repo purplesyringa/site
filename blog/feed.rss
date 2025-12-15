@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Mon, 15 Dec 2025 21:01:32 GMT</lastBuildDate>
+		<lastBuildDate>Mon, 15 Dec 2025 21:21:37 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -25,7 +25,7 @@
 &lt;p&gt;That’s pretty interesting, but not very deep. I want to highlight some non-obvious details that weren’t mentioned in the post.&lt;/p&gt;
 </description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				
+				<comments>https://www.reddit.com/r/rust/comments/1pn08ja/v0_mangling_scheme_in_a_nutshell/</comments>
 				<guid>https://purplesyringa.moe/blog/./rusts-v0-mangling-scheme-in-a-nutshell/</guid>
 				<pubDate>Mon, 15 Dec 2025 00:00:00 GMT</pubDate>
 			</item>
