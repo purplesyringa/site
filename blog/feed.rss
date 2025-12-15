@@ -7,10 +7,28 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Sun, 30 Nov 2025 12:54:36 GMT</lastBuildDate>
+		<lastBuildDate>Mon, 15 Dec 2025 06:06:11 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>Rust&#39;s v0 mangling scheme in a nutshell</title>
+				<link>https://purplesyringa.moe/blog/./rusts-v0-mangling-scheme-in-a-nutshell/</link>
+				<description>&lt;p&gt;Functions in binary files need to have unique names, so Rust needs to decide what to call its functions and &lt;code&gt;static&lt;/code&gt;s. This format needs to be standardized so that debuggers and profilers can recover the full names (e.g. &lt;code&gt;alloc::vec::Vec&lt;/code&gt; instead of just &lt;code&gt;Vec&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;About a month ago, &lt;a href=&quot;https://blog.rust-lang.org/2025/11/20/switching-to-v0-mangling-on-nightly/&quot;&gt;Rust switched to symbol mangling v0 on nightly&lt;/a&gt;. The linked announcement describes some benefits of the new scheme compared to the previous ad-hoc hack:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Mangled names of generic functions now include generic parameters.&lt;/li&gt;
+&lt;li&gt;There are almost no opaque hashes, meaning that it’s easier to make a hypothetical alternative Rust compiler produce identical mangled names.&lt;/li&gt;
+&lt;li&gt;Mangled names no longer include characters like &lt;code&gt;$&lt;/code&gt; and &lt;code&gt;.&lt;/code&gt;, which some platforms don’t support.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;That’s pretty interesting, but not very deep. I want to highlight some non-obious details that weren’t mentioned in the post.&lt;/p&gt;
+</description>
+				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+				
+				<guid>https://purplesyringa.moe/blog/./rusts-v0-mangling-scheme-in-a-nutshell/</guid>
+				<pubDate>Mon, 15 Dec 2025 00:00:00 GMT</pubDate>
+			</item>
 		
 			<item>
 				<title>Faster comparison modulo α-equivalence</title>
