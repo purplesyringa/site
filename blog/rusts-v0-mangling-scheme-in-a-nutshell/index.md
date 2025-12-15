@@ -41,9 +41,7 @@ The new standard includes the mangling version in the symbol name. If the scheme
 
 ### Punycode
 
-The new scheme supports Unicode identifiers. The surface Rust language doesn't, but if this ever changes, the mangling side will be ready.
-
-[Punycode](https://en.wikipedia.org/wiki/Punycode) is used to fit all of Unicode in the `[a-zA-Z0-9_]` range. You're likely familar with Punycode from DNS, which only supports pure-ASCII hostnames. For example, `münchen.de` is encoded as `xn--mnchen-3ya.de`.
+[Punycode](https://en.wikipedia.org/wiki/Punycode) is used to fit identifiers with Unicode into the `[a-zA-Z0-9_]` range. You're likely familar with Punycode from DNS, which only supports pure-ASCII hostnames. For example, `münchen.de` is encoded as `xn--mnchen-3ya.de`.
 
 Unlike `base64`, Punycode keeps the ASCII portion of the string readable (`mnchen` in the previous example) and only encodes the non-ASCII subsequence. This improves human readability of mangled symbols. Punycode is also highly optimized for space.
 
