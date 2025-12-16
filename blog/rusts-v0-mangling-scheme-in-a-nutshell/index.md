@@ -51,7 +51,7 @@ Unlike `base64`, Punycode keeps the ASCII portion of the string readable (`mnche
 
 ### Base-62
 
-Most integers (`const` generic parameters, array sizes, crate IDs, etc.) are encoded in base-62 for compactness. As an exception, bytes of `const` values are encoded in hex for stream parsing, and identifiers are prefixed with their length in base 10: since identifiers can't start with decimal digits, this saves a byte by avoiding a separator.
+Most integers (array sizes, crate IDs, etc.) are encoded in base-62 for compactness. As an exception, bytes of `const` values are encoded in hex for stream parsing, and identifiers are prefixed with their length in base 10: since identifiers can't start with decimal digits, this saves a byte by avoiding a separator.
 
 
 ### Backrefs
