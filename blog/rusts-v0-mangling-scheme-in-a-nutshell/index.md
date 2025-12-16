@@ -49,9 +49,9 @@ The new standard includes the mangling version in the symbol name. If the scheme
 Unlike `base64`, Punycode keeps the ASCII portion of the string readable (`mnchen` in the previous example) and only encodes the non-ASCII subsequence. This improves human readability of mangled symbols. Punycode is also highly optimized for space.
 
 
-### Base-58
+### Base-62
 
-Most integers (`const` generic parameters, array sizes, crate IDs, etc.) are encoded in base-58 for compactness. As an exception, identifiers are prefixed with their length in base 10: since identifiers can't start with decimal digits, this saves a byte by avoiding a separator.
+Most integers (`const` generic parameters, array sizes, crate IDs, etc.) are encoded in base-62 for compactness. As an exception, bytes of `const` values are encoded in hex for stream parsing, and identifiers are prefixed with their length in base 10: since identifiers can't start with decimal digits, this saves a byte by avoiding a separator.
 
 
 ### Backrefs
