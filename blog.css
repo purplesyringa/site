@@ -27,7 +27,8 @@ math {
 	color: #8d00d9;
 }
 eqn {
-	overflow: auto;
+	overflow-x: auto;
+	overflow-y: hidden;
 }
 
 .table-wrapper {
