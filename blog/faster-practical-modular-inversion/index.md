@@ -51,7 +51,7 @@ Lemire's benchmark seems to be skewed by the choice of the compiler (GCC vs Clan
 If you want to get the fastest implementation, I suggest you inspect the assembly more closely than me, because I have no idea what's going on.
 :::
 
-I will refrain from posting precise benchmarking data, because something strange is going on with the Lemire's results and I don't want to add to the mess. I've measured that my implementation of the algorithm is $1.3$ -- $2$ times faster than the textbook implementation on average, even on M1, but you may see a completely different picture if your compiler produces slightly different codegen.
+I will refrain from posting precise benchmarking data, because something strange is going on with the Lemire's results and I don't want to add to the mess. I've measured that my implementation of the algorithm is $1.3$ -- $2$ times faster than the textbook implementation on average, even on M4, but you may see a completely different picture if your compiler produces slightly different codegen.
 
 <aside-inline-here />
 
