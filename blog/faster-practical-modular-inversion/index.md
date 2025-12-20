@@ -544,7 +544,7 @@ $$
 a_0 x + b_0 y = \mathrm{gcd}(a_0, b_0)
 $$
 
-Luckily, our $v$ is no longer a fraction, but rather a remainder modulo $b_0$, so we can substitute $x = v$. $y$ can then be computed from the equation:
+Luckily, our $v$ is no longer a fraction, but rather a remainder modulo $b_0$, so we can substitute $x = v \bmod b_0$. $y$ can then be computed from the equation:
 
 $$
 y = \frac{\mathrm{gcd}(a_0, b_0) - a_0 x}{b_0} = \frac{b - a_0 x}{b_0}
@@ -556,7 +556,7 @@ $$
 y = j \cdot (b - a_0 x) \pmod{2^{64}}
 $$
 
-Despite this complexity, I believe this method can be faster than the extended Euclidean algorithm. The auxiliary logic takes constant time, except for computing $h$ in $\mathcal{O}(\log k) = \mathcal{O}(\log \log a)$, which is still pretty good.
+Despite this complexity, I believe this method can be faster than the extended Euclidean algorithm, since the auxiliary logic takes constant time, except for computing $j$ in $\mathcal{O}(\log k) = \mathcal{O}(\log \log a)$, which is still pretty good.
 
 
 ### Outro
