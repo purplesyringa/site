@@ -250,7 +250,7 @@ $$
 
 <aside-inline-here />
 
-This means that $u$ and $v$ fit in signed $p + 2$-bit integers. Since $p \le 2k - 2$, that amounts to $2k$-bit types, i.e. twice as wide as the input. And that's a problem: while it works just fine for $32$-bit inputs, $64$-bit inputs require `i128` arithmetic, which slows down the algorithm considerably. We'll discuss what to about it in a bit.
+This means that $u$ and $v$ fit in signed $p + 2$-bit integers. Since $p \le 2k - 2$, that amounts to $2k$-bit types, i.e. twice as wide as the input. And that's a problem: while it works just fine for $32$-bit inputs, $64$-bit inputs require `i128` arithmetic, which slows down the algorithm considerably. We'll discuss what to do about it in a bit.
 
 
 ### Montgomery
