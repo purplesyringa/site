@@ -29,8 +29,10 @@ Last year, [Lemire wrote](https://lemire.me/blog/2024/04/13/greatest-common-divi
 The post also briefly mentions [the extended Euclidean algorithm](https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm), a related algorithm most often used to compute the [modular multiplicative inverse](https://en.wikipedia.org/wiki/Modular_multiplicative_inverse) (given a remainder $a$ and a modulus $m$, find $x$ such that $a \cdot x \bmod m = 1$):
 
 > There is also a binary version of the extended Euclidean algorithm[,] although it is quite a bit more involved and it is not clear that it [...] can be implemented at high speed, leveraging fast instructions, when working on integers that fit in general-purpose registers. [...]
-> 
+>
 > My implementation of the binary extended Euclidean algorithm is quite a bit slower and not recommended. I expect that it should be possible to optimize it further.
+>
+> *-- Lemire*
 
 That's a big shame, because the extended Euclidean algorithm can be optimized in a very similar manner, and the underlying ideas were described [in a 2020 paper](https://eprint.iacr.org/2020/972.pdf). It's probably not well-known because the paper focuses on constant-time evaluation and long arithmetic, so people might have assumed it's irrelevant.
 
@@ -49,7 +51,7 @@ Lemire's benchmark seems to be skewed by the choice of the compiler (GCC vs Clan
 If you want to get the fastest implementation, I suggest you inspect the assembly more closely than me, because I have no idea what's going on.
 :::
 
-I will refrain from posting precise benchmarking data, because something fishy is going on with the Lemire's results and I don't want to add to the mess. I've measured that my implementation of the algorithm is $1.3$ -- $2$ times faster than the textbook implementation on average, even on M1, but you may see a completely different picture if your compiler produces slightly different codegen.
+I will refrain from posting precise benchmarking data, because something strange is going on with the Lemire's results and I don't want to add to the mess. I've measured that my implementation of the algorithm is $1.3$ -- $2$ times faster than the textbook implementation on average, even on M1, but you may see a completely different picture if your compiler produces slightly different codegen.
 
 <aside-inline-here />
 
