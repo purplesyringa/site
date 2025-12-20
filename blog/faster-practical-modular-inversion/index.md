@@ -525,7 +525,7 @@ return v0;
 
 We store `p_left` instead of `p` so that `p_left -= q` and `q < p_left` can be computed with a single instruction.
 
-The $32$-bit and $64$-bit cases can use the same implementation, as replacing `q < p_left` with `true` makes this code identical to the $32$-bit algorithm, and compilers recognize this.
+The $32$-bit and $64$-bit cases can use the same implementation, as replacing `q < p_left` with `true` makes it identical to the $32$-bit algorithm, and compilers recognize this.
 
 `redc31(x)` can be implemented as `redc63(x << 32)`.
 
