@@ -661,3 +661,5 @@ Despite this complexity, I believe this method can be faster than the extended E
 ### Outro
 
 As a reminder, you can find my code [on GitHub](https://github.com/purplesyringa/mod2k/blob/104603af3866ac274073a5b2af28f7a41550add1/src/xgcd.rs). The source of latency-optimized GCD is [this post](https://lemire.me/blog/2024/04/13/greatest-common-divisor-the-extended-euclidean-algorithm-and-speed/). Using coefficients to reset bit lengths of $u, v$ comes from [this paper](https://eprint.iacr.org/2020/972.pdf), which also covers the case when values don't fit in general-purpose registers.
+
+Thanks to many friends of mine for contributing to the benchmarking results, to Ian Qvist for the motivation to complete this post and editorial comments, and to Yuki for saving me from going insane over unexplainable performance phenomena.
