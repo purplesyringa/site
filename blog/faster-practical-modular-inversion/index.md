@@ -112,6 +112,10 @@ while a != 0 {
 
 This brings the latency down to 3 operations: `>>=`; `a - b` and `b - a` computed in parallel; `trailing_zeros` and `if` computed in parallel. It also slightly increases the number of operations (computing `b - a` and `a - b` and only using one), but the tradeoff pays off.
 
+Pay close attention to `trailing_zeros` if you're implementing this in C. The algorithm can invoke it with a zero input on the last iteration. This is well-defined in Rust, which maps $0$ to the bit width of the data type, but in C `__builtin_clz(0)` is UB. Use `__builtin_clzg` to avoid issues. In C++, `std::countr_zero(0)` is well-defined.
+
+> GCC [documents](https://gcc.gnu.org/onlinedocs/gcc/Bit-Operation-Builtins.html) `__builtin_clz(0)` as having an "undefined result", so I initially assumed it means an indeterminate value. In reality, [GCC maintainers consider it UB](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=116989) and [LLVM documents it as UB](https://clang.llvm.org/docs/LanguageExtensions.html#builtin-clzg-and-builtin-ctzg)... but the optimizers seem to model it exactly like an indeterminate value? (e.g. LLVM considers `@llvm.cttz(0)` to produce `poison`) This is frankly ridiculous, someone do something about it.
+
 
 ### Extending
 
