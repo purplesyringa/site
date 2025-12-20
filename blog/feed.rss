@@ -7,10 +7,29 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Mon, 15 Dec 2025 21:21:37 GMT</lastBuildDate>
+		<lastBuildDate>Sat, 20 Dec 2025 20:41:12 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>Faster practical modular inversion</title>
+				<link>https://purplesyringa.moe/blog/./faster-practical-modular-inversion/</link>
+				<description>&lt;p&gt;Last year, &lt;a href=&quot;https://lemire.me/blog/2024/04/13/greatest-common-divisor-the-extended-euclidean-algorithm-and-speed/&quot;&gt;Lemire wrote&lt;/a&gt; about an optimized variation of &lt;a href=&quot;https://en.wikipedia.org/wiki/Euclidean_algorithm&quot;&gt;the Euclidean algorithm&lt;/a&gt; for computing &lt;a href=&quot;https://en.wikipedia.org/wiki/Greatest_common_divisor&quot;&gt;the greatest common divisor&lt;/a&gt; of two numbers, called &lt;em&gt;binary Euclidean algorithm&lt;/em&gt; or &lt;em&gt;Stein’s algorithm&lt;/em&gt;. It’s a best-of-class implementation, though it’s currently only used by libc++.&lt;/p&gt;
+&lt;p&gt;The post also briefly mentions &lt;a href=&quot;https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm&quot;&gt;the extended Euclidean algorithm&lt;/a&gt;, a related algorithm most often used to compute the &lt;a href=&quot;https://en.wikipedia.org/wiki/Modular_multiplicative_inverse&quot;&gt;modular multiplicative inverse&lt;/a&gt; (given a remainder &lt;eq&gt;&lt;math&gt;&lt;mi&gt;a&lt;/mi&gt;&lt;/math&gt;&lt;/eq&gt; and a modulus &lt;eq&gt;&lt;math&gt;&lt;mi&gt;m&lt;/mi&gt;&lt;/math&gt;&lt;/eq&gt;, find &lt;eq&gt;&lt;math&gt;&lt;mi&gt;x&lt;/mi&gt;&lt;/math&gt;&lt;/eq&gt; such that &lt;eq&gt;&lt;math&gt;&lt;mrow&gt;&lt;mi&gt;a&lt;/mi&gt;&lt;mo&gt;⋅&lt;/mo&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mi&gt;x&lt;/mi&gt;&lt;mo lspace=&quot;0.2222em&quot; rspace=&quot;0.2222em&quot;&gt;mod&lt;/mo&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mi&gt;m&lt;/mi&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/eq&gt;):&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;There is also a binary version of the extended Euclidean algorithm[,] although it is quite a bit more involved and it is not clear that it […] can be implemented at high speed, leveraging fast instructions, when working on integers that fit in general-purpose registers. […]&lt;/p&gt;
+&lt;p&gt;My implementation of the binary extended Euclidean algorithm is quite a bit slower and not recommended. I expect that it should be possible to optimize it further.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;That’s a big shame, because the extended Euclidean algorithm can be optimized in a very similar manner, and the underlying ideas were described &lt;a href=&quot;https://eprint.iacr.org/2020/972.pdf&quot;&gt;in a 2020 paper&lt;/a&gt;. It’s probably not well-known because the paper focuses on constant-time evaluation and long arithmetic, so people might have assumed it’s irrelevant.&lt;/p&gt;
+&lt;p&gt;I’m hoping to bring justice to the extended Stein’s algorithm with this post. I’ll cover how the algorithm works, its limitations, some optimizations compared to Pornin’s paper, and potential further improvements.&lt;/p&gt;
+&lt;p&gt;My implementation is &lt;a href=&quot;https://github.com/purplesyringa/mod2k/blob/104603af3866ac274073a5b2af28f7a41550add1/src/xgcd.rs&quot;&gt;available on GitHub&lt;/a&gt; as part of a Rust modular arithmetic library.&lt;/p&gt;
+</description>
+				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+				
+				<guid>https://purplesyringa.moe/blog/./faster-practical-modular-inversion/</guid>
+				<pubDate>Sat, 20 Dec 2025 00:00:00 GMT</pubDate>
+			</item>
 		
 			<item>
 				<title>Rust&#39;s v0 mangling scheme in a nutshell</title>
