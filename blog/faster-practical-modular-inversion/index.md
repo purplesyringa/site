@@ -60,8 +60,15 @@ Nevertheless, here is some raw data for transparency. The benchmark measures the
     @media screen and (min-width: 1001px) {
         td > span {
             display: inline-block;
-            min-width: 50px;
+            min-width: 42px;
+        }
+        td > .left {
             text-align: right;
+        }
+        td:nth-child(5) {
+            & > span {
+                min-width: 50px;
+            }
         }
     }
     .positive {
@@ -84,59 +91,66 @@ Nevertheless, here is some raw data for transparency. The benchmark measures the
     <tbody>
         <tr>
             <th>Haswell</th>
-            <td class="positive"><span>11.38</span> / 19.21 (-41%)</td>
-            <td class="positive"><span>17.48</span> / 33.96 (-49%)</td>
-            <td class="positive"><span>29.76</span> / 61.69 (-52%)</td>
-            <td class="positive"><span>67.18</span> / 152.19 (-56%)</td>
+            <td class="positive"><span class="left">11.38</span> / <span class="right">19.21</span> (-41%)</td>
+            <td class="positive"><span class="left">17.48</span> / <span class="right">33.96</span> (-49%)</td>
+            <td class="positive"><span class="left">29.76</span> / <span class="right">61.69</span> (-52%)</td>
+            <td class="positive"><span class="left">67.18</span> / <span class="right">152.19</span> (-56%)</td>
         </tr>
         <tr>
             <th>Alder Lake</th>
-            <td class="positive"><span>8.20</span> / 10.19 (-20%)</td>
-            <td class="positive"><span>13.77</span> / 16.87 (-18%)</td>
-            <td class="positive"><span>21.47</span> / 31.00 (-31%)</td>
-            <td class="positive"><span>50.38</span> / 69.57 (-28%)</td>
+            <td class="positive"><span class="left">8.20</span> / <span class="right">10.19</span> (-20%)</td>
+            <td class="positive"><span class="left">13.77</span> / <span class="right">16.87</span> (-18%)</td>
+            <td class="positive"><span class="left">21.47</span> / <span class="right">31.00</span> (-31%)</td>
+            <td class="positive"><span class="left">50.38</span> / <span class="right">69.57</span> (-28%)</td>
         </tr>
         <tr>
             <th>Zen 5</th>
-            <td class="positive"><span>7.77</span> / 10.56 (-26%)</td>
-            <td class="positive"><span>9.43</span> / 14.80 (-36%)</td>
-            <td class="positive"><span>13.96</span> / 23.98 (-42%)</td>
-            <td class="positive"><span>34.58</span> / 49.24 (-30%)</td>
+            <td class="positive"><span class="left">7.77</span> / <span class="right">10.56</span> (-26%)</td>
+            <td class="positive"><span class="left">9.43</span> / <span class="right">14.80</span> (-36%)</td>
+            <td class="positive"><span class="left">13.96</span> / <span class="right">23.98</span> (-42%)</td>
+            <td class="positive"><span class="left">34.58</span> / <span class="right">49.24</span> (-30%)</td>
         </tr>
         <tr>
             <th>M1</th>
-            <td class="negative"><span>14.58</span> / 13.05 (+12%)</td>
-            <td class="positive"><span>11.48</span> / 18.63 (-38%)</td>
-            <td class="positive"><span>19.74</span> / 35.47 (-44%)</td>
-            <td class="positive"><span>43.14</span> / 71.14 (-39%)</td>
+            <td class="negative"><span class="left">14.58</span> / <span class="right">13.05</span> (+12%)</td>
+            <td class="positive"><span class="left">11.48</span> / <span class="right">18.63</span> (-38%)</td>
+            <td class="positive"><span class="left">19.74</span> / <span class="right">35.47</span> (-44%)</td>
+            <td class="positive"><span class="left">43.14</span> / <span class="right">71.14</span> (-39%)</td>
         </tr>
         <tr>
             <th>M2</th>
-            <td class="positive"><span>8.93</span> / 10.26 (-13%)</td>
-            <td class="positive"><span>11.00</span> / 17.90 (-39%)</td>
-            <td class="positive"><span>19.38</span> / 33.78 (-43%)</td>
-            <td class="positive"><span>41.33</span> / 68.03 (-39%)</td>
+            <td class="positive"><span class="left">8.93</span> / <span class="right">10.26</span> (-13%)</td>
+            <td class="positive"><span class="left">11.00</span> / <span class="right">17.90</span> (-39%)</td>
+            <td class="positive"><span class="left">19.38</span> / <span class="right">33.78</span> (-43%)</td>
+            <td class="positive"><span class="left">41.33</span> / <span class="right">68.03</span> (-39%)</td>
         </tr>
         <tr>
             <th>M4</th>
-            <td class="positive"><span>5.28</span> / 8.60 (-39%)</td>
-            <td class="positive"><span>8.07</span> / 14.77 (-45%)</td>
-            <td class="positive"><span>13.63</span> / 28.05 (-51%)</td>
-            <td class="positive"><span>28.68</span> / 56.22 (-49%)</td>
-        </tr>
-        <tr>
-            <th>Snapdragon 8 Gen 3</th>
-            <td class="positive"><span>9.72</span> / 12.13 (-20%)</td>
-            <td class="positive"><span>14.97</span> / 21.91 (-32%)</td>
-            <td class="positive"><span>28.51</span> / 39.89 (-29%)</td>
-            <td class="positive"><span>70.11</span> / 75.46 (-7%)</td>
+            <td class="positive"><span class="left">5.28</span> / <span class="right">8.60</span> (-39%)</td>
+            <td class="positive"><span class="left">8.07</span> / <span class="right">14.77</span> (-45%)</td>
+            <td class="positive"><span class="left">13.63</span> / <span class="right">28.05</span> (-51%)</td>
+            <td class="positive"><span class="left">28.68</span> / <span class="right">56.22</span> (-49%)</td>
         </tr>
         <tr>
             <th>Cortex-A72</th>
-            <td class="positive"><span>29.80</span> / 33.48 (-11%)</td>
-            <td class="positive"><span>38.30</span> / 49.36 (-22%)</td>
-            <td class="positive"><span>61.28</span> / 83.63 (-27%)</td>
-            <td class="negative"><span>162.55</span> / 151.77 (+7%)</td>
+            <td class="positive"><span class="left">29.80</span> / <span class="right">33.48</span> (-11%)</td>
+            <td class="positive"><span class="left">38.30</span> / <span class="right">49.36</span> (-22%)</td>
+            <td class="positive"><span class="left">61.28</span> / <span class="right">83.63</span> (-27%)</td>
+            <td class="negative"><span class="left">162.55</span> / <span class="right">151.77</span> (+7%)</td>
+        </tr>
+        <tr>
+            <th>Snapdragon 8 Gen 3</th>
+            <td class="positive"><span class="left">9.72</span> / <span class="right">12.13</span> (-20%)</td>
+            <td class="positive"><span class="left">14.97</span> / <span class="right">21.91</span> (-32%)</td>
+            <td class="positive"><span class="left">28.51</span> / <span class="right">39.89</span> (-29%)</td>
+            <td class="positive"><span class="left">70.11</span> / <span class="right">75.46</span> (-7%)</td>
+        </tr>
+        <tr>
+            <th>Kryo 485</th>
+            <td class="positive"><span class="left">15.08</span> / <span class="right">19.36</span> (-22%)</td>
+            <td class="positive"><span class="left">21.54</span> / <span class="right">30.41</span> (-29%)</td>
+            <td class="positive"><span class="left">33.63</span> / <span class="right">50.96</span> (-34%)</td>
+            <td class="positive"><span class="left">90.32</span> / <span class="right">94.76</span> (-5%)</td>
         </tr>
     </tbody>
 </table>

@@ -68,6 +68,16 @@ Prime13 17.62 21.44
 Prime31 31.05 40.30
 Prime61 67.79 72.51
 
+Kryo 485
+BigPrime8 15.08 19.36
+BigPrime16 21.54 30.41
+BigPrime32 33.63 50.96
+BigPrime64 90.32 94.76
+Prime7 14.28 17.00
+Prime13 20.94 26.17
+Prime31 34.63 50.06
+Prime61 81.75 90.93
+
 Cortex-A72
 BigPrime8 29.80 33.48
 BigPrime16 38.30 49.36
