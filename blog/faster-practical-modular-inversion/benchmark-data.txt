@@ -29,14 +29,14 @@ Prime31 29.25 27.29
 Prime61 34.32 45.87
 
 M1
-BigPrime8 13.05 14.58
-BigPrime16 18.63 11.48
-BigPrime32 35.47 19.74
-BigPrime64 71.14 43.14
-Prime7 9.62 7.16
-Prime13 15.69 11.53
-Prime31 35.02 20.57
-Prime61 67.87 43.90
+BigPrime8 14.58 13.05
+BigPrime16 11.48 18.63
+BigPrime32 19.74 35.47
+BigPrime64 43.14 71.14
+Prime7 7.16 9.62
+Prime13 11.53 15.69
+Prime31 20.57 35.02
+Prime61 43.90 67.87
 
 M2
 BigPrime8 8.93 10.26

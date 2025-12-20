@@ -53,6 +53,24 @@ I won't make claims on exact performance, because something strange is going on 
 
 Nevertheless, here is some raw data for transparency. The benchmark measures the time per inversion (in ns), the cell format is "Stein's algorithm / Euclidean algorithm".
 
+<style>
+    td {
+        font-size: 0.9rem;
+    }
+    @media screen and (min-width: 1001px) {
+        td > span {
+            display: inline-block;
+            min-width: 50px;
+            text-align: right;
+        }
+    }
+    .positive {
+    }
+    .negative {
+        color: #d92a2a;
+    }
+</style>
+
 <table>
     <thead>
         <tr>
@@ -66,59 +84,59 @@ Nevertheless, here is some raw data for transparency. The benchmark measures the
     <tbody>
         <tr>
             <th>Haswell</th>
-            <td>11.38 / 19.21</td>
-            <td>17.48 / 33.96</td>
-            <td>29.76 / 61.69</td>
-            <td>67.18 / 152.19</td>
+            <td class="positive"><span>11.38</span> / 19.21 (-41%)</td>
+            <td class="positive"><span>17.48</span> / 33.96 (-49%)</td>
+            <td class="positive"><span>29.76</span> / 61.69 (-52%)</td>
+            <td class="positive"><span>67.18</span> / 152.19 (-56%)</td>
         </tr>
         <tr>
             <th>Alder Lake</th>
-            <td>8.20 / 10.19</td>
-            <td>13.77 / 16.87</td>
-            <td>21.47 / 31.00</td>
-            <td>50.38 / 69.57</td>
+            <td class="positive"><span>8.20</span> / 10.19 (-20%)</td>
+            <td class="positive"><span>13.77</span> / 16.87 (-18%)</td>
+            <td class="positive"><span>21.47</span> / 31.00 (-31%)</td>
+            <td class="positive"><span>50.38</span> / 69.57 (-28%)</td>
         </tr>
         <tr>
             <th>Zen 5</th>
-            <td>7.77 / 10.56</td>
-            <td>9.43 / 14.80</td>
-            <td>13.96 / 23.98</td>
-            <td>34.58 / 49.24</td>
+            <td class="positive"><span>7.77</span> / 10.56 (-26%)</td>
+            <td class="positive"><span>9.43</span> / 14.80 (-36%)</td>
+            <td class="positive"><span>13.96</span> / 23.98 (-42%)</td>
+            <td class="positive"><span>34.58</span> / 49.24 (-30%)</td>
         </tr>
         <tr>
             <th>M1</th>
-            <td>13.05 / 14.58</td>
-            <td>18.63 / 11.48</td>
-            <td>35.47 / 19.74</td>
-            <td>71.14 / 43.14</td>
+            <td class="negative"><span>14.58</span> / 13.05 (+12%)</td>
+            <td class="positive"><span>11.48</span> / 18.63 (-38%)</td>
+            <td class="positive"><span>19.74</span> / 35.47 (-44%)</td>
+            <td class="positive"><span>43.14</span> / 71.14 (-39%)</td>
         </tr>
         <tr>
             <th>M2</th>
-            <td>8.93 / 10.26</td>
-            <td>11.00 / 17.90</td>
-            <td>19.38 / 33.78</td>
-            <td>41.33 / 68.03</td>
+            <td class="positive"><span>8.93</span> / 10.26 (-13%)</td>
+            <td class="positive"><span>11.00</span> / 17.90 (-39%)</td>
+            <td class="positive"><span>19.38</span> / 33.78 (-43%)</td>
+            <td class="positive"><span>41.33</span> / 68.03 (-39%)</td>
         </tr>
         <tr>
             <th>M4</th>
-            <td>5.28 / 8.60</td>
-            <td>8.07 / 14.77</td>
-            <td>13.63 / 28.05</td>
-            <td>28.68 / 56.22</td>
+            <td class="positive"><span>5.28</span> / 8.60 (-39%)</td>
+            <td class="positive"><span>8.07</span> / 14.77 (-45%)</td>
+            <td class="positive"><span>13.63</span> / 28.05 (-51%)</td>
+            <td class="positive"><span>28.68</span> / 56.22 (-49%)</td>
         </tr>
         <tr>
             <th>Snapdragon 8 Gen 3</th>
-            <td>9.72 / 12.13</td>
-            <td>14.97 / 21.91</td>
-            <td>28.51 / 39.89</td>
-            <td>70.11 / 75.46</td>
+            <td class="positive"><span>9.72</span> / 12.13 (-20%)</td>
+            <td class="positive"><span>14.97</span> / 21.91 (-32%)</td>
+            <td class="positive"><span>28.51</span> / 39.89 (-29%)</td>
+            <td class="positive"><span>70.11</span> / 75.46 (-7%)</td>
         </tr>
         <tr>
             <th>Cortex-A72</th>
-            <td>29.80 / 33.48</td>
-            <td>38.30 / 49.36</td>
-            <td>61.28 / 83.63</td>
-            <td>162.55 / 151.77</td>
+            <td class="positive"><span>29.80</span> / 33.48 (-11%)</td>
+            <td class="positive"><span>38.30</span> / 49.36 (-22%)</td>
+            <td class="positive"><span>61.28</span> / 83.63 (-27%)</td>
+            <td class="negative"><span>162.55</span> / 151.77 (+7%)</td>
         </tr>
     </tbody>
 </table>
