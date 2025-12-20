@@ -230,7 +230,7 @@ v <<= 62 - p;
 return (v * inverse_of_2p62) % b0;
 ```
 
-We don't apply the latency-reducing trick to $u$ and $v$ because the latency is dominated by other calculations. Computing both `u - v` and `v - u` would most likely reduce performance, since we're already close to the CPU limit of parallel operations.
+We don't apply the latency-reducing trick to $u$ and $v$ because the latency is dominated by other calculations. Computing both `u - v` and `v - u` would most likely reduce performance, since we're already pushing the CPU limit of parallel operations.
 
 
 ### Types
@@ -253,7 +253,7 @@ $$
 This means that $u$ and $v$ fit in signed $p + 2$-bit integers. Since $p \le 2k - 2$, that amounts to $2k$-bit types, i.e. twice as wide as the input. And that's a problem: while it works just fine for $32$-bit inputs, $64$-bit inputs require `i128` arithmetic, which slows down the algorithm considerably. We'll discuss what to about it in a bit.
 
 
-### REDC
+### Montgomery
 
 Before we do this, though, let's finish the $32$-bit case. There's just one thing left to improve: computing $v \cdot 2^{-62} \bmod b_0$.
 
@@ -373,7 +373,7 @@ return v0;
 ```
 
 
-### SWAR
+### Vectorization
 
 The astute among you might realize this doesn't improve much, since we went from updating two $128$-bit numbers in a loop to updating four $64$-bit numbers in a loop. But since we apply the exact same operations to $f_i$ and $g_i$, we can vectorize them.
 
