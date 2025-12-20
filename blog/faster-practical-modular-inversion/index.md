@@ -45,15 +45,83 @@ My implementation is [available on GitHub](https://github.com/purplesyringa/mod2
 
 The textbook algorithm can be used not only to compute inverses, but also to solve [linear Diophantine equations](https://en.wikipedia.org/wiki/Diophantine_equation). I will focus on the former in this post, since that's where the optimizations shine at. I'll briefly cover the general case at the end of the post.
 
-:::aside
-Lemire's benchmark seems to be skewed by the choice of the compiler (GCC vs Clang), its version (Clang 18 vs Clang 21), optimization flags (`-O2` vs `-O3`), the microarchitecture (Haswell vs Ice Lake vs Zen 2), and minutiae of the benchmarking code. Results don't make much sense mathematically and look disproportionately affected by microarchitectural conditions.
+I won't make claims on exact performance, because something strange is going on with the Lemire's benchmarking results and I don't want to add to the mess. I've measured that my implementation of the algorithm is $1.3$ -- $2$ times faster than the textbook implementation on average, even on M4, but you may see a completely different picture if your compiler produces slightly different codegen.
 
-If you want to get the fastest implementation, I suggest you inspect the assembly more closely than me, because I have no idea what's going on.
-:::
+> Lemire's benchmark seems to be skewed by the choice of the compiler (GCC vs Clang), its version (Clang 18 vs Clang 21), optimization flags (`-O2` vs `-O3`), the microarchitecture (Haswell vs Ice Lake vs Zen 2), and minutiae of the benchmarking code. Results don't make much sense mathematically and look disproportionately affected by microarchitectural conditions.
+>
+> If you want to get the fastest implementation, I suggest you inspect the assembly more closely than me, because I have no idea what's going on.
 
-I will refrain from posting precise benchmarking data, because something strange is going on with the Lemire's results and I don't want to add to the mess. I've measured that my implementation of the algorithm is $1.3$ -- $2$ times faster than the textbook implementation on average, even on M4, but you may see a completely different picture if your compiler produces slightly different codegen.
+Nevertheless, here is some raw data for transparency. The benchmark measures the time per inversion (in ns), the cell format is "Stein's algorithm / Euclidean algorithm".
 
-<aside-inline-here />
+<table>
+    <thead>
+        <tr>
+            <td></td>
+            <th>8 bits</th>
+            <th>16 bits</th>
+            <th>32 bits</th>
+            <th>64 bits</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>Haswell</th>
+            <td>11.38 / 19.21</td>
+            <td>17.48 / 33.96</td>
+            <td>29.76 / 61.69</td>
+            <td>67.18 / 152.19</td>
+        </tr>
+        <tr>
+            <th>Alder Lake</th>
+            <td>8.20 / 10.19</td>
+            <td>13.77 / 16.87</td>
+            <td>21.47 / 31.00</td>
+            <td>50.38 / 69.57</td>
+        </tr>
+        <tr>
+            <th>Zen 5</th>
+            <td>7.77 / 10.56</td>
+            <td>9.43 / 14.80</td>
+            <td>13.96 / 23.98</td>
+            <td>34.58 / 49.24</td>
+        </tr>
+        <tr>
+            <th>M1</th>
+            <td>13.05 / 14.58</td>
+            <td>18.63 / 11.48</td>
+            <td>35.47 / 19.74</td>
+            <td>71.14 / 43.14</td>
+        </tr>
+        <tr>
+            <th>M2</th>
+            <td>8.93 / 10.26</td>
+            <td>11.00 / 17.90</td>
+            <td>19.38 / 33.78</td>
+            <td>41.33 / 68.03</td>
+        </tr>
+        <tr>
+            <th>M4</th>
+            <td>5.28 / 8.60</td>
+            <td>8.07 / 14.77</td>
+            <td>13.63 / 28.05</td>
+            <td>28.68 / 56.22</td>
+        </tr>
+        <tr>
+            <th>Snapdragon 8 Gen 3</th>
+            <td>9.72 / 12.13</td>
+            <td>14.97 / 21.91</td>
+            <td>28.51 / 39.89</td>
+            <td>70.11 / 75.46</td>
+        </tr>
+        <tr>
+            <th>Cortex-A72</th>
+            <td>29.80 / 33.48</td>
+            <td>38.30 / 49.36</td>
+            <td>61.28 / 83.63</td>
+            <td>162.55 / 151.77</td>
+        </tr>
+    </tbody>
+</table>
 
 
 ### GCD

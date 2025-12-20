@@ -1,0 +1,79 @@
+Haswell
+BigPrime8 11.38 19.21
+BigPrime16 17.48 33.96
+BigPrime32 29.76 61.69
+BigPrime64 67.18 152.19
+Prime7 10.81 17.35
+Prime13 16.35 29.47
+Prime31 36.82 62.84
+Prime61 68.27 148.44
+
+Alder Lake
+BigPrime8 8.20 10.19
+BigPrime16 13.77 16.87
+BigPrime32 21.47 31.00
+BigPrime64 50.38 69.57
+Prime7 7.78 9.11
+Prime13 12.25 14.64
+Prime31 24.02 30.85
+Prime61 49.71 66.59
+
+Zen 5
+BigPrime8 7.77 10.56
+BigPrime16 9.43 14.80
+BigPrime32 13.96 23.98
+BigPrime64 34.58 49.24
+Prime7 8.15 9.59
+Prime13 18.40 15.93
+Prime31 29.25 27.29
+Prime61 34.32 45.87
+
+M1
+BigPrime8 13.05 14.58
+BigPrime16 18.63 11.48
+BigPrime32 35.47 19.74
+BigPrime64 71.14 43.14
+Prime7 9.62 7.16
+Prime13 15.69 11.53
+Prime31 35.02 20.57
+Prime61 67.87 43.90
+
+M2
+BigPrime8 8.93 10.26
+BigPrime16 11.00 17.90
+BigPrime32 19.38 33.78
+BigPrime64 41.33 68.03
+Prime7 7.09 9.29
+Prime13 11.49 15.64
+Prime31 20.20 34.83
+Prime61 42.50 66.12
+
+M4
+BigPrime8 5.28 8.60
+BigPrime16 8.07 14.77
+BigPrime32 13.63 28.05
+BigPrime64 28.68 56.22
+Prime7 5.27 7.53
+Prime13 8.28 12.62
+Prime31 14.65 27.10
+Prime61 29.43 53.50
+
+Qualcomm Snapdragon 8 Gen 3 [SM8650]
+BigPrime8 9.72 12.13
+BigPrime16 14.97 21.91
+BigPrime32 28.51 39.89
+BigPrime64 70.11 75.46
+Prime7 11.29 14.19
+Prime13 17.62 21.44
+Prime31 31.05 40.30
+Prime61 67.79 72.51
+
+Cortex-A72
+BigPrime8 29.80 33.48
+BigPrime16 38.30 49.36
+BigPrime32 61.28 83.63
+BigPrime64 162.55 151.77
+Prime7 26.05 29.25
+Prime13 36.19 42.57
+Prime31 62.18 82.79
+Prime61 150.91 147.38
