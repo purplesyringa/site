@@ -482,14 +482,14 @@ This technique is called [SWAR](https://en.wikipedia.org/wiki/SWAR). It was inve
 
 We can't use SIMD because x86 doesn't have `cmov` for vector registers, but we can decrease the coefficient length to $32$ bits and pack two coefficients into one integer:
 
-<aside-inline-here />
-
 $$
 \begin{cases}
 c_0 = f_0 + 2^{32} \, g_0 \\
 c_1 = f_1 + 2^{32} \, g_1
 \end{cases}
 $$
+
+<aside-inline-here />
 
 This simplifies the inner loop to:
 
