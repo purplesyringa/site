@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Sat, 20 Dec 2025 20:41:12 GMT</lastBuildDate>
+		<lastBuildDate>Sat, 27 Dec 2025 17:12:29 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -26,7 +26,7 @@
 &lt;p&gt;My implementation is &lt;a href=&quot;https://github.com/purplesyringa/mod2k/blob/104603af3866ac274073a5b2af28f7a41550add1/src/xgcd.rs&quot;&gt;available on GitHub&lt;/a&gt; as part of a Rust modular arithmetic library.&lt;/p&gt;
 </description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				
+				<comments>https://news.ycombinator.com/item?id=46341904</comments>
 				<guid>https://purplesyringa.moe/blog/./faster-practical-modular-inversion/</guid>
 				<pubDate>Sat, 20 Dec 2025 00:00:00 GMT</pubDate>
 			</item>

@@ -1,6 +1,8 @@
 ---
 title: Faster practical modular inversion
 time: December 20, 2025
+discussion:
+  - https://news.ycombinator.com/item?id=46341904
 intro: |
     Last year, [Lemire wrote](https://lemire.me/blog/2024/04/13/greatest-common-divisor-the-extended-euclidean-algorithm-and-speed/) about an optimized variation of [the Euclidean algorithm](https://en.wikipedia.org/wiki/Euclidean_algorithm) for computing [the greatest common divisor](https://en.wikipedia.org/wiki/Greatest_common_divisor) of two numbers, called *binary Euclidean algorithm* or *Stein's algorithm*. It's a best-of-class implementation, though it's currently only used by libc++.
 
