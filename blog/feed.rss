@@ -7,10 +7,23 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Sat, 27 Dec 2025 17:12:29 GMT</lastBuildDate>
+		<lastBuildDate>Wed, 11 Mar 2026 23:00:57 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>An ode to bzip</title>
+				<link>https://purplesyringa.moe/blog/./an-ode-to-bzip/</link>
+				<description>&lt;p&gt;The story goes like this. &lt;a href=&quot;https://tweaked.cc&quot;&gt;ComputerCraft&lt;/a&gt; is a mod that adds programming to Minecraft. You write Lua code that gets executed by &lt;a href=&quot;https://github.com/cc-tweaked/Cobalt&quot;&gt;a bespoke interpreter&lt;/a&gt; with access to world APIs, and now you’re writing code instead of having fun. Computers have limited disk space, and my &lt;a href=&quot;https://github.com/purplesyringa/computercraft-programs/&quot;&gt;&lt;code&gt;/nix&lt;/code&gt; folder&lt;/a&gt; is growing out of control, so I need to compress code.&lt;/p&gt;
+&lt;p&gt;The laziest option would be to use &lt;a href=&quot;https://github.com/SafeteeWoW/LibDeflate/&quot;&gt;LibDeflate&lt;/a&gt;, but its decoder is larger than both the gains from compression and my personal boundary for copying code. So the question becomes: what’s the shortest, simplest, most ratio-efficient compression algorithm?&lt;/p&gt;
+&lt;p&gt;I initially thought this was a complex question full of tradeoffs, but it turns out it’s very clear-cut. My answer is &lt;code&gt;bzip&lt;/code&gt;, even though this algorithm &lt;a href=&quot;https://changelog.complete.org/archives/910-how-to-think-about-compression&quot;&gt;has been critiqued&lt;/a&gt; &lt;a href=&quot;https://news.ycombinator.com/item?id=10721338&quot;&gt;multiple times&lt;/a&gt; and has fallen into obscurity since xz and zstd became popular.&lt;/p&gt;
+</description>
+				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+				
+				<guid>https://purplesyringa.moe/blog/./an-ode-to-bzip/</guid>
+				<pubDate>Thu, 12 Mar 2026 00:00:00 GMT</pubDate>
+			</item>
 		
 			<item>
 				<title>Faster practical modular inversion</title>
