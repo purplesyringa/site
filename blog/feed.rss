@@ -7,21 +7,10 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Sun, 15 Mar 2026 17:47:07 GMT</lastBuildDate>
+		<lastBuildDate>Sun, 15 Mar 2026 18:00:01 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
-		
-			<item>
-				<title>Reinventing aliasing XOR mutability and lifetimes</title>
-				<link>https://purplesyringa.moe/blog/./reinventing-aliasing-xor-mutability-and-lifetimes/</link>
-				<description>&lt;p&gt;…&lt;/p&gt;
-</description>
-				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				
-				<guid>https://purplesyringa.moe/blog/./reinventing-aliasing-xor-mutability-and-lifetimes/</guid>
-				<pubDate>Sun, 15 Mar 2026 00:00:00 GMT</pubDate>
-			</item>
 		
 			<item>
 				<title>An ode to bzip</title>
