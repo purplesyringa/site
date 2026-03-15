@@ -3,6 +3,7 @@ title: An ode to bzip
 time: March 12, 2026
 discussion:
     - https://news.ycombinator.com/item?id=47377998
+    - https://lobste.rs/s/ub7a5k/ode_bzip
     - https://www.reddit.com/r/programming/comments/1rrl86c/an_ode_to_bzip/
 intro: |
     The story goes like this. [ComputerCraft](https://tweaked.cc) is a mod that adds programming to Minecraft. You write Lua code that gets executed by [a bespoke interpreter](https://github.com/cc-tweaked/Cobalt) with access to world APIs, and now you're writing code instead of having fun. Computers have limited disk space, and my [`/nix` folder](https://github.com/purplesyringa/computercraft-programs/) is growing out of control, so I need to compress code.
