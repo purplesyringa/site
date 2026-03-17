@@ -242,3 +242,8 @@ aside > :last-child {
 		width: 100%;
 	}
 }
+
+.emoji {
+	height: 1em;
+	vertical-align: middle;
+}
