@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Tue, 17 Mar 2026 11:17:51 GMT</lastBuildDate>
+		<lastBuildDate>Tue, 17 Mar 2026 12:11:47 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -20,7 +20,7 @@
 &lt;p&gt;I couldn’t find a fix and dropped the topic. Until a few days ago, when I needed to implement mutable references in functional code for a pet project and realized just how instrumental aliasing XOR mutability and lifetimes are in achieving this.&lt;/p&gt;
 </description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				
+				<comments>https://www.reddit.com/r/rust/comments/1rw4h2q/reinventing_aliasing_xor_mutability_and_lifetimes/</comments>
 				<guid>https://purplesyringa.moe/blog/./reinventing-aliasing-xor-mutability-and-lifetimes/</guid>
 				<pubDate>Tue, 17 Mar 2026 00:00:00 GMT</pubDate>
 			</item>

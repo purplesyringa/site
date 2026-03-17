@@ -1,6 +1,7 @@
 ---
 title: Reinventing aliasing XOR mutability and lifetimes
 time: March 17, 2026
+discussion: https://www.reddit.com/r/rust/comments/1rw4h2q/reinventing_aliasing_xor_mutability_and_lifetimes/
 intro: |
     Two years ago, I was pondering ways to enhance borrowck with proof-based analysis. At the time, I was only aware of formal verification tools for *functional* languages, while Rust is impure. For the purposes of borrow checking, though, we can almost pretend that impurity doesn't exist, with the notable exception of mutable references.
 
