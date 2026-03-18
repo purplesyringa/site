@@ -182,6 +182,10 @@ html = html.replace(
 				const videoId = match[1];
 				const aspectRatio = match[2];
 				tag = `<iframe style="aspect-ratio:${aspectRatio}" src="https://www.youtube.com/embed/${videoId}" title="${alt}" frameborder="0" allow="clipboard-write; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+			} else if (src.startsWith("split:")) {
+				// Split view.
+				let [a, b] = src.slice(6).split(",");
+				tag = `<div class="split-image" title="${alt}"><img src="${a}"><div class="split-image-second"><div class="split-image-resizeable"></div><div class="split-image-slider"><div class="split-image-circle"></div></div><div class="split-image-img"><img src="${b}"></div></div></div>`;
 			} else {
 				// Add title
 				tag = `<img src="${src}" alt="${alt}" title="${alt}">`;
