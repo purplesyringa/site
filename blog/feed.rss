@@ -7,10 +7,22 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Tue, 17 Mar 2026 12:11:47 GMT</lastBuildDate>
+		<lastBuildDate>Wed, 18 Mar 2026 15:33:04 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>Optimization lessons from a Minecraft structure locator</title>
+				<link>https://purplesyringa.moe/blog/./optimization-lessons-from-a-minecraft-structure-locator/</link>
+				<description>&lt;p&gt;Minecraft generates a bedrock floor at the bottom of the world from a random noise. Since it’s random, it can contain naturally generated unescapable regions – prisons. While small prisons are common, larger ones are hard to find – a Minecraft world is about &lt;eq&gt;&lt;math&gt;&lt;mn&gt;60&lt;/mn&gt;&lt;/math&gt;&lt;/eq&gt; million by &lt;eq&gt;&lt;math&gt;&lt;mn&gt;60&lt;/mn&gt;&lt;/math&gt;&lt;/eq&gt; million blocks, so locating these boxes is computationally difficult. So when I saw &lt;a href=&quot;https://www.youtube.com/watch?v=m85D_RKJWUQ&quot;&gt;Bamboo Bot’s video&lt;/a&gt; on this concept covering a simple tool written in Java, I knew I had to give a try myself.&lt;/p&gt;
+&lt;p&gt;I find this problem a good exercise for performance optimization because it has a limited scope, but also covers lots of topics. And it’s quite a head-scratcher due to its large scale! In this post, I’ll cover various surprising approaches and tricks I used, and hopefully you’ll be able to apply them to your projects.&lt;/p&gt;
+</description>
+				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+				
+				<guid>https://purplesyringa.moe/blog/./optimization-lessons-from-a-minecraft-structure-locator/</guid>
+				<pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+			</item>
 		
 			<item>
 				<title>Reinventing aliasing XOR mutability and lifetimes</title>
