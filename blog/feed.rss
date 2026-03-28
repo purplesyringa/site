@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Wed, 18 Mar 2026 15:33:04 GMT</lastBuildDate>
+		<lastBuildDate>Sat, 28 Mar 2026 21:00:23 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -19,7 +19,7 @@
 &lt;p&gt;I find this problem a good exercise for performance optimization because it has a limited scope, but also covers lots of topics. And it’s quite a head-scratcher due to its large scale! In this post, I’ll cover various surprising approaches and tricks I used, and hopefully you’ll be able to apply them to your projects.&lt;/p&gt;
 </description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				
+				<comments>https://news.ycombinator.com/item?id=47458805</comments>
 				<guid>https://purplesyringa.moe/blog/./optimization-lessons-from-a-minecraft-structure-locator/</guid>
 				<pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
 			</item>

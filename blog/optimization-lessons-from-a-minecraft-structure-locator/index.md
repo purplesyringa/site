@@ -1,6 +1,7 @@
 ---
 title: Optimization lessons from a Minecraft structure locator
 time: March 18, 2026
+discussion: https://news.ycombinator.com/item?id=47458805
 intro: |
     Minecraft generates a bedrock floor at the bottom of the world from a random noise. Since it's random, it can contain naturally generated unescapable regions -- prisons. While small prisons are common, larger ones are hard to find -- a Minecraft world is about $60$ million by $60$ million blocks, so locating these boxes is computationally difficult. So when I saw [Bamboo Bot's video](https://www.youtube.com/watch?v=m85D_RKJWUQ) on this concept covering a simple tool written in Java, I knew I had to give a try myself.
 
