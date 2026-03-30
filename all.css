@@ -94,20 +94,18 @@ h2 a {
 	color: inherit;
 }
 
-.next-group {
-	margin-top: 3rem;
+:not(h2):has(+ h3) {
+	margin-bottom: 3rem !important;
 }
-.side-header {
-	display: inline-block;
-	width: 0;
-	font-weight: 700;
-	color: #8d00d9;
-}
-.side-header > span {
-	display: inline-block;
+h3 {
+	position: absolute;
 	width: 100vw;
+	margin: 0;
 	margin-left: calc(-100vw - 1.5rem);
 	text-align: right;
+	font-size: 1em;
+	font-weight: 700;
+	color: #8d00d9;
 }
 
 s {
@@ -145,7 +143,7 @@ hr {
 	code {
 		color: #cd91ed;
 	}
-	h2, .side-header {
+	h2, h3 {
 		color: #cd91ed;
 	}
 	a {
@@ -163,15 +161,12 @@ hr {
 		right: 1rem;
 	}
 
-	.side-header {
-		display: block;
+	h3 {
+		position: static;
 		width: 100%;
-		margin-bottom: 1rem;
-	}
-	.side-header > span {
-		text-align: left;
 		margin-left: 0;
-		width: 100%;
+		margin-bottom: 1rem;
+		text-align: left;
 	}
 
 	.viewport-container {

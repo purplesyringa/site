@@ -156,8 +156,6 @@ html = html.replace(
 		.replace(/<aside-start-here \/>/g, "<div class='aside-group'>")
 		.replace(/<table>/g, "<div class='table-wrapper'><table>")
 		.replace(/<\/table>/g, "</table></div>")
-		.replace(/<h3>(.*?)<\/h3>\s*<div class='aside-group'>/g, "<div class='aside-group'><h3>$1</h3>")
-		.replace(/<h3>(.*?)<\/h3>\s*<p>/g, "<p class='next-group'><span class='side-header' role='heading' aria-level='3'><span>$1</span></span>")
 		.replace(/<img src="(.*?)" alt="(.*?)">/g, (tag, src, alt) => {
 			if (src.indexOf("/") === -1 && src.endsWith(".svg")) {
 				// Inline svg
