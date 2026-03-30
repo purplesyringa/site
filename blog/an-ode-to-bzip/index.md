@@ -72,33 +72,33 @@ A self-extracting executable doesn't have to decode every archive -- just one. W
 
 `gzip`, `zstd`, `xz`, `brotli`, and `lzip` all start by doing LZ77. Evaluating "copy" tokens is a simple loop that won't take much code. Where they differ is in how those tokens are encoded into bits:
 
-:::aside
-Here's an example of a Huffman code. Suppose there are 5 tokens with different frequencies: A (60%), B (20%), C (10%), D (5%), E (5%). Write `A = 0`, `B = 10`, `C = 110`, `D = 1110`, `E = 1111`. The more frequent a token is, the shorter its encoding. To decode a bit stream, pull bits one by one until you find an exact match.
-:::
+<aside-start-here />
 
 - `gzip` does some light pre-processing and then applies [Huffman coding](https://en.wikipedia.org/wiki/Huffman_coding), which assigns unambiguous bit sequences to tokens and then concatenates them, optimizing for total length based on the token frequency distribution. Huffman codes can be parsed in ~250 bytes, the bit [trie](https://en.wikipedia.org/wiki/Trie) might take ~700 bytes, and the glue should fit in ~500 bytes. Let's say 1.5 KB in total.
 
-<aside-inline-here />
+:::aside
+Here's an example of a Huffman code. Suppose there are 5 tokens with different frequencies: A (60%), B (20%), C (10%), D (5%), E (5%). Write `A = 0`, `B = 10`, `C = 110`, `D = 1110`, `E = 1111`. The more frequent a token is, the shorter its encoding. To decode a bit stream, pull bits one by one until you find an exact match.
+:::
 
 - `xz` encodes tokens bit-by-bit instead of treating them as atoms, which allows the coder to [adjust probabilities dynamically](https://en.wikipedia.org/wiki/Context-adaptive_binary_arithmetic_coding), yielding good ratios without encoding any tables at the cost of performance. Bit-by-bit parsing will take more space than usual, but avoiding tables is a huge win, so let's put at 1 KB.
 
 - `lzip` is very similar to `xz`, only slightly changing token encodings, so let's put it at 1 KB as well.
 
+<aside-start-here />
+
+- `zstd` complicates the pre-processing step and uses [Finite State Entropy](http://fastcompression.blogspot.com/2013/12/finite-state-entropy-new-breed-of.html) instead of Huffman coding, which effectively allows tokens to be encoded with fractional bit lengths. FSE is simple, but requires large tables, so let's say ~2000 bytes for storing and parsing them. Adding glue, we should get about 3 KB.
+
 :::aside
 If you know what [arithmetic coding](https://en.wikipedia.org/wiki/Arithmetic_coding) is, FSE is like that, but for large alphabets.
 :::
 
-- `zstd` complicates the pre-processing step and uses [Finite State Entropy](http://fastcompression.blogspot.com/2013/12/finite-state-entropy-new-breed-of.html) instead of Huffman coding, which effectively allows tokens to be encoded with fractional bit lengths. FSE is simple, but requires large tables, so let's say ~2000 bytes for storing and parsing them. Adding glue, we should get about 3 KB.
+<aside-start-here />
 
-<aside-inline-here />
+- `brotli` keeps Huffman coding, but switches between multiple static Huffman tables on the flight depending on context. I couldn't find the exact count, but I get 7 tables on my input. That's a lot of data that we can't just inline -- we'll need to encode it and parse it. Let's say ~500 bytes for parser and ~100 bytes per table. Together with the rest of the code, we should get something like 2.2 kB.
 
 :::aside
 On the web, `brotli` often wins due to a large pre-shared dictionary. It raises the size of the decoder, so in our setup, it's a hindrance, and I'm not taking it into consideration.
 :::
-
-- `brotli` keeps Huffman coding, but switches between multiple static Huffman tables on the flight depending on context. I couldn't find the exact count, but I get 7 tables on my input. That's a lot of data that we can't just inline -- we'll need to encode it and parse it. Let's say ~500 bytes for parser and ~100 bytes per table. Together with the rest of the code, we should get something like 2.2 kB.
-
-<aside-inline-here />
 
 For `bzip` decoders, BWT can be handled in ~250 bytes. As for the unique parts,
 

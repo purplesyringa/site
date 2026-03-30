@@ -260,13 +260,13 @@ This is great news: the vectorized implementation now takes $86$ days to scan th
 
 Let's discuss the vectorized implementation in more detail. To do that, we need to take a look at the formulas used for bedrock generation first.
 
-:::aside
-I'll write `lerp(x, a, b)` to map $x = 0$ to $a$, $x = 1$ to $b$, and linearly interpolate values for other $x$s. `lerp_inv` is its inverse.
-:::
+<aside-start-here />
 
 Video games are notorious for using floats all over the place. Minecraft's bedrock noise is no exception. Minecraft generates bedrock at $(x, y, z)$ with probability $p$ increasing with $y$, interpolated linearly from $p = 1$ at $y = -64$ (the bottom layer) to $p = 0$ at $y = -59$ (one above the top layer):
 
-<aside-inline-here />
+:::aside
+I'll write `lerp(x, a, b)` to map $x = 0$ to $a$, $x = 1$ to $b$, and linearly interpolate values for other $x$s. `lerp_inv` is its inverse.
+:::
 
 ```rust
 fn is_bedrock(x: i32, y: i32, z: i32) -> bool {

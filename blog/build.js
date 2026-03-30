@@ -113,7 +113,7 @@ ${code}
 });
 md.use(markdownitContainer, "aside", {
 	render(tokens, idx) {
-		return tokens[idx].nesting === 1 ? "<div class='aside-group'><aside>\n" : "</aside>\n";
+		return tokens[idx].nesting === 1 ? "<aside>\n" : "</aside></div>\n";
 	},
 });
 md.use(markdownitTexMath, {
@@ -153,7 +153,7 @@ html = html.replace(
 html = html.replace(
 	/{{ body }}/g,
 	md.render(markdown)
-		.replace(/<aside-inline-here \/>/g, "</div>")
+		.replace(/<aside-start-here \/>/g, "<div class='aside-group'>")
 		.replace(/<table>/g, "<div class='table-wrapper'><table>")
 		.replace(/<\/table>/g, "</table></div>")
 		.replace(/<h3>(.*?)<\/h3>\s*<div class='aside-group'><aside>([\s\S]*?)<\/aside>/g, "<div class='aside-group'><aside>$2</aside><h3>$1</h3>")

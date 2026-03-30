@@ -347,15 +347,15 @@ Ironically, the only non-linear part of the algorithm is `output[start:end]` in 
 
 However, we can still hash the representations *improperly*. Here's what I mean by that. Suppose that we used the following -- very stupid, I know -- hash function:
 
-:::aside
-$\oplus$ denotes XOR in math formulas. $||$ denotes concatenation.
-:::
+<aside-start-here />
 
 $$
 \mathrm{hash}(c_0 c_1 \dots c_{n-1}) = c_0 \oplus c_1 \oplus \dots \oplus c_{n-1}
 $$
 
-<aside-inline-here />
+:::aside
+$\oplus$ denotes XOR in math formulas. $||$ denotes concatenation.
+:::
 
 This formula makes it easy to compute the hash of concatenation of two hashed strings, without knowing their exact contents:
 
@@ -371,9 +371,7 @@ $$
 
 Together, this allows us to efficiently compute hashes of all representations, without even storing those representations in memory. That's great, except for the fact that XOR makes for a terrible hash.
 
-:::aside
-Polynomial hashing provides strong guarantees. If you treat a string $s$ as a polynomial $s(x)$ with coefficients matching individual characters, you'll find that its hash is the value $s(b)$. The hashes of two strings $s_1$, $s_2$ collide if $s_1(b) - s_2(b) = 0$, i.e. if $b$ is the root of the polynomial $s_1(x) - s_2(x)$. For strings of length $k$, this polynomial has degree $k - 1$ and thus at most $k - 1$ roots, so the collision rate is $< \frac{k}{p}$.
-:::
+<aside-start-here />
 
 But there's better hashes that still support these operations. The most common one is the [polynomial hash](https://en.wikipedia.org/wiki/Rolling_hash#Polynomial_rolling_hash), defined as follows:
 
@@ -383,7 +381,9 @@ $$
 
 Here, $p$ and $b$ are parameters of the hash. $p$ is a large prime number, typically chosen by the programmer and fixed during execution. $b$ is an arbitrary number from $0$ to $p - 1$, typically chosen randomly at runtime. The polynomial hash is safer than XOR because characters don't trivially cancel out.
 
-<aside-inline-here />
+:::aside
+Polynomial hashing provides strong guarantees. If you treat a string $s$ as a polynomial $s(x)$ with coefficients matching individual characters, you'll find that its hash is the value $s(b)$. The hashes of two strings $s_1$, $s_2$ collide if $s_1(b) - s_2(b) = 0$, i.e. if $b$ is the root of the polynomial $s_1(x) - s_2(x)$. For strings of length $k$, this polynomial has degree $k - 1$ and thus at most $k - 1$ roots, so the collision rate is $< \frac{k}{p}$.
+:::
 
 To concatenate strings, we only need to know their hashes and lengths:
 

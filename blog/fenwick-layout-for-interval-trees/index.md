@@ -45,13 +45,13 @@ I've mentioned areas that typically use this data structure above, but I'd like 
 
 The first one is something I've posted about earlier: I'm using interval trees as a helper data structure to [decompile control flow](../recovering-control-flow-structures-without-cfgs/) without a CFG with a subquadratic worst-case complexity.
 
-:::aside
-This problem can also be solved without auxiliary data structures. Can you figure out the solution?
-:::
+<aside-start-here />
 
 For the second one, here's a party trick. Suppose you have a graph $(V = \{0, 1, \dots, n - 1\}, E)$ where edges map not from a single vertex to a single vertex, but from a vertex range $[a; b)$ to a single vertex $v$. If you want to run DFS over such a graph without making it quadratic, store the edges in the interval tree, and, when looking for neighbours of $u$, look up $v$s corresponding to intervals containing $u$. Then remove such intervals from the interval tree, so that $\sum \mathrm{ans} = \mathcal{O}(E)$, and the total time complexity becomes $\mathcal{O}(V \log V + E)$. You don't need a complicated implementation to handle removal: just drop the matching prefix/suffix from the index after emitting it.
 
-<aside-inline-here />
+:::aside
+This problem can also be solved without auxiliary data structures. Can you figure out the solution?
+:::
 
 
 ### Implementation

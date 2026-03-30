@@ -150,9 +150,7 @@ But the design allows `Result`-based code to work with `#[iex]` with minimal cha
 
 ### Benchmarks
 
-:::aside
-The code [is available](https://github.com/orgs/iex-rs/repositories) for independent reproduction.
-:::
+<aside-start-here />
 
 One simple commonly used project is [serde](https://serde.rs). After fixing some glaring bugs, I got these benchmark results on JSON deserialization tests:
 
@@ -204,7 +202,9 @@ One simple commonly used project is [serde](https://serde.rs). After fixing some
     </tbody>
 </table>
 
-<aside-inline-here />
+:::aside
+The code [is available](https://github.com/orgs/iex-rs/repositories) for independent reproduction.
+:::
 
 This might not sound like a lot, but that's a *great* performance increase *just* from error handling. And this is a universal fix to a global problem.
 

@@ -86,13 +86,13 @@ Trust me, there's a *ton* of special cases in real-world Java bytecode. I've tri
 
 The CFG is effectively a high-level overview of the control flow situation, and the general approach here is to find simple patterns inside the graph. For example, an `if` conditional amoutns to a node splitting into two nodes, which are then reunited. No more javac-specific hard-coding! ...or that's how the story was supposed to go.
 
-:::aside
-To be clear: this is typically not a problem for *compilers*, as compilers have information about loops and usually only have to handle reducible control flow. This is why LLVM's [WASM stackification implementation](https://github.com/llvm/llvm-project/blob/8f7e57485ee73205e108d74abb5565d5c63beaca/llvm/lib/Target/WebAssembly/WebAssemblyCFGStackify.cpp#L434) is so short and fast. *Decompilers*, on the other hand, do not have such a luxury. If you're aware of an alternative algorithm that soundly handles *any* CFG in quasilinear time while at the same time producing high-quality code for reducible CFGs, please do share.
-:::
+<aside-start-here />
 
 CFG is messy. You can't recover constructs from inside out because an `if` might contain a `continue` and you'd have no idea how to handle such a split, as you don't even know if it's a `continue` or a different control flow construct yet. But if you attempt to parse the CFG in the opposite order, you'll quickly realize that you need to track connectivity and similar properties. This means that you have to re-run the analysis each time you find a new construct, and suddenly your decompiler is frustratingly slow.
 
-<aside-inline-here />
+:::aside
+To be clear: this is typically not a problem for *compilers*, as compilers have information about loops and usually only have to handle reducible control flow. This is why LLVM's [WASM stackification implementation](https://github.com/llvm/llvm-project/blob/8f7e57485ee73205e108d74abb5565d5c63beaca/llvm/lib/Target/WebAssembly/WebAssemblyCFGStackify.cpp#L434) is so short and fast. *Decompilers*, on the other hand, do not have such a luxury. If you're aware of an alternative algorithm that soundly handles *any* CFG in quasilinear time while at the same time producing high-quality code for reducible CFGs, please do share.
+:::
 
 
 ### My idea
@@ -103,13 +103,13 @@ Suppose that we have something that *looks* like an `if`. We can only translate 
 
 Of course, reading sequential bytecode, building a control flow graph, and then linearizing it back would be bollocks. If we can trust control flow not to be obfuscated, javac output is *already* a good instruction order, and our attempts to find a better one will likely produce worse code in the end. Not only does trusting javac provide a better result, but it's also closer to the source.
 
-:::aside
-Shut up, I know that AST is already "abstract", but *abstract* doesn't have many synonyms.
-:::
+<aside-start-here />
 
 This might sound like the "just match bytecode" approach, which I've just criticized, so let me explain the difference. The "just match bytecode" gang attempts to immediately match `if`, `while`, and other CF constructs. *My* goal is to build a very abstract AST, where nodes aren't labeled with any specific high-level constructs, and then refine this abstract AST to a concrete one. This closely mirrors the CFG approach but uses a tree rather than a graph.
 
-<aside-inline-here />
+:::aside
+Shut up, I know that AST is already "abstract", but *abstract* doesn't have many synonyms.
+:::
 
 
 ### Abstract AST

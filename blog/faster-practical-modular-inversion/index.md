@@ -19,13 +19,13 @@ intro: |
     My implementation is [available on GitHub](https://github.com/purplesyringa/mod2k/blob/104603af3866ac274073a5b2af28f7a41550add1/src/xgcd.rs) as part of a Rust modular arithmetic library.
 ---
 
-:::aside
-If you're looking to contribute to OSS, that's your cue.
-:::
+<aside-start-here />
 
 Last year, [Lemire wrote](https://lemire.me/blog/2024/04/13/greatest-common-divisor-the-extended-euclidean-algorithm-and-speed/) about an optimized variation of [the Euclidean algorithm](https://en.wikipedia.org/wiki/Euclidean_algorithm) for computing [the greatest common divisor](https://en.wikipedia.org/wiki/Greatest_common_divisor) of two numbers, called *binary Euclidean algorithm* or *Stein's algorithm*. It's a best-of-class implementation, though it's currently only used by libc++.
 
-<aside-inline-here />
+:::aside
+If you're looking to contribute to OSS, that's your cue.
+:::
 
 The post also briefly mentions [the extended Euclidean algorithm](https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm), a related algorithm most often used to compute the [modular multiplicative inverse](https://en.wikipedia.org/wiki/Modular_multiplicative_inverse) (given a remainder $a$ and a modulus $m$, find $x$ such that $a \cdot x \bmod m = 1$):
 
@@ -220,17 +220,7 @@ Pay close attention to `trailing_zeros` if you're implementing this in C. The al
 
 ### Extending
 
-:::aside
-Here's a linear algebraic restatement if you want a different perspective.
-
-Weighted sums are actually [linear combinations](https://en.wikipedia.org/wiki/Linear_combination), and the coefficients can be tracked because subtraction and division by a constant are both [linear operators](https://en.wikipedia.org/wiki/Linear_map).
-
-The algorithm tracks a matrix $A$ of a specific form, mapping $(a_0 \, b_0)^T$ to $(a \, b)^T$.
-
-Treating values as opaque, $a$ and $b$ are elements of a [vector space](https://en.wikipedia.org/wiki/Vector_space) with [basis](https://en.wikipedia.org/wiki/Basis_(linear_algebra)) $\langle a_0, b_0 \rangle$, $A$ is a [change-of-basis matrix](https://en.wikipedia.org/wiki/Change_of_basis), and the integers $a$ and $b$ in code are values of some [evaluation functional](https://en.wikipedia.org/wiki/Linear_form) at $a$ and $b$.
-
-Simplifying $\langle a_0, b_0 \rangle$ to $\langle 0, \mathrm{gcd}(a_0, b_0) \rangle$ is essentially [lattice reduction](https://en.wikipedia.org/wiki/Lattice_reduction), which can be seen as a generalization of GCD to higher-dimensional spaces.
-:::
+<aside-start-here />
 
 You might be wondering how this algorithm is related to modular inversion.
 
@@ -274,7 +264,17 @@ $$
 
 In other words, whatever we do to $a$ and $b$, we also do to the coefficient pairs $(k_0, l_0)$.
 
-<aside-inline-here />
+:::aside
+Here's a linear algebraic restatement if you want a different perspective.
+
+Weighted sums are actually [linear combinations](https://en.wikipedia.org/wiki/Linear_combination), and the coefficients can be tracked because subtraction and division by a constant are both [linear operators](https://en.wikipedia.org/wiki/Linear_map).
+
+The algorithm tracks a matrix $A$ of a specific form, mapping $(a_0 \, b_0)^T$ to $(a \, b)^T$.
+
+Treating values as opaque, $a$ and $b$ are elements of a [vector space](https://en.wikipedia.org/wiki/Vector_space) with [basis](https://en.wikipedia.org/wiki/Basis_(linear_algebra)) $\langle a_0, b_0 \rangle$, $A$ is a [change-of-basis matrix](https://en.wikipedia.org/wiki/Change_of_basis), and the integers $a$ and $b$ in code are values of some [evaluation functional](https://en.wikipedia.org/wiki/Linear_form) at $a$ and $b$.
+
+Simplifying $\langle a_0, b_0 \rangle$ to $\langle 0, \mathrm{gcd}(a_0, b_0) \rangle$ is essentially [lattice reduction](https://en.wikipedia.org/wiki/Lattice_reduction), which can be seen as a generalization of GCD to higher-dimensional spaces.
+:::
 
 
 ### Limitations
@@ -336,9 +336,7 @@ We don't apply the latency-reducing trick to $u$ and $v$ because the latency is 
 
 ### Types
 
-:::aside
-Note that $u$ is one bit longer than $v$ at this point because $u$ is increased at the end of the previous iteration, while $v$ is increased at the beginning of the next iteration.
-:::
+<aside-start-here />
 
 It's easy to prove by induction that at the beginning of each iteration,
 
@@ -349,7 +347,9 @@ $$
 \end{cases}
 $$
 
-<aside-inline-here />
+:::aside
+Note that $u$ is one bit longer than $v$ at this point because $u$ is increased at the end of the previous iteration, while $v$ is increased at the beginning of the next iteration.
+:::
 
 This means that $u$ and $v$ fit in signed $p + 2$-bit integers. Since $p \le 2k - 2$, that amounts to $2k$-bit types, i.e. twice as wide as the input. And that's a problem: while it works just fine for $32$-bit inputs, $64$-bit inputs require `i128` arithmetic, which slows down the algorithm considerably. We'll discuss what to do about it in a bit.
 
@@ -478,9 +478,7 @@ return v0;
 
 The astute among you might realize this doesn't improve much, since we went from updating two $128$-bit numbers in a loop to updating four $64$-bit numbers in a loop. But since we apply the exact same operations to $f_i$ and $g_i$, we can vectorize them.
 
-:::aside
-This technique is called [SWAR](https://en.wikipedia.org/wiki/SWAR). It was invented before hardware SIMD support existed, but it's useful to this day. I wrote about another application of SWAR [here](../i-sped-up-serde-json-strings-by-20-percent/).
-:::
+<aside-start-here />
 
 We can't use SIMD because x86 doesn't have `cmov` for vector registers, but we can decrease the coefficient length to $32$ bits and pack two coefficients into one integer:
 
@@ -491,7 +489,9 @@ c_1 = f_1 + 2^{32} \, g_1
 \end{cases}
 $$
 
-<aside-inline-here />
+:::aside
+This technique is called [SWAR](https://en.wikipedia.org/wiki/SWAR). It was invented before hardware SIMD support existed, but it's useful to this day. I wrote about another application of SWAR [here](../i-sped-up-serde-json-strings-by-20-percent/).
+:::
 
 This simplifies the inner loop to:
 
@@ -541,9 +541,7 @@ let g1 = redc31(g1);
 
 Note that the inner loop is still limited by $30$, since it not only shifts $v$, but also subtracts from $u$, which could cause an overflow with a limit of $31$.
 
-:::aside
-Pornin uses a simpler way to pack $f_i, g_i$ into $c_i$: by adding $2^{31} - 1$ to $f_i$ and $g_i$, we can ensure the two parts don't interfere with each other's bits. But this makes arithmetic slower due to conversions between the biased and non-biased forms.
-:::
+<aside-start-here />
 
 Parsing coefficients from $c_i$ is slightly tricky due to the unusual signed integer format, but not impossibly so:
 
@@ -563,7 +561,9 @@ $$
 
 This assumes that $c_i$ is stored in an unsigned type.
 
-<aside-inline-here />
+:::aside
+Pornin uses a simpler way to pack $f_i, g_i$ into $c_i$: by adding $2^{31} - 1$ to $f_i$ and $g_i$, we can ensure the two parts don't interfere with each other's bits. But this makes arithmetic slower due to conversions between the biased and non-biased forms.
+:::
 
 
 ### Symmetry

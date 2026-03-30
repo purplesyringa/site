@@ -16,13 +16,13 @@ intro: |
     That's pretty interesting, but not very deep. I want to highlight some non-obvious details that weren't mentioned in the post.
 ---
 
-:::aside
-[Original meme](https://social.linux.pizza/@detondev/114942195938099088)
-:::
+<aside-start-here />
 
 ![Picture of a nutshell captioned "v0 mangling scheme in a nutshell". A speech bubble with text "Help!" indicates a sound from inside the nutshell. An example of mangled symbol (_RNvCs15kBYyAo9fc_7mycrate7example) is superimposed on the nutshell.](meme.png)
 
-<aside-inline-here />
+:::aside
+[Original meme](https://social.linux.pizza/@detondev/114942195938099088)
+:::
 
 Functions in binary files need to have unique names, so Rust needs to decide what to call its functions and `static`s. This format needs to be standardized so that debuggers and profilers can recover the full names (e.g. `alloc::vec::Vec` instead of just `Vec`).
 

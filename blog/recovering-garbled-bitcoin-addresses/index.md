@@ -39,26 +39,26 @@ There are many code snippets in this blog post. You can [download them from a re
 
 Once upon a time, there was a decentralized network called [ZeroNet](https://zeronet.io/). Unlike popular content-addressed storage networks that came later (such as IPFS), ZeroNet enabled dynamic sites that could be updated by their owners in real-time, such as blogs and forums. As a consequence, sites could not be addressed by immutable hashes. The lead developer didn't want to invent any new cryptography, though, so he made perhaps the smartest decision: sites were addressed by Bitcoin addresses, and their contents and updates were signed by that address.
 
-:::aside
-Bitcoin now supports [bech32 addresses](https://en.bitcoin.it/wiki/Bech32), which are case-insensitive, but those came later.
-:::
+<aside-start-here />
 
 If you haven't used Bitcoin, here's what its addresses look like: `1Lbcfr7sAHTD9CgdQo3HTMTkV8LK4ZnX71`. In comparison, a typical domain name on the web looks like this: `purplesyringa.moe`. The main difference is that Bitcoin addresses are case-sensitive, and people are used to addresses being case-insensitive. This has led to hacks like using `http://zero/1Lbcfr7sAHTD9CgdQo3HTMTkV8LK4ZnX71` instead of `http://1Lbcfr7sAHTD9CgdQo3HTMTkV8LK4ZnX71.zero`, but mistakes still happened, and sometimes the only trail you had is a lower-cased address, like `1lbcfr7sahtd9cgdqo3htmtkv8lk4znx71`. And that's how valuable information is lost.
 
-<aside-inline-here />
+:::aside
+Bitcoin now supports [bech32 addresses](https://en.bitcoin.it/wiki/Bech32), which are case-insensitive, but those came later.
+:::
 
 I was working on archiving ZeroNet back then, so any sort of information loss due to human error was a nuisance worth fixing. Have we *really* lost access to the site if we only know the lower-cased address? Can we recover the original address somehow?
 
 
 ### What's an address?
 
-:::aside
-If you are interested in how to verify a signature without knowing a public key, [this](https://crypto.stackexchange.com/questions/18105/how-does-recovering-the-public-key-from-an-ecdsa-signature-work) should answer our question. Also, some people argue applying a hash here increases Bitcoin's resistance to quantum attacks.
-:::
+<aside-start-here />
 
 A common misconception is that a Bitcoin address is an encoding of a public key. This is not the case. Instead, an address contains an encoding of a *hash* of the public key. It is a UX decision: the hash is shorter than the public key and thus easier to use, but it is still long enough so that security is not affected.
 
-<aside-inline-here />
+:::aside
+If you are interested in how to verify a signature without knowing a public key, [this](https://crypto.stackexchange.com/questions/18105/how-does-recovering-the-public-key-from-an-ecdsa-signature-work) should answer our question. Also, some people argue applying a hash here increases Bitcoin's resistance to quantum attacks.
+:::
 
 It turns out that Satoshi made other UX considerations, too. A Bitcoin address encodes not only a hash of the public key but also a checksum. If someone makes a typo in the target address while transferring currency, the Bitcoin client will notice that and cancel the transaction. The protection is much more reliable than the one IBAN uses: the checksum is the first four bytes of `SHA256(SHA256(key_hash))`.
 
@@ -649,15 +649,15 @@ Let's try to watch what happens when we flip the case of a letter up close.
 \node[scale=2] at(12,-3.5) {7c};
 ```
 
-:::aside
-As no string can have two valid checksums, a typo in the last few characters of a Bitcoin address will definitely be noticed. On the other hand, making a typo in other characters might lead to a hash collision, meaning that the typo is unnoticed with probability $2^{-32}$. This means that Bitcoin addresses are ever so slightly more protected against a typo at the end of the address when the person writing the address by hand is more tired. This effect only exists because of two seemingly random choices: the checksum being appended to the data rather than prepended, and the use of big-endian instead of little-endian. Whether this was a conscious decision made by Satoshi or just a lucky coincidence is an interesting question to ponder.
-:::
+<aside-start-here />
 
 It turns out that flipping the case of a letter affects a *subinterval* of the underlying byte string. Indeed, if you add a small number to a longer one, it's quite reasonable that only its lower digits are changed (except in the unlikely cases when long carry propagation happens). Some trailing bits are unchanged because 58 is even, so, for instance, the lowest three bytes of $x \cdot 58^{25}$ are necessarily zero.
 
 That's worth researching. See, if flipping the case of some letters affects just the checksum, we don't have to iterate through all the combinations of those letters and compute the hash of the immutable 21-byte prefix each time because we can straightforwardly compute the checksum of the unchanged 21-byte prefix once and infer the correct letter cases from that. Unfortunately, if some letters affect just the first 21 bytes, that does not really let us optimize anything: two strings can easily have identical checksums.
 
-<aside-inline-here />
+:::aside
+As no string can have two valid checksums, a typo in the last few characters of a Bitcoin address will definitely be noticed. On the other hand, making a typo in other characters might lead to a hash collision, meaning that the typo is unnoticed with probability $2^{-32}$. This means that Bitcoin addresses are ever so slightly more protected against a typo at the end of the address when the person writing the address by hand is more tired. This effect only exists because of two seemingly random choices: the checksum being appended to the data rather than prepended, and the use of big-endian instead of little-endian. Whether this was a conscious decision made by Satoshi or just a lucky coincidence is an interesting question to ponder.
+:::
 
 Here's the new algorithm: we shall recursively iterate our way through all combinations of cases, branching on the letters from left to right, and when we determine no further changes in case reflect on the leading 21 bytes, we stop guessing and compute the hash directly.
 
@@ -837,13 +837,13 @@ WARNING: perf not found for kernel 6.8.1-060801
     linux-cloud-tools-generic
 ```
 
-:::aside
-My girlfriend uses Arch, by the way.
-:::
+<aside-start-here />
 
 Right, sorry, I'm using mainline on Ubuntu. Let me grab a `perf` and whatever it links to from another computer.
 
-<aside-inline-here />
+:::aside
+My girlfriend uses Arch, by the way.
+:::
 
 ```shell
 $ alias perf="LD_LIBRARY_PATH=. ./perf"
@@ -1542,13 +1542,13 @@ Bummer. That's just barely faster than the inefficient load/store implementation
 
 I guess this is it! Let's see, we started with an implementation that takes *522 seconds* to decode the address `18ryviovmwfyzhrzktjkqgycjkujoxh3k6`, and now it can do that in under 2.5 seconds. That's more than a 200x improvement!
 
-:::aside
-Intel has provided AVX2 since Haswell (2013), and AMD has provided it since Excavator (2015).
-:::
+<aside-start-here />
 
 This comparison is not *entirely* sound, though. The original code assumed nothing more than an x86-64-capable processor, and the last attempt needs AVX2, which is unavailable on older CPUs. I own devices that don't support AVX2, so supporting pure x86-64 is reasonable.
 
-<aside-inline-here />
+:::aside
+Intel has provided AVX2 since Haswell (2013), and AMD has provided it since Excavator (2015).
+:::
 
 Here's how our latest code behaves with AVX2 switched off:
 
@@ -1634,13 +1634,13 @@ for i in (0..64).step_by(8) {
 }
 ```
 
-:::aside
-Roughly speaking, an instruction can run on several ports. You ask a port to compute the instruction and then have to wait. Latency is how many cycles pass till the output is available. Throughput is how many cycles pass till you can send another instruction to this port. This is the reciprocal of what people *usually* call throughput, so it's sometimes (but not always) called rthroughput.
-:::
+<aside-start-here />
 
 This optimization looks like a no-brainer, but there is a pitfall: SHA-NI is used to optimize the hashing of a single message, so while the instructions use xmm registers, that is just a hardware way of saying, "I want lots of integers as inputs to this instruction". The only way to compute several hashes in parallel is to interleave the instructions that hash different strings, thanks to pipelined execution.
 
-<aside-inline-here />
+:::aside
+Roughly speaking, an instruction can run on several ports. You ask a port to compute the instruction and then have to wait. Latency is how many cycles pass till the output is available. Throughput is how many cycles pass till you can send another instruction to this port. This is the reciprocal of what people *usually* call throughput, so it's sometimes (but not always) called rthroughput.
+:::
 
 How many hashes should we compute in parallel? [uops.info](https://uops.info/table.html) says `sha256rnds2 (xmm, xmm)` has latency 4 and throughput 2 on Zen, so only two `sha256rnds2`s can be executed simultaneously. Other instructions, like `sha256msg1`, have different latencies and throughputs, but `sha256rnds2` is likely the bottleneck. This means that we should probably run only two SHA-256 chains.
 
@@ -1807,13 +1807,13 @@ Executed in    1.60 secs    fish           external
    sys time    0.02 secs  273.00 micros    0.02 secs
 ```
 
-:::aside
-I have replicated the same speedup on Zen 4 later.
-:::
+<aside-start-here />
 
 This is a 1.8x speedup -- not quite exciting, but an improvement nonetheless. Also, `PARALLELISM == 2` turns out to indeed be the best value.
 
-<aside-inline-here />
+:::aside
+I have replicated the same speedup on Zen 4 later.
+:::
 
 Some other improvements are possible, like replacing recursion with Gray code and abolishing vtables and heap allocation. But this post is already getting long, and we will not be able to get a greater than 1.5x improvement this way, so let's call it quits. It's faster than anything you will need anyway: the longest possible all-letters address, `1AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA`, can be recovered to `1AAAaAAaaAAaAaaaaAAAaAAAaAaaaAAAaa` in 27 seconds.
 
@@ -1839,13 +1839,13 @@ So, if you think you do not need to know computer science or math to write good 
 
 Is parsing integers complicated math? Not really. Do you need *some* mathematical background to optimize base58 parsing the way we did? Probably.
 
-:::aside
-You got me, Gray code-based iteration does not require recursion and is even faster. My point stands.
-:::
+<aside-start-here />
 
 Do you need to know compsci to write a recursive algorithm? No. Do you need some intuition that compsci provides to realize recursion is sometimes more efficient than a loop? I think so.
 
-<aside-inline-here />
+:::aside
+You got me, Gray code-based iteration does not require recursion and is even faster. My point stands.
+:::
 
 Do you need to know math to notice the leading 21 bytes stop changing at some point? No. Do you need to know a trick or two to terminate recursion at that point instead of just caching the hash and going on? I think so.
 
