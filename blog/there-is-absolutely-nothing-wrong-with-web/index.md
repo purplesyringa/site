@@ -1,6 +1,7 @@
 ---
 title: There is absolutely nothing wrong with Web
 time: March 31, 2026
+discussion: https://lobste.rs/s/h0ctyv/there_is_absolutely_nothing_wrong_with
 intro: |
     This is a rant about how broken everything Web is based on is. You know, the usual. No offence intended towards framework developers, I'm glad this technology exists, but I'm sure you know this feeling. It gets too much sometimes.
 
