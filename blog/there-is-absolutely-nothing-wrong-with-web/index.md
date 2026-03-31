@@ -14,7 +14,7 @@ I've been meaning to improve this blog's technology for a while. It's held toget
 
 ### Why not \___?
 
-So, why isn't this a no-brainer? There are many static site generators, including classics like Hygo and Jekyll.
+So, why isn't this a no-brainer? There are many static site generators, including classics like Hugo and Jekyll.
 
 <aside-start-here />
 
