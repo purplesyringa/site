@@ -87,7 +87,7 @@ So instead, I patch the produced HTML. Needless to say, that's not a common part
 
 There are other reasons to complicate HTML rendering and/or Markdown parsing:
 
-- [Tables need to be horizontally scrollable](../faster-practical-modular-inversion/#:~:text=8%20bits) on mobile devices and narrow screens, which requires wrapping `<table>` in a container.
+- [Tables need to be horizontally scrollable](../you-might-want-to-use-panics-for-error-handling/#:~:text=One%20simple%20commonly%20used%20project) on mobile devices and narrow screens, which requires wrapping `<table>` in a container.
 - I need a simple syntax for videos, both [local](../we-built-the-best-bad-apple-in-minecraft/#:~:text=These%20structures%20should%20be%20built) and [from YouTube](../optimization-lessons-from-a-minecraft-structure-locator/), i.e. `![]()` should emit `<video>` and `<iframe>` tags. This includes setting `aspect-ratio` for `<iframe>` and configuring autoplay and seizure warnings per-video.
 - I need to draw [diagrams](../recovering-control-flow-structures-without-cfgs/#:~:text=There%E2%80%99s%20a%20non%2Dzero%2Dcost%20approach%20to%20this) with [tikz](https://tikz.net/) without running scripts by hand.
 - I want [split views](../optimization-lessons-from-a-minecraft-structure-locator/#:~:text=After%20keeping%20my%20PC%20running%20for%20a%20couple%20days) for pictures, custom emojis <img class="emoji" src="/images/ferrisClueless.webp" title=":ferrisClueless:" />, and inlining for small SVGs.
