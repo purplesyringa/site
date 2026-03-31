@@ -4,7 +4,7 @@ Exceptions and panics make it easy to forget about the occasional error, but the
     <span class="hljs-title function_ invoke__">Ok</span>(T),
     <span class="hljs-title function_ invoke__">Err</span>(E),
 }
-</code></pre><p>So the <code>Result</code> type is almost always larger than the actual returned value:<pre><code>                                     Discriminant
+</code></pre><p>So the <code>Result</code> type is almost always larger than the actual returned value:<figure title="A type layout diagram for `Result`. The first field is a discriminant, shown as 0x00...00 for `Ok` and 0x00...01 for `Err`. The rest is either actual data or error depending on the variant."><pre aria-hidden=true><code>                                     Discriminant
                                           vv
                                      +-----------+--------------------------+
                        Ok variant:   | 0x00...00 |       actual data        |
@@ -13,7 +13,7 @@ Exceptions and panics make it easy to forget about the occasional error, but the
                                      +-----------+--------------------------+
                        Err variant:  | 0x00...01 |       actual error       |
                                      +-----------+--------------------------+
-</code></pre><p>Oftentimes it doesn’t fit in CPU registers, so it has to be spilled to stack.<p>Callers of fallible functions have to check whether the returned value is <code>Ok</code> or <code>Err</code>:<pre><code class=language-rust><span class=hljs-comment>// What the programmer writes:</span>
+</code></pre></figure><p>Oftentimes it doesn’t fit in CPU registers, so it has to be spilled to stack.<p>Callers of fallible functions have to check whether the returned value is <code>Ok</code> or <code>Err</code>:<pre><code class=language-rust><span class=hljs-comment>// What the programmer writes:</span>
 <span class="hljs-title function_ invoke__">f</span>()?
 <span class=hljs-comment>// What the compiler sees:</span>
 <span class=hljs-keyword>match</span> <span class="hljs-title function_ invoke__">f</span>() {

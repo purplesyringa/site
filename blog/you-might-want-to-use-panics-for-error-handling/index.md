@@ -19,7 +19,8 @@ enum Result<T, E> {
 
 So the `Result` type is almost always larger than the actual returned value:
 
-```
+```diagram
+!alt A type layout diagram for `Result`. The first field is a discriminant, shown as 0x00...00 for `Ok` and 0x00...01 for `Err`. The rest is either actual data or error depending on the variant.
                                      Discriminant
                                           vv
                                      +-----------+--------------------------+
