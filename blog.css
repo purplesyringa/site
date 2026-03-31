@@ -316,8 +316,9 @@ aside > :last-child {
 		margin-bottom: 0;
 	}
 	aside {
-		margin-top: 1rem;
 		position: static;
+		margin-top: 1rem;
+		margin-left: 0;
 		width: 100%;
 	}
 }
