@@ -7,10 +7,22 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Sat, 28 Mar 2026 21:00:23 GMT</lastBuildDate>
+		<lastBuildDate>Tue, 31 Mar 2026 09:45:13 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>There is absolutely nothing wrong with Web</title>
+				<link>https://purplesyringa.moe/blog/./there-is-absolutely-nothing-wrong-with-web/</link>
+				<description>&lt;p&gt;This is a rant about how broken everything Web is based on is. You know, the usual. No offence intended towards framework developers, I’m glad this technology exists, but I’m sure you know this feeling. It gets too much sometimes.&lt;/p&gt;
+&lt;p&gt;I’ve been meaning to improve this blog’s technology for a while. It’s held together by two &lt;a href=&quot;https://github.com/purplesyringa/site/blob/9015c0d0d6087bf1f3e851b040970cee7da29518/blog/build.js&quot;&gt;hacky scripts&lt;/a&gt; as opposed to a typical template engine, and that’s very limiting.&lt;/p&gt;
+</description>
+				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+				
+				<guid>https://purplesyringa.moe/blog/./there-is-absolutely-nothing-wrong-with-web/</guid>
+				<pubDate>Tue, 31 Mar 2026 00:00:00 GMT</pubDate>
+			</item>
 		
 			<item>
 				<title>Optimization lessons from a Minecraft structure locator</title>

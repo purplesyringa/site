@@ -1,0 +1,186 @@
+<!doctypehtml><html prefix="og: http://ogp.me/ns#"lang=en_US><meta charset=utf-8><meta content=width=device-width,initial-scale=1 name=viewport><title>There is absolutely nothing wrong with Web | purplesyringa's blog</title><link href=../../favicon.ico?v=2 rel=icon><link href=../../all.css rel=stylesheet><link href=../../blog.css rel=stylesheet><link href=../../vendor/Temml-Local.css rel=stylesheet><link crossorigin href=https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&family=Slabo+27px&display=swap rel=stylesheet><link href=../../fonts/webfont.css rel=stylesheet><link media="screen and (prefers-color-scheme: dark"href=../../vendor/atom-one-dark.min.css rel=stylesheet><link media="screen and (prefers-color-scheme: light"href=../../vendor/a11y-light.min.css rel=stylesheet><link title="Blog posts"href=../../blog/feed.rss rel=alternate type=application/rss+xml><meta content="There is absolutely nothing wrong with Web"property=og:title><meta content=article property=og:type><meta content=https://purplesyringa.moe/blog/there-is-absolutely-nothing-wrong-with-web/og.png property=og:image><meta content=https://purplesyringa.moe/blog/there-is-absolutely-nothing-wrong-with-web/ property=og:url><meta content="This is a rant about how broken everything Web is based on is. You know, the usual. No offence intended towards framework developers, I’m glad this technology exists, but I’m sure you know this feeling. It gets too much sometimes.
+I’ve been meaning to improve this blog’s technology for a while. It’s held together by two hacky scripts as opposed to a typical template engine, and that’s very limiting."property=og:description><meta content=en_US property=og:locale><meta content="purplesyringa's blog"property=og:site_name><meta content=summary_large_image name=twitter:card><meta content=https://purplesyringa.moe/blog/there-is-absolutely-nothing-wrong-with-web/og.png name=twitter:image><script data-website-id=0da1961d-43f2-45cc-a8e2-75679eefbb69 defer src=https://zond.tei.su/script.js></script><body><header><div class=viewport-container><div class=media><a href=https://github.com/purplesyringa><img alt=GitHub src=../../images/github-mark-white.svg></a></div><h1><a href=/>purplesyringa</a></h1><nav><a href=../..>about</a><a class=current href=../../blog/>blog</a><a href=../../sink/>kitchen sink</a></nav></div></header><section><div class=viewport-container><h2>There is absolutely nothing wrong with Web</h2><time>March 31, 2026</time><p>This is a rant about how broken everything Web is based on is. You know, the usual. No offence intended towards framework developers, I’m glad this technology exists, but I’m sure you know this feeling. It gets too much sometimes.<p>I’ve been meaning to improve this blog’s technology for a while. It’s held together by two <a href=https://github.com/purplesyringa/site/blob/9015c0d0d6087bf1f3e851b040970cee7da29518/blog/build.js>hacky scripts</a> as opposed to a typical template engine, and that’s very limiting.<h3>Why not ___?</h3><p>So, why isn’t this a no-brainer? There are many static site generators, including classics like Hygo and Jekyll.<div class=aside-group><p>The answer is in my design decisions. I really value the unique feel of this blog – its bold color choice for the dark theme, a variable-width font for <code>inline code</code>, wide code snippets, headings on the left side, and sidenotes.<aside><p>Like this one. That’s a sidenote.</aside></div><p>The last feature is by far the most complicated.<h3>Sidenotes</h3><div class=aside-group><p>Let’s start with something simple →<aside><p>A sidenote with <strong>formatting</strong> and math: <eq><math><mrow><mn>2</mn><mo>+</mo></mrow><mrow><mn>2</mn><mo>=</mo></mrow><mrow><mn>5</mn></mrow></math></eq>.</aside></div><p>Here’s what this snippet looks like in my Markdown source (almost):<pre><code class=language-markdown>Let's start with something simple &amprightarrow;
+
+:::aside
+A sidenote with <span class=hljs-strong>**formatting**</span> and math: $2 + 2 = 5$.
+:::
+</code></pre><p>Markdown disables all formatting inside HTML tags, so I can’t just use <code>&LTaside></code>. <a href=https://www.npmjs.com/package/markdown-it-container>markdown-it-container</a> allows me to create a container that supports nested formatting, but “batteries-included” static site generators often don’t support this.<p>Moving on, on desktop, sidenotes are shown <em>to the right</em> of the commented content. When there’s little horizontal space (e.g. on mobile), they are shown <em>below</em> the content instead. This way, you always read the post in the intended order. So Markdown actually specifies both the beginning and the end of the commented part:<pre><code class=language-markdown><span class=language-xml><span class=hljs-tag><<span class=hljs-name>aside-start-here</span> /></span></span>
+
+Let's start with something simple &amprightarrow;
+
+:::aside
+A sidenote with <span class=hljs-strong>**formatting**</span> and math: $2 + 2 = 5$.
+:::
+</code></pre><p><code>markdown-it-container</code> doesn’t support self-closing annotations, so it has to be an HTML tag. Now, how should this be rendered in HTML?<pre><code class=language-html><span class=hljs-tag><<span class=hljs-name>div</span> <span class=hljs-attr>class</span>=<span class=hljs-string>"group"</span>></span>
+    main content
+    <span class=hljs-tag><<span class=hljs-name>aside</span>></span>elaboration<span class=hljs-tag>&LT/<span class=hljs-name>aside</span>></span>
+<span class=hljs-tag>&LT/<span class=hljs-name>div</span>></span>
+</code></pre><div class=aside-group><p>On desktop, I style the <code>&LTaside></code> as <code>position: absolute; left: 100%; top: 0;</code> to align it to the top of the <code>&LTdiv></code>.<aside><p>I used to place <code>&LTaside></code> first and use <a href=https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/order>order</a> on mobile, but it doesn’t account for screen readers, so I had to change it.</aside></div><p>Note that <code>&LTaside-start-here /></code> is rendered as a non-closed tag <code>&LTdiv class="group"></code>, and <code>:::aside</code> closes that <code>&LT/div></code>. This breaks renderers that assume Markdown AST nodes directly correspond to HTML AST nodes, which is pretty much every renderer.<p>So instead, I patch the produced HTML. Needless to say, that’s not a common part of your average SSG pipeline, so you lose all benefits of powerful tools, like hot reload.<h3>Patches</h3><p>There are other reasons to complicate HTML rendering and/or Markdown parsing:<ul><li><a href=../faster-practical-modular-inversion/#:~:text=8%20bits>Tables need to be horizontally scrollable</a> on mobile devices and narrow screens, which requires wrapping <code>&LTtable></code> in a container.<li>I need a simple syntax for videos, both <a href=../we-built-the-best-bad-apple-in-minecraft/#:~:text=These%20structures%20should%20be%20built>local</a> and <a href=../optimization-lessons-from-a-minecraft-structure-locator/>from YouTube</a>, i.e. <code>![]()</code> should emit <code>&LTvideo></code> and <code>&LTiframe></code> tags. This includes setting <code>aspect-ratio</code> for <code>&LTiframe></code> and configuring autoplay and seizure warnings per-video.<li>I need to draw <a href=../recovering-control-flow-structures-without-cfgs/#:~:text=There%E2%80%99s%20a%20non%2Dzero%2Dcost%20approach%20to%20this>diagrams</a> with <a href=https://tikz.net/>tikz</a> without running scripts by hand.<li>I want <a href=../optimization-lessons-from-a-minecraft-structure-locator/#:~:text=After%20keeping%20my%20PC%20running%20for%20a%20couple%20days>split views</a> for pictures, custom emojis <img class=emoji src=/images/ferrisClueless.webp title=:ferrisClueless:>, and inlining for small SVGs.</ul><p>Maybe it’s asking for too much, but to me, that’s basic functionality – most of it is necessary either for accessibility or to get the point across without saying “sorry, my blog software doesn’t support this, so I’ll have to show it differently”.<h3>Frameworks</h3><p>Point is, I need to take out all the batteries from the battery-included tools, and the best way to do it is to drop the tools altogether.<p>On the other extreme are feature-complete Web frameworks like React and Dioxus. They are extensive enough to support everything I need.<div class=aside-group><p>The devil is in the details. PHP and other old-timey tools don’t support hot reload, which would normally be acceptable, but building <a href=https://tikz.net/>tikz</a> to SVG is slow as hell and can make page rebuilds take up to 10 seconds. Besides, SSR-based tools can’t run on GitHub Pages, and I value having a reliable hosting when I’m posted on HN.<aside><p>I <em>guess</em> I could start a local server and run <code>wget -r</code> during build, but come on.</aside></div><div class=aside-group><p>In contrast, most front-end frameworks import a ton of JavaScript for hydration even with SSR – so even though the site works without JS, the framework doubles the size of the page. This equally applies to modern Wasm-based frameworks. I could strip <code>&LTscript></code> tags, but that would prevent me from adding opt-in interactivity.<aside><p>If you have JS enabled, press <kbd>Ctrl+Enter</kbd> to see what I mean.</aside></div><h3>Silver bullet?</h3><p>That’s when I learnt about <a href=https://astro.build/>Astro</a>. On paper, it has everything I need:<ul><li>Static <a href=https://docs.astro.build/en/reference/astro-syntax/>JSX-like components</a> supporting <a href=https://docs.astro.build/en/guides/styling/>scoped styles</a>.<li><a href=https://docs.astro.build/en/develop-and-build/>SSG for production and hot reload for development</a> (SSR is available, but opt-in).<li>Isolated <a href=https://docs.astro.build/en/concepts/islands/>interactive islands</a> using React, Vue, or even plain JS.<li>Generating pages <a href=https://docs.astro.build/en/guides/routing/>from on-disk Markdown files</a>.</ul><p>At first, this made me really sad, because it meant I didn’t have an excuse to develop my own framework. But as I started porting the site, cracks began to appear.<p>Since Astro is based on frontend technology, all code goes through <a href=https://vite.dev/>Vite</a>, even if it’s server-side-only. Vite is a bundler, and it’s responsible for packaging your project and its dependencies into JS files. More subtly, it makes directives like this work:<pre><code class=language-javascript><span class=hljs-keyword>import</span> imageUrl <span class=hljs-keyword>from</span> <span class=hljs-string>"./images/pic.png"</span>;
+</code></pre><p>Behind the scenes, Vite intercepts the import, optimizes the picture, and makes it seem like <code>pic.png</code> is actually a JS file with the following contents:<pre><code class=language-javascript><span class=hljs-keyword>export</span> <span class=hljs-keyword>default</span> <span class=hljs-string>"&LTurl to picture>"</span>;
+</code></pre><p>It uses a similar mechanism to handle CSS imports and other cool stuff.<h3>Assets</h3><p>I had naturally assumed that this mechanism would be extensible. My <a href=/sink/>kitchen sink</a> page contains tons of icons, so I’d like to write something like:<pre><code class=language-html><span class=hljs-tag><<span class=hljs-name>Icon</span> <span class=hljs-attr>name</span>=<span class=hljs-string>"custom-cpp"</span> /></span>
+</code></pre><p>I’m using <a href=https://www.nerdfonts.com/>Nerd Fonts</a>, which distributes a WOFF font. My plan was to have <code>&LTIcon></code> extract the glyph from the script, create a virtual file for the resulting SVG, and use the mechanism that Vite uses for on-disk pictures or CSS modules to import it from JS.<p>Vite isn’t the one that performs the build, though. It’s based on <a href=https://rollupjs.org/>Rollup</a>, or alternatively <a href=https://rolldown.rs/>Rolldown</a>. (Note: we’re already three levels deep.) Rollup docs denote <a href=https://rollupjs.org/plugin-development/>a single page</a> to plugin development. Here’s an example quote from the docs:<blockquote><p>If <code>external</code> is <code>true</code>, then absolute ids will be converted to relative ids based on the user’s choice for the <code>makeAbsoluteExternalsRelative</code> option. This choice can be overridden by passing either <code>external: "relative"</code> to always convert an absolute id to a relative id or <code>external: "absolute"</code> to keep it as an absolute id. When returning an object, relative external ids, i.e. ids starting with <code>./</code> or <code>../</code>, will not be internally converted to an absolute id and converted back to a relative id in the output, but are instead included in the output unchanged. If you want relative ids to be renormalised and deduplicated instead, return an absolute file system location as <code>id</code> and choose <code>external: "relative"</code>.</blockquote><p>After reading it, I still have no clue what <code>external</code> <em>does</em>, what absolute and relative IDs are and how their behavior differs. But I digress. Amid all this mess, there is <a href=https://rollupjs.org/plugin-development/#file-urls>an example</a> for generating a virtual file using the <code>emitFile</code> API. Rollup plugins are valid Vite plugins, so it was easy to make such a plugin:<pre><code class=language-javascript><span class=hljs-keyword>import</span> src <span class=hljs-keyword>from</span> <span class=hljs-string>"virtual:example"</span>;
+<span class=hljs-comment>// `src` points to a file containing "Hello, world!"</span>
+</code></pre><pre><code class=language-javascript>...
+<span class=hljs-keyword>const</span> referenceId = <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">emitFile</span>({
+    <span class=hljs-attr>type</span>: <span class=hljs-string>"asset"</span>,
+    <span class=hljs-attr>name</span>: <span class=hljs-string>"example.txt"</span>,
+    <span class=hljs-attr>source</span>: <span class=hljs-string>"Hello, world!"</span>,
+});
+<span class=hljs-keyword>return</span> <span class=hljs-string>`export default import.meta.ROLLUP_FILE_URL_<span class=hljs-subst>${referenceId}</span>;`</span>;
+...
+</code></pre><p>But when I started a dev server, Vite told me that <em>actually</em>, I can’t use <code>emitFile</code>:<pre><code>context method emitFile is not supported in serve mode. This plugin is likely not vite-compatible.
+</code></pre><p>Turns out Vite uses Rollup for release only. How does it bundle files in development?<pre><code class=language-javascript><span class=hljs-keyword>const</span> cssContent = <span class=hljs-keyword>await</span> <span class="hljs-title function_">getContentWithSourcemap</span>(css)
+<span class=hljs-keyword>const</span> code = [
+  <span class=hljs-string>`import { updateStyle as __vite__updateStyle, removeStyle as __vite__removeStyle } from <span class=hljs-subst>${<span class=hljs-built_in>JSON</span>.stringify(
+    path.posix.join(config.base, CLIENT_PUBLIC_PATH),
+  )}</span>`</span>,
+  <span class=hljs-string>`const __vite__id = <span class=hljs-subst>${<span class=hljs-built_in>JSON</span>.stringify(id)}</span>`</span>,
+  <span class=hljs-string>`const __vite__css = <span class=hljs-subst>${<span class=hljs-built_in>JSON</span>.stringify(cssContent)}</span>`</span>,
+  <span class=hljs-string>`__vite__updateStyle(__vite__id, __vite__css)`</span>,
+  <span class=hljs-comment>// css modules exports change on edit so it can't self accept</span>
+  <span class=hljs-string>`<span class=hljs-subst>${modulesCode || <span class=hljs-string>'import.meta.hot.accept()'</span>}</span>`</span>,
+  <span class=hljs-string>`import.meta.hot.prune(() => __vite__removeStyle(__vite__id))`</span>,
+].<span class="hljs-title function_">join</span>(<span class=hljs-string>'\n'</span>)
+<span class=hljs-keyword>return</span> { code, <span class=hljs-attr>map</span>: { <span class=hljs-attr>mappings</span>: <span class=hljs-string>''</span> } }
+</code></pre><p>Oh, I see. It inlines the stylesheet into JS. What does it do with pictures?<pre><code class=language-typescript><span class=hljs-keyword>export</span> <span class=hljs-keyword>async</span> <span class=hljs-keyword>function</span> <span class="hljs-title function_">fileToDevUrl</span>(<span class=hljs-params>
+  environment: Environment,
+  id: <span class=hljs-built_in>string</span>,
+  asFileUrl = <span class=hljs-literal>false</span>,
+</span>): <span class="hljs-title class_">Promise</span><<span class=hljs-built_in>string</span>> {
+  ...
+  <span class=hljs-keyword>let</span> <span class=hljs-attr>rtn</span>: <span class=hljs-built_in>string</span>
+  <span class=hljs-keyword>if</span> (publicFile) {
+    <span class=hljs-comment>// in public dir during dev, keep the url as-is</span>
+    rtn = id
+  } <span class=hljs-keyword>else</span> <span class=hljs-keyword>if</span> (id.<span class="hljs-title function_">startsWith</span>(<span class="hljs-title function_">withTrailingSlash</span>(config.<span class=hljs-property>root</span>))) {
+    <span class=hljs-comment>// in project root, infer short public path</span>
+    rtn = <span class=hljs-string>'/'</span> + path.<span class=hljs-property>posix</span>.<span class="hljs-title function_">relative</span>(config.<span class=hljs-property>root</span>, id)
+  } <span class=hljs-keyword>else</span> {
+    <span class=hljs-comment>// outside of project root, use absolute fs path</span>
+    <span class=hljs-comment>// (this is special handled by the serve static middleware</span>
+    rtn = path.<span class=hljs-property>posix</span>.<span class="hljs-title function_">join</span>(<span class="hljs-variable constant_">FS_PREFIX</span>, id)
+  }
+  <span class=hljs-keyword>const</span> base = <span class="hljs-title function_">joinUrlSegments</span>(config.<span class=hljs-property>server</span>.<span class=hljs-property>origin</span> ?? <span class=hljs-string>''</span>, config.<span class=hljs-property>decodedBase</span>)
+  <span class=hljs-keyword>return</span> <span class="hljs-title function_">joinUrlSegments</span>(base, <span class="hljs-title function_">removeLeadingSlash</span>(rtn))
+}
+</code></pre><p>Right, those are routed to <code>/@fs/&LTabsolute path></code>. Wait, what?<p>In a nutshell, there are no virtual files in dev mode. If you want a URL with dynamic contents, use <code>data:</code>. Oh, and <code>import.meta.ROLLUP_FILE_URL_${referenceId}</code> isn’t actually the right thing to do even in release: it only works in JS files and produced complex code, instead you should use the <a href=https://github.com/vitejs/vite/issues/13459>undocumented</a> magic string <code>__VITE_ASSET__${referenceId}__</code> because <code>???</code>. I love this ecosystem.<p>Say we somehow resolve all that and make <code>import imageSrc from "virtual:nerd-fonts/custom-cpp.svg"</code> work. Now we <em>just</em> need to tie two things together:<pre><code class=language-typescript>---
+<span class=hljs-comment>// Usage: &LTIcon name="custom-cpp" /></span>
+
+<span class=hljs-keyword>interface</span> <span class="hljs-title class_">Props</span> {
+    <span class=hljs-attr>name</span>: <span class=hljs-built_in>string</span>;
+}
+
+<span class=hljs-keyword>const</span> { name } = <span class="hljs-title class_">Astro</span>.<span class=hljs-property>props</span>;
+<span class=hljs-keyword>const</span> src = <span class=hljs-keyword>await</span> <span class=hljs-keyword>import</span>(<span class=hljs-string>`virtual:nerd-fonts/<span class=hljs-subst>${name}</span>.svg`</span>);
+---
+<span class=language-xml><span class=hljs-tag><<span class=hljs-name>img</span> <span class=hljs-attr>src</span>=<span class=hljs-string>{src}</span> /></span></span>
+</code></pre><p>…wait a second. That’s a <a href=https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import>dynamic import</a>. This wouldn’t be an issue in typical NodeJS, which can resolve imports on-demand. But all code goes through Vite, which tries to build a Web bundle, so it wants to resolve modules before evaluation. Had we used an on-disk relative path, this would be translated roughly like this:<pre><code class=language-javascript><span class=hljs-keyword>const</span> src = <span class=hljs-keyword>await</span> <span class=hljs-keyword>import</span>(<span class=hljs-string>`./images/<span class=hljs-subst>${name}</span>.svg`</span>);
+<span class=hljs-comment>// -></span>
+<span class=hljs-keyword>import</span> file1 <span class=hljs-keyword>from</span> <span class=hljs-string>"./images/file1.svg"</span>;
+<span class=hljs-keyword>import</span> file2 <span class=hljs-keyword>from</span> <span class=hljs-string>"./images/file2.svg"</span>;
+<span class=hljs-keyword>const</span> src = {
+    file1,
+    file2,
+    ...
+}[name];
+</code></pre><p>…totally negating the entire point of extracting only utilized glyphs from the font. Our only redemption is that this doesn’t even compile, because apparently dynamic imports aren’t supported for virtual files.<p>Well, okay, screw fast builds, let’s just build everything and rely on tree shaking. What’s the best library for extracting SVGs from fonts, anyway? <a href=https://www.npmjs.com/package/ttf2svg>ttf2svg</a>? No, <code>npm audit</code> says that one has 15 vulnerabilities. I know, <a href=https://www.npmjs.com/package/harfbuzzjs>harfbuzzjs</a> looks trustworthy:<pre><code class=language-javascript><span class=hljs-keyword>import</span> { decompress } <span class=hljs-keyword>from</span> <span class=hljs-string>"wawoff2"</span>;
+<span class=hljs-keyword>import</span> fs <span class=hljs-keyword>from</span> <span class=hljs-string>"node:fs"</span>;
+<span class=hljs-keyword>import</span> hbPromise <span class=hljs-keyword>from</span> <span class=hljs-string>"harfbuzzjs"</span>;
+
+<span class=hljs-keyword>const</span> iconNames = ...;
+<span class=hljs-keyword>const</span> renderString = ...;
+
+<span class=hljs-keyword>const</span> fontData = <span class=hljs-keyword>await</span> <span class="hljs-title function_">decompress</span>(fs.<span class="hljs-title function_">readFileSync</span>(<span class=hljs-keyword>new</span> <span class="hljs-title function_">URL</span>(<span class=hljs-string>"font.woff2"</span>, <span class=hljs-keyword>import</span>.<span class=hljs-property>meta</span>.<span class=hljs-property>url</span>)));
+
+<span class=hljs-keyword>const</span> hb = <span class=hljs-keyword>await</span> hbPromise;
+<span class=hljs-keyword>const</span> blob = hb.<span class="hljs-title function_">createBlob</span>(fontData);
+<span class=hljs-keyword>const</span> face = hb.<span class="hljs-title function_">createFace</span>(blob, <span class=hljs-number>0</span>);
+<span class=hljs-keyword>const</span> font = hb.<span class="hljs-title function_">createFont</span>(face);
+
+<span class=hljs-keyword>const</span> buffer = hb.<span class="hljs-title function_">createBuffer</span>();
+buffer.<span class="hljs-title function_">addText</span>(renderString);
+buffer.<span class="hljs-title function_">guessSegmentProperties</span>();
+hb.<span class="hljs-title function_">shape</span>(font, buffer);
+<span class=hljs-keyword>const</span> output = buffer.<span class="hljs-title function_">json</span>();
+<span class=hljs-keyword>const</span> svgs = {};
+output.<span class="hljs-title function_">forEach</span>(<span class=hljs-function>(<span class=hljs-params>glyph, i</span>) =></span> {
+    <span class=hljs-keyword>const</span> path = font.<span class="hljs-title function_">glyphToPath</span>(glyph.<span class=hljs-property>g</span>);
+    svgs[iconNames[i]] = <span class=hljs-string>`
+        &LTsvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048">
+            &LTpath fill-rule="evenodd" clip-rule="evenodd" d="<span class=hljs-subst>${path}</span>" fill="#fff" />
+        &LT/svg>
+    `</span>;
+});
+buffer.<span class="hljs-title function_">destroy</span>();
+
+font.<span class="hljs-title function_">destroy</span>();
+face.<span class="hljs-title function_">destroy</span>();
+blob.<span class="hljs-title function_">destroy</span>();
+</code></pre><p>WHY ARE MY ICONS UPSIDE DOWN? Okay, we’ll get to that in a bit, let’s try something easier first, why are they cropped wrong? I guess I should’ve computed the viewbox instead of hard-coding numbers, let’s use the <code>harfbuzzjs</code> API to get the bou-<blockquote><p><strong><a href=https://github.com/harfbuzz/harfbuzzjs/issues/173>Calling <code>hExtents</code> seems to brick the font instance</a></strong><p>When running this code, I get:<pre><code>{ ascender: 0, descender: 0, lineGap: 0 }
+(empty line)
+</code></pre><p>It seems like other operations break after <code>hExtents</code> as well: for instance, calling <code>buffer.json</code> seems to always return glyphs with ID <code>0</code>.<hr><p><strong><a href=https://github.com/harfbuzz/harfbuzzjs/pull/174>Fix memory corruption in hExtents/vExtents</a></strong><p>We were allocation 12 bytes but the <code>hb_font_extents_t</code> struct is actually 48 bytes (the rest are private fields).</blockquote><p>You know what, I don’t want SVGs, let’s try something else.<h3>Fonts</h3><p>Maybe extracting SVGs from the font wasn’t the brightest idea. It’s going to trigger many HTTP requests, which might be slow. Let’s use the font directly, we just need to drop unused glyphs. Let’s see what <a href=https://docs.astro.build/en/guides/fonts/>Astro docs</a> have to say about it:<blockquote><p>This API helps you keep your site performant with automatic <a href=https://web.dev/learn/performance/optimize-web-fonts>web font optimizations</a> including preload links, optimized fallbacks, and opinionated defaults. See common usage examples.</blockquote><p>So, that doesn’t sound like optimizing fonts, that sounds like optimizing everything around fonts. I trust them though <img class=emoji src=/images/ferrisClueless.webp title=:ferrisClueless:>. Let’s check <a href=https://docs.astro.build/en/reference/configuration-reference/#fonts>the config</a>.<blockquote><p><code>font.subsets</code><p>Type: <code>Array&LTstring></code><br> Default: <code>["latin"]</code><br> Added in: astro@6.0.0<p>Defines a list of font subsets to preload.<p><code>subsets: ["latin"]</code></blockquote><p>That doesn’t look like it supports Unicode codepoints.<blockquote><p><code>font.unicodeRange</code></blockquote><p>That’s encouraging!<blockquote><p>Determines when a font must be downloaded and used based on a specific range of unicode characters. If a character on the page matches the configured range, the browser will download the font and all characters will be available for use on the page. To configure a subset of characters preloaded for a single font, see the subsets property instead.</blockquote><p>Oh, that only affects preloading. Soooo… there basically isn’t any font optimization.<p>Don’t get me wrong, I’d gladly write it myself, but it’s not clear how to automatically rebuild the font if new icons are used, and given that virtual files don’t really work, I think it’s fair to say this wouldn’t work reliably anyway.<h3>UnoCSS</h3><p>You know what, that’s fair, no one cares about build performance and disk space anyway. Let’s just extract SVGs by hand and see what we can do with that.<pre><code class=language-shell><span class="hljs-meta prompt_">$ </span><span class=language-bash>git submodule add https://github.com/ryanoasis/nerd-fonts nerd-fonts</span>
+&LTdownloaded 1.3 GB>
+<span class="hljs-meta prompt_">$ </span><span class=language-bash><span class=hljs-built_in>cd</span> nerd-fonts/src/svgs</span>
+<span class="hljs-meta prompt_">$ </span><span class=language-bash><span class=hljs-built_in>ls</span> -w100 *.svg</span>
+ada_nf.svg      elm_nf.svg     karma.svg          rollup.svg
+apple.svg       emacs_nf.svg       kotlin_nf.svg      R.svg
+argdown.svg     error.svg      less.svg       ruby_nf.svg
+asm_nf.svg      eslint.svg     license.svg        rust.svg
+...
+ejs.svg         java.svg       rails.svg          yml.svg
+electron_nf.svg     jenkins.svg    react.svg          zig.svg
+elixir_nf.svg       jinja.svg      reasonml.svg       zip.svg
+elixir_script.svg   julia.svg      rescript.svg       zsh_nf.svg
+</code></pre><p>A plain <code>import ... from "&LTpath>.svg"</code> will either inline <code>data:</code> URLs in each <code>&LTimg></code> (bad for page size and caching), or trigger multiple HTTP requests (bad for latency).<p>Someone told me <a href=https://unocss.dev/>UnoCSS</a> solves this cleanly: add a class with <code>background-image: url(data:...)</code> for each icon and let it remove unused definitions. It took me a while to figure out what UnoCSS does, but it’s basically Tailwind on steroids: it <a href=https://stackoverflow.com/a/1732454/5417677>parses HTML with regex</a> to get a list of used classes and emits only the required CSS rules.<p>You know, like tree shaking, but for CSS. So it’s basically a CSS bundler implemented from scratch. You know, like Rollup is a bundler and Vite is kinda a bundler. You can <a href=https://unocss.dev/integrations/astro>integrate it with Astro</a> if you want three bundlers in one build. Do you like bundlers?<pre><code class=language-shell><span class="hljs-meta prompt_">$ </span><span class=language-bash>npm run build</span>
+<span class="hljs-meta prompt_">$ </span><span class=language-bash>firefox</span>
+</code></pre><p>The dimensions are wrong, but that’s expected from replacing a font with an SVG. I still have to hard-code the icon list, and I need to add other icon sources from <code>npm</code> because <code>src/svgs</code> doesn’t contain all glyphs. But maybe it’s not that b-<pre><code class=language-shell><span class="hljs-meta prompt_">$ </span><span class=language-bash><span class=hljs-built_in>ls</span> dist/_astro/</span>
+...
+.rw-r--r--  960 purplesyringa purplesyringa 31 Mar 01:48 -I 󰕙 github-mark-white.S2fJVXLq.svg
+.rw-r--r--  960 purplesyringa purplesyringa 31 Mar 01:48 -I 󰕙 github-mark-white.S2fJVXLq_Z2nI3it.svg
+...
+</code></pre><p>Why are there two identi–<pre><code class=language-shell><span class="hljs-meta prompt_">$ </span><span class=language-bash>npm <span class=hljs-built_in>ls</span></span>
+bookshelf@0.0.1 /home/purplesyringa/bookshelf
+├── @astrojs/check@0.9.8
+├── @astrojs/compiler-rs@0.1.6
+├── @astrojs/mdx@5.0.3
+├── @astrojs/rss@4.0.18
+├── @astrojs/sitemap@3.7.2
+├── @emnapi/core@1.9.1 extraneous
+├── @emnapi/runtime@1.9.1 extraneous
+├── @emnapi/wasi-threads@1.2.0 extraneous
+├── @napi-rs/wasm-runtime@1.1.1 extraneous
+├── @shikijs/transformers@4.0.2
+├── @tybys/wasm-util@0.10.1 extraneous
+├── @unocss/astro@66.6.7
+├── @unocss/preset-icons@66.6.7
+├── astro@6.1.1
+├── sharp@0.34.5
+├── tslib@2.8.1 extraneous
+├── typescript@5.9.3
+└── unocss@66.6.7
+</code></pre><p>Why are there extraneous packages right after <code>npm clean-in</code>–<pre><code class=language-shell><span class="hljs-meta prompt_">$ </span><span class=language-bash><span class=hljs-built_in>cat</span> dist/index.html</span>
+...
+    &LTsection data-astro-cid-w6ymvdtg="true" data-astro-cid-w56doo5x="true" class="parent">
+    &LTdiv class="container" data-astro-cid-w56doo5x> 
+    
+        &LTp>
+Hi! 👋 I'm &LTb>Alisa Sireneva&LT/b> (she/her), a 21yo dev from Moscow.
+&LT/p>
+    
+ &LT/div>
+&LT/section>  
+...
+</code></pre><p>Why are there multiple spaces despite <code>minifyHtml</code>?<h3>Sigh</h3><p>There are always going to be bugs and missing features. I’m a developer, I get it.<p>What I don’t get is why <a href=https://github.com/withastro/astro/issues/6011#issuecomment-1409046168>Astro decided</a> that actually, React, Vue, and the rest of the frameworks were wrong to consider whitespace in templates insignificant, and so they’re going to make everyone write long lines and use <code>{/* prettier-ignore */}</code>. No, I can’t just use React for templating, that turns the component into an island.<p>Why did we have like three tools post-processing each other’s output to implement different sides of the same functionality, requiring <a href=https://github.com/unocss/unocss/tree/main/packages-integrations/vite/src>non-trivial integrations</a> to keep HMR working, and then someone went, “You know what will fix frontend development once and for all? Making another wrapper around these tools!”<p>I want to like Astro. I absolutely love the island architecture and easy content discovery. I want to like JavaScript. I love having a terse GC language with an enormous ecosystem, built-in WebAssembly support, and JSX. I want to like Vite, and Rolldown, and <a href=https://unifiedjs.com/>unified</a>… but why do none of these tools offer a way to implement tree-shaking for fonts despite supporting it for JS and CSS? Why do I have to learn from single-page docs? And why do I have to use software with bangers like:<pre><code class=language-javascript>generatedFiles = [...generatedFiles, { image, width, format }];
+</code></pre><p>It could be <em>so</em> simple. Allow components to directly emit virtual files. Might as well let them populate global sets that can then be read out in some centralized manner – that’d handle CSS bundling and font subsetting. It wouldn’t even need any clever hot-reload logic – just pure library functions. But it’s not the way Rollup works, so it’s not the way Vite works, so it’s not the way Astro works. And Rollup is not going away.<h3>Fin.</h3><p>I’ll probably finish the Astro port. It hurts that features that were trivial in my scripts are becoming complicated, and it won’t resolve issues with slow tikz builds, but it’s probably easier to maintain than whatever I’m using right now. Small steps.<p>Longer term I’ll probably switch to a custom framework. Cliché, I know. Boo hoo. I drafted a Rust version as an experiment, but I have no clue how well hot reloading code would work, so I’ll probably switch to JS. Having JSX would be great, and the pitfalls should be less… arbitrary. That’s not happening anytime soon, though.<p>In the meantime, enjoy a slightly improved HTML layout: <code>links</code> seems to parse it better, if anyone still uses it, and accessibility should be improved.</div></section><footer><div class=viewport-container><h2>Made with my own bare hands (why.)</h2></div></footer><script>window.addEventListener("keydown", e => {
+				if (e.key === "Enter") {
+					if (e.ctrlKey) {
+						window.open("https://github.com/purplesyringa/site/edit/master/blog/there-is-absolutely-nothing-wrong-with-web/index.md", "_blank");
+					} else if (
+						e.target.type === "checkbox"
+						&& e.target.parentNode
+						&& e.target.parentNode.className === "expansible-code"
+					) {
+						e.target.click();
+					}
+				}
+			});</script>
