@@ -12,7 +12,7 @@
 	margin-right: 0.25rem;
 }
 
-h3 + p {
+h3 + * {
 	margin-top: 0;
 }
 
