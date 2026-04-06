@@ -7,10 +7,23 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Tue, 31 Mar 2026 19:26:44 GMT</lastBuildDate>
+		<lastBuildDate>Mon, 06 Apr 2026 17:37:05 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>Simplest hash functions</title>
+				<link>https://purplesyringa.moe/blog/./simplest-hash-functions/</link>
+				<description>&lt;p&gt;What came to your mind when you read “hash functions” in the title?&lt;/p&gt;
+&lt;p&gt;If you’re pragmatic, you probably remembered &lt;a href=&quot;https://en.wikipedia.org/wiki/SHA-2&quot;&gt;SHA-256&lt;/a&gt; or &lt;a href=&quot;https://en.wikipedia.org/wiki/MD5&quot;&gt;MD5&lt;/a&gt;. Those are cryptographic hash functions, and they work fast and well for arbitrary inputs, even if they are supplied by malicious actors. Or at least they’re designed to.&lt;/p&gt;
+&lt;p&gt;That’s the exact opposite of what I want to talk about. I want to talk about the cheapest, stupidest, most ridiculous hash functions you can get away with.&lt;/p&gt;
+</description>
+				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+				
+				<guid>https://purplesyringa.moe/blog/./simplest-hash-functions/</guid>
+				<pubDate>Mon, 06 Apr 2026 00:00:00 GMT</pubDate>
+			</item>
 		
 			<item>
 				<title>There is absolutely nothing wrong with Web</title>
