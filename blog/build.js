@@ -11,6 +11,7 @@ import minifyHtml from "@minify-html/node";
 import path from "node:path";
 import process from "node:process";
 import { stripHtml } from "string-strip-html";
+import { optimize as optimizeSvg } from "svgo";
 import temml from "temml";
 import tmp from "tmp";
 import YAML from "yaml";
@@ -160,6 +161,12 @@ html = html.replace(
 			if (src.indexOf("/") === -1 && src.endsWith(".svg")) {
 				// Inline svg
 				tag = fs.readFileSync(`${articleDirectory}/${src}`, "utf-8").replace(/<\/svg>/, `<title>${alt}</title></svg>`);
+			} else if (src.indexOf("/") === -1 && src.endsWith(".pdf")) {
+				// Inline PDF converted to SVG
+				const outputDir = tmp.dirSync({ unsafeCleanup: true }).name;
+				childProcess.execFileSync("inkscape", ["--export-area-drawing", "--export-plain-svg", "-o", `${outputDir}/diagram.svg`, `${articleDirectory}/${src}`]);
+				const svg = fs.readFileSync(`${outputDir}/diagram.svg`, "utf-8").replace(/<\/svg>/, `<title>${alt}</title></svg>`);
+				tag = optimizeSvg(svg).data;
 			} else if (src.indexOf("/") === -1 && src.replace(/#.*/, "").endsWith(".webm")) {
 				// Use video
 				if (src.endsWith("#epilepsy")) {
