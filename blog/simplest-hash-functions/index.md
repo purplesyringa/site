@@ -118,9 +118,6 @@ for bit in range(32):
     print(round(stats[bit] / len(strings) * 100) - 50, "%", sep="", end="\t")
 ```
 
-
-The two most interesting characteristics are bit probabilities and bit correlation. Ideally, $1$s and $0$s would be evenly distributed, so probabilities should be around $50\%$.
-
 ![A bit probability plot for the addition-based hash applied to site paragraphs, showing that for all 32 bits, the probability is within +-3% of 50%.](bit-probabilities-paragraphs.svg)
 
 The actual probabilities are within $\pm 3\%$ of $50\%$. Despite being objectively horrible, addition behaves well here because the inputs are so long and unstructured that most imperfections can be eliminated.
