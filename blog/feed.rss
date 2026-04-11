@@ -7,10 +7,22 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Mon, 06 Apr 2026 17:37:05 GMT</lastBuildDate>
+		<lastBuildDate>Sat, 11 Apr 2026 17:43:49 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>No one owes you supply-chain security</title>
+				<link>https://purplesyringa.moe/blog/./no-one-owes-you-supply-chain-security/</link>
+				<description>&lt;p&gt;In case you’re unaware, I’m not a developer. I’m actually an autistic catgirl annoyed by suboptimal use of computing power, and fixing that happens to involve programming. Crucially, it also includes discussing foundational technology with people behind the scenes, and apparently that makes me more aware of social aspects of this sphere.&lt;/p&gt;
+&lt;p&gt;So, I have &lt;em&gt;opinions&lt;/em&gt; about &lt;a href=&quot;https://kerkour.com/rust-supply-chain-nightmare&quot;&gt;criticism of crates.io for supply-chain attacks&lt;/a&gt;. After a dozen similar articles, I have some select words to voice about why it’s off the mark.&lt;/p&gt;
+</description>
+				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+				
+				<guid>https://purplesyringa.moe/blog/./no-one-owes-you-supply-chain-security/</guid>
+				<pubDate>Sat, 11 Apr 2026 00:00:00 GMT</pubDate>
+			</item>
 		
 			<item>
 				<title>Simplest hash functions</title>
