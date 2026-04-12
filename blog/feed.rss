@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Sat, 11 Apr 2026 17:43:49 GMT</lastBuildDate>
+		<lastBuildDate>Sun, 12 Apr 2026 07:14:24 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -19,7 +19,7 @@
 &lt;p&gt;So, I have &lt;em&gt;opinions&lt;/em&gt; about &lt;a href=&quot;https://kerkour.com/rust-supply-chain-nightmare&quot;&gt;criticism of crates.io for supply-chain attacks&lt;/a&gt;. After a dozen similar articles, I have some select words to voice about why it’s off the mark.&lt;/p&gt;
 </description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				
+				<comments>https://lobste.rs/s/cxwidw</comments>
 				<guid>https://purplesyringa.moe/blog/./no-one-owes-you-supply-chain-security/</guid>
 				<pubDate>Sat, 11 Apr 2026 00:00:00 GMT</pubDate>
 			</item>
