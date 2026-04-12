@@ -1,7 +1,10 @@
 ---
 title: No one owes you supply-chain security
 time: April 11, 2026
-discussion: https://lobste.rs/s/cxwidw
+discussion:
+    - https://lobste.rs/s/cxwidw
+    - https://www.reddit.com/r/rust/comments/1sjh4no/no_one_owes_you_supplychain_security/
+    - https://news.ycombinator.com/item?id=47738595
 intro: |
     In case you're unaware, I'm not a developer. I'm actually an autistic catgirl annoyed by suboptimal use of computing power, and fixing that happens to involve programming. Crucially, it also includes discussing foundational technology with people behind the scenes, and apparently that makes me more aware of social aspects of this sphere.
 
