@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Sun, 12 Apr 2026 07:14:24 GMT</lastBuildDate>
+		<lastBuildDate>Sun, 12 Apr 2026 08:57:00 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -32,7 +32,7 @@
 &lt;p&gt;That’s the exact opposite of what I want to talk about. I want to talk about the cheapest, stupidest, most ridiculous hash functions you can get away with.&lt;/p&gt;
 </description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				
+				<comments>https://news.ycombinator.com/item?id=47672714</comments>
 				<guid>https://purplesyringa.moe/blog/./simplest-hash-functions/</guid>
 				<pubDate>Mon, 06 Apr 2026 00:00:00 GMT</pubDate>
 			</item>

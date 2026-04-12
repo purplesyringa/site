@@ -1,6 +1,7 @@
 ---
 title: Simplest hash functions
 time: April 6, 2026
+discussion: https://news.ycombinator.com/item?id=47672714
 intro: |
     What came to your mind when you read "hash functions" in the title?
 
