@@ -7,10 +7,22 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Sun, 12 Apr 2026 19:52:18 GMT</lastBuildDate>
+		<lastBuildDate>Mon, 13 Apr 2026 06:00:58 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>Programming used to be free</title>
+				<link>https://purplesyringa.moe/blog/./programming-used-to-be-free/</link>
+				<description>&lt;p&gt;The appearance of &lt;a href=&quot;https://www.anthropic.com/glasswing&quot;&gt;Mythos&lt;/a&gt; – a private LLM allegedly capable of finding a multitude of &lt;a href=&quot;https://en.wikipedia.org/wiki/Zero-day_vulnerability&quot;&gt;0-days&lt;/a&gt; – has made people &lt;a href=&quot;https://tanyaverma.sh/2026/04/10/closing-of-the-frontier.html&quot;&gt;concerned about being denied powerful tools&lt;/a&gt;. This seems to be a turning point in the mainstream discourse, and it motivated me to complete the think piece I’ve been meaning to write for a while.&lt;/p&gt;
+&lt;p&gt;I have a related, intimate worry regarding LLMs. Just so that we’re clear, it’s not a common critique from the anti-AI crowd, like ethics or quality. While I share some reservations, frankly it’s not what gives me the most angst. My intent is to make this post thought-provoking even if your beliefs on this topic entirely differ from mine.&lt;/p&gt;
+</description>
+				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+				
+				<guid>https://purplesyringa.moe/blog/./programming-used-to-be-free/</guid>
+				<pubDate>Mon, 13 Apr 2026 00:00:00 GMT</pubDate>
+			</item>
 		
 			<item>
 				<title>No one owes you supply-chain security</title>

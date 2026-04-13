@@ -1,8 +1,10 @@
 ---
 title: Programming used to be free
 time: April 13, 2026
-draft: true
 intro: |
+    The appearance of [Mythos](https://www.anthropic.com/glasswing) -- a private LLM allegedly capable of finding a multitude of [0-days](https://en.wikipedia.org/wiki/Zero-day_vulnerability) -- has made people [concerned about being denied powerful tools](https://tanyaverma.sh/2026/04/10/closing-of-the-frontier.html). This seems to be a turning point in the mainstream discourse, and it motivated me to complete the think piece I've been meaning to write for a while.
+
+    I have a related, intimate worry regarding LLMs. Just so that we're clear, it's not a common critique from the anti-AI crowd, like ethics or quality. While I share some reservations, frankly it's not what gives me the most angst. My intent is to make this post thought-provoking even if your beliefs on this topic entirely differ from mine.
 ---
 
 The appearance of [Mythos](https://www.anthropic.com/glasswing) -- a private LLM allegedly capable of finding a multitude of [0-days](https://en.wikipedia.org/wiki/Zero-day_vulnerability) -- has made people [concerned about being denied powerful tools](https://tanyaverma.sh/2026/04/10/closing-of-the-frontier.html). This seems to be a turning point in the mainstream discourse, and it motivated me to complete the think piece I've been meaning to write for a while.
