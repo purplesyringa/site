@@ -5,14 +5,14 @@ draft: true
 intro: |
 ---
 
-I've been meaning to write this post for a while. The release of Mythos finally motivated me enough -- it seems to be the turning point for [related opinions](https://tanyaverma.sh/2026/04/10/closing-of-the-frontier.html) to begin to appear in mainstream discourse.
+The appearance of [Mythos](https://www.anthropic.com/glasswing) -- a private LLM allegedly capable of finding a multitude of [0-days](https://en.wikipedia.org/wiki/Zero-day_vulnerability) -- has made people [concerned about being denied powerful tools](https://tanyaverma.sh/2026/04/10/closing-of-the-frontier.html). This seems to be a turning point in the mainstream discourse, and it motivated me to complete the think piece I've been meaning to write for a while.
 
-I have a worry regarding LLMs, but it's not a common critique from the anti-AI crowd. While I share some reservations, frankly it's not what gives me the most angst, and so I hope you find this think piece thought-provoking even if your beliefs differ.
+I have a related worry regarding LLMs. Just so that we're clear, it's not a common critique from the anti-AI crowd, like ethics or quality. While I share some reservations, frankly it's not what gives me the most angst. My intent is to make this post thought-provoking even if your beliefs on this topic entirely differ from mine.
 
 
 ### Backstory
 
-I'm going to start a little personal with this one.
+I'm going to start a little personal.
 
 I started programming as a child in the beginning of 2010s, thanks to my dad. He didn't work as a software developer, so he insisted on using the technology he used and understood: QBasic. It's an MS-DOS IDE for BASIC back from 35 years ago, and it was what you'd expect from such old software: a slow interpreter, 80x25 text mode output, 16 (!) colors in graphical mode, and a white-on-blue-background editor.
 
