@@ -48,7 +48,13 @@ I immensely appreciate having access to this much information and tools. It was 
 
 It hasn't always been that way.
 
+<aside-start-here />
+
 There was a time when there was no GCC, no Linux, and no VS Code. There were proprietary, expensive compilers and systems provided by a few major vendors. It's difficult to find the exact prices, but around 1990, [Watcom C/C++](https://en.wikipedia.org/wiki/Watcom_C/C%2B%2B) (used by DOOM among other projects) [cost $1000](https://www.os2museum.com/wp/watcom-win386/), and the source for AT&T UNIX [cost $10'000](https://www.linux.co.cr/free-unix-os/review/1992/0721.html). The $1000 cost of BSD/386 was considered incredibly cheap.
+
+:::aside
+Multiply by 2.5 to account for inflation.
+:::
 
 While this got the developers of core infrastructure paid, it meant that only large technical companies and universities could afford state-of-the-art software -- hobbyists were left on their own. With the proliferation of personal computers in 1980s, like Amiga, ZX Spectrum, and Commodore 64 (kilobytes, not bits), people were able to develop their own programs (usually games), but only in BASIC and assembly, which was either limiting or required subtle, non-widespread knowledge.
 
