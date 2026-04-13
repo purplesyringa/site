@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Mon, 13 Apr 2026 06:00:58 GMT</lastBuildDate>
+		<lastBuildDate>Mon, 13 Apr 2026 14:35:19 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -19,7 +19,7 @@
 &lt;p&gt;I have a related, intimate worry regarding LLMs. Just so that we’re clear, it’s not a common critique from the anti-AI crowd, like ethics or quality. While I share some reservations, frankly it’s not what gives me the most angst. My intent is to make this post thought-provoking even if your beliefs on this topic entirely differ from mine.&lt;/p&gt;
 </description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				
+				<comments>https://lobste.rs/s/o7zxmn/programming_used_be_free</comments>
 				<guid>https://purplesyringa.moe/blog/./programming-used-to-be-free/</guid>
 				<pubDate>Mon, 13 Apr 2026 00:00:00 GMT</pubDate>
 			</item>

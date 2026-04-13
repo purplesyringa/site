@@ -1,6 +1,9 @@
 ---
 title: Programming used to be free
 time: April 13, 2026
+discussion:
+  - https://lobste.rs/s/o7zxmn/programming_used_be_free
+  - https://news.ycombinator.com/item?id=47748314
 intro: |
     The appearance of [Mythos](https://www.anthropic.com/glasswing) -- a private LLM allegedly capable of finding a multitude of [0-days](https://en.wikipedia.org/wiki/Zero-day_vulnerability) -- has made people [concerned about being denied powerful tools](https://tanyaverma.sh/2026/04/10/closing-of-the-frontier.html). This seems to be a turning point in the mainstream discourse, and it motivated me to complete the think piece I've been meaning to write for a while.
 
