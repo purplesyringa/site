@@ -22,7 +22,7 @@ I started programming as a child in the beginning of 2010s, thanks to my dad. He
 
 I didn't run it on a Windows 7 laptop via [NTVDM](https://en.wikipedia.org/wiki/Virtual_DOS_machine) or [DOSBox](https://www.dosbox.com/) -- common emulators of that time. No, it was an actual epoch-appropriate PC. I don't have photos of my own, but here's a stock picture just to get the feel across:
 
-![A stock photo of a tower computer connected to a CRT monitor and a keyboard. All of them are dirty white and look old.](retropc.webp)
+![A stock photo of a tower computer connected to a CRT monitor and a keyboard. All of them are dirty beige and look old.](retropc.webp)
 
 I didn't know English much at the time, and there wasn't built-in documentation regardless, so I had to learn by trial and error. `Redo from start` still haunts me.
 
