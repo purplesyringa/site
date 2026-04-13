@@ -88,7 +88,9 @@ With closed-weight LLMs, you have to play around with different models and compa
 
 It's not a shock to anyone: LLMs are expensive to run and maintain. It still sucks.
 
-LLM-enabled programming is not nearly as accessible as the principled approaches of yesteryear. Those functioned well not only for companies and compsci students, but also for those who couldn't submit documentation for an educational plan, developers in embargoed or underdeveloped countries, and tiny teams.
+I don't know if juggling LLMs should be a central task of software development. I&nbsp;doubt anyone truly knows. But the industry is changing, and LLM-enabled programming will likely remain a major part of it in some shape or form.
+
+And whatever LLM-first workflows will look like, they won't be nearly as accessible as the approaches of yesteryear. Those functioned well not only for companies and compsci students, but also for those who couldn't submit documentation for an educational plan, developers in underdeveloped countries, and tiny teams.
 
 A middle schooler can learn Python on a family iPad. They can't learn vibecoding.
 
@@ -97,6 +99,6 @@ A middle schooler can learn Python on a family iPad. They can't learn vibecoding
 
 And so it bothers me that this might regress computing back to the plutocracy of 1970s. It's easy to think of that time as the golden age of computing from folklore if you didn't live through it, but it was also expensive, undemocratic, and limiting.
 
-I don't know if juggling LLMs will become the central task of software development. I'm not sure if anyone truly knows. But if it will, FOMO combined with costly subscriptions, fast pacing, vendor lock-in, and economical instability can easily make new programming practices intractable outside of major institutions.
+Economical instability, FOMO combined with costly subscriptions, fast pacing, and vendor lock-in can make new practices intractable outside of institutions, like firms and universities. You might afford it -- what about those who can't?
 
-I know some of you can relate to making do with limited resources, software, or hardware. The lessons we learned along that way have been useful despite that so far, but there's a chance they'll become worthless in LLM-centric programming. And it saddens me that I have to wonder if no one else will be able to walk the road I did.
+I know some of you can relate to making do with limited resources, software, or hardware. So far, the lessons we learned along that way have been useful despite that. But they can easily become worthless in LLM-centric programming. And it saddens me that I have to wonder if no one else will be able to walk the road I did.
