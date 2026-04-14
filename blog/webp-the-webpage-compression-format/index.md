@@ -392,6 +392,8 @@ WebGL only reliably supports textures up to `2048x2048`, so some bounds need to 
 
 This code minifies to about 550 bytes. Together with the WebP itself, this amounts to `44 KiB`. In comparison, gzip was `92 KiB`, and Brotli would be `37 KiB`.
 
+> *Added on April 15, 2026*: It seems like Firefox added anti-fingerprinting to `readPixels` as well, unfortunately, so this doesn't work as-is anymore.
+
 
 ### Polishing
 
@@ -431,6 +433,8 @@ We could use Unicode and UTF-16, but sometimes the first solution is the right o
 ### Example
 
 A real-world web page compressed with WebP? Oh, how about the one you're reading right now? Unless you use an old browser or have JavaScript turned off, WebP compresses this page starting from the "Fool me twice" section. If you haven't noticed this, I'm happy the trick is working :-)
+
+> *Added on April 15, 2026*: This is now an uncompressed page, since I didn't want Firefox visitors to read garbled content. If you find a fix for the typos from the anti-fingerprinting mechanism, send me a note so that I can bring compression back.
 
 Oh, and if you want to know what the WebP looks like? Here is a square WebP of this page:
 

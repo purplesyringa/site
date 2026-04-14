@@ -1,7 +1,7 @@
 import base64
 import subprocess
 
-subprocess.run(["yarn", "build"], check=True)
+subprocess.run(["npm", "run", "build"], check=True)
 
 with open("index.html") as f:
     html = f.read()
