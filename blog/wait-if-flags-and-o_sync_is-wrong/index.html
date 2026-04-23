@@ -1,0 +1,86 @@
+<!doctypehtml><html prefix="og: http://ogp.me/ns#"lang=en_US><meta charset=utf-8><meta content=width=device-width,initial-scale=1 name=viewport><title>Wait, if (flags & O_SYNC) is wrong? | purplesyringa's blog</title><link href=../../favicon.ico?v=2 rel=icon><link href=../../all.css rel=stylesheet><link href=../../blog.css rel=stylesheet><link href=../../vendor/Temml-Local.css rel=stylesheet><link crossorigin href=https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&family=Slabo+27px&display=swap rel=stylesheet><link href=../../fonts/webfont.css rel=stylesheet><link media="screen and (prefers-color-scheme: dark"href=../../vendor/atom-one-dark.min.css rel=stylesheet><link media="screen and (prefers-color-scheme: light"href=../../vendor/a11y-light.min.css rel=stylesheet><link title="Blog posts"href=../../blog/feed.rss rel=alternate type=application/rss+xml><meta content="Wait, if (flags & O_SYNC) is wrong?"property=og:title><meta content=article property=og:type><meta content=https://purplesyringa.moe/blog/wait-if-flags-and-o_sync_is-wrong/og.png property=og:image><meta content=https://purplesyringa.moe/blog/wait-if-flags-and-o_sync_is-wrong/ property=og:url><meta content="I needed to convert file status flags between operating systems yesterday. They are the values you pass as the second argument to open – O_NONBLOCK, O_NOATIME, O_SYNC, O_DSYNC, and so on:
+int open(const char *path, int flags, /* mode_t mode */ );
+
+So naturally I wrote it like this:
+int dst_flags = 0;
+if (src_flags & SRC_O_NONBLOCK) dst_flags |= DST_O_NONBLOCK;
+if (src_flags & SRC_O_NOATIME) dst_flags |= DST_O_NOATIME;
+if (src_flags & SRC_O_SYNC) dst_flags |= DST_O_SYNC;
+if (src_flags & SRC_O_DSYNC) dst_flags |= DST_O_DSYNC;
+...
+
+It turns out this code has a subtle bug."property=og:description><meta content=en_US property=og:locale><meta content="purplesyringa's blog"property=og:site_name><meta content=summary_large_image name=twitter:card><meta content=https://purplesyringa.moe/blog/wait-if-flags-and-o_sync_is-wrong/og.png name=twitter:image><script data-website-id=0da1961d-43f2-45cc-a8e2-75679eefbb69 defer src=https://zond.tei.su/script.js></script><body><header><div class=viewport-container><div class=media><a href=https://github.com/purplesyringa><img alt=GitHub src=../../images/github-mark-white.svg></a></div><h1><a href=/>purplesyringa</a></h1><nav><a href=../..>about</a><a class=current href=../../blog/>blog</a><a href=../../sink/>kitchen sink</a></nav></div></header><section><div class=viewport-container><h2>Wait, if (flags & O_SYNC) is wrong?</h2><time>April 23, 2026</time><p>I needed to convert <em>file status flags</em> between operating systems yesterday. They are the values you pass as the second argument to <code>open</code> – <code>O_NONBLOCK</code>, <code>O_NOATIME</code>, <code>O_SYNC</code>, <code>O_DSYNC</code>, and so on:<pre><code class=language-c><span class=hljs-type>int</span> <span class="hljs-title function_">open</span><span class=hljs-params>(<span class=hljs-type>const</span> <span class=hljs-type>char</span> *path, <span class=hljs-type>int</span> flags, <span class=hljs-comment>/* mode_t mode */</span> )</span>;
+</code></pre><p>So naturally I wrote it like this:<pre><code class=language-c><span class=hljs-type>int</span> dst_flags = <span class=hljs-number>0</span>;
+<span class=hljs-keyword>if</span> (src_flags & SRC_O_NONBLOCK) dst_flags |= DST_O_NONBLOCK;
+<span class=hljs-keyword>if</span> (src_flags & SRC_O_NOATIME) dst_flags |= DST_O_NOATIME;
+<span class=hljs-keyword>if</span> (src_flags & SRC_O_SYNC) dst_flags |= DST_O_SYNC;
+<span class=hljs-keyword>if</span> (src_flags & SRC_O_DSYNC) dst_flags |= DST_O_DSYNC;
+...
+</code></pre><p>It turns out this code has a subtle bug.<h3>Man pages</h3><p>Here’s what <a href=https://man.archlinux.org/man/open.2>Linux man pages</a> say:<blockquote><p>The argument <code>flags</code> must include one of the following access modes: <code>O_RDONLY</code>, <code>O_WRONLY</code>, or <code>O_RDWR</code>. These request opening the file read-only, write-only, or read/write, respectively.<p>In addition, zero or more file creation flags and file status flags can be bitwise ORed in <code>flags</code>.</blockquote><p>So I can’t do <code>if (src_flags & SRC_O_RDWR)</code>, because <code>O_RDWR</code> is not a bit flag and may be a bit field instead. For example, Linux uses a 2-bit field for the access mode, assigning <code>O_RDONLY</code> to <code>0</code>, so <code>if (src_flags & O_RDONLY)</code> would never trigger:<pre><code class=language-c><span class=hljs-meta>#<span class=hljs-keyword>define</span> O_ACCMODE      0003</span>
+<span class=hljs-meta>#<span class=hljs-keyword>define</span> O_RDONLY         00</span>
+<span class=hljs-meta>#<span class=hljs-keyword>define</span> O_WRONLY         01</span>
+<span class=hljs-meta>#<span class=hljs-keyword>define</span> O_RDWR           02</span>
+</code></pre><p>…but the other flags should be fine – they can be bitwise ORed after all.<h3>History</h3><p>Except, it turns out, that’s not actually true. I was interested to see how compilers handled this kind of bit permutation, but what I found after looking at the disassembly was <em>not</em> pure bit permutation. It turns out that, if you look at <code>bits/fcntl-linux.h</code>, you’ll find that <code>O_SYNC</code> is defined as having <em>two</em> bits (that’s octal, in hex it’d be <code>0x101000</code>):<pre><code class=language-c><span class=hljs-meta>#<span class=hljs-keyword>ifndef</span> O_SYNC</span>
+<span class=hljs-meta># <span class=hljs-keyword>define</span> O_SYNC        04010000</span>
+<span class=hljs-meta>#<span class=hljs-keyword>endif</span></span>
+</code></pre><p>So <em>why</em> does it do that and what do the individual bits mean? We can find the answer <a href=https://elixir.bootlin.com/linux/v7.0/source/include/uapi/asm-generic/fcntl.h#L65-L81>in Linux headers</a>:<pre><code class=language-c><span class=hljs-meta>#<span class=hljs-keyword>ifndef</span> O_DSYNC</span>
+<span class=hljs-meta>#<span class=hljs-keyword>define</span> O_DSYNC     00010000    <span class=hljs-comment>/* used to be O_SYNC, see below */</span></span>
+<span class=hljs-meta>#<span class=hljs-keyword>endif</span></span>
+
+...
+
+<span class=hljs-comment>/*
+ * Before Linux 2.6.33 only O_DSYNC semantics were implemented, but using
+ * the O_SYNC flag.  We continue to use the existing numerical value
+ * for O_DSYNC semantics now, but using the correct symbolic name for it.
+ * This new value is used to request true Posix O_SYNC semantics.  It is
+ * defined in this strange way to make sure applications compiled against
+ * new headers get at least O_DSYNC semantics on older kernels.
+ *
+ * This has the nice side-effect that we can simply test for O_DSYNC
+ * wherever we do not care if O_DSYNC or O_SYNC is used.
+ *
+ * Note: __O_SYNC must never be used directly.
+ */</span>
+<span class=hljs-meta>#<span class=hljs-keyword>ifndef</span> O_SYNC</span>
+<span class=hljs-meta>#<span class=hljs-keyword>define</span> __O_SYNC    04000000</span>
+<span class=hljs-meta>#<span class=hljs-keyword>define</span> O_SYNC      (__O_SYNC|O_DSYNC)</span>
+<span class=hljs-meta>#<span class=hljs-keyword>endif</span></span>
+</code></pre><p>Let me make it clearer. <code>O_SYNC</code> and <code>O_DSYNC</code> are two flags controlling data integrity:<ul><li><code>O_DSYNC</code> makes <code>write</code> wait until file contents are flushed to disk.<li><code>O_SYNC</code> makes <code>write</code> wait until file contents <em>and metadata</em> are flushed to disk.</ul><p>So <code>O_SYNC</code> is a semantic superset of <code>O_DSYNC</code>.<p>On old Linux, <code>O_SYNC</code> was <code>00010000</code>. Old Linux didn’t flush metadata on <code>O_SYNC</code>, and didn’t have <code>O_DSYNC</code>. So new Linux reused that constant for <code>O_DSYNC</code>, to ensure that programs compiled for old Linux exhibited the same behavior on new Linux.<p>To ensure that programs compiled with new Linux headers <a href=https://lwn.net/Articles/352229/>worked on old Linux</a> as best as they could, the new <code>O_SYNC</code> value needed to contain the old <code>O_SYNC</code> value as a submask. So <code>O_SYNC</code> had to become <code>00010000</code> (new <code>O_DSYNC</code>) plus something else for disambiguation. The new bit <code>__O_SYNC</code> took that role.<p>When the kernel checks the flags, it <a href=https://elixir.bootlin.com/linux/v7.0/source/include/linux/fs.h#L3392-L3404>almost always uses</a> one of the following patterns:<ul><li>To flush file contents: <code>if (flags & O_DSYNC)</code> or <code>if (flags & O_SYNC)</code> interchangeably.<li>To flush metadata: <code>if (flags & __O_SYNC)</code>.</ul><h3>Bug</h3><p>So when you write <code>if (flags & O_SYNC)</code>, you aren’t testing whether the caller wrote <code>O_SYNC</code> – this will match both <code>O_SYNC</code> and <code>O_DSYNC</code>. On Linux,<pre><code class=language-c><span class=hljs-keyword>if</span> (flags & O_SYNC) flags |= O_SYNC;
+</code></pre><p>…is not a no-op, and will turn on the more costly metadata flushing even if only contents flushing was requested. Furthermore, if code like this is used not only to <em>create</em> file descriptors, but also to <em>validate</em> their mode, this can be a correctness issue.<p>The right way to map flags is:<pre><code class=language-c><span class=hljs-keyword>if</span> ((src_flags & SRC_O_SYNC) == SRC_O_SYNC) dst_flags |= DST_O_SYNC;
+</code></pre><p>People rarely need to parse file status flags by hand, but when they do, this mistake is common. For example, here’s <a href=https://github.com/WasmEdge/WasmEdge/blob/3074dd11ff7c31df76f6237d034e0d8b75937540/lib/host/wasi/inode-linux.cpp#L254-L256>WasmEdge reporting pure-<code>O_DSYNC</code> fds as <code>O_SYNC</code></a>:<pre><code class=language-c><span class=hljs-keyword>if</span> (FdFlags & O_SYNC) {
+  FdStat.fs_flags |= __WASI_FDFLAGS_RSYNC | __WASI_FDFLAGS_SYNC;
+}
+</code></pre><p>And same for <a href=https://github.com/WAVM/WAVM/blob/4e82bb9fecf9c1bdb4d00f96fa89063ee4382d09/Lib/Platform/POSIX/FilePOSIX.cpp#L481-L490>WAVM</a>:<pre><code class=language-c><span class=hljs-keyword>if</span>(fdFlags & O_SYNC)
+{
+<span class=hljs-meta>#<span class=hljs-keyword>ifdef</span> O_RSYNC</span>
+    outInfo.flags.syncLevel = fdFlags & O_RSYNC
+                                  ? VFDSync::contentsAndMetadataAfterWriteAndBeforeRead
+                                  : VFDSync::contentsAndMetadataAfterWrite;
+<span class=hljs-meta>#<span class=hljs-keyword>else</span></span>
+    outInfo.flags.syncLevel = VFDSync::contentsAndMetadataAfterWrite;
+<span class=hljs-meta>#<span class=hljs-keyword>endif</span></span>
+}
+</code></pre><p>Here’s <a href=https://github.com/youtube/cobalt/blob/239d465b33d71bd5081f2d2907855568bcab1b89/starboard/shared/modular/starboard_layer_posix_fcntl_abi_wrappers.cc#L78-L80>YouTube’s Cobalt miswrapping <code>fcntl</code></a>:<pre><code class=language-c><span class=hljs-keyword>if</span> (flags & MUSL_O_SYNC) {
+  platform_flags |= O_SYNC;
+}
+</code></pre><p>Maybe you can find more bugs in popular programs.<h3>O_RSYNC</h3><p>Bonus bug!<p><a href=https://pubs.opengroup.org/onlinepubs/9699919799.2018edition/>POSIX defines</a> the <code>O_RSYNC</code> flag, which requests file contents or metadata (depending on whether it’s used together with <code>O_DSYNC</code> or <code>O_SYNC</code>) to be additionally flushed before each read. Linux doesn’t implement these semantics – instead, it aliases <code>O_RSYNC</code> to <code>O_SYNC</code>.<p>This is bonkers, because <code>O_RSYNC</code> alone is supposed to be a no-op. In fact, since POSIX says this is an <em>optional</em> flag, Linux could simply not <code>#define</code> it, and POSIX-compliant programs with <code>#ifdef O_RSYNC</code> would keep working. But whatever.<p>Since <code>O_SYNC = O_RSYNC</code>, even <code>if ((flags & O_RSYNC) == O_RSYNC) ...</code> can both overpromise (if you assume this indicates the kernel flushes on reads, when it doesn’t) and overdeliver (if the target OS supports true <code>O_RSYNC</code>, this may map <code>O_SYNC</code> to the more expensive <code>O_SYNC | O_RSYNC</code>).<p>For example, here’s <a href=https://github.com/ceph/ceph/blob/d6c659e6e9493f116c4649050c855fb67418672e/src/client/Client.cc#L11674-L11676>Ceph always interpreting <code>O_SYNC</code> as <code>O_SYNC | O_RSYNC</code></a>:<pre><code class=language-c><span class=hljs-type>int64_t</span> Client::_read(Fh *f, <span class=hljs-type>int64_t</span> offset, <span class=hljs-type>uint64_t</span> size, bufferlist *bl,
+                      Context *onfinish, <span class=hljs-type>bool</span> read_for_write)
+{
+  ...
+    <span class=hljs-keyword>if</span> (f->flags & O_RSYNC) {
+      _flush_range(in, offset, size);
+    }
+</code></pre><p>I believe both WasmEdge and WAVM are also in the wrong here by promising <code>O_RSYNC</code> on Linux, but it’s unclear if this can be solved without OS-level support.<h3>Conclusion</h3><p>My advice.<p>For <code>O_SYNC</code>: <code>(flags & O_SYNC) == O_SYNC</code> is cross-platform and the right thing.<p>For <code>O_RSYNC</code>: honestly, YOLO it. Its semantics differ across many operating systems, with Linux not supporting <code>O_RSYNC</code> and instead enabling <code>O_SYNC</code>, <a href=https://man.netbsd.org/open.2>NetBSD</a> only implementing <code>O_RSYNC | O_SYNC</code>, but not <code>O_RSYNC | O_DSYNC</code>, and other OSes doing who knows what. There’s no telling what <code>O_RSYNC</code> will look like if Linux implements it, so you can’t really prepare for that.</div></section><footer><div class=viewport-container><h2>Made with my own bare hands (why.)</h2></div></footer><script>window.addEventListener("keydown", e => {
+				if (e.key === "Enter") {
+					if (e.ctrlKey) {
+						window.open("https://github.com/purplesyringa/site/edit/master/blog/wait-if-flags-and-o_sync_is-wrong/index.md", "_blank");
+					} else if (
+						e.target.type === "checkbox"
+						&& e.target.parentNode
+						&& e.target.parentNode.className === "expansible-code"
+					) {
+						e.target.click();
+					}
+				}
+			});</script>

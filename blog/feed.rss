@@ -7,10 +7,32 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Mon, 13 Apr 2026 14:35:19 GMT</lastBuildDate>
+		<lastBuildDate>Thu, 23 Apr 2026 15:16:00 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>Wait, if (flags &amp; O_SYNC) is wrong?</title>
+				<link>https://purplesyringa.moe/blog/./wait-if-flags-and-o_sync_is-wrong/</link>
+				<description>&lt;p&gt;I needed to convert &lt;em&gt;file status flags&lt;/em&gt; between operating systems yesterday. They are the values you pass as the second argument to &lt;code&gt;open&lt;/code&gt; – &lt;code&gt;O_NONBLOCK&lt;/code&gt;, &lt;code&gt;O_NOATIME&lt;/code&gt;, &lt;code&gt;O_SYNC&lt;/code&gt;, &lt;code&gt;O_DSYNC&lt;/code&gt;, and so on:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-c&quot;&gt;&lt;span class=&quot;hljs-type&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;hljs-title function_&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(&lt;span class=&quot;hljs-type&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;hljs-type&quot;&gt;char&lt;/span&gt; *path, &lt;span class=&quot;hljs-type&quot;&gt;int&lt;/span&gt; flags, &lt;span class=&quot;hljs-comment&quot;&gt;/* mode_t mode */&lt;/span&gt; )&lt;/span&gt;;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;So naturally I wrote it like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-c&quot;&gt;&lt;span class=&quot;hljs-type&quot;&gt;int&lt;/span&gt; dst_flags = &lt;span class=&quot;hljs-number&quot;&gt;0&lt;/span&gt;;
+&lt;span class=&quot;hljs-keyword&quot;&gt;if&lt;/span&gt; (src_flags &amp;amp; SRC_O_NONBLOCK) dst_flags |= DST_O_NONBLOCK;
+&lt;span class=&quot;hljs-keyword&quot;&gt;if&lt;/span&gt; (src_flags &amp;amp; SRC_O_NOATIME) dst_flags |= DST_O_NOATIME;
+&lt;span class=&quot;hljs-keyword&quot;&gt;if&lt;/span&gt; (src_flags &amp;amp; SRC_O_SYNC) dst_flags |= DST_O_SYNC;
+&lt;span class=&quot;hljs-keyword&quot;&gt;if&lt;/span&gt; (src_flags &amp;amp; SRC_O_DSYNC) dst_flags |= DST_O_DSYNC;
+...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;It turns out this code has a subtle bug.&lt;/p&gt;
+</description>
+				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+				
+				<guid>https://purplesyringa.moe/blog/./wait-if-flags-and-o_sync_is-wrong/</guid>
+				<pubDate>Thu, 23 Apr 2026 00:00:00 GMT</pubDate>
+			</item>
 		
 			<item>
 				<title>Programming used to be free</title>
