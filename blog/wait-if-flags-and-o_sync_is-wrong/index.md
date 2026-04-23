@@ -216,7 +216,7 @@ And it seems like the Linux kernel itself [committed this bug](https://github.co
     opts |= CREATE_DELETE_ON_CLOSE;
 ```
 
-Uh-oh! I think I should report this.
+Uh-oh! I think I should [report this](https://lore.kernel.org/linux-cifs/12dda998-0e1e-419b-bac1-0863c02659d3@purplesyringa.moe/).
 
 
 ### Conclusion
