@@ -223,6 +223,6 @@ Uh-oh! I think I should report this.
 
 My advice.
 
-For `O_SYNC`: `(flags & O_SYNC) == O_SYNC` is cross-platform and the right thing. Same for `O_TMPFILE`.
+For `O_SYNC`: `(flags & O_SYNC) == O_SYNC` is cross-platform and does the right thing. Same for `O_TMPFILE`.
 
 For `O_RSYNC`: honestly, YOLO it. Its semantics differ across many operating systems, with Linux not supporting `O_RSYNC` and instead enabling `O_SYNC`, [NetBSD](https://man.netbsd.org/open.2) only implementing `O_RSYNC | O_SYNC`, but not `O_RSYNC | O_DSYNC`, and other OSes doing who knows what. There's no telling what `O_RSYNC` will look like if Linux implements it, so you can't really prepare for that.
