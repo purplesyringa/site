@@ -192,10 +192,37 @@ int64_t Client::_read(Fh *f, int64_t offset, uint64_t size, bufferlist *bl,
 I believe both WasmEdge and WAVM are also in the wrong here by promising `O_RSYNC` on Linux, but it's unclear if this can be solved without OS-level support.
 
 
+### Bonus bonus
+
+*Added later today:* It turns out that `O_TMPFILE` is *also* not a single bit -- it's a mask containing `O_DIRECTORY`, so `if (flags & O_TMPFILE)` erroneously catches `O_DIRECTORY`. This is a rarer mistake, but people still make it. Here's one in [libvips](https://github.com/libvips/libvips/blob/a1e519ea407a2854ed02a4bac9a1cf0840870421/libvips/iofuncs/util.c#L610-L612):
+
+```c
+  if (
+#ifdef O_TMPFILE
+    !(flags & O_TMPFILE) &&
+#endif /*O_TMPFILE*/
+    g_file_test(filename, G_FILE_TEST_IS_DIR)) {
+    errno = EISDIR;
+    return -1;
+  }
+```
+
+It deliberately validates that the opened file is not a directory, but accidentally allows opening a directory if `O_DIRECTORY` is set. This is probably not intended.
+
+And it seems like the Linux kernel itself [committed this bug](https://github.com/torvalds/linux/commit/3e7d63037a2b1715f70b7454630f3b2b8a922ec8) two weeks ago in CIFS, erroneously trying to remove directories opened with `O_DIRECTORY` on close:
+
+```c
+  if (oflags & O_TMPFILE)
+    opts |= CREATE_DELETE_ON_CLOSE;
+```
+
+Uh-oh! I think I should report this.
+
+
 ### Conclusion
 
 My advice.
 
-For `O_SYNC`: `(flags & O_SYNC) == O_SYNC` is cross-platform and the right thing.
+For `O_SYNC`: `(flags & O_SYNC) == O_SYNC` is cross-platform and the right thing. Same for `O_TMPFILE`.
 
 For `O_RSYNC`: honestly, YOLO it. Its semantics differ across many operating systems, with Linux not supporting `O_RSYNC` and instead enabling `O_SYNC`, [NetBSD](https://man.netbsd.org/open.2) only implementing `O_RSYNC | O_SYNC`, but not `O_RSYNC | O_DSYNC`, and other OSes doing who knows what. There's no telling what `O_RSYNC` will look like if Linux implements it, so you can't really prepare for that.
