@@ -47,7 +47,7 @@ Note that there's a similarity between the two programs: they have the same numb
 
 ### Rearrangement
 
-We know lossless compression doesn't exist, though, so what expression power is lost by making indices implicit? For simple expressions, not much. But when values are *reused*, the difference becomes clear.
+We know always-shrinking lossless compression doesn't exist, though, so what expression power is lost by making indices implicit? For simple expressions, not much. But when values are *reused*, the difference becomes clear.
 
 Say you're a compiler, and you're asked to compile this program:
 
