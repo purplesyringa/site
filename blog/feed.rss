@@ -7,10 +7,20 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Mon, 27 Apr 2026 01:00:09 GMT</lastBuildDate>
+		<lastBuildDate>Mon, 27 Apr 2026 11:34:25 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>This Wasm interpreter fits in a QR code</title>
+				<link>https://purplesyringa.moe/blog/./this-wasm-interpreter-fits-in-a-qr-code/</link>
+				<description></description>
+				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+				
+				<guid>https://purplesyringa.moe/blog/./this-wasm-interpreter-fits-in-a-qr-code/</guid>
+				<pubDate>Tue, 28 Apr 2026 00:00:00 GMT</pubDate>
+			</item>
 		
 			<item>
 				<title>Wasm is not quite a stack machine</title>
@@ -19,7 +29,7 @@
 &lt;p&gt;That is, until I started writing Wasm code – not compiling for Wasm, but writing the instructions by hand. And I found out that there exists a major difference between Wasm and all other stack-based languages, that makes this claim misleading.&lt;/p&gt;
 </description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				
+				<comments>https://lobste.rs/s/h8hlp7/wasm_is_not_quite_stack_machine</comments>
 				<guid>https://purplesyringa.moe/blog/./wasm-is-not-quite-a-stack-machine/</guid>
 				<pubDate>Mon, 27 Apr 2026 00:00:00 GMT</pubDate>
 			</item>

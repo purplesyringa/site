@@ -2,6 +2,7 @@
 title: Wasm is not quite a stack machine
 ogTitle: "Wasm is not quite\na stack machine"
 time: April 27, 2026
+discussion: https://lobste.rs/s/h8hlp7/wasm_is_not_quite_stack_machine
 intro: |
     *Everyone* knows Wasm is a stack machine. Wikipedia says so, the official [Wasm design specification](https://github.com/WebAssembly/design/blob/376bcc4b9cba79280d79be023d71e30d0b00ba47/Semantics.md) says so, you get it. I thought so too.
 
@@ -116,3 +117,5 @@ This perspective is further confirmed by the fact that, until Wasm got [the `mul
 ### Conclusion
 
 Does it really matter? Pretty much any machine can be converted to SSA, at which point the input format is not a consideration; and I suppose the simplicity of stack-based implementation was a good thing for Wasm adoption. But I think it's fair to highlight that experience with stack-based VMs doesn't translate well to Wasm, since it's not *quite* a stack machine.
+
+> Soon after writing this post, I found [this awesome post](http://troubles.md/posts/wasm-is-not-a-stack-machine/) covering the same problem from a different, optimization-focused angle. Give it a read as well!
