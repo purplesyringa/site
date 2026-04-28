@@ -2,7 +2,9 @@
 title: Wasm is not quite a stack machine
 ogTitle: "Wasm is not quite\na stack machine"
 time: April 27, 2026
-discussion: https://lobste.rs/s/h8hlp7/wasm_is_not_quite_stack_machine
+discussion:
+- https://lobste.rs/s/h8hlp7/wasm_is_not_quite_stack_machine
+- https://news.ycombinator.com/item?id=47930493
 intro: |
     *Everyone* knows Wasm is a stack machine. Wikipedia says so, the official [Wasm design specification](https://github.com/WebAssembly/design/blob/376bcc4b9cba79280d79be023d71e30d0b00ba47/Semantics.md) says so, you get it. I thought so too.
 
