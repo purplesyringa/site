@@ -469,7 +469,7 @@ let n = n as u16;
 
 Saving memory (and thus cache!) by using `u16` instead of `u32` looks impossible, because a `u16::MAX = 0xFFFF` in the leading digit would quickly get shifted to `0xFxxx` in `n`, and at that point you can't disambiguate between a valid codepoint and an invalid digit.
 
-Or is it? Here's a trick [Yuki](https://github.com/yuki0iq/) invented. We can map `__` to `u16::MAX`, but also replace `n << 4` with `n.rotate_left(4)` and addition with bitwise OR:
+Or is it? Here's a trick [Yuki](https://github.com/sylfn/) invented. We can map `__` to `u16::MAX`, but also replace `n << 4` with `n.rotate_left(4)` and addition with bitwise OR:
 
 ```rust
 let mut n = 0;
