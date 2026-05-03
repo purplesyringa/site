@@ -365,7 +365,7 @@ Floating-point rounding also benefits from patching, even though the rounding di
 
 ### PF
 
-Next up: float-to-int conversions. These supports four destination types: `i32`, `u32`, `i64`, and `u64`. They look similar, but their implementations are completely different:
+Next up: float-to-int conversions. These support four destination types: `i32`, `u32`, `i64`, and `u64`. They look similar, but their implementations are completely different:
 
 ```rust
 fn f64_to_i32(x: f64) -> i32 { x as _ }
