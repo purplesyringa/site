@@ -1,0 +1,187 @@
+<!doctypehtml><html prefix="og: http://ogp.me/ns#"lang=en_US><meta charset=utf-8><meta content=width=device-width,initial-scale=1 name=viewport><title>You might misunderstand arithmetic coding | purplesyringa's blog</title><link href=../../favicon.ico?v=2 rel=icon><link href=../../all.css rel=stylesheet><link href=../../blog.css rel=stylesheet><link href=../../vendor/Temml-Local.css rel=stylesheet><link crossorigin href=https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&family=Slabo+27px&display=swap rel=stylesheet><link href=../../fonts/webfont.css rel=stylesheet><link media="screen and (prefers-color-scheme: dark"href=../../vendor/atom-one-dark.min.css rel=stylesheet><link media="screen and (prefers-color-scheme: light"href=../../vendor/a11y-light.min.css rel=stylesheet><link title="Blog posts"href=../../blog/feed.rss rel=alternate type=application/rss+xml><meta content="You might misunderstand arithmetic coding"property=og:title><meta content=article property=og:type><meta content=https://purplesyringa.moe/blog/you-might-misunderstand-arithmetic-coding/og.png property=og:image><meta content=https://purplesyringa.moe/blog/you-might-misunderstand-arithmetic-coding/ property=og:url><meta content="This post assumes basic familiarity with arithmetic coding.
+I’ve written an arithmetic coder, like, three times in my life, so the mistake I want to highlight is likely amateurish. But since I didn’t have a clue that my understanding was incomplete, I figured I needed to write a post about it."property=og:description><meta content=en_US property=og:locale><meta content="purplesyringa's blog"property=og:site_name><meta content=summary_large_image name=twitter:card><meta content=https://purplesyringa.moe/blog/you-might-misunderstand-arithmetic-coding/og.png name=twitter:image><script data-website-id=0da1961d-43f2-45cc-a8e2-75679eefbb69 defer src=https://zond.tei.su/script.js></script><body><header><div class=viewport-container><div class=media><a href=https://github.com/purplesyringa><img alt=GitHub src=../../images/github-mark-white.svg></a></div><h1><a href=/>purplesyringa</a></h1><nav><a href=../..>about</a><a class=current href=../../blog/>blog</a><a href=../../sink/>kitchen sink</a></nav></div></header><section><div class=viewport-container><h2>You might misunderstand arithmetic coding</h2><time>May 3, 2026</time><p>This post assumes basic familiarity with <a href=https://en.wikipedia.org/wiki/Arithmetic_coding>arithmetic coding</a>.<p>I’ve written an arithmetic coder, like, three times in my life, so the mistake I want to highlight is likely amateurish. But since I didn’t have a clue that my understanding was incomplete, I figured I needed to write a post about it.<p>If you search for a simple arithmetic coder, you might find something like this (pseudocode for terseness):<pre><code class=language-rust><div class=expansible-code><input id=expansible1 type=checkbox><div class=highlighted><span class=hljs-comment>// Initialization</span>
+<span class=hljs-keyword>let</span> <span class=hljs-keyword>mut </span><span class=hljs-variable>left</span>: <span class=hljs-type>u32</span> = <span class=hljs-number>0</span>;
+<span class=hljs-keyword>let</span> <span class=hljs-keyword>mut </span><span class=hljs-variable>right</span>: <span class=hljs-type>u32</span> = <span class=hljs-type>u32</span>::MAX;
+<span class=hljs-keyword>let</span> <span class=hljs-keyword>mut </span><span class=hljs-variable>x</span>: <span class=hljs-type>u32</span> = ...; <span class=hljs-comment>// only in decoder</span>
+
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">encode_bit</span>(bit: <span class=hljs-type>bool</span>, probability: <span class=hljs-type>f32</span>) {
+    <span class=hljs-built_in>assert!</span>(<span class=hljs-number>0.0</span> < probability && probability < <span class=hljs-number>1.0</span>);
+
+    <span class=hljs-comment>// The midpoint of the range, splitting it to [left; mid], [mid + 1; right].</span>
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>mid</span> = left + ((right - left) <span class=hljs-keyword>as</span> <span class=hljs-type>f32</span> * probability) <span class=hljs-keyword>as</span> <span class=hljs-type>u32</span>;
+    <span class=hljs-keyword>if</span> !bit {
+        right = mid;
+    } <span class=hljs-keyword>else</span> {
+        left = mid + <span class=hljs-number>1</span>;
+    }
+
+    <span class=hljs-comment>// Dump known bytes.</span>
+    <span class=hljs-keyword>while</span> left >> <span class=hljs-number>24</span> == right >> <span class=hljs-number>24</span> {
+        bytes.<span class="hljs-title function_ invoke__">push</span>((left >> <span class=hljs-number>24</span>) <span class=hljs-keyword>as</span> <span class=hljs-type>u8</span>);
+        left <<= <span class=hljs-number>8</span>;
+        right = (right << <span class=hljs-number>8</span>) | <span class=hljs-number>0xff</span>;
+    }
+}
+
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">decode_bit</span>(probability: <span class=hljs-type>f32</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>bool</span> {
+    <span class=hljs-built_in>assert!</span>(<span class=hljs-number>0.0</span> < probability && probability < <span class=hljs-number>1.0</span>);
+
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>bit</span>;
+
+    <span class=hljs-comment>// The midpoint of the range, splitting it to [left; mid], [mid + 1; right].</span>
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>mid</span> = left + ((right - left) <span class=hljs-keyword>as</span> <span class=hljs-type>f32</span> * probability) <span class=hljs-keyword>as</span> <span class=hljs-type>u32</span>;
+    <span class=hljs-keyword>if</span> x <= mid {
+        right = mid;
+        bit = <span class=hljs-literal>false</span>;
+    } <span class=hljs-keyword>else</span> {
+        left = mid + <span class=hljs-number>1</span>;
+        bit = <span class=hljs-literal>true</span>;
+    }
+
+    <span class=hljs-comment>// Shift out common prefix.</span>
+    <span class=hljs-keyword>while</span> left >> <span class=hljs-number>24</span> == right >> <span class=hljs-number>24</span> {
+        left <<= <span class=hljs-number>8</span>;
+        right = (right << <span class=hljs-number>8</span>) | <span class=hljs-number>0xff</span>;
+        x = (x << <span class=hljs-number>8</span>) | (bytes.<span class="hljs-title function_ invoke__">next</span>().<span class="hljs-title function_ invoke__">unwrap</span>() <span class=hljs-keyword>as</span> <span class=hljs-type>u32</span>);
+    }
+
+    bit
+}
+</div><label for=expansible1>Expand</label></div></code></pre><p>The encoder starts with an interval <code>[left; right]</code> covering the entire range of <code>u32</code>. It recursively divides it into two parts according to the probability of the current bit, and outputs the coordinate of a point within the final range – here <code>left</code>. The decoder receives this point and finds the sequence of intervals it’s present in, thus decoding bits. Predictable input recurses into long intervals, making the final point’s binary representation shorter, thus yielding high compression ratio. Entropy coding 101.<p>Since <code>u32</code> cannot represent small intervals, the encoder shifts out when the top byte becomes known, freeing up <eq><math><mn>8</mn></math></eq> bits for precision in low bits. The decoder uses the same condition as a clue that precision has increased and <code>x</code> needs to be updated.<p>This feels very intuitive, but this coder is actually suboptimal: its compression quality can degrade in edge cases, and the decoder is less efficient than it could be. This was surprising to learn for me, since I had assumed this was a textbook AC implementation. It turns out that’s not the case!<h3>Issues</h3><p>Before I explain the fix, we need to understand where the problems are coming from.<p>The output of an arithmetic coder has a length of approximately <eq><math><mrow><msub><mo movablelimits=false>∑</mo><mi>i</mi></msub><msub><mi>log</mi><mn>2</mn></msub><mo>⁡</mo><mspace width=0.1667em></mspace></mrow><mrow><msub><mi>p</mi><mi>i</mi></msub></mrow></math></eq>, where <eq><math><msub><mi>p</mi><mi>i</mi></msub></math></eq> represents the estimated probability that the <eq><math><mi>i</mi></math></eq>th bit has the correct value. Due to rounding, though, the effective <eq><math><msub><mi>p</mi><mi>i</mi></msub></math></eq> can significantly diverge from the intended <eq><math><msub><mi>p</mi><mi>i</mi></msub></math></eq> if the interval <code>[left; right]</code> gets too short.<p>We would <em>like</em> <code>[left; right]</code> to always be, let’s say, at least <eq><math><msup><mn>2</mn><mn>16</mn></msup></math></eq> long to reduce these effects. But if the interval strafes a byte boundary, like <eq><math><mrow><mo form=prefix stretchy=false>[</mo><msup><mn>2</mn><mn>31</mn></msup><mo>−</mo><mn>1</mn><mo separator=true>,</mo><msup><mn>2</mn><mn>31</mn></msup><mo form=postfix stretchy=false>]</mo></mrow></math></eq>, the length can reach as low as <eq><math><mn>2</mn></math></eq>. This forces <eq><math><mrow><msub><mi>p</mi><mi>i</mi></msub><mo>=</mo></mrow><mrow><mfrac><mn>1</mn><mn>2</mn></mfrac></mrow></math></eq>, requiring the encoder to emit an entire bit, even if the input is very predictable.<p>So, for some reason, intervals of the same length behave differently wrt. precision, depending on their offset: an interval starting at <code>left = 0</code> never gets shorter than <eq><math><msup><mn>2</mn><mn>24</mn></msup></math></eq>, but one starting at a different position can. This asymmetry is not present in the infinitely precise formulation of AC – it’s purely an artifact of the practical coder.<p>This is not very noticeable in practice: strafing a byte boundary by chance is difficult when the probabilities are constantly changing, and maliciously attacking a compressor is as simple as encoding randomness anyway. But another consequence of this strangeness can bite you regardless of that.<p>Let’s look at the decoder:<pre><code class=language-rust><span class=hljs-keyword>let</span> <span class=hljs-variable>mid</span> = left + ((right - left) <span class=hljs-keyword>as</span> <span class=hljs-type>f32</span> * probability) <span class=hljs-keyword>as</span> <span class=hljs-type>u32</span>;
+<span class=hljs-keyword>if</span> x <= mid {
+    right = mid;
+    bit = <span class=hljs-literal>false</span>;
+} <span class=hljs-keyword>else</span> {
+    left = mid + <span class=hljs-number>1</span>;
+    bit = <span class=hljs-literal>true</span>;
+}
+</code></pre><p>This snippet accesses three integer variables: <code>left</code>, <code>right</code>, <code>x</code>. But just two values – <code>right - left</code> and <code>x - left</code> – could encode the same information in less space, reducing register pressure and improving performance.<p>The only reason <code>left</code> and <code>right</code> need to be known separately is to figure out when to increase precision. Again: the <em>entire</em> reason for having three variables is the <code>while</code> condition. If we could make the precision increase offset-independent, relying only on the length of the interval, the decoder could become significantly simpler.<h3>Philosophy</h3><p>The solution to this problem is somewhat tricky, so I want to give a birds-eye view on the situation first.<p>You might interpret this line as rounding <code>mid</code> to an integer, and reason that the coder works because the encoder and the decoder do it the same way:<pre><code class=language-rust><span class=hljs-keyword>let</span> <span class=hljs-variable>mid</span> = left + ((right - left) <span class=hljs-keyword>as</span> <span class=hljs-type>f32</span> * probability) <span class=hljs-keyword>as</span> <span class=hljs-type>u32</span>;
+</code></pre><p>This is a bad way to look at it. A more prospective interpretation is that this tweaks the effective <code>probability</code> such that <code>mid</code> is an integer – even if that’s not what the code looks like. The idea behind this is that it allows a limited-precision decoder and a perfect encoder to be compatible if the probabilities are tweaked correctly, and vice versa. This decouples the encoding from decoding and lets us build a formal model.<h3>Fixing decoder</h3><p>So we’re going out on a limb and update the <code>while</code> condition in the decoder to the offset-independent <code>right - left < 1 << 24</code>:<pre><code class=language-rust><span class=hljs-comment>// Initialization</span>
+<span class=hljs-keyword>let</span> <span class=hljs-keyword>mut </span><span class=hljs-variable>length</span>: <span class=hljs-type>u64</span> = <span class=hljs-type>u32</span>::MAX <span class=hljs-keyword>as</span> <span class=hljs-type>u64</span> + <span class=hljs-number>1</span>;
+<span class=hljs-keyword>let</span> <span class=hljs-keyword>mut </span><span class=hljs-variable>x</span>: <span class=hljs-type>u32</span> = ...;
+
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">decode_bit</span>(probability: <span class=hljs-type>f32</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>bool</span> {
+    <span class=hljs-built_in>assert!</span>(<span class=hljs-number>0.0</span> < probability && probability < <span class=hljs-number>1.0</span>);
+
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>bit</span>;
+
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>mid</span> = (length <span class=hljs-keyword>as</span> <span class=hljs-type>f32</span> * probability) <span class=hljs-keyword>as</span> <span class=hljs-type>u32</span>;
+    <span class=hljs-keyword>if</span> x <= mid {
+        length = mid <span class=hljs-keyword>as</span> <span class=hljs-type>u64</span>;
+        bit = <span class=hljs-literal>false</span>;
+    } <span class=hljs-keyword>else</span> {
+        length -= mid <span class=hljs-keyword>as</span> <span class=hljs-type>u64</span>;
+        x -= mid;
+        bit = <span class=hljs-literal>true</span>;
+    }
+
+    <span class=hljs-comment>// Increase precision.</span>
+    <span class=hljs-keyword>while</span> length < <span class=hljs-number>1</span> << <span class=hljs-number>24</span> {
+        length <<= <span class=hljs-number>8</span>;
+        x = (x << <span class=hljs-number>8</span>) | (bytes.<span class="hljs-title function_ invoke__">next</span>().<span class="hljs-title function_ invoke__">unwrap</span>() <span class=hljs-keyword>as</span> <span class=hljs-type>u32</span>);
+    }
+
+    bit
+}
+</code></pre><p>This corresponds to <em>some</em> effective probabilities – an infinite-precision encoder can provide a compatible output if we adjust probabilities correctly at its input.<p>For now, we’ll assume that infinite precision exists, and reinterpret the decoder from this perspective. <code>x</code>, <code>length</code>, <code>mid</code> are all floating-point representation values with 32-bit significands, with the exponent adjusted when the top <eq><math><mn>8</mn></math></eq> bits of <code>length</code> are zero.<p>The line <code>x = (x << 8) | ...</code> is trickier than it looks: <code>x</code> has been updated by <code>x -= mid</code> by now, so it’s not clear that this is equivalent to an infinite-precision decoder, which would populate <code>x</code> with the entire input once at the beginning.<p>Luckily, since subtracting a number with trailing zeros from a number with a tail keeps the tail intact, this works out. Here’s a graphical interpretation of <code>x -= mid</code>:<pre><code>          x = 0 . x0 x1 ... x31 x32 ...
+        mid = 0 . m0 m1 ... m31 0   ...
+y = x - mid = 0 . y0 y1 ... y31 x32 ...
+</code></pre><p>The decoder doesn’t have to load <code>x32 ...</code> into <code>x</code> at once because it knows that the tail can be included at a later time without errors.<p>These subtleties are an indicator of the fact that this decoder is an optimized implementation of an infinite-precision decoder, with just probabilities adjusted for practicality, rather than an ad lib. This will help us design the encoder.<h3>Fixing encoder</h3><p>The old encoder can’t handle the <code>right - left < 1 << 24</code> condition, because this permits <code>left >> 24 != right >> 24</code>, and thus off-by-one errors can occur if bytes that aren’t actually known are pushed.<p>But the fact that the decoder is effectively perfect allows us to design an encoder separately, comparing it to the model of an infinite-precision encoder without any consideration for the specifics of the decoder.<p>Let’s take a look at a perfect encoder:<pre><code class=language-rust><span class=hljs-comment>// [left; left + length) is a half-closed interval.</span>
+<span class=hljs-keyword>let</span> <span class=hljs-keyword>mut </span><span class=hljs-variable>left</span>: real = <span class=hljs-number>0.0</span>;
+<span class=hljs-keyword>let</span> <span class=hljs-keyword>mut </span><span class=hljs-variable>length</span>: real = <span class=hljs-number>1.0</span>;
+
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">encode_bit</span>(bit: <span class=hljs-type>bool</span>, probability: <span class=hljs-type>f32</span>) {
+    <span class=hljs-built_in>assert!</span>(<span class=hljs-number>0.0</span> < probability && probability < <span class=hljs-number>1.0</span>);
+
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>mid</span> = <span class=hljs-comment>/* something close to length * probability */</span>;
+    <span class=hljs-keyword>if</span> !bit {
+        length = mid;
+    } <span class=hljs-keyword>else</span> {
+        left -= mid;
+        length -= mid;
+    }
+
+    <span class=hljs-comment>// Increase precision.</span>
+    <span class=hljs-keyword>while</span> <span class=hljs-comment>/* some condition compatible with the decoder */</span> {
+        <span class=hljs-comment>// Increase exponent by 8 bits</span>
+    }
+}
+</code></pre><p>Much like the decoder has an implicit global scale that <code>length * probability</code> is rounded to, the encoder has one as well. Let’s make it visible as <code>exponent</code>, and multiply <code>left</code> and <code>length</code> by <code>2^exponent</code> so that we can work in (still infinite!) integers.<pre><code class=language-rust><span class=hljs-keyword>let</span> <span class=hljs-keyword>mut </span><span class=hljs-variable>left</span>: int = <span class=hljs-number>0</span>;
+<span class=hljs-keyword>let</span> <span class=hljs-keyword>mut </span><span class=hljs-variable>length</span>: int = <span class=hljs-number>1</span> << <span class=hljs-number>32</span>;
+<span class=hljs-comment>// let mut exponent = 32; // values scaled by 2^32; e.g. length is "actually" 1.0 at the moment</span>
+
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">encode_bit</span>(bit: <span class=hljs-type>bool</span>, probability: <span class=hljs-type>f32</span>) {
+    <span class=hljs-built_in>assert!</span>(<span class=hljs-number>0.0</span> < probability && probability < <span class=hljs-number>1.0</span>);
+
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>mid</span> = (length <span class=hljs-keyword>as</span> <span class=hljs-type>f32</span> * probability) <span class=hljs-keyword>as</span> <span class=hljs-type>u32</span>; <span class=hljs-comment>// same rounding as in the decoder</span>
+    <span class=hljs-keyword>if</span> !bit {
+        length = mid;
+    } <span class=hljs-keyword>else</span> {
+        left += mid;
+        length -= mid;
+    }
+
+    <span class=hljs-comment>// Increase precision.</span>
+    <span class=hljs-keyword>while</span> length < <span class=hljs-number>1</span> << <span class=hljs-number>24</span> { <span class=hljs-comment>// matches the decoder</span>
+        <span class=hljs-comment>// exponent += 8;</span>
+        left <<= <span class=hljs-number>8</span>;
+        length <<= <span class=hljs-number>8</span>;
+    }
+}
+</code></pre><p>Since <code>length</code> is always at most <eq><math><msup><mn>2</mn><mn>32</mn></msup></math></eq>, it fits in <code>u64</code>, and we don’t need a long integer there. <code>left</code>, however, is constantly increasing, so we can’t apply the same optimization.<p>But looking closely at the specific operations applied to <code>left</code> reveals another approach:<ul><li><code>left += mid</code>: add a 32-bit value to <code>left</code>.<li><code>left <<= 8</code>: shift <code>left</code> to the left by 8 bits.</ul><p>The first operation can change the low 32 bits of <code>left</code> unpredictably, but the carry-out to higher bits can be at most 1. So we can introduce an auxiliary data structure and store <code>left</code> in two parts: the bottom 32 bits to benefit from fast native addition, and the rest of the bits, for which we’ll implement carry propagation by hand:<pre><code class=language-rust><span class=hljs-keyword>let</span> <span class=hljs-keyword>mut </span><span class=hljs-variable>left_bottom</span>: <span class=hljs-type>u32</span> = <span class=hljs-number>0</span>;
+<span class=hljs-keyword>let</span> <span class=hljs-keyword>mut </span><span class=hljs-variable>left_rest</span>: <span class=hljs-type>Vec</span><<span class=hljs-type>u8</span>> = <span class=hljs-type>Vec</span>::<span class="hljs-title function_ invoke__">new</span>(); <span class=hljs-comment>// big-endian</span>
+<span class=hljs-keyword>let</span> <span class=hljs-keyword>mut </span><span class=hljs-variable>length</span>: int = <span class=hljs-number>1</span> << <span class=hljs-number>32</span>;
+
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">encode_bit</span>(bit: <span class=hljs-type>bool</span>, probability: <span class=hljs-type>f32</span>) {
+    <span class=hljs-built_in>assert!</span>(<span class=hljs-number>0.0</span> < probability && probability < <span class=hljs-number>1.0</span>);
+
+    <span class=hljs-keyword>let</span> <span class=hljs-variable>mid</span> = (length <span class=hljs-keyword>as</span> <span class=hljs-type>f32</span> * probability) <span class=hljs-keyword>as</span> <span class=hljs-type>u32</span>; <span class=hljs-comment>// correct rounding</span>
+    <span class=hljs-keyword>if</span> !bit {
+        length = mid;
+    } <span class=hljs-keyword>else</span> {
+        <span class=hljs-comment>// Add to the bottom bits.</span>
+        <span class=hljs-keyword>let</span> <span class=hljs-keyword>mut </span><span class=hljs-variable>carry</span>;
+        (left_bottom, carry) = left_bottom.<span class="hljs-title function_ invoke__">overflowing_add</span>(mid);
+        <span class=hljs-comment>// If the carry is present, propagate it to the rest of `left` by hand.</span>
+        <span class=hljs-keyword>for</span> <span class=hljs-variable>num</span> <span class=hljs-keyword>in</span> left_rest.<span class="hljs-title function_ invoke__">iter_mut</span>().<span class="hljs-title function_ invoke__">rev</span>() {
+            <span class=hljs-keyword>if</span> !carry {
+                <span class=hljs-keyword>break</span>;
+            }
+            (*num, carry) = num.<span class="hljs-title function_ invoke__">overflowing_add</span>(<span class=hljs-number>1</span>);
+        }
+
+        length -= mid;
+    }
+
+    <span class=hljs-comment>// Increase precision.</span>
+    <span class=hljs-keyword>while</span> length < <span class=hljs-number>1</span> << <span class=hljs-number>24</span> { <span class=hljs-comment>// matches the decoder</span>
+        <span class=hljs-comment>// Shift out the top 8 bits from `left_bottom` to `left_rest`.</span>
+        left_rest.<span class="hljs-title function_ invoke__">push</span>((left_bottom >> <span class=hljs-number>24</span>) <span class=hljs-keyword>as</span> <span class=hljs-type>u8</span>);
+        left_bottom <<= <span class=hljs-number>8</span>;
+
+        length <<= <span class=hljs-number>8</span>;
+    }
+}
+</code></pre><p>Do you see some similarity with the previous encoder in the <code>while</code> loop? <code>left_rest</code> is what used to be <code>bytes</code>, and <code>left_bottom</code> is what used to be <code>left</code>. So pretty much the only difference between the two decoders (except for the <code>while</code> condition) is that the new one adjusts its output when a carry occurs, while the old one never had carries:<pre><code class=language-diff><span class=hljs-deletion>-left += mid;</span>
+<span class=hljs-addition>+let mut carry;</span>
+<span class=hljs-addition>+(left, carry) = left.overflowing_add(mid);</span>
+<span class=hljs-addition>+// If the carry is present, propagate it to the rest of `left` by hand.</span>
+<span class=hljs-addition>+for num in bytes.iter_mut().rev() {</span>
+<span class=hljs-addition>+    if !carry {</span>
+<span class=hljs-addition>+        break;</span>
+<span class=hljs-addition>+    }</span>
+<span class=hljs-addition>+    (*num, carry) = num.overflowing_add(1);</span>
+<span class=hljs-addition>+}</span>
+</code></pre><p>In streaming encoders, you might see a slightly different data structure implementing the same operations, but that’s the gist of it.<p>If you care about <eq><math><mrow><mi class=mathcal>𝒪</mi><mo form=prefix stretchy=false>(</mo><mn>1</mn><mo form=postfix stretchy=false>)</mo></mrow></math></eq> space, you might also see carry propagation in finalization: if <code>left + (length - 1)</code> overflows, incrementing <code>bytes</code> and zeroing out <code>left</code> produces a point within in the correct interval without having to append anything to <code>bytes</code>.<h3>Conclusion</h3><p>Let’s look at this from a practical perspective.<p>Changing the <code>while</code> condition from <code>left >> 24 == right >> 24</code> to <code>right - left < 1 << 24</code> improves worst-case compression quality and simplifies the decoder by removing one variable. This reduces code size and improves performance.<p>In exchange, the encoder got a little more complex. It uses two variables just like before, but now it needs to mutate its output. It’s not too expensive, but streaming requires tracking carries in a different manner, which can be trickier.<p>This introduces asymmetry between the encoder and the decoder, so it’s not always worthwhile. However, if the data is compressed once and decoded multiple times, it may be reasonable, increasingly so if the encoder is already slow due to an LZ pass.<h3>References</h3><p>In case you want to learn more or this explanation wasn’t detailed enough for you, here’s a couple resources that helped me figure it out myself. They’re long, but if you have time, they’re a good investment.<ul><li><a href=https://www.cs.cmu.edu/~aarti/Class/10704/Intro_Arith_coding.pdf>https://www.cs.cmu.edu/~aarti/Class/10704/Intro_Arith_coding.pdf</a><li><a href=https://arxiv.org/pdf/2302.00819>https://arxiv.org/pdf/2302.00819</a></ul></div></section><footer><div class=viewport-container><h2>Made with my own bare hands (why.)</h2></div></footer><script>window.addEventListener("keydown", e => {
+				if (e.key === "Enter") {
+					if (e.ctrlKey) {
+						window.open("https://github.com/purplesyringa/site/edit/master/blog/you-might-misunderstand-arithmetic-coding/index.md", "_blank");
+					} else if (
+						e.target.type === "checkbox"
+						&& e.target.parentNode
+						&& e.target.parentNode.className === "expansible-code"
+					) {
+						e.target.click();
+					}
+				}
+			});</script>
