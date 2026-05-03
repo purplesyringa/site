@@ -1,0 +1,298 @@
+<!doctypehtml><html prefix="og: http://ogp.me/ns#"lang=en_US><meta charset=utf-8><meta content=width=device-width,initial-scale=1 name=viewport><title>This Wasm interpreter fits in a QR code | purplesyringa's blog</title><link href=../../favicon.ico?v=2 rel=icon><link href=../../all.css rel=stylesheet><link href=../../blog.css rel=stylesheet><link href=../../vendor/Temml-Local.css rel=stylesheet><link crossorigin href=https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&family=Slabo+27px&display=swap rel=stylesheet><link href=../../fonts/webfont.css rel=stylesheet><link media="screen and (prefers-color-scheme: dark"href=../../vendor/atom-one-dark.min.css rel=stylesheet><link media="screen and (prefers-color-scheme: light"href=../../vendor/a11y-light.min.css rel=stylesheet><link title="Blog posts"href=../../blog/feed.rss rel=alternate type=application/rss+xml><meta content="This Wasm interpreter fits in a QR code"property=og:title><meta content=article property=og:type><meta content=https://purplesyringa.moe/blog/this-wasm-interpreter-fits-in-a-qr-code/og.png property=og:image><meta content=https://purplesyringa.moe/blog/this-wasm-interpreter-fits-in-a-qr-code/ property=og:url><meta content="2944 bytes. Less than 0.006% of Wasmtime, smaller than a C “Hello, world!”.
+Zero dependencies, no cheating: just a static x86-64 Linux executable. Scan the QR code above with zbarimg --raw -Sbinary or another QR decoder that supports binary data, or directly download the program from the GitHub repo, and you’re good to go."property=og:description><meta content=en_US property=og:locale><meta content="purplesyringa's blog"property=og:site_name><meta content=summary_large_image name=twitter:card><meta content=https://purplesyringa.moe/blog/this-wasm-interpreter-fits-in-a-qr-code/og.png name=twitter:image><script data-website-id=0da1961d-43f2-45cc-a8e2-75679eefbb69 defer src=https://zond.tei.su/script.js></script><body><header><div class=viewport-container><div class=media><a href=https://github.com/purplesyringa><img alt=GitHub src=../../images/github-mark-white.svg></a></div><h1><a href=/>purplesyringa</a></h1><nav><a href=../..>about</a><a class=current href=../../blog/>blog</a><a href=../../sink/>kitchen sink</a></nav></div></header><section><div class=viewport-container><h2>This Wasm interpreter fits in a QR code</h2><time>May 3, 2026</time><p><div class=diagram><img alt="A QR code containing the interpreter"title="A QR code containing the interpreter"src=autumn.png></div><p>2944 bytes. Less than 0.006% of <a href=https://wasmtime.dev/>Wasmtime</a>, smaller than a C “Hello, world!”.<p>Zero dependencies, no cheating: just a static x86-64 <a href=https://en.wikipedia.org/wiki/Executable_and_Linkable_Format>Linux executable</a>. Scan the QR code above with <code>zbarimg --raw -Sbinary</code> or another QR decoder that supports binary data, or <a href=https://github.com/purplesyringa/autumn/raw/refs/heads/master/autumn>directly download the program</a> from <a href=https://github.com/purplesyringa/autumn>the GitHub repo</a>, and you’re good to go.<p>Here’s me playing <a href=https://doc.rust-lang.org/book/ch02-00-guessing-game-tutorial.html>the Rust guessing game</a>, <a href=https://github.com/purplesyringa/autumn/raw/master/tests/guessing-game/guessing-game.wasm>cross-compiled for Wasm</a>:<p><div class=diagram><img alt="Terminal recording: I run ./autumn tests/guessing-game/guessing-game.wasm and then try to guess a number from 1 to 100 based on whether my guess is below or above the actual number."title="Terminal recording: I run ./autumn tests/guessing-game/guessing-game.wasm and then try to guess a number from 1 to 100 based on whether my guess is below or above the actual number."src=guessing-game.gif></div><p>And here’s me running <a href=https://github.com/quickjs-ng/quickjs>QuickJS</a>, <a href=https://github.com/quickjs-ng/quickjs/releases/tag/v0.14.0>straight from official releases</a>:<p><div class=diagram><img alt='Terminal recording: I run ./autumn qjs-wasi.wasm and type simple JavaScript expressions into the REPL, like 5+3 and "hello, " + "world". The JS interpreter is slow at syntax-highlighting the input, but works.'title='Terminal recording: I run ./autumn qjs-wasi.wasm and type simple JavaScript expressions into the REPL, like 5+3 and "hello, " + "world". The JS interpreter is slow at syntax-highlighting the input, but works.'src=qjs.gif></div><p>The interpreter implements the entire <a href=https://github.com/WebAssembly/tool-conventions/blob/main/Lime.md#lime1>Lime1</a> Wasm feature set, and a chunk of <a href=https://wasi.dev/>WASI</a> sufficient for these programs. It’s not quite feature-complete, it’s slow, and it’s insecure – but it’s still a marvelous feat of engineering with reasonable capabilities.<p>I had insane fun working on it, and now I want to share what made this possible.<h3>Acknowledgements</h3><p>Thanks to:<ul><li><a href=https://github.com/sylfn>Yuki</a> for writing a tool for the project and rubber-duck debugging.<li><a href=https://github.com/Genbox>Genbox</a> for contributing the idea of using a QR code.</ul><h3>Sizecoding 101</h3><p>QR codes can contain up to 2953 bytes. If the project was any simpler, I’d <a href=https://nathanotterness.com/2021/10/tiny_elf_modernized.html>just use assembly</a> – but that has a disastrous effect on velocity, which is crucial for an open-ended project that requires constant experimentation and sweeping changes.<p>Herding <code>gcc</code> with <code>-Os -fno-align-functions -fno-align-jumps -fno-align-labels -fno-align-loops -fno-jump-tables -fno-asynchronous-unwind-tables -fomit-frame-pointer</code> helps, but not when the simplest C program is already too large. The issue is not the language, but metadata: symbols, ELF sections, dynamic linking. The headers are tiny, but they add up, and at this scale each one has to be abolished.<p>A linker script can merge almost all sections – code, globals, constants – into one, dropping unnecessary alignment from the binary. This makes code writeable and data executable, but security was never a goal in this experiment.<pre><code class=language-c>ENTRY(_start)
+OUTPUT_FORMAT(elf64-x86<span class=hljs-number>-64</span>)
+
+SECTIONS {
+    . = <span class=hljs-number>0x400000</span>;
+    .text : {
+        *(.text .text.* .data .data.* .rodata .rodata.*)
+    }
+    .bss : {
+        *(.bss .bss.*) *(COMMON)
+    }
+    /DISCARD/ : {
+        *(.note.*)
+    }
+}
+</code></pre><p><code>strip --strip-section-headers</code> removes symbol information and section info, retaining only segments – a crude approximation sufficient for the kernel to run the program.<p>Linking <code>libc</code> is expensive. <code>libc</code> does two things: initializes the program and invokes syscalls. In most operating systems, only <code>libc</code> knows how to do this, but Linux offers a stable userland ABI. You only need 23 bytes of machine code to wrap <code>main</code>:<pre><code class=language-c><span class=hljs-keyword>asm</span> (
+    <span class=hljs-string>".globl _start;"</span>
+    <span class=hljs-string>"_start:"</span>
+    <span class=hljs-string>"pop %rdi;"</span> <span class=hljs-comment>// argc</span>
+    <span class=hljs-string>"mov %rsp, %rsi;"</span> <span class=hljs-comment>// argv</span>
+    <span class=hljs-string>"lea 8(%rsi,%rdi,8), %rdx;"</span> <span class=hljs-comment>// envp</span>
+    <span class=hljs-string>"call main;"</span>
+    <span class=hljs-string>"mov $60, %eax;"</span> <span class=hljs-comment>// exit</span>
+    <span class=hljs-string>"xor %edi, %edi;"</span>
+    <span class=hljs-string>"syscall;"</span>
+);
+</code></pre><p>This is <a href=https://en.cppreference.com/c/language/asm>inline assembly</a>, and you’ll need to get used to it, because in sizecoding it’s everywhere. Invoking syscalls, like <code>read</code>, is as simple as:<pre><code class=language-c><span class=hljs-type>long</span> rax = SYS_read;
+<span class=hljs-keyword>asm</span> <span class="hljs-title function_">volatile</span> <span class=hljs-params>(<span class=hljs-string>"syscall"</span> : <span class=hljs-string>"+a"</span>(rax) : <span class=hljs-string>"D"</span>(fd), <span class=hljs-string>"S"</span>(buf), <span class=hljs-string>"d"</span>(count) : <span class=hljs-string>"rcx"</span>, <span class=hljs-string>"r11"</span>, <span class=hljs-string>"memory"</span>)</span>;
+<span class=hljs-keyword>return</span> rax;
+</code></pre><p>x86 also has a party trick up its sleeve: legacy <a href=https://en.wikipedia.org/wiki/Complex_instruction_set_computer>CISC</a> instructions. <code>memcpy</code>, <code>memset</code>, <code>strlen</code>, and all that jazz can each be implemented with a single 2-byte <a href=https://www.felixcloutier.com/x86/rep:repe:repz:repne:repnz><code>rep</code> instruction</a>.<p>These features make x86/Linux the best combination for this project – x86-64, more specifically, since Wasm needs 64-bit operations. This is unlike <a href=https://en.wikipedia.org/wiki/Demoscene>demos</a>, which usually target Windows or older architectures because they use a different set of features.<p>This forms a 200-byte clean slate. Now what?<h3>Parsing</h3><p>To execute a Linux ELF program, you only need to parse headers, map segments to memory, and jump to the entry point. Dynamic linking is only slightly harder. Wasm is not like that – it has a multitude of different sections describing various moving parts:<ul><li>Type section – the dictionary of function signatures.<li>Import section – IDs associated with syscalls.<li>Function section – function signatures as indices into the type section.<li>Memory section – amount of memory to allocate.<li>Global section – initial global values.<li>Export section – the index of the <code>_start</code> function.<li>Start section – the initializing function.<li>Element section – jump tables.<li>Code section – function bodies.<li>Data section – initial memory contents.</ul><p>Parsing this takes 800 bytes, or 25% of the quota down the drain before executing code. And that’s already after some optimization! So here’s the first one of many unorthodox tricks I used.<h3>Imports</h3><p>Wasm programs import syscalls as external functions, like <code>environ_get</code> or <code>fd_read</code>. Simple interpreters store the names as strings, but I store hashes instead – collisions are not an issue because the WASIp1 interface is closed.<p>x86 has <a href=https://www.felixcloutier.com/x86/crc32>instructions for CRC32</a>, and for syscall names, hashing the first 8 bytes of the name and its length gives a collision-free hash at the cost of a single instruction.<p>Hashes can then be resolved to implementations with flat maps. But of which layout?<pre><code class=language-c><span class=hljs-comment>// Interleaved keys and values?</span>
+<span class=hljs-class><span class=hljs-keyword>struct</span> <span class=hljs-title>key_value</span> {</span>
+    <span class=hljs-type>unsigned</span> <span class=hljs-type>short</span> key;
+    <span class=hljs-type>unsigned</span> <span class=hljs-type>short</span> value;
+};
+<span class=hljs-class><span class=hljs-keyword>struct</span> <span class=hljs-title>key_value</span> <span class=hljs-title>table</span>[20];</span>
+
+<span class=hljs-comment>// Or separate keys and values?</span>
+<span class=hljs-type>unsigned</span> <span class=hljs-type>short</span> keys[<span class=hljs-number>20</span>];
+<span class=hljs-type>unsigned</span> <span class=hljs-type>short</span> values[<span class=hljs-number>20</span>];
+</code></pre><p>C++ uses the former, but the latter is both faster (if using vectorization) and shorter: <code>repne scasw</code> (the x86 generalization of <code>memchr</code>) can locate the key in just two bytes.<h3>Control flow</h3><p>What’s the first instruction in an average Wasm program? <code>i32.const</code>? <code>call</code>? Nope, it’s <code>block</code>, and it’s worse than you might think.<p>CPUs implement control flow as conditional jumps to instruction addresses. Wasm begs to differ. Wasm functions are trees with high-level constructs, like <code>if</code> and <code>loop</code>. Instead of jumping, you can <code>continue</code> a <code>loop</code> (jumping to its beginning) or <code>break</code> from a <code>block</code> (jumping to its end). With enough nesting, <a href=http://troubles.md/why-do-we-need-the-relooper-algorithm-again/>any control flow can be simulated</a>.<p>Jumps look like <code>br &LTlevel></code>, where <code>&LTlevel></code> specifies how many blocks to exit. Typical interpreters analyze the code before execution to know which instruction each jump targets. Since Wasm instructions are variable-length, this requires two functions per opcode: “parse” and “execute” – a luxury we can’t afford. But there is a workaround:<pre><code class=language-c><span class=hljs-type>const</span> <span class=hljs-type>char</span> *p; <span class=hljs-comment>// global code pointer, adjusted by `read_uint` and other parsers</span>
+
+<span class=hljs-type>void</span> <span class="hljs-title function_">local_get</span><span class=hljs-params>()</span> {
+    <span class=hljs-type>unsigned</span> <span class=hljs-type>long</span> idx = read_uint();
+    <span class=hljs-comment>// If `parsing_mode` is `true`, we parse the instruction and quit. Otherwise, we execute it</span>
+    <span class=hljs-comment>// after parsing.</span>
+    <span class=hljs-keyword>if</span> (parsing_mode) {
+        <span class=hljs-keyword>return</span>;
+    }
+    push(locals[idx]);
+}
+</code></pre><p>Single-pass execution saves even more code. Instead of a <code>bool</code>, I maintain an integer <code>break_level</code>. If it’s <code>0</code>, code is executed normally. Otherwise, instructions are only parsed. It’s set by <code>br</code> and decremented on each block exit. This mechanism powers <code>block</code>, <code>loop</code>, <code>if</code>, <code>else</code>, and <code>return</code>, implementing control flow with little size overhead.<p>Is it slow? Sure, since it constantly reparses code it doesn’t execute – look at how laggy QuickJS is. But the beauty of it is that for once I don’t care about performance.<h3>Registers</h3><p>You’re already familiar with the globals <code>p</code> (code pointer) and <code>break_level</code> (parsing/execution mode), which have to be accessed by every single instruction handler:<pre><code class=language-c><span class=hljs-type>unsigned</span> <span class=hljs-type>char</span> *p;
+<span class=hljs-type>unsigned</span> break_level;
+</code></pre><p>Accessing globals stored in memory takes space, but x86-64 has registers to spare:<pre><code class=language-c><span class=hljs-keyword>register</span> <span class=hljs-type>unsigned</span> <span class=hljs-type>char</span> *p <span class="hljs-title function_">asm</span> <span class=hljs-params>(<span class=hljs-string>"r12"</span>)</span>;
+<span class=hljs-keyword>register</span> <span class=hljs-type>unsigned</span> break_level <span class="hljs-title function_">asm</span> <span class=hljs-params>(<span class=hljs-string>"r14"</span>)</span>;
+</code></pre><p>Yes, this syntax works for globals, at least on GCC – you don’t need to write all handlers in assembly just to pass data through registers. This saves about 500 bytes.<h3>Instructions</h3><p>With Wasm peculiarities out of the way, we can actually execute instructions:<pre><code class=language-c><span class=hljs-keyword>while</span> (*p != <span class=hljs-number>0x0b</span> <span class=hljs-comment>/* end */</span>) {
+    opcode_map[*p++]();
+}
+</code></pre><p>Let’s take a look at memory loads for example. There are loads of them:<ul><li>0x28 <code>i32.load</code><li>0x29 <code>i64.load</code><li>0x2A <code>f32.load</code><li>0x2B <code>f64.load</code><li>0x2C <code>i32.load8_s</code><li>0x2D <code>i32.load8_u</code><li>0x2E <code>i32.load16_s</code><li>0x2F <code>i32.load16_u</code><li>0x30 <code>i64.load8_s</code><li>0x31 <code>i64.load8_u</code><li>0x32 <code>i64.load16_s</code><li>0x33 <code>i64.load16_u</code><li>0x34 <code>i64.load32_s</code><li>0x35 <code>i64.load32_u</code></ul><p>Individually, each handler needs little code, but it’s better to write a single complex function than 14 small ones, since they add up. The multitude of opcodes can be implemented by a 64-bit read followed by variable shifts, with amount depending on bitness and arithmetic/logical shifts depending on sign- or zero-extension:<pre><code class=language-c><span class=hljs-type>void</span> <span class="hljs-title function_">load</span><span class=hljs-params>(<span class=hljs-type>unsigned</span> <span class=hljs-type>char</span> opcode)</span> {
+    <span class=hljs-comment>// ...</span>
+    <span class=hljs-type>int</span> d = <span class=hljs-number>64</span> - bitness;
+    value <<= d; <span class=hljs-comment>// shift out unused bits</span>
+    <span class=hljs-keyword>if</span> (opcode % <span class=hljs-number>2</span> == <span class=hljs-number>0</span>) { <span class=hljs-comment>// signed or pure 32-bit</span>
+        value = (<span class=hljs-type>long</span>)value >> d; <span class=hljs-comment>// return the bits to the correct position with sign-extension</span>
+        <span class=hljs-keyword>if</span> (opcode < <span class=hljs-number>0x30</span>) { <span class=hljs-comment>// 32-bit destination</span>
+            value &= <span class=hljs-number>-1U</span>; <span class=hljs-comment>// clear top 32 bits</span>
+        }
+    } <span class=hljs-keyword>else</span> { <span class=hljs-comment>// unsigned or pure 64-bit</span>
+        value >>= d; <span class=hljs-comment>// return the bits to the correct position with zero-extension</span>
+    }
+    <span class=hljs-comment>// ...</span>
+}
+</code></pre><p>Sign-extension is simple, but the shift amount is hard to calculate from <code>opcode</code> without using a LUT. The same situation arises in other operations, and so the cheapest way to do this is to integrate a general-purpose LUT into the opcode map:<pre><code class=language-c><span class=hljs-type>void</span> <span class="hljs-title function_">load</span><span class=hljs-params>(<span class=hljs-type>unsigned</span> <span class=hljs-type>char</span> opcode, <span class=hljs-type>unsigned</span> <span class=hljs-type>char</span> d)</span> {
+    <span class=hljs-comment>// ...</span>
+}
+
+<span class=hljs-keyword>while</span> (*p != <span class=hljs-number>0x0b</span> <span class=hljs-comment>/* end */</span>) {
+    <span class=hljs-type>unsigned</span> <span class=hljs-type>char</span> opcode = *p++;
+    opcode_map[opcode].handler(opcode, opcode_map[opcode].arg);
+}
+</code></pre><p>You’ll see this utilized more soon.<h3>Funclets</h3><p>Let’s focus on unary operations for now. Their handlers have the same structure:<pre><code class=language-c><span class=hljs-keyword>if</span> (break_level > <span class=hljs-number>0</span>) {
+    <span class=hljs-keyword>return</span>;
+}
+<span class=hljs-type>unsigned</span> <span class=hljs-type>long</span> value = *stack_head;
+<span class=hljs-comment>// ...</span>
+*stack_head = value;
+</code></pre><p>Reusing the boilerplate with <code>switch (opcode)</code> is suboptimal. A hand-written jump table with the branch offset in <code>arg</code> is smaller than any pure-C alternative can be:<pre><code class=language-c><span class=hljs-keyword>asm</span> (
+    <span class=hljs-string>"jmp *%[handler];"</span>
+    <span class=hljs-string>"unop_handlers:"</span>
+    <span class=hljs-string>"unop_clz32: lzcnt %k0, %k0; jmp 1f;"</span>
+    <span class=hljs-string>"unop_clz64: lzcnt %0, %0; jmp 1f;"</span>
+    <span class=hljs-string>"unop_ctz32: tzcnt %k0, %k0; jmp 1f;"</span>
+    <span class=hljs-string>"unop_ctz64: tzcnt %0, %0; jmp 1f;"</span>
+    <span class=hljs-comment>// ...</span>
+    <span class=hljs-string>"1:"</span>
+    : <span class=hljs-string>"+R"</span>(*stack_head)
+    : [handler]<span class=hljs-string>"r"</span>(&unop_handlers + arg)
+    : <span class=hljs-string>"flags"</span>
+);
+</code></pre><p>This is an optimization a compiler can’t do because it’s unaware of the external LUT. Here’s one it could, but didn’t. <code>jmp</code> takes two bytes; <code>ret</code> takes only one:<pre><code class=language-c><span class=hljs-keyword>asm</span> (
+    <span class=hljs-string>"call *%[handler];"</span>
+    <span class=hljs-string>".pushsection .text.op;"</span>
+    <span class=hljs-string>"unop_handlers:"</span>
+    <span class=hljs-string>"unop_clz32: lzcnt %k0, %k0; ret;"</span>
+    <span class=hljs-string>"unop_clz64: lzcnt %0, %0; ret;"</span>
+    <span class=hljs-string>"unop_ctz32: tzcnt %k0, %k0; ret;"</span>
+    <span class=hljs-string>"unop_ctz64: tzcnt %0, %0; ret;"</span>
+    <span class=hljs-comment>// ...</span>
+    <span class=hljs-string>".popsection;"</span>
+    : <span class=hljs-string>"+R"</span>(*stack_head)
+    : [handler]<span class=hljs-string>"r"</span>(&unop_handlers + arg)
+    : <span class=hljs-string>"flags"</span>
+);
+</code></pre><p>This tiny change saves about 30 bytes – mere crumbs in all other circumstances, but since the final result is just 9 bytes below the limit, even this minor thing matters.<h3>Prefixes</h3><p>Assembly paves the way for trickier optimizations. Many unary ops have 32-bit and 64-bit variants, which x86 denotes by the presence of a REX prefix (here <code>48</code>):<pre><code class=language-x86asm>   0f be c0             <span class=hljs-keyword>movsx</span>  <span class=hljs-built_in>eax</span>,<span class=hljs-built_in>al</span> <span class=hljs-comment>; sign-extend 8 bits to 32 bits</span>
+<span class=hljs-number>48</span> 0f be c0             <span class=hljs-keyword>movsx</span>  <span class=hljs-built_in>rax</span>,<span class=hljs-built_in>al</span> <span class=hljs-comment>; sign-extend 8 bits to 64 bits</span>
+   0f bf c0             <span class=hljs-keyword>movsx</span>  <span class=hljs-built_in>eax</span>,<span class=hljs-built_in>ax</span> <span class=hljs-comment>; sign-extend 16 bits to 32 bits</span>
+<span class=hljs-number>48</span> 0f bf c0             <span class=hljs-keyword>movsx</span>  <span class=hljs-built_in>rax</span>,<span class=hljs-built_in>ax</span> <span class=hljs-comment>; sign-extend 16 bits to 64 bits</span>
+</code></pre><p><a href=https://xkcd.com/378/><em>Real</em> programmers</a> overlap their branches – take that, ARM!<pre><code class=language-c>    <span class=hljs-string>"extend8_64: movsx %b0, %0; ret;"</span>
+    <span class=hljs-string>"extend8_32 = extend8_64 + 1;"</span>
+</code></pre><p><code>sqrt</code> and <code>float</code> <eq><math><mo lspace=0em rspace=0em stretchy=false>↔</mo></math></eq> <code>double</code> conversion use a different encoding, breaking this trick:<pre><code class=language-x86asm>f3 0f <span class=hljs-number>51</span> c0             <span class=hljs-keyword>sqrtss</span> <span class=hljs-built_in>xmm0</span>,<span class=hljs-built_in>xmm0</span> <span class=hljs-comment>; float sqrt</span>
+f2 0f <span class=hljs-number>51</span> c0             <span class=hljs-keyword>sqrtsd</span> <span class=hljs-built_in>xmm0</span>,<span class=hljs-built_in>xmm0</span> <span class=hljs-comment>; double sqrt</span>
+f3 0f 5a c0             <span class=hljs-keyword>cvtss2sd</span> <span class=hljs-built_in>xmm0</span>,<span class=hljs-built_in>xmm0</span> <span class=hljs-comment>; float -> double</span>
+f2 0f 5a c0             <span class=hljs-keyword>cvtsd2ss</span> <span class=hljs-built_in>xmm0</span>,<span class=hljs-built_in>xmm0</span> <span class=hljs-comment>; double -> float</span>
+</code></pre><p>But the corresponding vectorized operations save the day. x86 never fails to surprise.<pre><code class=language-x86asm>   0f <span class=hljs-number>51</span> c0             <span class=hljs-keyword>sqrtps</span> <span class=hljs-built_in>xmm0</span>,<span class=hljs-built_in>xmm0</span>
+<span class=hljs-number>66</span> 0f <span class=hljs-number>51</span> c0             <span class=hljs-keyword>sqrtpd</span> <span class=hljs-built_in>xmm0</span>,<span class=hljs-built_in>xmm0</span>
+   0f 5a c0             <span class=hljs-keyword>cvtps2pd</span> <span class=hljs-built_in>xmm0</span>,<span class=hljs-built_in>xmm0</span>
+<span class=hljs-number>66</span> 0f 5a c0             <span class=hljs-keyword>cvtpd2ps</span> <span class=hljs-built_in>xmm0</span>,<span class=hljs-built_in>xmm0</span>
+</code></pre><h3>Code patching</h3><p>Not all instructions are as simple. Wasm comparisons map nicely to the x86 <a href=https://www.felixcloutier.com/x86/setcc><code>setcc</code> instructions</a> – <code>sete</code>, <code>setl</code>, <code>setae</code> – which encode the operation in the middle byte:<pre><code class=language-x86asm>0f <span class=hljs-number>94</span> c0                <span class=hljs-keyword>sete</span>   <span class=hljs-built_in>al</span> <span class=hljs-comment>; a = b</span>
+0f 9c c0                <span class=hljs-keyword>setl</span>   <span class=hljs-built_in>al</span> <span class=hljs-comment>; a < b, signed</span>
+0f <span class=hljs-number>93</span> c0                <span class=hljs-keyword>setae</span>  <span class=hljs-built_in>al</span> <span class=hljs-comment>; a >= b, unsigned</span>
+</code></pre><p>Funclets would take four bytes per opcode, but patching a function’s x86 code in runtime – a rudimentary form of JIT – brings overhead down to a constant:<pre><code class=language-c><span class=hljs-keyword>asm</span> (
+    <span class=hljs-string>"cmp $0x51, %[opcode];"</span>
+    <span class=hljs-string>"jb 1f + 1;"</span> <span class=hljs-comment>// if 32-bit, skip over the REX prefix in `cmp`</span>
+    <span class=hljs-string>"1: cmp %[b], %[a];"</span> <span class=hljs-comment>// perform 64-bit comparison</span>
+    <span class=hljs-string>"mov %[arg], 2f + 1(%%rip);"</span> <span class=hljs-comment>// patch the setb instruction, taking the byte from `arg`</span>
+    <span class=hljs-string>"2: setb %[out]"</span> <span class=hljs-comment>// this is actually arbitrary setcc</span>
+    : [out]<span class=hljs-string>"=R"</span>(out)
+    : [a]<span class=hljs-string>"R"</span>(a), [b]<span class=hljs-string>"R"</span>(b), [arg]<span class=hljs-string>"r"</span>(arg), [opcode]<span class=hljs-string>"r"</span>(opcode)
+    : <span class=hljs-string>"flags"</span>
+);
+</code></pre><p><a href=https://en.wikipedia.org/wiki/Self-modifying_code>Self-modifying code</a> has troublesome effects on performance, but we’ve burned that bridge a long time ago – it can’t be that bad in comparison to constant reparsing.<p>Floating-point rounding also benefits from patching, even though the rounding direction can be set in a global flag – patching code turns out to be cheaper.<h3>PF</h3><p>Next up: float-to-int conversions. These supports four destination types: <code>i32</code>, <code>u32</code>, <code>i64</code>, and <code>u64</code>. They look similar, but their implementations are completely different:<pre><code class=language-rust><span class=hljs-keyword>fn</span> <span class="hljs-title function_">f64_to_i32</span>(x: <span class=hljs-type>f64</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>i32</span> { x <span class=hljs-keyword>as</span> _ }
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">f64_to_u32</span>(x: <span class=hljs-type>f64</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>u32</span> { x <span class=hljs-keyword>as</span> _ }
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">f64_to_i64</span>(x: <span class=hljs-type>f64</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>i64</span> { x <span class=hljs-keyword>as</span> _ }
+<span class=hljs-keyword>fn</span> <span class="hljs-title function_">f64_to_u64</span>(x: <span class=hljs-type>f64</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>u64</span> { x <span class=hljs-keyword>as</span> _ }
+</code></pre><pre><code class=language-x86asm><div class=expansible-code><input id=expansible1 type=checkbox><div class=highlighted><span class=hljs-symbol>f64_to_i32:</span>
+    <span class=hljs-keyword>xor</span>       <span class=hljs-built_in>eax</span>, <span class=hljs-built_in>eax</span>
+    <span class=hljs-keyword>ucomisd</span>   <span class=hljs-built_in>xmm0</span>, <span class=hljs-built_in>xmm0</span>
+    <span class=hljs-keyword>maxsd</span>     <span class=hljs-built_in>xmm0</span>, <span class=hljs-number>0xc1e0000000000000</span>
+    <span class=hljs-keyword>minsd</span>     <span class=hljs-built_in>xmm0</span>, <span class=hljs-number>0x41dfffffffc00000</span>
+    <span class=hljs-keyword>cvttsd2si</span> <span class=hljs-built_in>ecx</span>, <span class=hljs-built_in>xmm0</span>
+    <span class=hljs-keyword>cmovnp</span>    <span class=hljs-built_in>eax</span>, <span class=hljs-built_in>ecx</span>
+    <span class=hljs-keyword>ret</span>
+<span class=hljs-symbol>
+f64_to_u32:</span>
+    <span class=hljs-keyword>xorpd</span>     <span class=hljs-built_in>xmm1</span>, <span class=hljs-built_in>xmm1</span>
+    <span class=hljs-keyword>maxsd</span>     <span class=hljs-built_in>xmm1</span>, <span class=hljs-built_in>xmm0</span>
+    <span class=hljs-keyword>movsd</span>     <span class=hljs-built_in>xmm0</span>, <span class=hljs-number>0x41efffffffe00000</span>
+    <span class=hljs-keyword>minsd</span>     <span class=hljs-built_in>xmm0</span>, <span class=hljs-built_in>xmm1</span>
+    <span class=hljs-keyword>cvttsd2si</span> <span class=hljs-built_in>rax</span>, <span class=hljs-built_in>xmm0</span>
+    <span class=hljs-keyword>ret</span>
+<span class=hljs-symbol>
+f64_to_i64:</span>
+    <span class=hljs-keyword>cvttsd2si</span> <span class=hljs-built_in>rax</span>, <span class=hljs-built_in>xmm0</span>
+    <span class=hljs-keyword>ucomisd</span>   <span class=hljs-built_in>xmm0</span>, <span class=hljs-number>0x43dfffffffffffff</span>
+    <span class=hljs-keyword>mov</span>       <span class=hljs-built_in>rcx</span>, <span class=hljs-number>0x7fffffffffffffff</span>
+    <span class=hljs-keyword>cmovbe</span>    <span class=hljs-built_in>rcx</span>, <span class=hljs-built_in>rax</span>
+    <span class=hljs-keyword>xor</span>       <span class=hljs-built_in>eax</span>, <span class=hljs-built_in>eax</span>
+    <span class=hljs-keyword>ucomisd</span>   <span class=hljs-built_in>xmm0</span>, <span class=hljs-built_in>xmm0</span>
+    <span class=hljs-keyword>cmovnp</span>    <span class=hljs-built_in>rax</span>, <span class=hljs-built_in>rcx</span>
+    <span class=hljs-keyword>ret</span>
+<span class=hljs-symbol>
+f64_to_u64:</span>
+    <span class=hljs-keyword>cvttsd2si</span> <span class=hljs-built_in>rax</span>, <span class=hljs-built_in>xmm0</span>
+    <span class=hljs-keyword>mov</span>       <span class=hljs-built_in>rcx</span>, <span class=hljs-built_in>rax</span>
+    <span class=hljs-keyword>sar</span>       <span class=hljs-built_in>rcx</span>, <span class=hljs-number>63</span>
+    <span class=hljs-keyword>movapd</span>    <span class=hljs-built_in>xmm1</span>, <span class=hljs-built_in>xmm0</span>
+    <span class=hljs-keyword>subsd</span>     <span class=hljs-built_in>xmm1</span>, <span class=hljs-number>0x43e0000000000000</span>
+    <span class=hljs-keyword>cvttsd2si</span> <span class=hljs-built_in>rdx</span>, <span class=hljs-built_in>xmm1</span>
+    <span class=hljs-keyword>and</span>       <span class=hljs-built_in>rdx</span>, <span class=hljs-built_in>rcx</span>
+    <span class=hljs-keyword>or</span>        <span class=hljs-built_in>rdx</span>, <span class=hljs-built_in>rax</span>
+    <span class=hljs-keyword>xor</span>       <span class=hljs-built_in>ecx</span>, <span class=hljs-built_in>ecx</span>
+    <span class=hljs-keyword>xorpd</span>     <span class=hljs-built_in>xmm1</span>, <span class=hljs-built_in>xmm1</span>
+    <span class=hljs-keyword>ucomisd</span>   <span class=hljs-built_in>xmm0</span>, <span class=hljs-built_in>xmm1</span>
+    <span class=hljs-keyword>cmovae</span>    <span class=hljs-built_in>rcx</span>, <span class=hljs-built_in>rdx</span>
+    <span class=hljs-keyword>ucomisd</span>   <span class=hljs-built_in>xmm0</span>, <span class=hljs-number>0x43efffffffffffff</span>
+    <span class=hljs-keyword>mov</span>       <span class=hljs-built_in>rax</span>, -<span class=hljs-number>1</span>
+    <span class=hljs-keyword>cmovbe</span>    <span class=hljs-built_in>rax</span>, <span class=hljs-built_in>rcx</span>
+    <span class=hljs-keyword>ret</span>
+</div><label for=expansible1>Expand</label></div></code></pre><p>Parts of Rust’s generated code are suboptimal, overall the distinctions are justified:<ul><li><p>x86 returns <code>0x80...00</code> on out-of-bounds conversions, Wasm enforces saturation. For signed conversions, this constant is by pure luck the precise lower bound – but the upper bound still needs to be handled explicitly.</p><li><p><code>f64_to_i32</code> clamps the input <code>double</code> with <code>min(x, 2^32 - 1)</code>. <code>f64_to_i64</code> can’t do that because <code>2^64 - 1</code> doesn’t fit in <code>f64</code> precisely – and rounding would cause <code>cast(+inf)</code> to return <code>2^64 - 2048</code> instead of <code>2^64 - 1</code>.</p><li><p>For unsigned conversions, <code>max(x, 0)</code> sets the lower bound. This also converts <code>NaN</code> to <code>0</code>, as mandated by Wasm, since x86 defines <code>min(NaN, a) = a</code>. Signed conversions still require explicit <code>NaN</code> handling.</p><li><p>x86 only supports signed conversions. <code>u32</code> can be emulated with <code>i64</code> because it always fits; large <code>u64</code> values need to be handled manually.</p></ul><p>Handling this complexity in a single generic function is an exercise in ingenuity.<p>First, I generate the <code>double</code> representation of the upper bound on the fly:<pre><code class=language-c><span class=hljs-type>unsigned</span> bitness = <span class=hljs-number>31</span> + (arg & <span class=hljs-number>1</span>) + <span class=hljs-number>32</span> * ((arg & <span class=hljs-number>4</span>) != <span class=hljs-number>0</span>);
+<span class=hljs-type>unsigned</span> <span class=hljs-type>long</span> upper_bound = (<span class=hljs-number>1023UL</span> + bitness) << <span class=hljs-number>52</span>; <span class=hljs-comment>// pow2(bitness), actually `double`</span>
+</code></pre><p><code>min</code> fails for <code>f64_to_i64</code>, so it’s not worth doing – better compare <code>x < upper_bound</code> and manually handle the too-high case. x86 reports whether <code>x</code> is <code>NaN</code> as a side effect of comparison. GCC codegen can’t utilize it, so inline assembly has to be used:<pre><code class=language-c><span class=hljs-keyword>asm</span> <span class="hljs-title function_">goto</span> <span class=hljs-params>(
+    <span class=hljs-string>"ucomisd %1, %0;"</span>
+    <span class=hljs-string>"jp %l2;"</span>
+    <span class=hljs-string>"jb %l3;"</span>
+    :
+    : <span class=hljs-string>"x"</span>(x), <span class=hljs-string>"x"</span>(upper_bound)
+    : <span class=hljs-string>"flags"</span>
+    : maxsd, below_limit
+)</span>;
+</code></pre><p>Note the jump to <code>maxsd</code> on <code>NaN</code> – the instruction <code>x = max(x, 0)</code> used by unsigned conversion can be abused to convert <code>NaN</code> to <code>0</code> for signed integers as well.<pre><code class=language-c>below_limit:
+<span class=hljs-keyword>if</span> (arg & <span class=hljs-number>1</span>) { <span class=hljs-comment>// unsigned</span>
+maxsd:
+    <span class=hljs-keyword>asm</span> (<span class=hljs-string>"maxsd %1, %0"</span> : <span class=hljs-string>"+x"</span>(x) : <span class=hljs-string>"x"</span>(<span class=hljs-number>0L</span>));
+}
+
+<span class=hljs-comment>// 32-bit or 64-bit signed conversion</span>
+<span class=hljs-keyword>asm</span> (<span class=hljs-string>"cvttsd2si %1, %0;"</span> : <span class=hljs-string>"=r"</span>(out) : <span class=hljs-string>"x"</span>(x)); <span class=hljs-comment>// everything but i32 is converted as i64</span>
+<span class=hljs-keyword>if</span> (arg == <span class=hljs-number>0</span> || arg == <span class=hljs-number>2</span>) {
+    <span class=hljs-keyword>asm</span> (<span class=hljs-string>"cvttsd2si %1, %k0;"</span> : <span class=hljs-string>"=r"</span>(out) : <span class=hljs-string>"x"</span>(x)); <span class=hljs-comment>// i32 is converted as i32</span>
+}
+</code></pre><p>Built-in signed conversion suffices for everything but <code>u64</code> values between <code>2^63</code> and <code>2^64 - 1</code>. Not to worry: IEEE-754 <code>double</code>s in this range can be converted by hand:<pre><code class=language-c><span class=hljs-keyword>if</span> ((arg & <span class=hljs-number>1</span>) && (<span class=hljs-type>long</span>)out < <span class=hljs-number>0</span>) { <span class=hljs-comment>// intended destination u64, and i64 conversion failed</span>
+    <span class=hljs-type>unsigned</span> <span class=hljs-type>long</span> value;
+    __builtin_memcpy(&value, &x, <span class=hljs-number>8</span>);
+    out = (value << <span class=hljs-number>11</span>) | (<span class=hljs-number>1UL</span> << <span class=hljs-number>63</span>); <span class=hljs-comment>// move mantissa to the right position, set hidden bit</span>
+}
+</code></pre><h3>FPU</h3><p>Float-to-int conversions could convert <code>float</code> inputs to <code>double</code>s to halve code size. Not so easy in the other direction: <code>(float)n</code> and <code>(float)(double)n</code> can produce different results because both steps in the <code>i64</code> <eq><math><mo lspace=0em rspace=0em stretchy=false>→</mo></math></eq> <code>double</code> <eq><math><mo lspace=0em rspace=0em stretchy=false>→</mo></math></eq> <code>float</code> chain introduce rounding.<p>Duplication or code patching is necessary. Or is it?<p>The x87 FPU uses 80-bit <code>long double</code>s, which barely fit all <code>i64</code>s without rounding. Who knew FPU could be useful? Typed loads and stores reduce case handling further:<pre><code class=language-c><span class=hljs-comment>// Load</span>
+<span class=hljs-type>long</span> <span class=hljs-type>double</span> ld;
+<span class=hljs-keyword>if</span> (arg == <span class=hljs-number>1</span>) { <span class=hljs-comment>// load s32 as s32</span>
+    <span class=hljs-keyword>asm</span> (<span class=hljs-string>"fildl %1"</span> : <span class=hljs-string>"=t"</span>(ld) : <span class=hljs-string>"m"</span>(*stack_head));
+} <span class=hljs-keyword>else</span> { <span class=hljs-comment>// load other types as s64</span>
+    <span class=hljs-keyword>asm</span> (<span class=hljs-string>"fildq %1"</span> : <span class=hljs-string>"=t"</span>(ld) : <span class=hljs-string>"m"</span>(*stack_head));
+}
+
+<span class=hljs-comment>// Store</span>
+*stack_head = <span class=hljs-number>0</span>;
+<span class=hljs-keyword>if</span> (opcode < <span class=hljs-number>0xb7</span>) { <span class=hljs-comment>// f32</span>
+    <span class=hljs-type>float</span> f = ld;
+    __builtin_memcpy(stack_head, &f, <span class=hljs-number>4</span>);
+} <span class=hljs-keyword>else</span> { <span class=hljs-comment>// f64</span>
+    <span class=hljs-type>double</span> d = ld;
+    __builtin_memcpy(stack_head, &d, <span class=hljs-number>8</span>);
+}
+</code></pre><p>Large <code>u64</code>s misparsed as <code>i64</code>s can be fixed simply by adding <code>2^64</code> to the float, a trick I stole from GCC’s codegen:<pre><code class=language-c><span class=hljs-keyword>if</span> (arg == <span class=hljs-number>2</span> && (<span class=hljs-type>long</span>)*stack_head < <span class=hljs-number>0</span>) { <span class=hljs-comment>// u64 and misparsed</span>
+    ld += <span class=hljs-number>0x1</span>p64;
+}
+</code></pre><h3>min/max</h3><p>I’ve only applied unconventional, but textbook methods so far. This one is different.<p>Wasm defines <code>min</code> and <code>max</code> like this:<ul><li>If there’s a <code>NaN</code> argument, the result is <code>NaN</code>.<li><code>-0</code> is considered less than <code>+0</code>.</ul><p>x86 defines <code>min</code> and <code>max</code> like this:<ul><li>If there’s a <code>NaN</code> argument, the result is the second argument.<li><code>-0</code> and <code>+0</code> are considered equal, with ties resolved to the second argument.</ul><p>It’s a subtle difference, but I want to make a standards-compatible interpreter, not something that works for two apps. Implementing <code>min</code> or <code>max</code> individually is doable:<pre><code class=language-rust><span class=hljs-keyword>fn</span> <span class="hljs-title function_">wasm_min</span>(x: <span class=hljs-type>f64</span>, y: <span class=hljs-type>f64</span>) <span class=hljs-punctuation>-></span> <span class=hljs-type>f64</span> {
+    <span class=hljs-keyword>if</span> x <span class=hljs-comment>/* unordered */</span> y {
+        <span class=hljs-comment>// There must be a NaN -- produce NaN as an output. Addition is cheaper than a constant.</span>
+        x + y
+    } <span class=hljs-keyword>else</span> <span class=hljs-keyword>if</span> x == y {
+        <span class=hljs-comment>// Either same value, or -0 and +0. For the former, `|` is a no-op. For the latter, the</span>
+        <span class=hljs-comment>// sign bit is set to negative if either argument is negative.</span>
+        <span class=hljs-type>f64</span>::<span class="hljs-title function_ invoke__">from_bits</span>(x.<span class="hljs-title function_ invoke__">to_bits</span>() | y.<span class="hljs-title function_ invoke__">to_bits</span>())
+        <span class=hljs-comment>// For max: f64::from_bits(x.to_bits() & y.to_bits())</span>
+    } <span class=hljs-keyword>else</span> <span class=hljs-keyword>if</span> x < y { <span class=hljs-comment>// for max: x > y</span>
+        x
+    } <span class=hljs-keyword>else</span> {
+        y
+    }
+}
+</code></pre><p>When merged into one handler, this requires patching two locations:<ul><li>The opcode in the signed zero handling, between <code>or</code> and <code>and</code>.<li>The comparison, between <code>x < y</code> and <code>x > y</code>.</ul><p>Only one patch can use the opcode LUT, leaving the other to calculate a constant. But there’s an alternative. In x86, comparison is a two-step operation:<ul><li><code>cmp a, b</code> stores compressed results of all possible comparisons in <a href=https://en.wikipedia.org/wiki/FLAGS_register>flags</a>.<li><code>jcc target</code> parses flags and jumps if the right condition is satisfied.</ul><p>The result of “less” comparison is stored in the carry flag. If we could just invert it between <code>cmp</code> and <code>jcc</code> if the operation is <code>max</code>, we could avoid patching code.<p>Saving the flag to a register to <code>xor</code> it is too wasteful – we need to operate on flags directly. <a href=https://www.felixcloutier.com/x86/cmc>cmc</a> inverts the carry flag unconditionally, but skipping it on <code>min</code> requires comparing the opcode, which clobbers the carry flag. So we need another way.<p><code>adc a, b</code> computes <code>a + b + carry</code> and, among others, sets the zero flag if the result is <code>0</code>. If we could set <code>arg = -1</code> for <code>min</code> and <code>arg = 0</code> for <code>max</code>, then <code>adc arg, 0</code> would set ZF on <code>min</code> + set carry (<code>x < y</code>) and on <code>max</code> + no carry (<code>x >= y</code>) – the combination we need.<p>But <code>arg</code> is not free: it needs to be <code>0xeb</code> for <code>min</code> and <code>0xdb</code> for <code>max</code> due to patching between <code>or</code> and <code>and</code>, and these values are too far for ZF to work. However, the legacy parity flag, set if the number of <code>1</code> bits in the bottom byte of the result is even, remains receptive to small changes:<ul><li><code>0xeb + 5 + 0</code> has 4 set bits (even).<li><code>0xeb + 5 + 1</code> has 5 set bits (odd).<li><code>0xdb + 5 + 0</code> has 3 set bits (odd).<li><code>0xdb + 5 + 1</code> has 4 set bits (even).</ul><pre><code class=language-x86asm><span class=hljs-comment>; valid for min</span>
+<span class=hljs-keyword>jc</span> output_x
+
+<span class=hljs-comment>; valid for max</span>
+<span class=hljs-keyword>jnc</span> output_x
+
+<span class=hljs-comment>; valid for both</span>
+<span class=hljs-keyword>adc</span> arg, <span class=hljs-number>5</span>
+<span class=hljs-keyword>jnp</span> output_x
+</code></pre><p>This is the first time I’ve used PF, and only <a href=https://codegolf.stackexchange.com/a/246679>the second time</a> I’ve seen it in codegolf.<h3>Syscalls</h3><p>Calculations without side effects are not terribly interesting. Let’s talk about syscalls. <code>fd_read</code> is the most interesting one, since its implementation has to convert data between arrays of native and WASI structures:<pre><code class=language-c><span class=hljs-class><span class=hljs-keyword>struct</span> <span class=hljs-title>wasi_iovec</span> {</span>
+    <span class=hljs-type>unsigned</span> buf;
+    <span class=hljs-type>unsigned</span> buf_len;
+} *src;
+
+<span class=hljs-class><span class=hljs-keyword>struct</span> <span class=hljs-title>iovec</span> {</span>
+    <span class=hljs-type>void</span> *iov_base;
+    <span class=hljs-type>size_t</span> iov_len;
+} *dst;
+</code></pre><p>Here’s a converter written by a noob, requiring four manual memory accesses:<pre><code class=language-c><span class=hljs-keyword>for</span> (<span class=hljs-type>unsigned</span> i = <span class=hljs-number>0</span>; i < count; i++) {
+    dst->iov_base = memory + src->buf;
+    dst->iov_len = src->buf_len;
+    src++, dst++;
+}
+</code></pre><p>Here’s one written by a pro, using x86’s ancient stream reading/writing instructions:<pre><code class=language-c><span class=hljs-keyword>for</span> (<span class=hljs-type>unsigned</span> i = <span class=hljs-number>0</span>; i < count; i++) {
+    <span class=hljs-keyword>asm</span> <span class="hljs-title function_">volatile</span> <span class=hljs-params>(
+        <span class=hljs-string>"lodsl;"</span> <span class=hljs-comment>// src->buf</span>
+        <span class=hljs-string>"add %[memory], %%rax;"</span>
+        <span class=hljs-string>"stosq;"</span> <span class=hljs-comment>// dst->iov_base</span>
+        <span class=hljs-string>"lodsl;"</span> <span class=hljs-comment>// src->buf_len</span>
+        <span class=hljs-string>"stosq"</span> <span class=hljs-comment>// dst->iov_len</span>
+        : <span class=hljs-string>"+S"</span>(src), <span class=hljs-string>"+D"</span>(dst)
+        : [memory]<span class=hljs-string>"i"</span>(memory)
+        : <span class=hljs-string>"rax"</span>, <span class=hljs-string>"memory"</span>
+    )</span>;
+}
+</code></pre><p><code>lodsl</code> reads 4 bytes and increments the input pointer. <code>stosq</code> stores 8 bytes and increments the output pointer. This saves 16 bytes – huge for a simple change.<h3>Compression</h3><p>Are these thorough optimizations and hand-written assembly enough? Nope: at this point, the interpreter exceeds 4500 bytes. But I have an ace up my sleeve.<p>Demosceners are used to packing their demos. Programs compressed with tools like <a href=https://github.com/runestubbe/Crinkler>Crinkler</a> don’t just use external decoders like <code>gzip</code> – that would be cheating, and compression ratio suffers anyway. Instead, it packs a fine-tuned <a href=https://en.wikipedia.org/wiki/Entropy_coding>entropy decoder</a> written in assembly. It’s a little slow to decode, even slower to encode, and requires plenty of memory, but it gets the job done.<p>But Crinkler targets 32-bit Windows, while I’m using 64-bit Linux. And I can’t change this: wasting space on 64-bit arithmetic sucks as much as importing syscalls from NTDLL. I needed a new Crinkler, and the lazy bum I am, I poked <a href=https://github.com/sylfn>Yuki</a> to do it for me.<p>The details are a little too technical, so I won’t cover them in the entirety – if you’re interested, <a href=https://code4k.blogspot.com/2010/12/crinkler-secrets-4k-intro-executable.html>this post</a> covers the Crinkler design, which is very similar to ours.<p>In a nutshell, we’re compressing concatenated text and data with <a href=https://en.wikipedia.org/wiki/Arithmetic_coding>arithmetic coding</a>, loading it with a small bootstrapping decoder and jumping to it. The probabilities are computed with linear <a href=https://en.wikipedia.org/wiki/Context_mixing>context mixing</a> according to static models that are brute-forced by the encoder. We operate on bit granularity, and predictors use a shared 8 MiB hash table with CRC32 as the hash function. We also perform <a href=https://en.wikipedia.org/wiki/BCJ_(algorithm)>the E8 transform</a>.<p>Notable differences from Crinkler are:<ul><li>The initial interval size is <eq><math><mn>2</mn></math></eq>, not <eq><math><msup><mn>2</mn><mn>31</mn></msup></math></eq> – this simplifies the decoder.<li>We increment <code>c0</code> and <code>c1</code> and halve the wrong counter, instead of incrementing the correct one and (saturate-)halving the wrong one.<li>We don’t separate the file into code and data sections, since there’s little data.<li>Instead of explicitly storing weights, we allow models to repeat.</ul><p>These choices are not necessarily the best for every situation, but we found they worked well here. There’s likely a way to save 30-ish bytes, but there’s little more we could fit in that space, so we decided to call it quits.<p>Overall, this reduces code size by about 40%. This shows how redundant x86 code is, but it’s also close enough that we had to tweak a few parameters to get it to fit.<h3>Wrapping up</h3><p>The actual story was much less linear than described here, but this post is already quite long, and I fear I’ll bore people if I discuss more minutiae. If you’re interested in more detail, I wrote down <a href=https://github.com/purplesyringa/autumn/blob/master/log.md>a development log</a>.<p>This project was a lot of fun to me <s>(insomnia excluded)</s>, and it was a nice change of pace compared to my usual performance-related work. It was cool to see old techniques find their place in modern computing, like the parity flag, the x87 FPU, self-modifying code, and writing jump tables by hand.<p>The interpreter is <a href=https://github.com/purplesyringa/autumn>released on GitHub</a> in all of its glory. It’s called <code>autumn</code> because the punny name <code>winter</code> was already taken, and autumn is kinda like autistic winter. Supported features pass tests from the Wasm spec, though traps and validation aren’t implemented, so e.g. memory accesses can go out of bounds, type checks are absent, and parsing can crash. If it wasn’t clear by now, don’t use this in prod.<p>I hope this was fun to read. Maybe it’ll motivate you to try size coding as well!</div></section><footer><div class=viewport-container><h2>Made with my own bare hands (why.)</h2></div></footer><script>window.addEventListener("keydown", e => {
+				if (e.key === "Enter") {
+					if (e.ctrlKey) {
+						window.open("https://github.com/purplesyringa/site/edit/master/blog/this-wasm-interpreter-fits-in-a-qr-code/index.md", "_blank");
+					} else if (
+						e.target.type === "checkbox"
+						&& e.target.parentNode
+						&& e.target.parentNode.className === "expansible-code"
+					) {
+						e.target.click();
+					}
+				}
+			});</script>
