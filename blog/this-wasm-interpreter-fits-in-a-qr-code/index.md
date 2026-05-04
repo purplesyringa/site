@@ -2,14 +2,14 @@
 title: This Wasm interpreter fits in a QR code
 time: May 3, 2026
 intro: |
-    2944 bytes. Less than 0.006% of [Wasmtime](https://wasmtime.dev/), smaller than a C "Hello, world!".
+    2945 bytes. Less than 0.006% of [Wasmtime](https://wasmtime.dev/), smaller than a C "Hello, world!".
 
     Zero dependencies, no cheating: just a static x86-64 [Linux executable](https://en.wikipedia.org/wiki/Executable_and_Linkable_Format). Scan the QR code above with `zbarimg --raw -Sbinary` or another QR decoder that supports binary data, or [directly download the program](https://github.com/purplesyringa/autumn/raw/refs/heads/master/autumn) from [the GitHub repo](https://github.com/purplesyringa/autumn), and you're good to go.
 ---
 
 ![A QR code containing the interpreter](autumn.png)
 
-2944 bytes. Less than 0.006% of [Wasmtime](https://wasmtime.dev/), smaller than a C "Hello, world!".
+2945 bytes. Less than 0.006% of [Wasmtime](https://wasmtime.dev/), smaller than a C "Hello, world!".
 
 Zero dependencies, no cheating: just a static x86-64 [Linux executable](https://en.wikipedia.org/wiki/Executable_and_Linkable_Format). Scan the QR code above with `zbarimg --raw -Sbinary` or another QR decoder that supports binary data, or [directly download the program](https://github.com/purplesyringa/autumn/raw/refs/heads/master/autumn) from [the GitHub repo](https://github.com/purplesyringa/autumn), and you're good to go.
 
@@ -293,7 +293,7 @@ asm (
 );
 ```
 
-This tiny change saves about 30 bytes -- mere crumbs in all other circumstances, but since the final result is just 9 bytes below the limit, even this minor thing matters.
+This tiny change saves about 30 bytes -- mere crumbs in all other circumstances, but since the final result is just 8 bytes below the limit, even this minor thing matters.
 
 
 ### Prefixes
