@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Mon, 04 May 2026 14:05:00 GMT</lastBuildDate>
+		<lastBuildDate>Tue, 05 May 2026 04:56:02 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -19,7 +19,7 @@
 &lt;p&gt;Zero dependencies, no cheating: just a static x86-64 &lt;a href=&quot;https://en.wikipedia.org/wiki/Executable_and_Linkable_Format&quot;&gt;Linux executable&lt;/a&gt;. Scan the QR code above with &lt;code&gt;zbarimg --raw -Sbinary&lt;/code&gt; or another QR decoder that supports binary data, or &lt;a href=&quot;https://github.com/purplesyringa/autumn/raw/refs/heads/master/autumn&quot;&gt;directly download the program&lt;/a&gt; from &lt;a href=&quot;https://github.com/purplesyringa/autumn&quot;&gt;the GitHub repo&lt;/a&gt;, and you’re good to go.&lt;/p&gt;
 </description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				
+				<comments>https://lobste.rs/s/bmhm7k/this_wasm_interpreter_fits_qr_code</comments>
 				<guid>https://purplesyringa.moe/blog/./this-wasm-interpreter-fits-in-a-qr-code/</guid>
 				<pubDate>Sun, 03 May 2026 00:00:00 GMT</pubDate>
 			</item>

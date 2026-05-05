@@ -1,6 +1,7 @@
 ---
 title: This Wasm interpreter fits in a QR code
 time: May 3, 2026
+discussion: https://lobste.rs/s/bmhm7k/this_wasm_interpreter_fits_qr_code
 intro: |
     2945 bytes. Less than 0.006% of [Wasmtime](https://wasmtime.dev/), smaller than a C "Hello, world!".
 
