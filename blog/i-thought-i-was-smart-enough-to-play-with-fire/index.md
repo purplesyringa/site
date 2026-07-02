@@ -7,7 +7,7 @@ intro: |
 
     Size.
 
-    Professional libraries start exceeding the [Codeforces](https) limit of 64 KiB really fast. Code minification barely helps, and neither does resorting to ugly code. So I cut a corner I don't typically cut.
+    Professional libraries start exceeding the [Codeforces](https://codeforces.com) limit of 64 KiB really fast. Code minification barely helps, and neither does resorting to ugly code. So I cut a corner I don't typically cut.
 
     Undefined Behavior.
 

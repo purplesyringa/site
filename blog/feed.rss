@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Thu, 02 Jul 2026 15:15:43 GMT</lastBuildDate>
+		<lastBuildDate>Thu, 02 Jul 2026 19:05:04 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -625,7 +625,7 @@ Vm0wd2QyUXlVWGxWV0d4V1YwZDRWMVl3WkRSV01WbDNXa1JTVjAxV2JETlhhMUpUVmpBeFYySkVU
 				<link>https://purplesyringa.moe/blog/./i-thought-i-was-smart-enough-to-play-with-fire/</link>
 				<description>&lt;p&gt;&lt;a href=&quot;https://codeforces.com/blog/entry/126390&quot;&gt;blazingio&lt;/a&gt; cuts corners by design. It keeps the constant factor small and uses long forgotten algorithms people used before processors supported SIMD and integer division. But another limitation made this task much harder.&lt;/p&gt;
 &lt;p&gt;Size.&lt;/p&gt;
-&lt;p&gt;Professional libraries start exceeding the &lt;a href=&quot;https&quot;&gt;Codeforces&lt;/a&gt; limit of 64 KiB really fast. Code minification barely helps, and neither does resorting to ugly code. So I cut a corner I don’t typically cut.&lt;/p&gt;
+&lt;p&gt;Professional libraries start exceeding the &lt;a href=&quot;https://codeforces.com&quot;&gt;Codeforces&lt;/a&gt; limit of 64 KiB really fast. Code minification barely helps, and neither does resorting to ugly code. So I cut a corner I don’t typically cut.&lt;/p&gt;
 &lt;p&gt;Undefined Behavior.&lt;/p&gt;
 &lt;p&gt;These two words make a seasoned programmer shudder. But sidestepping UB increases code size so much the library can hardly be used on CF. So I took a gamble. I meticulously scanned every instance of UB I used intentionally and made sure the compiler had absolutely no reason to miscompile it. I wrote excessive tests and run them on CI on all architecture and OS combinations I could think of. I released the library without so much as a flaw. It worked like clockwork.&lt;/p&gt;
 &lt;p&gt;And then, 3 months later, I updated README, and all hell broke loose.&lt;/p&gt;
