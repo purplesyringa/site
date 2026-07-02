@@ -1,18 +1,37 @@
+/* Old Safari doesn't support light-dark */
 html {
-	--color-scrollbar: light-dark(#dd75fa, #aa42c9);
-	--color-scrollbar-bg: light-dark(#d822f020, #ed64fa20);
-	--color-bg: light-dark(#ffffff, #120721);
-	--color-text: light-dark(#000000, #f2e8ff);
-	--color-accent: light-dark(#d60698, #ff75d7);
-	--color-header-bg: light-dark(#e06ded, #541f7a);
-	--color-nav-current: light-dark(#d822f0, #ffffff);
-	--color-nav-current-bg: light-dark(#e9ddeb, #120721);
-	--color-link: light-dark(#d822f0, #cd6ded);
-	--color-aside-bg: light-dark(#e9d9fa, #2e1c38);
-	--color-blockquote-bg: light-dark(#e9d9fa, #321d42);
-	--color-blockquote-border: light-dark(#e371f0, #7e198c);
-	--color-split-image-circle-bg: light-dark(#e06ded, #b542c2);
-	--color-split-image-circle-text: light-dark(#ffffff, #f2e8ff);
+	--color-scrollbar: #dd75fa;
+	--color-scrollbar-bg: #d822f020;
+	--color-bg: #ffffff;
+	--color-text: #000000;
+	--color-accent: #d60698;
+	--color-header-bg: #e06ded;
+	--color-nav-current: #d822f0;
+	--color-nav-current-bg: #e9ddeb;
+	--color-link: #d822f0;
+	--color-aside-bg: #e9d9fa;
+	--color-blockquote-bg: #e9d9fa;
+	--color-blockquote-border: #e371f0;
+	--color-split-image-circle-bg: #e06ded;
+	--color-split-image-circle-text: #ffffff;
+}
+@media all and (prefers-color-scheme: dark) {
+	html {
+		--color-scrollbar: #aa42c9;
+		--color-scrollbar-bg: #ed64fa20;
+		--color-bg: #120721;
+		--color-text: #f2e8ff;
+		--color-accent: #ff75d7;
+		--color-header-bg: #541f7a;
+		--color-nav-current: #ffffff;
+		--color-nav-current-bg: #120721;
+		--color-link: #cd6ded;
+		--color-aside-bg: #2e1c38;
+		--color-blockquote-bg: #321d42;
+		--color-blockquote-border: #7e198c;
+		--color-split-image-circle-bg: #b542c2;
+		--color-split-image-circle-text: #f2e8ff;
+	}
 }
 
 .friends {
