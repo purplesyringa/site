@@ -51,10 +51,14 @@ const addFromDir = dir => {
 
 addFromDir(".");
 addFromDir("ru");
+addFromDir("guest");
 
 posts.sort((a, b) => b.parsedDate - a.parsedDate);
 
 let content = posts.map(post => {
+	const guest = post.upstream
+		? `<a class="discussion" href="${escapeHTML(post.upstream)}"><i class="nf nf-md-link" title="Guest post"></i> Guest post</a>`
+		: '';
 	const discussion = post.discussion.map(url => {
 		const space = (
 			url.startsWith("https://internals.rust-lang.org") ? "IRLO" :
@@ -74,6 +78,7 @@ let content = posts.map(post => {
 		<div class="post-entry">
 			<h2><a href="${escapeHTML(post.path)}/">${escapeHTML(post.title)}</a></h2>
 			<time>${escapeHTML(post.time)}</time>
+			${guest}
 			${discussion}
 			${translation}
 			${md.render(post.intro || "")}
@@ -109,7 +114,7 @@ fs.writeFileSync("feed.rss", `<?xml version="1.0" encoding="UTF-8" ?>
 				<title>${escapeHTML(post.title)}</title>
 				<link>${escapeHTML(`https://purplesyringa.moe/blog/${post.path}/`)}</link>
 				<description>${escapeHTML(md.render(post.intro || ""))}</description>
-				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+				<author>${escapeHTML(post.author || "me@purplesyringa.moe (Alisa Sireneva)")}</author>
 				${post.discussion.length > 0 ? `<comments>${escapeHTML(post.discussion[0])}</comments>` : ""}
 				<guid>${escapeHTML(`https://purplesyringa.moe/blog/${post.path}/`)}</guid>
 				<pubDate>${post.parsedDate.toUTCString()}</pubDate>

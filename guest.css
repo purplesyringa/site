@@ -1,0 +1,20 @@
+html {
+	--color-scrollbar: light-dark(#dd75fa, #aa42c9);
+	--color-scrollbar-bg: light-dark(#d822f020, #ed64fa20);
+	--color-bg: light-dark(#ffffff, #120721);
+	--color-text: light-dark(#000000, #f2e8ff);
+	--color-accent: light-dark(#d60698, #ff75d7);
+	--color-header-bg: light-dark(#e06ded, #541f7a);
+	--color-nav-current: light-dark(#d822f0, #ffffff);
+	--color-nav-current-bg: light-dark(#e9ddeb, #120721);
+	--color-link: light-dark(#d822f0, #cd6ded);
+	--color-aside-bg: light-dark(#e9d9fa, #2e1c38);
+	--color-blockquote-bg: light-dark(#e9d9fa, #321d42);
+	--color-blockquote-border: light-dark(#e371f0, #7e198c);
+	--color-split-image-circle-bg: light-dark(#e06ded, #b542c2);
+	--color-split-image-circle-text: light-dark(#ffffff, #f2e8ff);
+}
+
+.friends {
+	opacity: 0.6;
+}

@@ -7,6 +7,7 @@
 		<link rel="icon" href="{{ root }}/favicon.ico?v=2" />
 		<link rel="stylesheet" type="text/css" href="{{ root }}/all.css">
 		<link rel="stylesheet" type="text/css" href="{{ root }}/blog.css">
+		{{ styles }}
 		<link rel="stylesheet" type="text/css" href="{{ root }}/vendor/Temml-Local.css">
 		<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&family=Slabo+27px&display=swap" crossorigin="anonymous">
 		<link rel="stylesheet" type="text/css" href="{{ root }}/fonts/webfont.css">
@@ -30,7 +31,7 @@
 				<div class="media">
 					<a href="https://github.com/purplesyringa"><img src="{{ root }}/images/github-mark-white.svg" alt="GitHub"></a>
 				</div>
-				<h1><a href="/">purplesyringa</a></h1>
+				<h1><a href="/">purplesyringa{{ friends }}</a></h1>
 				<nav>
 					<a href="{{ root }}">about</a>
 					<a class="current" href="{{ root }}/blog/">blog</a>
@@ -43,6 +44,7 @@
 			<div class="viewport-container">
 				<h2>{{ title }}</h2>
 				<time>{{ time }}</time>
+				{{ guest }}
 				{{ discussion }}
 				{{ translation }}
 				{{ body }}

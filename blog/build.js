@@ -122,7 +122,9 @@ md.use(markdownitTexMath, {
 });
 
 let html = fs.readFileSync("_template.html", "utf-8");
+html = html.replace(/{{ styles }}/g, parsedYamlHeader.upstream ? '<link rel="stylesheet" type="text/css" href="{{ root }}/guest.css">' : '');
 html = html.replace(/{{ root }}/g, escapeHTML(path.relative(articleDirectory, process.cwd() + "/..")));
+html = html.replace(/{{ friends }}/g, parsedYamlHeader.upstream ? ' <span class="friends">and friends</span>' : '');
 html = html.replace(/{{ title }}/g, escapeHTML(parsedYamlHeader.title));
 html = html.replace(/{{ path }}/g, escapeHTML(relPath));
 html = html.replace(/{{ description }}/g, escapeHTML(stripHtml(md.render(parsedYamlHeader.intro || "")).result));
@@ -130,6 +132,12 @@ html = html.replace(/{{ time }}/g, escapeHTML(parsedYamlHeader.time));
 html = html.replace(/{{ locale }}/g, locale);
 
 const discussion = typeof parsedYamlHeader.discussion === "string" ? [parsedYamlHeader.discussion] : parsedYamlHeader.discussion || [];
+html = html.replace(
+	/{{ guest }}/g,
+	parsedYamlHeader.upstream
+		? `<a class="discussion" href="${escapeHTML(parsedYamlHeader.upstream)}"><i class="nf nf-md-link" title="Guest post"></i> Guest post</a>`
+		: ''
+);
 html = html.replace(
 	/{{ discussion }}/g,
 	discussion.map(url => {
