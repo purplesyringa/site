@@ -24,7 +24,7 @@ section h2:nth-child(n + 2) {
 math {
 	font-family: "Euler Math";
 	font-size: 1.1rem;
-	color: #8d00d9;
+	color: var(--color-accent);
 }
 eqn {
 	overflow-x: auto;
@@ -41,9 +41,9 @@ table {
 	border-collapse: collapse;
 }
 th, td {
-	background-color: #00000010;
+	background-color: light-dark(#00000010, #ffffff10);
 	padding: 0.25rem 0.5rem;
-	border: 0.25rem solid #ffffff;
+	border: 0.25rem solid var(--color-bg);
 }
 
 figure {
@@ -55,16 +55,16 @@ pre {
 	font-size: 0.85rem;
 	padding: 0.75rem;
 	overflow: auto;
-	background-color: #80004010;
+	background-color: light-dark(#80004010, #00000080);
 }
 blockquote pre {
 	margin-left: 0;
 	width: 100%;
-	background-color: #ffffff50;
+	background-color: light-dark(#ffffff50, #00000080);
 }
 pre code {
 	font-family: 'Roboto Mono', monospace;
-	color: #000000;
+	color: light-dark(#000000, #ffffff);
 }
 pre * {
 	-webkit-text-size-adjust: 100%; /* fix different font size in nested spans in mobile Safari */
@@ -103,7 +103,7 @@ pre * {
 	flex-direction: column;
 	align-items: center;
 	justify-content: flex-end;
-	background-image: linear-gradient(to bottom, transparent, #d0d0d0);
+	background-image: linear-gradient(to bottom, transparent, light-dark(#d0d0d0, #000000));
 	cursor: pointer;
 	font-size: 0;
 }
@@ -177,7 +177,7 @@ pre * {
 .split-image-slider {
 	margin-left: calc(-2px - var(--resizer-half-width));
 	width: 4px;
-	background-color: #ffffff;
+	background-color: var(--color-bg);
 	position: relative;
 	z-index: 1;
 	pointer-events: none;
@@ -189,9 +189,9 @@ pre * {
 	margin-top: -10px;
 	width: 20px;
 	height: 20px;
-	background-color: #f06ea4;
+	background-color: var(--color-split-image-circle-bg);
 	border-radius: 50%;
-	outline: 4px solid #ffffff;
+	outline: 4px solid var(--color-bg);
 	display: flex;
 	justify-content: center;
 }
@@ -199,7 +199,7 @@ pre * {
 	content: "";
 	width: 16px;
 	height: 100%;
-	background-color: #ffffff;
+	background-color: var(--color-split-image-circle-text);
 	mask: url(images/code-tags.svg) center/contain no-repeat;
 }
 .split-image-img {
@@ -216,8 +216,8 @@ pre * {
 }
 
 blockquote {
-	border-left: 0.375rem solid #ed79a9;
-	background-color: #f2befa;
+	border-left: 0.375rem solid var(--color-blockquote-border);
+	background-color: var(--color-blockquote-bg);
 	margin: 1rem 0;
 	padding: 0.5rem;
 }
@@ -239,7 +239,7 @@ aside {
 	margin-top: -0.5rem;
 	width: 15rem;
 	padding: 0.5rem;
-	background-color: #fce5ff;
+	background-color: var(--color-aside-bg);
 	z-index: 1;
 }
 aside > :first-child {
@@ -260,47 +260,14 @@ aside > :last-child {
 }
 
 @media all and (prefers-color-scheme: dark) {
-	math {
-		color: #cd91ed;
-	}
-	aside {
-		background-color: #361c39;
-	}
-	blockquote {
-		border-left-color: #9c2254;
-		background-color: #4e2554;
-	}
-	pre, blockquote pre {
-		background-color: #00000080;
-	}
-	th, td {
-		background-color: #ffffff10;
-		border-color: #160117;
-	}
-	pre code {
-		color: #ffffff;
-	}
 	.hljs-comment {
 		color: #7f8591 !important; /* Constrast */
-	}
-	.expansible-code > label {
-		background-image: linear-gradient(to bottom, transparent, #000000);
 	}
 	.only-light {
 		display: none;
 	}
 	.only-dark {
 		display: flex;
-	}
-	.split-image-slider {
-		background-color: #160117;
-	}
-	.split-image-circle {
-		background-color: #9641c0;
-		outline-color: #160117;
-	}
-	.split-image-circle::before {
-		color: #fee8ff;
 	}
 }
 
