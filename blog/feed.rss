@@ -7,10 +7,25 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Thu, 02 Jul 2026 19:05:04 GMT</lastBuildDate>
+		<lastBuildDate>Thu, 02 Jul 2026 20:37:48 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>Suffix BWT vs cyclic shift BWT, and fast computation</title>
+				<link>https://purplesyringa.moe/blog/./suffix-bwt-vs-cyclic-shift-bwt-and-fast-computation/</link>
+				<description>&lt;blockquote&gt;
+&lt;p&gt;Intended audience: data compression geeks.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;The &lt;a href=&quot;https://en.wikipedia.org/wiki/Burrows%E2%80%93Wheeler_transform&quot;&gt;Burrows-Wheeler transform&lt;/a&gt; takes a string as an input and rearranges its characters, grouping them by context. It is invertible with &lt;eq&gt;&lt;math&gt;&lt;mrow&gt;&lt;mi class=&quot;mathcal&quot;&gt;𝒪&lt;/mi&gt;&lt;mo form=&quot;prefix&quot; stretchy=&quot;false&quot;&gt;(&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo form=&quot;postfix&quot; stretchy=&quot;false&quot;&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/eq&gt; additional input, and together these properties give it a place in data compression and genome alignment.&lt;/p&gt;
+&lt;p&gt;What Wikipedia doesn’t tell you is that there are actually two variants of BWT, with subtly different performance characteristics and simplicity. These differences seem to be largely undocumented, so this post is me trying to make sense of it.&lt;/p&gt;
+</description>
+				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+				
+				<guid>https://purplesyringa.moe/blog/./suffix-bwt-vs-cyclic-shift-bwt-and-fast-computation/</guid>
+				<pubDate>Fri, 03 Jul 2026 00:00:00 GMT</pubDate>
+			</item>
 		
 			<item>
 				<title>Optimizing Lua string literals to save 400 bytes</title>
