@@ -7,10 +7,22 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Thu, 02 Jul 2026 14:17:29 GMT</lastBuildDate>
+		<lastBuildDate>Thu, 02 Jul 2026 15:15:43 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>Optimizing Lua string literals to save 400 bytes</title>
+				<link>https://purplesyringa.moe/blog/guest/optimizing-lua-string-literals-to-save-400-bytes/</link>
+				<description>&lt;p&gt;This is a guest post by &lt;a href=&quot;https://codeberg.org/sylfn/&quot;&gt;Yuki&lt;/a&gt; about some tricks we use for Lua code compression in &lt;a href=&quot;https://github.com/purplesyringa/computercraft-programs/&quot;&gt;our shared ComputerCraft pet project&lt;/a&gt;. I’ve written about &lt;a href=&quot;/blog/an-ode-to-bzip/&quot;&gt;how we adapted bzip2 for this purpose&lt;/a&gt; earlier; this story is an installment that takes place in the same context.&lt;/p&gt;
+&lt;p&gt;If you want to read more stuff from her, &lt;a href=&quot;https://codeberg.org/sylfn/weblog/raw/branch/main/atom.xml&quot;&gt;here’s an Atom feed&lt;/a&gt; and &lt;a href=&quot;https://codeberg.org/sylfn/weblog&quot;&gt;the blog&lt;/a&gt;.&lt;/p&gt;
+</description>
+				<author>sylfn@disroot.org (Yuki Sireneva)</author>
+				
+				<guid>https://purplesyringa.moe/blog/guest/optimizing-lua-string-literals-to-save-400-bytes/</guid>
+				<pubDate>Thu, 02 Jul 2026 00:00:00 GMT</pubDate>
+			</item>
 		
 			<item>
 				<title>This Wasm interpreter fits in a QR code</title>
