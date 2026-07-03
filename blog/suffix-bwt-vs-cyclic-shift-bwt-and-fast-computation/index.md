@@ -143,7 +143,7 @@ While suffix BWT is a little trickier and slower to decode, it's much faster to 
 
 So that's what most people do: import [libsais](https://github.com/IlyaGrebnov/libsais), construct the suffix array, drop the full suffix and prepend the empty suffix, and construct suffix BWT via `s[sa[i] - 1]`. Or call the `libsais_bwt` function that does the same thing.
 
-In many cases, that's perfectly fine. You can often append a `$` character that compares less than every other character, so that suffix BWT and cyclic shift BWT coincide. Or prepend a `^` character so that the full suffix ends up at index $0$ and you don't need to adjust `i`, which ends up doing the same thing.
+In many cases, that's perfectly fine. You can often prepend a `^` character that compares less than every other character, so that the full suffix ends up at index $0$ and you don't need to adjust `i`. Or append a `$` character, so that suffix BWT and cyclic shift BWT coincide up to the position of `$`, which ends up doing almost the same thing.
 
 
 ### Tricking SA-IS
