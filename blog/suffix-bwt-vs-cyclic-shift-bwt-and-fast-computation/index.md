@@ -150,7 +150,7 @@ In many cases, that's perfectly fine. You can often prepend a `^` character that
 
 But what if you do need cyclic shift BWT? Maybe your alphabet is full and implementing a real suffix BWT decoder is too expensive, or maybe your problem asks for it specifically. In this case, we can still use SA-IS with a few adjustments.
 
-The easiest way to implement wrap-around semantics is to double the string. Two suffixes of the string $s \Vert s$ starting at offsets $i, j < \lvert s \rvert$ compare exactly like the corresponding cyclic shifts of $s$. So you can double $s$, compute the suffix array, drop indices $\ge \lvert s \rvert$, and compute cyclic BWT and the primary index from that list.
+The easiest way to implement wrap-around semantics is to double the string. Two suffixes of the string $s \Vert s$ starting at offsets $i, j < \lvert s \rvert$ compare exactly like the corresponding cyclic shifts of $s$ (with an exception of equal cyclic shifts in periodic strings, which for BWT is irrelevant). So you can double $s$, compute the suffix array, drop indices $\ge \lvert s \rvert$, and compute cyclic BWT and the primary index from that list.
 
 If you don't want to pay double the price, there's another approach.
 
