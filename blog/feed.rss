@@ -7,14 +7,14 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Sat, 04 Jul 2026 23:17:57 GMT</lastBuildDate>
+		<lastBuildDate>Sat, 04 Jul 2026 21:14:35 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
 		
 			<item>
 				<title>Does technical blogging spark joy?</title>
-				<link>https://purplesyringa.moe/blog/./does-technical-blogging-spark-joy/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./does-technical-blogging-spark-joy/</link>
 				<description>&lt;p&gt;I blog because I want to share knowledge. That’s how I have fun. It feels rewarding to sit down and formulate your thoughts after spending a week researching a topic for a side project. Oftentimes, such topics are largely unexplored: with the basics being too obvious and other topics laid out clearly, the remains are bound to be unconventional.&lt;/p&gt;
 &lt;p&gt;To me, that’s a positive thing. It’s my chance to make progress in a stale and closed industry, not to mention that exploration is a lost art in the age of vibecoding.&lt;/p&gt;
 &lt;p&gt;I love weird and deeply technical blogs like &lt;a href=&quot;https://devblogs.microsoft.com/oldnewthing/&quot;&gt;The Old New Thing&lt;/a&gt;, &lt;a href=&quot;https://justine.lol&quot;&gt;jart’s&lt;/a&gt;, and &lt;a href=&quot;https://lemire.me/&quot;&gt;Lemire’s&lt;/a&gt;, and for a long while I had assumed that others would love mine the same way. Sure, I’m not as good at writing, but the ideas should shine through regardless.&lt;/p&gt;
@@ -27,7 +27,7 @@
 		
 			<item>
 				<title>Suffix BWT vs cyclic shift BWT, and fast computation</title>
-				<link>https://purplesyringa.moe/blog/./suffix-bwt-vs-cyclic-shift-bwt-and-fast-computation/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./suffix-bwt-vs-cyclic-shift-bwt-and-fast-computation/</link>
 				<description>&lt;blockquote&gt;
 &lt;p&gt;Intended audience: data compression geeks.&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -42,7 +42,7 @@
 		
 			<item>
 				<title>Optimizing Lua string literals to save 400 bytes</title>
-				<link>https://purplesyringa.moe/blog/guest/optimizing-lua-string-literals-to-save-400-bytes/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/guest/optimizing-lua-string-literals-to-save-400-bytes/</link>
 				<description>&lt;p&gt;This is a guest post by &lt;a href=&quot;https://codeberg.org/sylfn/&quot;&gt;Yuki&lt;/a&gt; about some tricks we use for Lua code compression in &lt;a href=&quot;https://github.com/purplesyringa/computercraft-programs/&quot;&gt;our shared ComputerCraft pet project&lt;/a&gt;. I’ve written about &lt;a href=&quot;/blog/an-ode-to-bzip/&quot;&gt;how we adapted bzip2 for this purpose&lt;/a&gt; earlier; this story is an installment that takes place in the same context.&lt;/p&gt;
 &lt;p&gt;If you want to read more stuff from her, &lt;a href=&quot;https://codeberg.org/sylfn/weblog/raw/branch/main/atom.xml&quot;&gt;here’s an Atom feed&lt;/a&gt; and &lt;a href=&quot;https://codeberg.org/sylfn/weblog&quot;&gt;the blog&lt;/a&gt;.&lt;/p&gt;
 </description>
@@ -54,7 +54,7 @@
 		
 			<item>
 				<title>This Wasm interpreter fits in a QR code</title>
-				<link>https://purplesyringa.moe/blog/./this-wasm-interpreter-fits-in-a-qr-code/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./this-wasm-interpreter-fits-in-a-qr-code/</link>
 				<description>&lt;p&gt;2945 bytes. Less than 0.006% of &lt;a href=&quot;https://wasmtime.dev/&quot;&gt;Wasmtime&lt;/a&gt;, smaller than a C “Hello, world!”.&lt;/p&gt;
 &lt;p&gt;Zero dependencies, no cheating: just a static x86-64 &lt;a href=&quot;https://en.wikipedia.org/wiki/Executable_and_Linkable_Format&quot;&gt;Linux executable&lt;/a&gt;. Scan the QR code above with &lt;code&gt;zbarimg --raw -Sbinary&lt;/code&gt; or another QR decoder that supports binary data, or &lt;a href=&quot;https://github.com/purplesyringa/autumn/raw/refs/heads/master/autumn&quot;&gt;directly download the program&lt;/a&gt; from &lt;a href=&quot;https://github.com/purplesyringa/autumn&quot;&gt;the GitHub repo&lt;/a&gt;, and you’re good to go.&lt;/p&gt;
 </description>
@@ -66,7 +66,7 @@
 		
 			<item>
 				<title>You might misunderstand arithmetic coding</title>
-				<link>https://purplesyringa.moe/blog/./you-might-misunderstand-arithmetic-coding/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./you-might-misunderstand-arithmetic-coding/</link>
 				<description>&lt;p&gt;This post assumes basic familiarity with &lt;a href=&quot;https://en.wikipedia.org/wiki/Arithmetic_coding&quot;&gt;arithmetic coding&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;I’ve written an arithmetic coder, like, three times in my life, so the mistake I want to highlight is likely amateurish. But since I didn’t have a clue that my understanding was incomplete, I figured I needed to write a post about it.&lt;/p&gt;
 </description>
@@ -78,7 +78,7 @@
 		
 			<item>
 				<title>Wasm is not quite a stack machine</title>
-				<link>https://purplesyringa.moe/blog/./wasm-is-not-quite-a-stack-machine/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./wasm-is-not-quite-a-stack-machine/</link>
 				<description>&lt;p&gt;&lt;em&gt;Everyone&lt;/em&gt; knows Wasm is a stack machine. Wikipedia says so, the official &lt;a href=&quot;https://github.com/WebAssembly/design/blob/376bcc4b9cba79280d79be023d71e30d0b00ba47/Semantics.md&quot;&gt;Wasm design specification&lt;/a&gt; says so, you get it. I thought so too.&lt;/p&gt;
 &lt;p&gt;That is, until I started writing Wasm code – not compiling for Wasm, but writing the instructions by hand. And I found out that there exists a major difference between Wasm and all other stack-based languages, that makes this claim misleading.&lt;/p&gt;
 </description>
@@ -90,7 +90,7 @@
 		
 			<item>
 				<title>Wait, if (flags &amp; O_SYNC) is wrong?</title>
-				<link>https://purplesyringa.moe/blog/./wait-if-flags-and-o_sync_is-wrong/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./wait-if-flags-and-o_sync_is-wrong/</link>
 				<description>&lt;p&gt;I needed to convert &lt;em&gt;file status flags&lt;/em&gt; between operating systems yesterday. They are the values you pass as the second argument to &lt;code&gt;open&lt;/code&gt; – &lt;code&gt;O_NONBLOCK&lt;/code&gt;, &lt;code&gt;O_NOATIME&lt;/code&gt;, &lt;code&gt;O_SYNC&lt;/code&gt;, &lt;code&gt;O_DSYNC&lt;/code&gt;, and so on:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;language-c&quot;&gt;&lt;span class=&quot;hljs-type&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;hljs-title function_&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(&lt;span class=&quot;hljs-type&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;hljs-type&quot;&gt;char&lt;/span&gt; *path, &lt;span class=&quot;hljs-type&quot;&gt;int&lt;/span&gt; flags, &lt;span class=&quot;hljs-comment&quot;&gt;/* mode_t mode */&lt;/span&gt; )&lt;/span&gt;;
 &lt;/code&gt;&lt;/pre&gt;
@@ -112,7 +112,7 @@
 		
 			<item>
 				<title>Programming used to be free</title>
-				<link>https://purplesyringa.moe/blog/./programming-used-to-be-free/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./programming-used-to-be-free/</link>
 				<description>&lt;p&gt;The appearance of &lt;a href=&quot;https://www.anthropic.com/glasswing&quot;&gt;Mythos&lt;/a&gt; – a private LLM allegedly capable of finding a multitude of &lt;a href=&quot;https://en.wikipedia.org/wiki/Zero-day_vulnerability&quot;&gt;0-days&lt;/a&gt; – has made people &lt;a href=&quot;https://tanyaverma.sh/2026/04/10/closing-of-the-frontier.html&quot;&gt;concerned about being denied powerful tools&lt;/a&gt;. This seems to be a turning point in the mainstream discourse, and it motivated me to complete the think piece I’ve been meaning to write for a while.&lt;/p&gt;
 &lt;p&gt;I have a related, intimate worry regarding LLMs. Just so that we’re clear, it’s not a common critique from the anti-AI crowd, like ethics or quality. While I share some reservations, frankly it’s not what gives me the most angst. My intent is to make this post thought-provoking even if your beliefs on this topic entirely differ from mine.&lt;/p&gt;
 </description>
@@ -124,7 +124,7 @@
 		
 			<item>
 				<title>No one owes you supply-chain security</title>
-				<link>https://purplesyringa.moe/blog/./no-one-owes-you-supply-chain-security/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./no-one-owes-you-supply-chain-security/</link>
 				<description>&lt;p&gt;In case you’re unaware, I’m not a developer. I’m actually an autistic catgirl annoyed by suboptimal use of computing power, and fixing that happens to involve programming. Crucially, it also includes discussing foundational technology with people behind the scenes, and apparently that makes me more aware of social aspects of this sphere.&lt;/p&gt;
 &lt;p&gt;So, I have &lt;em&gt;opinions&lt;/em&gt; about &lt;a href=&quot;https://kerkour.com/rust-supply-chain-nightmare&quot;&gt;criticism of crates.io for supply-chain attacks&lt;/a&gt;. After a dozen similar articles, I have some select words to voice about why it’s off the mark.&lt;/p&gt;
 </description>
@@ -136,7 +136,7 @@
 		
 			<item>
 				<title>Simplest hash functions</title>
-				<link>https://purplesyringa.moe/blog/./simplest-hash-functions/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./simplest-hash-functions/</link>
 				<description>&lt;p&gt;What came to your mind when you read “hash functions” in the title?&lt;/p&gt;
 &lt;p&gt;If you’re pragmatic, you probably remembered &lt;a href=&quot;https://en.wikipedia.org/wiki/SHA-2&quot;&gt;SHA-256&lt;/a&gt; or &lt;a href=&quot;https://en.wikipedia.org/wiki/MD5&quot;&gt;MD5&lt;/a&gt;. Those are cryptographic hash functions, and they work fast and well for arbitrary inputs, even if they are supplied by malicious actors. Or at least they’re designed to.&lt;/p&gt;
 &lt;p&gt;That’s the exact opposite of what I want to talk about. I want to talk about the cheapest, stupidest, most ridiculous hash functions you can get away with.&lt;/p&gt;
@@ -149,7 +149,7 @@
 		
 			<item>
 				<title>There is absolutely nothing wrong with Web</title>
-				<link>https://purplesyringa.moe/blog/./there-is-absolutely-nothing-wrong-with-web/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./there-is-absolutely-nothing-wrong-with-web/</link>
 				<description>&lt;p&gt;This is a rant about how broken everything Web is based on is. You know, the usual. No offence intended towards framework developers, I’m glad this technology exists, but I’m sure you know this feeling. It gets too much sometimes.&lt;/p&gt;
 &lt;p&gt;I’ve been meaning to improve this blog’s technology for a while. It’s held together by two &lt;a href=&quot;https://github.com/purplesyringa/site/blob/9015c0d0d6087bf1f3e851b040970cee7da29518/blog/build.js&quot;&gt;hacky scripts&lt;/a&gt; as opposed to a typical template engine, and that’s very limiting.&lt;/p&gt;
 </description>
@@ -161,7 +161,7 @@
 		
 			<item>
 				<title>Optimization lessons from a Minecraft structure locator</title>
-				<link>https://purplesyringa.moe/blog/./optimization-lessons-from-a-minecraft-structure-locator/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./optimization-lessons-from-a-minecraft-structure-locator/</link>
 				<description>&lt;p&gt;Minecraft generates a bedrock floor at the bottom of the world from a random noise. Since it’s random, it can contain naturally generated unescapable regions – prisons. While small prisons are common, larger ones are hard to find – a Minecraft world is about &lt;eq&gt;&lt;math&gt;&lt;mn&gt;60&lt;/mn&gt;&lt;/math&gt;&lt;/eq&gt; million by &lt;eq&gt;&lt;math&gt;&lt;mn&gt;60&lt;/mn&gt;&lt;/math&gt;&lt;/eq&gt; million blocks, so locating these boxes is computationally difficult. So when I saw &lt;a href=&quot;https://www.youtube.com/watch?v=m85D_RKJWUQ&quot;&gt;Bamboo Bot’s video&lt;/a&gt; on this concept covering a simple tool written in Java, I knew I had to give a try myself.&lt;/p&gt;
 &lt;p&gt;I find this problem a good exercise for performance optimization because it has a limited scope, but also covers lots of topics. And it’s quite a head-scratcher due to its large scale! In this post, I’ll cover various surprising approaches and tricks I used, and hopefully you’ll be able to apply them to your projects.&lt;/p&gt;
 </description>
@@ -173,7 +173,7 @@
 		
 			<item>
 				<title>Reinventing aliasing XOR mutability and lifetimes</title>
-				<link>https://purplesyringa.moe/blog/./reinventing-aliasing-xor-mutability-and-lifetimes/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./reinventing-aliasing-xor-mutability-and-lifetimes/</link>
 				<description>&lt;p&gt;Two years ago, I was pondering ways to enhance borrowck with proof-based analysis. At the time, I was only aware of formal verification tools for &lt;em&gt;functional&lt;/em&gt; languages, while Rust is impure. For the purposes of borrow checking, though, we can almost pretend that impurity doesn’t exist, with the notable exception of mutable references.&lt;/p&gt;
 &lt;p&gt;Can mutable references be simulated in a functional language? Representing memory as a byte array doesn’t compose: while call order is usually irrelevant in functional code, adding address-indexed memory to the mix requires proving non-aliasing even in trivial cases. And using path-indexed memory, like &lt;code&gt;root.var.field[index]&lt;/code&gt;, doesn’t work for stack locals and objects with complex ownership.&lt;/p&gt;
 &lt;p&gt;I couldn’t find a fix and dropped the topic. Until a few days ago, when I needed to implement mutable references in functional code for a pet project and realized just how instrumental aliasing XOR mutability and lifetimes are in achieving this.&lt;/p&gt;
@@ -186,7 +186,7 @@
 		
 			<item>
 				<title>An ode to bzip</title>
-				<link>https://purplesyringa.moe/blog/./an-ode-to-bzip/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./an-ode-to-bzip/</link>
 				<description>&lt;p&gt;The story goes like this. &lt;a href=&quot;https://tweaked.cc&quot;&gt;ComputerCraft&lt;/a&gt; is a mod that adds programming to Minecraft. You write Lua code that gets executed by &lt;a href=&quot;https://github.com/cc-tweaked/Cobalt&quot;&gt;a bespoke interpreter&lt;/a&gt; with access to world APIs, and now you’re writing code instead of having fun. Computers have limited disk space, and my &lt;a href=&quot;https://github.com/purplesyringa/computercraft-programs/&quot;&gt;&lt;code&gt;/nix&lt;/code&gt; folder&lt;/a&gt; is growing out of control, so I need to compress code.&lt;/p&gt;
 &lt;p&gt;The laziest option would be to use &lt;a href=&quot;https://github.com/SafeteeWoW/LibDeflate/&quot;&gt;LibDeflate&lt;/a&gt;, but its decoder is larger than both the gains from compression and my personal boundary for copying code. So the question becomes: what’s the shortest, simplest, most ratio-efficient compression algorithm?&lt;/p&gt;
 &lt;p&gt;I initially thought this was a complex question full of tradeoffs, but it turns out it’s very clear-cut. My answer is &lt;code&gt;bzip&lt;/code&gt;, even though this algorithm &lt;a href=&quot;https://changelog.complete.org/archives/910-how-to-think-about-compression&quot;&gt;has been critiqued&lt;/a&gt; &lt;a href=&quot;https://news.ycombinator.com/item?id=10721338&quot;&gt;multiple times&lt;/a&gt; and has fallen into obscurity since xz and zstd became popular.&lt;/p&gt;
@@ -199,7 +199,7 @@
 		
 			<item>
 				<title>Faster practical modular inversion</title>
-				<link>https://purplesyringa.moe/blog/./faster-practical-modular-inversion/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./faster-practical-modular-inversion/</link>
 				<description>&lt;p&gt;Last year, &lt;a href=&quot;https://lemire.me/blog/2024/04/13/greatest-common-divisor-the-extended-euclidean-algorithm-and-speed/&quot;&gt;Lemire wrote&lt;/a&gt; about an optimized variation of &lt;a href=&quot;https://en.wikipedia.org/wiki/Euclidean_algorithm&quot;&gt;the Euclidean algorithm&lt;/a&gt; for computing &lt;a href=&quot;https://en.wikipedia.org/wiki/Greatest_common_divisor&quot;&gt;the greatest common divisor&lt;/a&gt; of two numbers, called &lt;em&gt;binary Euclidean algorithm&lt;/em&gt; or &lt;em&gt;Stein’s algorithm&lt;/em&gt;. It’s a best-of-class implementation, though it’s currently only used by libc++.&lt;/p&gt;
 &lt;p&gt;The post also briefly mentions &lt;a href=&quot;https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm&quot;&gt;the extended Euclidean algorithm&lt;/a&gt;, a related algorithm most often used to compute the &lt;a href=&quot;https://en.wikipedia.org/wiki/Modular_multiplicative_inverse&quot;&gt;modular multiplicative inverse&lt;/a&gt; (given a remainder &lt;eq&gt;&lt;math&gt;&lt;mi&gt;a&lt;/mi&gt;&lt;/math&gt;&lt;/eq&gt; and a modulus &lt;eq&gt;&lt;math&gt;&lt;mi&gt;m&lt;/mi&gt;&lt;/math&gt;&lt;/eq&gt;, find &lt;eq&gt;&lt;math&gt;&lt;mi&gt;x&lt;/mi&gt;&lt;/math&gt;&lt;/eq&gt; such that &lt;eq&gt;&lt;math&gt;&lt;mrow&gt;&lt;mi&gt;a&lt;/mi&gt;&lt;mo&gt;⋅&lt;/mo&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mi&gt;x&lt;/mi&gt;&lt;mo lspace=&quot;0.2222em&quot; rspace=&quot;0.2222em&quot;&gt;mod&lt;/mo&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mi&gt;m&lt;/mi&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/eq&gt;):&lt;/p&gt;
 &lt;blockquote&gt;
@@ -218,7 +218,7 @@
 		
 			<item>
 				<title>Rust&#39;s v0 mangling scheme in a nutshell</title>
-				<link>https://purplesyringa.moe/blog/./rusts-v0-mangling-scheme-in-a-nutshell/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./rusts-v0-mangling-scheme-in-a-nutshell/</link>
 				<description>&lt;p&gt;Functions in binary files need to have unique names, so Rust needs to decide what to call its functions and &lt;code&gt;static&lt;/code&gt;s. This format needs to be standardized so that debuggers and profilers can recover the full names (e.g. &lt;code&gt;alloc::vec::Vec&lt;/code&gt; instead of just &lt;code&gt;Vec&lt;/code&gt;).&lt;/p&gt;
 &lt;p&gt;About a month ago, &lt;a href=&quot;https://blog.rust-lang.org/2025/11/20/switching-to-v0-mangling-on-nightly/&quot;&gt;Rust switched to symbol mangling v0 on nightly&lt;/a&gt;. The linked announcement describes some benefits of the new scheme compared to the previous ad-hoc hack:&lt;/p&gt;
 &lt;ul&gt;
@@ -236,7 +236,7 @@
 		
 			<item>
 				<title>Faster comparison modulo α-equivalence</title>
-				<link>https://purplesyringa.moe/blog/./faster-comparison-modulo-alpha-equivalence/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./faster-comparison-modulo-alpha-equivalence/</link>
 				<description>&lt;p&gt;This article is a technical counterpart of my previous post &lt;a href=&quot;/blog/finding-duplicated-code-with-tools-from-your-cs-course/&quot;&gt;Finding duplicated code with tools from your CS course&lt;/a&gt;. It is deliberately written in a terse manner, and I’m not going to hold your hand. Consider reading the previous post first and coming back here later.&lt;/p&gt;
 </description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
@@ -247,7 +247,7 @@
 		
 			<item>
 				<title>A look at Rust from 2012</title>
-				<link>https://purplesyringa.moe/blog/./a-look-at-rust-from-2012/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./a-look-at-rust-from-2012/</link>
 				<description>&lt;p&gt;Recently I was scrolling through &lt;a href=&quot;https://brson.github.io/rust-qdb/&quot;&gt;brson’s Rust quote database&lt;/a&gt; and stumbled upon a link to the &lt;a href=&quot;https://web.archive.org/web/20130118053116/http://static.rust-lang.org/doc/tutorial.html&quot;&gt;official Rust tutorial&lt;/a&gt; from the very beginning of 2013. It says Rust 0.6 in the corner, but it lists many things that were removed in 0.6, so it’s likely closer to 0.5.&lt;/p&gt;
 &lt;p&gt;I heard tales of old Rust before, but not of how the language felt to programmers. So I thought it’d be cool to give a (relatively) quick summary of Rust as presented in the tutorial and yap a bit about how far we’ve come since then.&lt;/p&gt;
 </description>
@@ -259,7 +259,7 @@
 		
 			<item>
 				<title>ntoh*/hton* is a bad API</title>
-				<link>https://purplesyringa.moe/blog/./ntoh-hton-is-a-bad-api/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./ntoh-hton-is-a-bad-api/</link>
 				<description>&lt;p&gt;Say you want to send a list of consumer records to another microservice over network via JSON. There are three concepts at play in this process:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;
@@ -281,7 +281,7 @@
 		
 			<item>
 				<title>Finding duplicated code with tools from your CS course</title>
-				<link>https://purplesyringa.moe/blog/./finding-duplicated-code-with-tools-from-your-cs-course/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./finding-duplicated-code-with-tools-from-your-cs-course/</link>
 				<description>&lt;p&gt;Suppose that you’re writing a static analyzer and you want to write a diagnostic for &lt;code&gt;match&lt;/code&gt; arms with equal bodies:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;language-rust&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;match&lt;/span&gt; number {
     &lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt; =&amp;gt; { &lt;span class=&quot;hljs-comment&quot;&gt;// &amp;lt;--&lt;/span&gt;
@@ -306,7 +306,7 @@
 		
 			<item>
 				<title>JVM exceptions are weird: a decompiler perspective</title>
-				<link>https://purplesyringa.moe/blog/./jvm-exceptions-are-weird-a-decompiler-perspective/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./jvm-exceptions-are-weird-a-decompiler-perspective/</link>
 				<description>&lt;p&gt;Some time ago, I played around with decompiling Java class files in a more efficient manner than traditional solutions like &lt;a href=&quot;https://github.com/Vineflower/vineflower&quot;&gt;Vineflower&lt;/a&gt; allow. Eventually, I wrote &lt;a href=&quot;/blog/recovering-control-flow-structures-without-cfgs/&quot;&gt;an article&lt;/a&gt; on my approach to decompiling control flow, which was a great performance boost for my prototype.&lt;/p&gt;
 &lt;p&gt;At the time, I believed that this method can be straightforwardly extended to handling exceptional control flow, i.e. decompiling &lt;code&gt;try&lt;/code&gt;…&lt;code&gt;catch&lt;/code&gt; blocks. In retrospect, I should’ve known it wouldn’t be so easy. It turns out that there are many edge cases, ranging from strange &lt;code&gt;javac&lt;/code&gt; behavior to consequences of the JVM design and the class file format, that significantly complicate this. In this post, I’ll cover these details, why simple solutions don’t work, and what approach I’ve eventually settled on.&lt;/p&gt;
 </description>
@@ -318,7 +318,7 @@
 		
 			<item>
 				<title>The expression problem and Rust</title>
-				<link>https://purplesyringa.moe/blog/./the-expression-problem-and-rust/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./the-expression-problem-and-rust/</link>
 				<description>&lt;p&gt;A few days ago, I stumbled upon &lt;a href=&quot;https://news.ycombinator.com/item?id=45155877&quot;&gt;a Hacker News discussion&lt;/a&gt; about the expression problem – a conundrum that occasionally arises in software design. Some of the commenters noted that Rust completely avoids this problem thanks to trait objects, and initially I agreed with them, but I’m now realizing it’s not at all as straightforward as it looks.&lt;/p&gt;
 &lt;p&gt;The goal of this post is to explain what the expression problem is, how Rust seemingly avoids it, why this solution doesn’t actually work, and what a Rusty solution might look like.&lt;/p&gt;
 </description>
@@ -330,7 +330,7 @@
 		
 			<item>
 				<title>Fenwick layout for interval trees</title>
-				<link>https://purplesyringa.moe/blog/./fenwick-layout-for-interval-trees/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./fenwick-layout-for-interval-trees/</link>
 				<description>&lt;p&gt;Fenwick trees and interval trees are well-known data structures in computer science. Interval trees in particular are commonly used in bioinformatics and computational geometry, and Fenwick trees are useful for keeping statistics.&lt;/p&gt;
 &lt;p&gt;This post describes how the two can be merged to obtain a worst-case faster implementation of an interval tree. This approach is probably not very useful in these areas due to their specific requirements, but it’s still a well-rounded general-purpose implementation, and it’s so neat and short I can’t help but share it.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; if you’re familiar with the topics: You can index the nodes of an interval tree by their unique center and use fast Fenwick-like navigation over the tree. A sample implementation is available &lt;a href=&quot;https://github.com/purplesyringa/brickingot/blob/baa3cab1e9686e7209a291a58f90f1810cbbdce0/src/interval_tree.rs&quot;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;
@@ -344,7 +344,7 @@
 		
 			<item>
 				<title>If I hear &quot;design pattern&quot; one more time, I&#39;ll go mad</title>
-				<link>https://purplesyringa.moe/blog/./if-i-hear-design-pattern-one-more-time-ill-go-mad/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./if-i-hear-design-pattern-one-more-time-ill-go-mad/</link>
 				<description>&lt;p&gt;Here, read the intro of the Wikipedia page for &lt;a href=&quot;https://en.wikipedia.org/wiki/Command_pattern&quot;&gt;Command pattern&lt;/a&gt; with me:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;In object-oriented programming, the command pattern is a behavioral design pattern in which an object is used to encapsulate all information needed to perform an action or trigger an event at a later time.&lt;/p&gt;
@@ -367,7 +367,7 @@
 		
 			<item>
 				<title>&quot;AI discourse&quot; is a joke</title>
-				<link>https://purplesyringa.moe/blog/./ai-discourse-is-a-joke/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./ai-discourse-is-a-joke/</link>
 				<description>&lt;p&gt;In contemporary “AI” discourse, people often make a point that LLM output cannot be trusted, since it contains hallucinations, often doesn’t handle edge cases properly, causes vulnerabilities, and so on. This is seen as an argument to never use LLM-generated code in production. Others argue that the benefits AI grants them are worth the risk.&lt;/p&gt;
 &lt;p&gt;These groups are talking past each other. The problem was never about AI, it’s only the catalyst. To discuss what problems AI causes in software development is to completely miss the point, since those same arguments have been milked to death even before LLMs were a thing.&lt;/p&gt;
 </description>
@@ -379,7 +379,7 @@
 		
 			<item>
 				<title>Hidden complexity in software development</title>
-				<link>https://purplesyringa.moe/blog/./hidden-complexity-in-software-development/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./hidden-complexity-in-software-development/</link>
 				<description>&lt;p&gt;This is a tech phenomenon that I keep getting blindsided by no matter how much I try to anticipate it.&lt;/p&gt;
 &lt;p&gt;Physical work &lt;em&gt;feels&lt;/em&gt; difficult. You can look at someone and realize you don’t have nearly as much stamina, and even if you did, it still &lt;em&gt;feels&lt;/em&gt; demanding.&lt;/p&gt;
 &lt;p&gt;Research &lt;em&gt;feels&lt;/em&gt; difficult. You’re tasked with thinking about something no one else has considered yet. That rarely happens even outside of science – try to tell a unique joke.&lt;/p&gt;
@@ -397,7 +397,7 @@
 		
 			<item>
 				<title>Splitting independent variables without SSA</title>
-				<link>https://purplesyringa.moe/blog/./splitting-independent-variables-without-ssa/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./splitting-independent-variables-without-ssa/</link>
 				<description>&lt;p&gt;I’m making progress on the Java decompiler I’ve mentioned &lt;a href=&quot;/blog/recovering-control-flow-structures-without-cfgs/&quot;&gt;in a previous post&lt;/a&gt;, and I want to share the next couple of tricks I’m using to speed it up.&lt;/p&gt;
 &lt;p&gt;Java bytecode is a stack-based language, and so data flow is a bit cursed, especially when the control flow is complicated. I need to analyze data flow globally for expression inlining and some other stuff. &lt;a href=&quot;https://en.wikipedia.org/wiki/Static_single-assignment_form&quot;&gt;Single-static assignment&lt;/a&gt; produces basically everything I need as a byproduct… but it’s not very fast.&lt;/p&gt;
 &lt;p&gt;For one thing, it typically mutates the IR instead of returning data separately, and the resulting IR has imperative code mixed with functional code, which is a little unpleasant to work with. SSA has &lt;a href=&quot;https://bernsteinbear.com/blog/ssa/&quot;&gt;multiple implementations&lt;/a&gt; with very different performance characteristics and conditions, and each of them forces me to make a tradeoff I’m not positive about.&lt;/p&gt;
@@ -410,7 +410,7 @@
 		
 			<item>
 				<title>Fast limited-range conversion between ints and floats</title>
-				<link>https://purplesyringa.moe/blog/./fast-limited-range-conversion-between-ints-and-floats/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./fast-limited-range-conversion-between-ints-and-floats/</link>
 				<description>&lt;p&gt;This post is about a popular but niche technique I can never find a succinct reference for. I didn’t invent it, I just need a page I can link when giving optimization advice.&lt;/p&gt;
 &lt;p&gt;Integer &lt;eq&gt;&lt;math&gt;&lt;mo stretchy=&quot;false&quot; lspace=&quot;0em&quot; rspace=&quot;0em&quot;&gt;↔&lt;/mo&gt;&lt;/math&gt;&lt;/eq&gt; float casts that utilize specialized processor instructions, i.e. those that compilers use by default, typically have worse throughput and higher latency than alternatives based on applying bit tricks to the IEEE-754 format. (Please benchmark them anyway, I’ve seen them decrease performance occasionally.) Unfortunately, these bit tricks only work over a reduced range, e.g. numbers up to &lt;eq&gt;&lt;math&gt;&lt;msup&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mn&gt;23&lt;/mn&gt;&lt;/msup&gt;&lt;/math&gt;&lt;/eq&gt; or &lt;eq&gt;&lt;math&gt;&lt;msup&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mn&gt;52&lt;/mn&gt;&lt;/msup&gt;&lt;/math&gt;&lt;/eq&gt; as opposed to the full &lt;eq&gt;&lt;math&gt;&lt;msup&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mn&gt;32&lt;/mn&gt;&lt;/msup&gt;&lt;/math&gt;&lt;/eq&gt; or &lt;eq&gt;&lt;math&gt;&lt;msup&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mn&gt;64&lt;/mn&gt;&lt;/msup&gt;&lt;/math&gt;&lt;/eq&gt; range. Still, they can be very useful in specialized tasks.&lt;/p&gt;
 </description>
@@ -422,7 +422,7 @@
 		
 			<item>
 				<title>Recovering control flow structures without CFGs</title>
-				<link>https://purplesyringa.moe/blog/./recovering-control-flow-structures-without-cfgs/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./recovering-control-flow-structures-without-cfgs/</link>
 				<description>&lt;p&gt;I’m working on a Java decompiler because I’m not satisfied with the performance of other solutions. I’ve always heard that decompiling JVM bytecode is a solved problem, but I’ve concluded that the decompilation methods used by CFR and Vineflower are hacky, inefficient, and sometimes don’t even work. The existing solutions are haphazard and inadequate compared to alternative approaches.&lt;/p&gt;
 &lt;p&gt;Specifically, I have beef with the control flow extraction strategies employed by most decompilers. I haven’t tackled decompilation &lt;em&gt;as a whole&lt;/em&gt; yet, but I’ve found an approach to control flow recovery that works in isolation, is quite modular, and addresses common frustrations. I don’t claim to be the first person to think of this method, but I haven’t seen it mentioned anywhere, so this post describes it hoping that it’s useful to someone else.&lt;/p&gt;
 </description>
@@ -434,7 +434,7 @@
 		
 			<item>
 				<title>Why performance optimization is hard work</title>
-				<link>https://purplesyringa.moe/blog/./why-performance-optimization-is-hard-work/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./why-performance-optimization-is-hard-work/</link>
 				<description>&lt;p&gt;I’m not talking about skill, knowledge, or convincing a world focused on radical acceleration that optimization is necessary. Performance optimization is hard because it’s fundamentally a brute-force task, and there’s nothing you can do about it.&lt;/p&gt;
 &lt;p&gt;This post is a bit of a rant on my frustrations with code optimization. I’ll also try to give actionable advice, which I hope enchants your experience.&lt;/p&gt;
 </description>
@@ -446,7 +446,7 @@
 		
 			<item>
 				<title>Falsehoods programmers believe about null pointers</title>
-				<link>https://purplesyringa.moe/blog/./falsehoods-programmers-believe-about-null-pointers/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./falsehoods-programmers-believe-about-null-pointers/</link>
 				<description>&lt;p&gt;Null pointers look simple on the surface, and that’s why they’re so dangerous. As compiler optimizations, intuitive but incorrect simplifications, and platform-specific quirks have piled on, the odds of making a wrong assumption have increased, leading to the proliferation of bugs and vulnerabilities.&lt;/p&gt;
 &lt;p&gt;This article explores common misconceptions about null pointers held by many programmers, starting with simple fallacies and working our way up to the weirdest cases. Some of them will be news only to beginners, while others may lead experts down the path of meticulous fact-checking. Without further ado, let’s dive in.&lt;/p&gt;
 </description>
@@ -458,7 +458,7 @@
 		
 			<item>
 				<title>The RAM myth</title>
-				<link>https://purplesyringa.moe/blog/./the-ram-myth/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./the-ram-myth/</link>
 				<description>&lt;p&gt;The RAM myth is a belief that modern computer memory resembles perfect random-access memory. Cache is seen as an optimization for small data: if it fits in L2, it’s going to be processed faster; if it doesn’t, there’s nothing we can do.&lt;/p&gt;
 &lt;p&gt;Most likely, you believe that code like this is the fastest way to shard data (I’m using Python as pseudocode; pretend I used your favorite low-level language):&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;language-python&quot;&gt;groups = [[] &lt;span class=&quot;hljs-keyword&quot;&gt;for&lt;/span&gt; _ &lt;span class=&quot;hljs-keyword&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;hljs-built_in&quot;&gt;range&lt;/span&gt;(n_groups)]
@@ -476,7 +476,7 @@
 		
 			<item>
 				<title>Thoughts on Rust hashing</title>
-				<link>https://purplesyringa.moe/blog/./thoughts-on-rust-hashing/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./thoughts-on-rust-hashing/</link>
 				<description>&lt;p&gt;In languages like Python, Java, or C++, values are hashed by calling a “hash me” method on them, implemented by the type author. This fixed-hash size is then immediately used by the hash table or what have you. This design suffers from some obvious problems, like:&lt;/p&gt;
 &lt;p&gt;How do you hash an integer? If you use a no-op hasher (booo), DoS attacks on hash tables are inevitable. If you hash it thoroughly, consumers that only cache hashes to optimize equality checks lose out of performance.&lt;/p&gt;
 </description>
@@ -488,7 +488,7 @@
 		
 			<item>
 				<title>Any Python program fits in 24 characters*</title>
-				<link>https://purplesyringa.moe/blog/./any-python-program-fits-in-24-characters/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./any-python-program-fits-in-24-characters/</link>
 				<description>&lt;p&gt;&lt;em&gt;* If you don’t take whitespace into account.&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;My friend challenged me to find the shortest solution to a certain Leetcode-style problem in Python. They were generous enough to let me use whitespace for free, so that the code stays readable. So that’s exactly what we’ll abuse to encode &lt;em&gt;any&lt;/em&gt; Python program in &lt;eq&gt;&lt;math&gt;&lt;mn&gt;24&lt;/mn&gt;&lt;/math&gt;&lt;/eq&gt; bytes, ignoring whitespace.&lt;/p&gt;
 </description>
@@ -500,7 +500,7 @@
 		
 			<item>
 				<title>The Rust Trademark Policy is still harmful</title>
-				<link>https://purplesyringa.moe/blog/./the-rust-trademark-policy-is-still-harmful/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./the-rust-trademark-policy-is-still-harmful/</link>
 				<description>&lt;p&gt;Four days ago, the Rust Foundation &lt;a href=&quot;https://blog.rust-lang.org/2024/11/06/trademark-update.html&quot;&gt;released&lt;/a&gt; a new &lt;a href=&quot;https://drive.google.com/file/d/1hjTx11Fb-4W7RQLmp3R8BLDACc7zxIpG/view&quot;&gt;draft&lt;/a&gt; of the Rust Language Trademark Policy. The previous draft caused division within the community several years ago, prompting its retraction with the aim of creating a new, milder version.&lt;/p&gt;
 &lt;p&gt;Well, that failed. While certain issues were addressed (thank you, we appreciate it!), the new version remains excessively restrictive and, in my opinion, will harm both the Rust community as a whole &lt;em&gt;and&lt;/em&gt; compiler and crate developers. While I expect the stricter rules to not be enforced in practice, I don’t want to constantly feel like I’m under threat while contributing to the Rust ecosystem, and this is exactly what it would feel like if this draft is finalized.&lt;/p&gt;
 &lt;p&gt;Below are some of my core objections to the draft.&lt;/p&gt;
@@ -513,7 +513,7 @@
 		
 			<item>
 				<title>Bringing faster exceptions to Rust</title>
-				<link>https://purplesyringa.moe/blog/./bringing-faster-exceptions-to-rust/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./bringing-faster-exceptions-to-rust/</link>
 				<description>&lt;p&gt;Three months ago, I wrote about why &lt;a href=&quot;/blog/you-might-want-to-use-panics-for-error-handling/&quot;&gt;you might want to use panics for error handling&lt;/a&gt;. Even though it’s a catchy title, panics are hardly suited for this goal, even if you try to hack around with macros and libraries. The real star is &lt;em&gt;the unwinding mechanism&lt;/em&gt;, which powers panics. This post is the first in a series exploring what unwinding is, how to speed it up, and how it can benefit Rust and C++ programmers.&lt;/p&gt;
 </description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
@@ -524,7 +524,7 @@
 		
 			<item>
 				<title>We built the best &quot;Bad Apple!!&quot; in Minecraft</title>
-				<link>https://purplesyringa.moe/blog/./we-built-the-best-bad-apple-in-minecraft/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./we-built-the-best-bad-apple-in-minecraft/</link>
 				<description>&lt;p&gt;Demoscene is the art of pushing computers to perform tasks they weren’t designed to handle. One recurring theme in demoscene is the shadow-art animation “Bad Apple!!”. We’ve played it on the Commodore 64, &lt;a href=&quot;https://en.wikipedia.org/wiki/Vectrex&quot;&gt;Vectrex&lt;/a&gt; (a unique game console utilizing only vector graphics), &lt;a href=&quot;https://www.youtube.com/watch?v=SDvk3aL78fI&quot;&gt;Impulse Tracker&lt;/a&gt;, and even &lt;a href=&quot;https://tasvideos.org/6012M&quot;&gt;exploited Super Mario Bros.&lt;/a&gt; to play it.&lt;/p&gt;
 &lt;p&gt;But how about Bad Apple!!.. in Minecraft?&lt;/p&gt;
 </description>
@@ -536,7 +536,7 @@
 		
 			<item>
 				<title>Minecraft сравнивает массивы за куб</title>
-				<link>https://purplesyringa.moe/blog/ru/minecraft-compares-arrays-in-cubic-time/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/ru/minecraft-compares-arrays-in-cubic-time/</link>
 				<description>&lt;p&gt;Коллизии в играх обнаруживаются тяжелыми алгоритмами. Для примера попробуйте представить себе, насколько сложно это для просто двух произвольно повернутых кубов в пространстве. Они могут контактировать двумя ребрами, вершиной и гранью или еще как-то более сложно.&lt;/p&gt;
 &lt;p&gt;В майнкрафте вся геометрия хитбоксов параллельна осям координат, т.е. наклона не бывает. Это сильно упрощает поиск коллизий.&lt;/p&gt;
 &lt;p&gt;Я бы такое писала просто. Раз хитбокс блока — это объединение нескольких параллелепипедов, то можно его так и хранить: как список 6-элементных тьюплов. В подавляющем большинстве случаев этот список будет очень коротким. Для обычных кубов его длина — 1, для стеклопаналей может достигать 2, наковальня, о боги, состоит из 3 элементов, а стены могут иметь их аж целых 4. Для проверки хитбоксов на пересечение достаточно перебрать пары параллелепипедов двух хитбоксов (кажется, их может быть максимум 16). Для параллелепипедов с параллельными осями задача решается тривиально.&lt;/p&gt;
@@ -550,7 +550,7 @@
 		
 			<item>
 				<title>WebP: The WebPage compression format</title>
-				<link>https://purplesyringa.moe/blog/./webp-the-webpage-compression-format/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./webp-the-webpage-compression-format/</link>
 				<description>&lt;p&gt;I want to provide a smooth experience to my site visitors, so I work on accessibility and ensure it works without JavaScript enabled. I care about page load time because some pages contain large illustrations, so I minify my HTML.&lt;/p&gt;
 &lt;p&gt;But one &lt;em&gt;thing&lt;/em&gt; makes turning my blog light as a feather a pain in the ass.&lt;/p&gt;
 </description>
@@ -562,7 +562,7 @@
 		
 			<item>
 				<title>Division is hard, but it doesn&#39;t have to be</title>
-				<link>https://purplesyringa.moe/blog/./division-is-hard-but-it-does-not-have-to-be/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./division-is-hard-but-it-does-not-have-to-be/</link>
 				<description>&lt;p&gt;Developers don’t usually divide numbers all the time, but hashmaps often need to compute &lt;a href=&quot;https://en.wikipedia.org/wiki/Remainder&quot;&gt;remainders&lt;/a&gt; modulo a prime. Hashmaps are really common, so fast division is useful.&lt;/p&gt;
 &lt;p&gt;For instance, rolling hashes might compute &lt;code&gt;u128 % u64&lt;/code&gt; with a fixed divisor. Compilers just drop the ball here:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;language-rust&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;fn&lt;/span&gt; &lt;span class=&quot;hljs-title function_&quot;&gt;modulo&lt;/span&gt;(n: &lt;span class=&quot;hljs-type&quot;&gt;u128&lt;/span&gt;) &lt;span class=&quot;hljs-punctuation&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;hljs-type&quot;&gt;u64&lt;/span&gt; {
@@ -588,7 +588,7 @@
 		
 			<item>
 				<title>I sped up serde_json strings by 20%</title>
-				<link>https://purplesyringa.moe/blog/./i-sped-up-serde-json-strings-by-20-percent/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./i-sped-up-serde-json-strings-by-20-percent/</link>
 				<description>&lt;p&gt;I have recently done some performance work and realized that reading about my experience could be entertaining. Teaching to &lt;em&gt;think&lt;/em&gt; is just as important as teaching to &lt;em&gt;code&lt;/em&gt;, but this is seldom done; I think something I’ve done last month is a great opportunity to draw the curtain a bit.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;serde&lt;/code&gt; is &lt;em&gt;the&lt;/em&gt; Rust framework for serialization and deserialization. Everyone uses it, and it’s the default among the ecosystem. &lt;code&gt;serde_json&lt;/code&gt; is the official &lt;code&gt;serde&lt;/code&gt; “mixin” for JSON, so when people need to parse stuff, that’s what they use instinctively. There are other libraries for JSON parsing, like &lt;a href=&quot;https://lib.rs/crates/simd-json&quot;&gt;simd-json&lt;/a&gt;, but &lt;code&gt;serde_json&lt;/code&gt; is overwhelmingly used: it has &lt;a href=&quot;https://crates.io/crates/serde_json/reverse_dependencies&quot;&gt;26916&lt;/a&gt; dependents at the time of this post, compared to only &lt;a href=&quot;https://crates.io/crates/simd-json/reverse_dependencies&quot;&gt;66&lt;/a&gt; for &lt;code&gt;simd-json&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;This makes &lt;code&gt;serde_json&lt;/code&gt; a good target &lt;s&gt;(not in a Jia Tan way)&lt;/s&gt; for optimization. Chances are, many of those 26916 users would profit from switching to &lt;code&gt;simd-json&lt;/code&gt;, but as long as they aren’t doing that, smaller optimizations are better than nothing, and such improvements are reapt across the ecosystem.&lt;/p&gt;
@@ -601,7 +601,7 @@
 		
 			<item>
 				<title>The sentinel trick</title>
-				<link>https://purplesyringa.moe/blog/./the-sentinel-trick/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./the-sentinel-trick/</link>
 				<description>&lt;p&gt;The sentinel trick underlies a data structure with the following requirements:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Read element by index in &lt;eq&gt;&lt;math&gt;&lt;mrow&gt;&lt;mi&gt;O&lt;/mi&gt;&lt;mo form=&quot;prefix&quot; stretchy=&quot;false&quot;&gt;(&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo form=&quot;postfix&quot; stretchy=&quot;false&quot;&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/eq&gt;,&lt;/li&gt;
@@ -618,7 +618,7 @@
 		
 			<item>
 				<title>You might want to use panics for error handling</title>
-				<link>https://purplesyringa.moe/blog/./you-might-want-to-use-panics-for-error-handling/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./you-might-want-to-use-panics-for-error-handling/</link>
 				<description>&lt;p&gt;Rust’s approach to error handling comes at a cost. The &lt;code&gt;Result&lt;/code&gt; type often doesn’t fit in CPU registers, and callers of fallible functions have to check whether the returned value is &lt;code&gt;Ok&lt;/code&gt; or &lt;code&gt;Err&lt;/code&gt;. That’s a stack spill, a comparison, a branch, and a lot of error handling code intertwined with the hot path that &lt;em&gt;just shouldn’t be here&lt;/em&gt;, which inhibits inlining, the most important optimization of all.&lt;/p&gt;
 &lt;p&gt;Exceptions and panics make it easy to forget about the occasional error, but they don’t suffer from inefficiency. Throwing an exception unwinds the stack automatically, without any cooperation from the functions except the one that throws the exception and the one that catches it. Wouldn’t it be &lt;em&gt;neat&lt;/em&gt; if a mechanism with the performance of &lt;code&gt;panic!&lt;/code&gt; and the ergonomics of &lt;code&gt;Result&lt;/code&gt; existed?&lt;/p&gt;
 </description>
@@ -630,7 +630,7 @@
 		
 			<item>
 				<title>У base64 есть неподвижная точка</title>
-				<link>https://purplesyringa.moe/blog/ru/base64-has-a-fixed-point/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/ru/base64-has-a-fixed-point/</link>
 				<description>&lt;pre&gt;&lt;code class=&quot;language-shell&quot;&gt;&lt;span class=&quot;hljs-meta prompt_&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;language-bash&quot;&gt;&amp;lt;/dev/urandom &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; \
      | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; \
      | &lt;span class=&quot;hljs-built_in&quot;&gt;base64&lt;/span&gt; | &lt;span class=&quot;hljs-built_in&quot;&gt;head&lt;/span&gt; -1&lt;/span&gt;
@@ -650,7 +650,7 @@ Vm0wd2QyUXlVWGxWV0d4V1YwZDRWMVl3WkRSV01WbDNXa1JTVjAxV2JETlhhMUpUVmpBeFYySkVU
 		
 			<item>
 				<title>I thought I was smart enough to play with fire</title>
-				<link>https://purplesyringa.moe/blog/./i-thought-i-was-smart-enough-to-play-with-fire/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./i-thought-i-was-smart-enough-to-play-with-fire/</link>
 				<description>&lt;p&gt;&lt;a href=&quot;https://codeforces.com/blog/entry/126390&quot;&gt;blazingio&lt;/a&gt; cuts corners by design. It keeps the constant factor small and uses long forgotten algorithms people used before processors supported SIMD and integer division. But another limitation made this task much harder.&lt;/p&gt;
 &lt;p&gt;Size.&lt;/p&gt;
 &lt;p&gt;Professional libraries start exceeding the &lt;a href=&quot;https://codeforces.com&quot;&gt;Codeforces&lt;/a&gt; limit of 64 KiB really fast. Code minification barely helps, and neither does resorting to ugly code. So I cut a corner I don’t typically cut.&lt;/p&gt;
@@ -666,7 +666,7 @@ Vm0wd2QyUXlVWGxWV0d4V1YwZDRWMVl3WkRSV01WbDNXa1JTVjAxV2JETlhhMUpUVmpBeFYySkVU
 		
 			<item>
 				<title>Recovering garbled Bitcoin addresses</title>
-				<link>https://purplesyringa.moe/blog/./recovering-garbled-bitcoin-addresses/?utm_campaign=rss</link>
+				<link>https://purplesyringa.moe/blog/./recovering-garbled-bitcoin-addresses/</link>
 				<description>&lt;p&gt;&lt;a href=&quot;https://zeronet.io/&quot;&gt;ZeroNet&lt;/a&gt; is a decentralized network that enables dynamic sites, such as blogs and forums, unlike popular content-addressed storage networks that came later. Sites aren’t addressed by immutable hashes; instead, site updates are signed by Bitcoin addresses.&lt;/p&gt;
 &lt;p&gt;A moot point is that Bitcoin addresses are case-sensitive, and people are used to addresses being case-insensitive. Mistakes happen, and sometimes the only trail you have is a lower-cased address, like &lt;code&gt;1lbcfr7sahtd9cgdqo3htmtkv8lk4znx71&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;Losing valuable information is a bad thing when you’re an archivist. Have we &lt;em&gt;really&lt;/em&gt; lost access to the site if we only know the lower-cased address? Can we recover the original address somehow?&lt;/p&gt;
