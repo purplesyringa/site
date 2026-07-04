@@ -6,14 +6,14 @@ intro: |
 
     To me, that's a positive thing. It's my chance to make progress in a stale and closed industry, not to mention that exploration is a lost art in the age of vibecoding.
 
-    I love weird and deeply technical blogs like [The New Old Thing](https://devblogs.microsoft.com/oldnewthing/), [jart's](https://justine.lol), and [Lemire's](https://lemire.me/), and for a long while I had assumed that others would love mine the same way. Sure, I'm not as good at writing, but the ideas should shine through regardless.
+    I love weird and deeply technical blogs like [The Old New Thing](https://devblogs.microsoft.com/oldnewthing/), [jart's](https://justine.lol), and [Lemire's](https://lemire.me/), and for a long while I had assumed that others would love mine the same way. Sure, I'm not as good at writing, but the ideas should shine through regardless.
 ---
 
 I blog because I want to share knowledge. That's how I have fun. It feels rewarding to sit down and formulate your thoughts after spending a week researching a topic for a side project. Oftentimes, such topics are largely unexplored: with the basics being too obvious and other topics laid out clearly, the remains are bound to be unconventional.
 
 To me, that's a positive thing. It's my chance to make progress in a stale and closed industry, not to mention that exploration is a lost art in the age of vibecoding.
 
-I love weird and deeply technical blogs like [The New Old Thing](https://devblogs.microsoft.com/oldnewthing/), [jart's](https://justine.lol), and [Lemire's](https://lemire.me/), and for a long while I had assumed that others would love mine the same way. Sure, I'm not as good at writing, but the ideas should shine through regardless.
+I love weird and deeply technical blogs like [The Old New Thing](https://devblogs.microsoft.com/oldnewthing/), [jart's](https://justine.lol), and [Lemire's](https://lemire.me/), and for a long while I had assumed that others would love mine the same way. Sure, I'm not as good at writing, but the ideas should shine through regardless.
 
 ---
 

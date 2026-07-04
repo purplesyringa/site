@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Sat, 04 Jul 2026 15:47:39 GMT</lastBuildDate>
+		<lastBuildDate>Sat, 04 Jul 2026 21:14:35 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -17,7 +17,7 @@
 				<link>https://purplesyringa.moe/blog/./does-technical-blogging-spark-joy/</link>
 				<description>&lt;p&gt;I blog because I want to share knowledge. That’s how I have fun. It feels rewarding to sit down and formulate your thoughts after spending a week researching a topic for a side project. Oftentimes, such topics are largely unexplored: with the basics being too obvious and other topics laid out clearly, the remains are bound to be unconventional.&lt;/p&gt;
 &lt;p&gt;To me, that’s a positive thing. It’s my chance to make progress in a stale and closed industry, not to mention that exploration is a lost art in the age of vibecoding.&lt;/p&gt;
-&lt;p&gt;I love weird and deeply technical blogs like &lt;a href=&quot;https://devblogs.microsoft.com/oldnewthing/&quot;&gt;The New Old Thing&lt;/a&gt;, &lt;a href=&quot;https://justine.lol&quot;&gt;jart’s&lt;/a&gt;, and &lt;a href=&quot;https://lemire.me/&quot;&gt;Lemire’s&lt;/a&gt;, and for a long while I had assumed that others would love mine the same way. Sure, I’m not as good at writing, but the ideas should shine through regardless.&lt;/p&gt;
+&lt;p&gt;I love weird and deeply technical blogs like &lt;a href=&quot;https://devblogs.microsoft.com/oldnewthing/&quot;&gt;The Old New Thing&lt;/a&gt;, &lt;a href=&quot;https://justine.lol&quot;&gt;jart’s&lt;/a&gt;, and &lt;a href=&quot;https://lemire.me/&quot;&gt;Lemire’s&lt;/a&gt;, and for a long while I had assumed that others would love mine the same way. Sure, I’m not as good at writing, but the ideas should shine through regardless.&lt;/p&gt;
 </description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				
