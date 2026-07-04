@@ -162,7 +162,7 @@ The only issue is that the primary index gets corrupted by rotating $s$. There a
 
 Alternatively, we can compute the primary index by definition, as the number of cyclic shifts of $s$ lexicographically smaller than $s$. The [Z-function](https://cp-algorithms.com/string/z-function.html) can find in linear time, for each suffix $(s \Vert s)[i \ldots]$, the length of the common prefix of $(s \Vert s)[i \ldots]$ and $s \Vert s$, which is precisely the position that determines whether the cyclic shift at $i$ is smaller than $s$. Or, depending on the data, it may be faster to use a quadratic algorithm instead.
 
-[Here is my implementation](https://github.com/purplesyringa/computercraft-programs/blob/df3551a486e239f7761312ba8989560229ddd241/initrd-ng/initrd-ng/src/bz.rs#L4-L58).
+[Here is my implementation](https://github.com/purplesyringa/computercraft-programs/blob/68d2bb71a93ccc7ffb82b6cc1bec1cd7cedbe8d1/initrd-ng/initrd-ng/src/bz.rs#L4-L58).
 
 
 ### Conclusion
