@@ -1,6 +1,7 @@
 ---
 title: Suffix BWT vs cyclic shift BWT, and fast computation
 time: July 3, 2026
+discussion: https://lobste.rs/s/suucvi/suffix_bwt_vs_cyclic_shift_bwt_fast
 intro: |
     > Intended audience: data compression geeks.
 

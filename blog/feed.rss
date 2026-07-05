@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Sat, 04 Jul 2026 21:14:35 GMT</lastBuildDate>
+		<lastBuildDate>Sun, 05 Jul 2026 09:29:38 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -35,7 +35,7 @@
 &lt;p&gt;What Wikipedia doesn’t tell you is that there are actually two variants of BWT, with subtly different performance characteristics and simplicity. These differences seem to be largely undocumented, so this post is me trying to make sense of it.&lt;/p&gt;
 </description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-				
+				<comments>https://lobste.rs/s/suucvi/suffix_bwt_vs_cyclic_shift_bwt_fast</comments>
 				<guid>https://purplesyringa.moe/blog/./suffix-bwt-vs-cyclic-shift-bwt-and-fast-computation/</guid>
 				<pubDate>Fri, 03 Jul 2026 00:00:00 GMT</pubDate>
 			</item>
