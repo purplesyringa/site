@@ -186,7 +186,7 @@ Most lines in the loop do the same thing for each $j$, so they can be vectorized
 __m128i *cost; // assume costs are represented as an array of vectors: `cost[i]` is the column `i`
 
 __m128i best_path_length[n_symbols + 1];
-best_path_length[n_symbols] = _mm_setzero_epi16();
+best_path_length[n_symbols] = _mm_setzero_si128();
 
 for (int i = n_symbols - 1; i >= 0; i--) {
     __m128i tmp = _mm_add_epi16(cost[i], best_path_length[i + 1]);
@@ -255,7 +255,7 @@ You might also notice that we only ever access the previous value of `best_path_
 
 ```diff
 -__m128i best_path_length[n_symbols + 1];
--best_path_length[n_symbols] = _mm_setzero_epi16();
+-best_path_length[n_symbols] = _mm_setzero_si128();
 +__m128i best_path_length = _mm_setzero_si128();
 
  for (int i = n_symbols - 1; i >= 0; i--) {

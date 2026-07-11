@@ -63,7 +63,7 @@ global_best_path_length = <span class=hljs-built_in>min</span>(best_path_length[
 </code></pre><aside><p>The constant switch cost is an assumption that may not hold in reality, but it produces good enough results that it’s a reasonable approximation.</aside></div><p>With this optimization, we only have to consider two choices in the nested loop, not <code>n_formats</code> choices.<h3>Vectorization</h3><p>And now we can get to the topic of this post.<p>Vectorization is, by far, the best way to speed up an algorithm so simple that it can’t be optimized in any other way, like the one in question.<p>Most lines in the loop do the same thing for each <eq><math><mi>j</mi></math></eq>, so they can be vectorized quite easily. Switching to C, the loop can be rewritten with vectors like this:<pre><code class=language-c>__m128i *cost; <span class=hljs-comment>// assume costs are represented as an array of vectors: `cost[i]` is the column `i`</span>
 
 __m128i best_path_length[n_symbols + <span class=hljs-number>1</span>];
-best_path_length[n_symbols] = _mm_setzero_epi16();
+best_path_length[n_symbols] = _mm_setzero_si128();
 
 <span class=hljs-keyword>for</span> (<span class=hljs-type>int</span> i = n_symbols - <span class=hljs-number>1</span>; i >= <span class=hljs-number>0</span>; i--) {
     __m128i tmp = _mm_add_epi16(cost[i], best_path_length[i + <span class=hljs-number>1</span>]);
@@ -83,7 +83,7 @@ best_path_length[n_symbols] = _mm_setzero_epi16();
 <span class=hljs-addition>+    best_path_length[i] = _mm_min_epu16(tmp, _mm_add_epi16(_mm_set1_epi16(2), min_tmp));</span>
  }
 </code></pre><p>You might also notice that we only ever access the previous value of <code>best_path_length</code> on each iteration, so it can just be a local instead of an array:<pre><code class=language-diff><span class=hljs-deletion>-__m128i best_path_length[n_symbols + 1];</span>
-<span class=hljs-deletion>-best_path_length[n_symbols] = _mm_setzero_epi16();</span>
+<span class=hljs-deletion>-best_path_length[n_symbols] = _mm_setzero_si128();</span>
 <span class=hljs-addition>+__m128i best_path_length = _mm_setzero_si128();</span>
 
  for (int i = n_symbols - 1; i >= 0; i--) {
