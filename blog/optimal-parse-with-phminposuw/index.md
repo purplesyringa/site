@@ -122,8 +122,8 @@ This computes the minimal possible cost, but not the specific path that produces
 +
 +# Record and recover next `j` column by column.
 +for i in range(n_symbols):
-+    format[i] = j
 +    j = next_j[i, j]
++    format[i] = j
 ```
 
 If this doesn't make much sense, try to look at `next_j` as an intrusive linked list: `next_j[i, j]` represents the head of the linked list denoting the best path from $(i, j)$, and nodes are efficiently reused between multiple linked lists, CoW-style.

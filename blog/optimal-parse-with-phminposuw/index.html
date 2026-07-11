@@ -40,8 +40,8 @@ global_best_path_length = <span class=hljs-built_in>min</span>(best_path_length[
 <span class=hljs-addition>+</span>
 <span class=hljs-addition>+# Record and recover next `j` column by column.</span>
 <span class=hljs-addition>+for i in range(n_symbols):</span>
-<span class=hljs-addition>+    format[i] = j</span>
 <span class=hljs-addition>+    j = next_j[i, j]</span>
+<span class=hljs-addition>+    format[i] = j</span>
 </code></pre><p>If this doesn’t make much sense, try to look at <code>next_j</code> as an intrusive linked list: <code>next_j[i, j]</code> represents the head of the linked list denoting the best path from <eq><math><mrow><mo form=prefix stretchy=false>(</mo><mi>i</mi><mo separator=true>,</mo><mi>j</mi><mo form=postfix stretchy=false>)</mo></mrow></math></eq>, and nodes are efficiently reused between multiple linked lists, CoW-style.<p>In this article, we’ll pretend this part of the algorithm doesn’t exist. Doing it justice requires writing another post, because there’s plenty of subtleties here as well, but it’ll have to wait until next time.<h3>Optimization</h3><p>For now, let’s see how we can compute <code>best_path_length</code> most efficiently: this is a hot loop, and my compressor runs it multiple times per file, so this is crucial.<p>Let’s start by refactoring the loop a little. Addends (2) and (3) don’t depend on <eq><math><mi>j</mi></math></eq>, so they can be computed outside the nested loop:<pre><code class=language-diff> for i in range(n_symbols - 1, -1, -1):
 <span class=hljs-addition>+    tmp = [cost[i, j] + best_path_length[i + 1, j] for j in range(n_formats)]</span>
      for j in range(n_formats):
