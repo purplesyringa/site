@@ -23,7 +23,7 @@ The easiest way to do so is to split data into, say, 50-byte chunks, find the be
 
 Let's look at this problem from another angle. Let's make a table, where for each format we track how many bits it would take to encode each symbol with that format:
 
-||a|b|r|a|k|a|d|a|b|r|a|
+||a|b|r|a|c|a|d|a|b|r|a|
 |-|-|-|-|-|-|-|-|-|-|-|-|
 |Format 1|6|3|4|6|5|6|9|6|3|4|6|
 |Format 2|7|2|6|7|4|7|3|7|2|6|7|
@@ -37,7 +37,7 @@ If switching formats was cheap, we could just choose the optimal format independ
 td:has(strong) { background-color: var(--color-header-bg); color: #ffffff; }
 </style>
 
-||a|b|r|a|k|a|d|a|b|r|a|
+||a|b|r|a|c|a|d|a|b|r|a|
 |-|-|-|-|-|-|-|-|-|-|-|-|
 |Format 1|  6  |  3  |**4**|  6  |  5  |  6  |  9  |  6  |  3  |**4**|  6  |
 |Format 2|  7  |**2**|  6  |  7  |**4**|  7  |**3**|  7  |**2**|  6  |  7  |
@@ -45,7 +45,7 @@ td:has(strong) { background-color: var(--color-header-bg); color: #ffffff; }
 
 But switching formats is not cheap. The effect is already visible even if it takes, let's say, just 2 bits -- the optimal selection changes to this one:
 
-||a|b|r|a|k|a|d|a|b|r|a|
+||a|b|r|a|c|a|d|a|b|r|a|
 |-|-|-|-|-|-|-|-|-|-|-|-|
 |Format 1|  6  |**3**|**4**|  6  |  5  |  6  |  9  |  6  |**3**|**4**|  6  |
 |Format 2|  7  |  2  |  6  |  7  |  4  |  7  |**3**|  7  |  2  |  6  |  7  |
@@ -274,7 +274,7 @@ The body of this loop only has 8 ticks of latency, which I think is pretty cool.
 
 There is one glaring issue in this implementation: it assumes that all intermediate numbers fit in 16 bits, which they seldom do, because the numbers in columns grow when moving from right to left:
 
-||a|b|r|a|k|a|d|a|b|r|a|
+||a|b|r|a|c|a|d|a|b|r|a|
 |-|-|-|-|-|-|-|-|-|-|-|-|
 |Format 1|51|45|42|38|34|29|24|18|12|9|5|0|
 |Format 2|52|46|44|38|33|29|22|19|13|11|5|0|
