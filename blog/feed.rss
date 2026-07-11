@@ -7,10 +7,23 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Sun, 05 Jul 2026 09:29:38 GMT</lastBuildDate>
+		<lastBuildDate>Sat, 11 Jul 2026 16:36:23 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>Optimal parse with phminposuw</title>
+				<link>https://purplesyringa.moe/blog/./optimal-parse-with-phminposuw/</link>
+				<description>&lt;p&gt;This problem arose when I was writing a specialized data compressor.&lt;/p&gt;
+&lt;p&gt;Say you want to encode a byte stream, and bytes can be encoded in different formats, e.g. optimized for ASCII, numbers, raw binary, etc. These formats prioritize better compression of a specific type of data. Realistic byte streams may contain all of them at different points, so we want to switch between formats on the fly optimally.&lt;/p&gt;
+&lt;p&gt;The easiest way to do so is to split data into, say, 50-byte chunks, find the best format for each chunk, and use those formats. But that doesn’t take into account that we need to store which format is used for which chunk, and choosing formats greedily may increase the size of this metadata because it itself compresses worse. Not to mention that it’s not very precise. So what should we do?&lt;/p&gt;
+</description>
+				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+				
+				<guid>https://purplesyringa.moe/blog/./optimal-parse-with-phminposuw/</guid>
+				<pubDate>Sat, 11 Jul 2026 00:00:00 GMT</pubDate>
+			</item>
 		
 			<item>
 				<title>Does technical blogging spark joy?</title>
