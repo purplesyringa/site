@@ -25,9 +25,9 @@ Let's look at this problem from another angle. Let's make a table, where for eac
 
 ||a|b|r|a|c|a|d|a|b|r|a|
 |-|-|-|-|-|-|-|-|-|-|-|-|
-|Format 1|6|3|4|6|5|6|9|6|3|4|6|
-|Format 2|7|2|6|7|4|7|3|7|2|6|7|
-|Format 3|3|7|8|3|6|3|8|3|7|8|3|
+|Format&nbsp;1|6|3|4|6|5|6|9|6|3|4|6|
+|Format&nbsp;2|7|2|6|7|4|7|3|7|2|6|7|
+|Format&nbsp;3|3|7|8|3|6|3|8|3|7|8|3|
 
 (Don't look too much into the numbers, they're chosen randomly. For example, I'm assuming the letter `a` always takes 7 bits to encode with format 2, but you can imagine fractional costs here, or use a measure other than bits, or chunk symbols.)
 
@@ -39,17 +39,17 @@ td:has(strong) { background-color: var(--color-header-bg); color: #ffffff; }
 
 ||a|b|r|a|c|a|d|a|b|r|a|
 |-|-|-|-|-|-|-|-|-|-|-|-|
-|Format 1|  6  |  3  |**4**|  6  |  5  |  6  |  9  |  6  |  3  |**4**|  6  |
-|Format 2|  7  |**2**|  6  |  7  |**4**|  7  |**3**|  7  |**2**|  6  |  7  |
-|Format 3|**3**|  7  |  8  |**3**|  6  |**3**|  8  |**3**|  7  |  8  |**3**|
+|Format&nbsp;1|  6  |  3  |**4**|  6  |  5  |  6  |  9  |  6  |  3  |**4**|  6  |
+|Format&nbsp;2|  7  |**2**|  6  |  7  |**4**|  7  |**3**|  7  |**2**|  6  |  7  |
+|Format&nbsp;3|**3**|  7  |  8  |**3**|  6  |**3**|  8  |**3**|  7  |  8  |**3**|
 
 But switching formats is not cheap. The effect is already visible even if it takes, let's say, just 2 bits -- the optimal selection changes to this one:
 
 ||a|b|r|a|c|a|d|a|b|r|a|
 |-|-|-|-|-|-|-|-|-|-|-|-|
-|Format 1|  6  |**3**|**4**|  6  |  5  |  6  |  9  |  6  |**3**|**4**|  6  |
-|Format 2|  7  |  2  |  6  |  7  |  4  |  7  |**3**|  7  |  2  |  6  |  7  |
-|Format 3|**3**|  7  |  8  |**3**|**6**|**3**|  8  |**3**|  7  |  8  |**3**|
+|Format&nbsp;1|  6  |**3**|**4**|  6  |  5  |  6  |  9  |  6  |**3**|**4**|  6  |
+|Format&nbsp;2|  7  |  2  |  6  |  7  |  4  |  7  |**3**|  7  |  2  |  6  |  7  |
+|Format&nbsp;3|**3**|  7  |  8  |**3**|**6**|**3**|  8  |**3**|  7  |  8  |**3**|
 
 In this example, we switch for a short while to code `d` more optimally, but don't bother switching for `b`, since it's not as expensive in formats chosen for nearby symbols.
 
@@ -278,18 +278,21 @@ There is one glaring issue in this implementation: it assumes that all intermedi
 
 ||a|b|r|a|c|a|d|a|b|r|a|
 |-|-|-|-|-|-|-|-|-|-|-|-|
-|Format 1|51|45|42|38|34|29|24|18|12|9|5|0|
-|Format 2|52|46|44|38|33|29|22|19|13|11|5|0|
-|Format 3|50|47|44|36|33|27|24|17|14|11|3|0|
+|Format&nbsp;1|51|45|42|38|34|29|24|18|12|9|5|0|
+|Format&nbsp;2|52|46|44|38|33|29|22|19|13|11|5|0|
+|Format&nbsp;3|50|47|44|36|33|27|24|17|14|11|3|0|
 
 This example has small weights and a short input, but for realistic data, the counters often overflow and the logic breaks down. Let's fix that.
 
-Subtracting a constant from each cell in a column does not change the optimal format selection, only decreases the total cost by that constant. We *could* use choose the constant heuristically and pray, but there's a better way.
+Subtracting a constant from each cell in a column does not change the optimal format selection, only decreases the total cost by that constant. We *could* choose the constant heuristically and pray, but there's a better way.
 
 Nothing breaks if we use different constants for different columns, or even choose them in runtime. One obvious choice is to subtract `min_tmp` on each step: that guarantees that all costs stay non-negative and thus `_mm_minpos_epu16` works correctly (it assumes unsigned integers), while also limiting the values from above:
 
 $$
-\mathrm{len}'_j = \min(\mathrm{tmp}_j, \min_{j'} \mathrm{tmp}_{j'} + 2) - \min_{j'} \mathrm{tmp}_{j'} \le 2 = \text{switch cost}.
+\begin{align*}
+\mathrm{len}'_j &= \min(\mathrm{tmp}_j, \min_k \mathrm{tmp}_k + 2) - \min_k \mathrm{tmp}_k \\
+&\le 2 = \text{switch cost}.
+\end{align*}
 $$
 
 ```diff
