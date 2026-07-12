@@ -50,7 +50,7 @@ Excluding the write, the body of the loop is just `j = next_j[i][j]`, which comp
 
 If we were programming in 1984, it would be, but modern processors have [instruction-level parallelism](https://en.wikipedia.org/wiki/Instruction-level_parallelism) -- that is, they can execute multiple instructions in parallel. This works even across iterations of a loop, and it's one reason why we usually don't pay attention to instructions for `i < n_symbols` and `i++` when evaluating loop performance -- they don't usually prevent the CPU from doing more work.
 
-Crucially, though, you can only run two *independent* instructions at the same time. In our case, each iteration of the loop cannot begin before the previous iteration ends because `j` is threaded through the loop, so we're limited by the latency of memory access, which is pretty noticeable even with cache.
+Crucially, though, you cannot run two *dependent* instructions at the same time. In our case, each iteration of the loop cannot begin before the previous iteration ends because `j` is threaded through the loop, so we're limited by the latency of memory access, which is pretty noticeable even with cache.
 
 Can this be fixed? In this specific case, yes! We don't expect too many chunks, so `next_j[i][j]` is quite likely to just be equal to `j`. If we could tell the CPU to predict that `j` stays intact, the loop would become throughput-bound rather than latency-bound.
 
