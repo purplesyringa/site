@@ -128,7 +128,7 @@ This computes the minimal possible cost, but not the specific path that produces
 
 If this doesn't make much sense, try to look at `next_j` as an intrusive linked list: `next_j[i, j]` represents the head of the linked list denoting the best path from $(i, j)$, and nodes are efficiently reused between multiple linked lists, CoW-style.
 
-In this article, we'll pretend this part of the algorithm doesn't exist. Doing it justice requires writing another post, because there's plenty of subtleties here as well, but it'll have to wait until next time.
+In this article, we'll pretend this part of the algorithm doesn't exist. Doing it justice requires writing another post, because there's plenty of subtleties here as well, but it'll have to wait until next time. (*Edit*: [here it is](../doubling-code-performance-with-a-useless-if/).)
 
 
 ### Optimization
