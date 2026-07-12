@@ -1,5 +1,5 @@
 ---
-title: Doubling code performance with a "useless" if
+title: Quadrupling code performance with a "useless" if
 time: July 12, 2026
 intro: |
     So I was [optimizing a domain-specific compressor the other day](/blog/optimal-parse-with-phminposuw/), as one does.
@@ -83,7 +83,9 @@ for (int i = 0; i < n_symbols; i++) {
 }
 ```
 
-In my experiments, this change sped up the loop from $1.1$ ms to $0.6$ ms. (It might not look like much, but the loop runs many times, so it adds up.)
+In an synthetic benchmark, this change has sped up the loop from $320$ us to $80$ us on my data. (This doesn't look like much, but the loop runs many times during compression, so it adds up.)
+
+In a more realistic experiment, I only witnessed a $2 \times$ increase, most likely due to suboptimal codegen by LLVM. Still worthwhile, though!
 
 
 ### Sidenote

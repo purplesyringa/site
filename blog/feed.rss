@@ -7,20 +7,20 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Sun, 12 Jul 2026 08:30:56 GMT</lastBuildDate>
+		<lastBuildDate>Sun, 12 Jul 2026 11:40:31 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
 		
 			<item>
-				<title>Doubling code performance with a &quot;useless&quot; if</title>
-				<link>https://purplesyringa.moe/blog/./doubling-code-performance-with-a-useless-if/</link>
+				<title>Quadrupling code performance with a &quot;useless&quot; if</title>
+				<link>https://purplesyringa.moe/blog/./quadrupling-code-performance-with-a-useless-if/</link>
 				<description>&lt;p&gt;So I was &lt;a href=&quot;/blog/optimal-parse-with-phminposuw/&quot;&gt;optimizing a domain-specific compressor the other day&lt;/a&gt;, as one does.&lt;/p&gt;
 &lt;p&gt;One important problem was chunking the input string and optimally choosing the most compact encoding for each chunk (different encodings compress different characters better, so where to split is not immediately obvious). &lt;a href=&quot;/blog/optimal-parse-with-phminposuw/&quot;&gt;The previous post&lt;/a&gt; describes the algorithm if you’re interested, but it boils down to finding the shortest path on a grid. For each cell, the algorithm computes the best cell following it. Following references from the first cell to the last one gives the optimal coding order.&lt;/p&gt;
 </description>
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				
-				<guid>https://purplesyringa.moe/blog/./doubling-code-performance-with-a-useless-if/</guid>
+				<guid>https://purplesyringa.moe/blog/./quadrupling-code-performance-with-a-useless-if/</guid>
 				<pubDate>Sun, 12 Jul 2026 00:00:00 GMT</pubDate>
 			</item>
 		
