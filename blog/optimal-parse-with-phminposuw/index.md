@@ -201,10 +201,12 @@ The elephant in the room is the search for the minimal element. Global minimum i
 
 SIMD is not designed for fast horizontal operations, but in this scenario it's unavoidable. We can simulate horizontal minimum with a couple vertical operations:
 
-- Take the initial vector $(a_0, a_1, a_2, a_3, a_4, a_5, a_6, a_7)$ and shuffle it to get $(a_4, a_5, a_6, a_7, x, x, x, x)$ (where $x$ is "don't care").
-- Take the vertical minimum of the original vector and the shuffled vector, producing $(\min(a_0, a_4), \min(a_1, a_5), \min(a_2, a_6), \min(a_3, a_7), x, x, x, x)$.
-- Shuffle it to get $(\min(a_2, a_6), \min(a_3, a_7), x, x, x, x, x, x)$ and apply vertical minimum again, producing $(\min(a_0, a_4, a_2, a_6), \min(a_1, a_5, a_3, a_7), x, x, x, x, x, x)$.
-- Repeat the process one more time, producing $(\min(a_0, a_4, a_2, a_6, a_1, a_5, a_3, a_7), x, x, x, x, x, x, x)$. The bottom word now contain the global minimum.
+<!-- Inline math seems to not support line wrapping. Embarrassing. -->
+
+- Take the initial vector `(a0, a1, a2, a3, a4, a5, a6, a7)` and shuffle it to get `(a4, a5, a6, a7, x, x, x, x)` (where $x$ is "don't care").
+- Take the vertical minimum of the original vector and the shuffled vector, producing `(min(a0, a4), min(a1, a5), min(a2, a6), min(a3, a7), x, x, x, x)`.
+- Shuffle it to get `(min(a2, a6), min(a3, a7), x, x, x, x, x, x)` and apply vertical minimum again, producing `(min(a0, a4, a2, a6), min(a1, a5, a3, a7), x, x, x, x, x, x)`.
+- Repeat the process one more time, producing `(min(a0, a4, a2, a6, a1, a5, a3, a7), x, x, x, x, x, x, x)`. The bottom word now contain the global minimum.
 
 Computing the horizontal minimum of a $k$-word vector takes $\log_2 k$ steps, consisting of shuffling and vertical minimum each. Suffice to say, it's not exactly fast. (Though still better than scalar code, most of the time.)
 
