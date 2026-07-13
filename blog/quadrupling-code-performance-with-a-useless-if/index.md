@@ -88,7 +88,7 @@ for (int i = 0; i < n_symbols; i++) {
 
 > *Edited on July 13*: Or so I thought -- as [ibookstein discovered](https://lobste.rs/s/1an425/quadrupling_code_performance_with#c_4clhdw), an `[[unlikely]]` annotation (or `__builtin_expect(..., 0)`) also has this effect with LLVM. `volatile` is still useful, though, because it generates better code and also works with GCC.
 
-In an synthetic benchmark, this change has sped up the loop from $320$ us to $80$ us on my data. (This doesn't look like much, but the loop runs many times during compression, so it adds up.)
+In a synthetic benchmark, this change has sped up the loop from $320$ us to $80$ us on my data. (This doesn't look like much, but the loop runs many times during compression, so it adds up.)
 
 In a more realistic experiment, I only witnessed a $2 \times$ increase, most likely due to suboptimal codegen by LLVM. Still worthwhile, though!
 
