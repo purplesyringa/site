@@ -44,6 +44,8 @@ Since the ranks of each symbol are grouped together, the entropy coder should ha
 
 The SRC decoder can be merged with the BWT decoder. SRC iterates in order, and the address `ps[symbol]` at each moment is exactly the total number of characters less than `symbol`, plus the index of the current symbol among equal symbols. But that's exactly the formula for $LF$ in BWT, so you can just inline the first half of the BWT decoder into SRC. This makes BWT+SRC almost as fast as BWT+MTF to decode.
 
+SRC also solves the problem of wasting coding space due to the initial state being arbitrary. This can be fixed by recognizing if the symbol we're about to decode is the last occurrence of that symbol, and simply not reading the rank and instead removing the symbol from the cache entirely.
+
 
 ### Notes
 
