@@ -102,4 +102,7 @@ Interestingly, in this algorithm specifically, each `next_j[i][j]` can only be o
 
 > *Added on July 13*.
 
-For the sake of completeness, here's a way to optimize this loop if `j` is unpredictable. Just use `pshufb` -- it's a vectorized index operation, and it has a latency of $1$ cycle, so you can't improve further without speculation. You can even use the "vectorized" part to compute the paths for each starting `j` in parallel, which in turn allows you to split the work between threads and then merge their results.
+Here's [another cool post](https://mazzo.li/posts/value-speculation.html) covering how this method can speed up linked list traversal.
+
+And for the sake of completeness, here's a way to optimize this loop if `j` is unpredictable. Just use `pshufb` -- it's a vectorized index operation, and it has a latency of $1$ cycle, so you can't improve further without speculation. You can even use the "vectorized" part to compute the paths for each starting `j` in parallel, which in turn allows you to split the work between threads and then merge their results.
+
