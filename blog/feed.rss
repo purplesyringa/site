@@ -7,10 +7,22 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Mon, 13 Jul 2026 10:59:42 GMT</lastBuildDate>
+		<lastBuildDate>Mon, 13 Jul 2026 16:51:46 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>Sorted rank coding</title>
+				<link>https://purplesyringa.moe/blog/./sorted-rank-coding/</link>
+				<description>&lt;p&gt;I need a place to describe this algorithm, since it seems to be undocumented on the &#39;net, so here it is.&lt;/p&gt;
+&lt;p&gt;SRC is a replacement for &lt;a href=&quot;https://en.wikipedia.org/wiki/Move-to-front_transform&quot;&gt;MTF&lt;/a&gt; in &lt;a href=&quot;https://en.wikipedia.org/wiki/Burrows%E2%80%93Wheeler_transform&quot;&gt;BWT&lt;/a&gt;-based compressors. &lt;a href=&quot;https://encode.su/threads/104-libBWT?p=8617&amp;amp;viewfull=1#post8617&quot;&gt;According to OpenBWT&lt;/a&gt;, it’s the best known MTF replacement measured by compression ratio, if you don’t want to use context modeling.&lt;/p&gt;
+</description>
+				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+				
+				<guid>https://purplesyringa.moe/blog/./sorted-rank-coding/</guid>
+				<pubDate>Mon, 13 Jul 2026 00:00:00 GMT</pubDate>
+			</item>
 		
 			<item>
 				<title>Quadrupling code performance with a &quot;useless&quot; if</title>
