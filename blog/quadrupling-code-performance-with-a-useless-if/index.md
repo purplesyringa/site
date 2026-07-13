@@ -96,3 +96,10 @@ In a more realistic experiment, I only witnessed a $2 \times$ increase, most lik
 ### Sidenote
 
 Interestingly, in this algorithm specifically, each `next_j[i][j]` can only be one of two values -- either `j` (most often), or some value *dependent only on `i`, but not `j`*. So I could replace each 8-element array `next_j[i]` with that value paired with a bitmask, which would automatically make the `if` semantically important and remove the need for `volatile` shenanigans. But that would likely slow down the code, since testing a variable bit is slower than a comparison (at least on x86).
+
+
+### Sidenote 2
+
+> *Added on July 13*.
+
+For the sake of completeness, here's a way to optimize this loop if `j` is unpredictable. Just use `pshufb` -- it's a vectorized index operation, and it has a latency of $1$ cycle, so you can't improve further without speculation. You can even use the "vectorized" part to compute the paths for each starting `j` in parallel, which in turn allows you to split the work between threads and then merge their results.
