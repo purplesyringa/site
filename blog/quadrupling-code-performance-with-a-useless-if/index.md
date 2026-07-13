@@ -1,6 +1,9 @@
 ---
 title: Quadrupling code performance with a "useless" if
 time: July 12, 2026
+discussion:
+    - https://lobste.rs/s/1an425/quadrupling_code_performance_with
+    - https://news.ycombinator.com/item?id=48889148
 intro: |
     So I was [optimizing a domain-specific compressor the other day](/blog/optimal-parse-with-phminposuw/), as one does.
 
