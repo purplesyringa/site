@@ -4,14 +4,14 @@ time: July 2, 2026
 intro: |
   This is a guest post by [Yuki](https://codeberg.org/sylfn/) about some tricks we use for Lua code compression in [our shared ComputerCraft pet project](https://github.com/purplesyringa/computercraft-programs/). I've written about [how we adapted bzip2 for this purpose](/blog/an-ode-to-bzip/) earlier; this story is an installment that takes place in the same context.
 
-  If you want to read more stuff from her, [here's an Atom feed](https://codeberg.org/sylfn/weblog/raw/branch/main/atom.xml) and [the blog](https://codeberg.org/sylfn/weblog).
-upstream: https://codeberg.org/sylfn/weblog/src/branch/main/posts/2026-07-02.md
+  If you want to read more stuff from her, [here's an Atom feed](https://sylfn.codeberg.page/atom.xml) and [the blog](https://sylfn.codeberg.page/).
+upstream: https://sylfn.codeberg.page/26w27a-optimizing-lua-string-literals/
 author: sylfn@disroot.org (Yuki Sireneva)
 ---
 
 This is a guest post by [Yuki](https://codeberg.org/sylfn/) about some tricks we use for Lua code compression in [our shared ComputerCraft pet project](https://github.com/purplesyringa/computercraft-programs/). I've written about [how we adapted bzip2 for this purpose](/blog/an-ode-to-bzip/) earlier; this story is an installment that takes place in the same context.
 
-If you want to read more stuff from her, [here's an Atom feed](https://codeberg.org/sylfn/weblog/raw/branch/main/atom.xml) and [the blog](https://codeberg.org/sylfn/weblog).
+If you want to read more stuff from her, [here's an Atom feed](https://sylfn.codeberg.page/atom.xml) and [the blog](https://sylfn.codeberg.page/).
 
 ### Context
 
