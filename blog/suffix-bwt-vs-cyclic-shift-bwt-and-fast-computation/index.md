@@ -142,6 +142,8 @@ Given these nuances, you might reasonably assume that everyone uses cyclic shift
 
 While suffix BWT is a little trickier and slower to decode, it's much faster to encode. There are plenty of fast approaches to [sorting suffixes](https://en.wikipedia.org/wiki/Suffix_array), the most practical one being the linear-time [SA-IS](https://zork.net/~st/jottings/sais.html) algorithm, but very few for cyclic shifts. Baby's first $\mathcal{O}(n \log n)$ [suffix array implementation](https://cp-algorithms.com/string/suffix-array.html#on-log-n-approach) works on cyclic shifts, sure, but I couldn't find any linear-time algorithm focusing on cyclic shifts in the literature.
 
+> *Added on July 18*: I found the paper [Computing the original eBWT faster, simpler, and with less memory](https://arxiv.org/abs/2106.11191), which describes a variation on SA-IS that applies to cyclic strings, but there doesn't seem to be an optimized implementation of it.
+
 So that's what most people do: import [libsais](https://github.com/IlyaGrebnov/libsais), construct the suffix array, drop the full suffix and prepend the empty suffix, and construct suffix BWT via `s[sa[i] - 1]`. Or call the `libsais_bwt` function that does the same thing.
 
 In many cases, that's perfectly fine. You can often prepend a `^` character that compares less than every other character, so that the full suffix ends up at index $0$ and you don't need to adjust `i`. Or append a `$` character, so that suffix BWT and cyclic shift BWT coincide up to the position of `$`, which ends up doing almost the same thing.
