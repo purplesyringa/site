@@ -1,6 +1,7 @@
 ---
 title: Optimizing Lua string literals to save 400 bytes
 time: July 2, 2026
+discussion: https://news.ycombinator.com/item?id=48896649
 intro: |
   This is a guest post by [Yuki](https://codeberg.org/sylfn/) about some tricks we use for Lua code compression in [our shared ComputerCraft pet project](https://github.com/purplesyringa/computercraft-programs/). I've written about [how we adapted bzip2 for this purpose](/blog/an-ode-to-bzip/) earlier; this story is an installment that takes place in the same context.
 

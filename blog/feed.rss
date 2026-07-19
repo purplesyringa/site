@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Tue, 14 Jul 2026 14:20:45 GMT</lastBuildDate>
+		<lastBuildDate>Sun, 19 Jul 2026 21:15:35 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -84,7 +84,7 @@
 &lt;p&gt;If you want to read more stuff from her, &lt;a href=&quot;https://sylfn.codeberg.page/atom.xml&quot;&gt;here’s an Atom feed&lt;/a&gt; and &lt;a href=&quot;https://sylfn.codeberg.page/&quot;&gt;the blog&lt;/a&gt;.&lt;/p&gt;
 </description>
 				<author>sylfn@disroot.org (Yuki Sireneva)</author>
-				
+				<comments>https://news.ycombinator.com/item?id=48896649</comments>
 				<guid>https://purplesyringa.moe/blog/guest/optimizing-lua-string-literals-to-save-400-bytes/</guid>
 				<pubDate>Thu, 02 Jul 2026 00:00:00 GMT</pubDate>
 			</item>
