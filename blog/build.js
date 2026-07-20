@@ -3,7 +3,7 @@ import childProcess from "node:child_process";
 import escapeHTML from "escape-html";
 import fs from "node:fs";
 import hljs from "highlight.js";
-import Jimp from "jimp";
+import { Jimp, loadFont, HorizontalAlign, VerticalAlign } from "jimp";
 import markdownit from "markdown-it";
 import markdownitContainer from "markdown-it-container";
 import markdownitTexMath from "markdown-it-texmath";
@@ -28,20 +28,20 @@ const relPath = path.relative(process.cwd(), articleDirectory);
 const locale = relPath.startsWith("ru/") ? "ru_RU" : "en_US";
 
 const image = await Jimp.read("og_template.png");
-const font = await Jimp.loadFont("../fonts/lilitaone.fnt");
-image.print(
+const font = await loadFont("../fonts/lilitaone.fnt");
+image.print({
 	font,
-	100,
-	100,
-	{
+	x: 100,
+	y: 100,
+	text: {
 		text: locale === "en_US" ? (parsedYamlHeader.ogTitle || parsedYamlHeader.title) : "purplesyringa's blog",
-		alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
-		alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE,
+		alignmentX: HorizontalAlign.CENTER,
+		alignmentY: VerticalAlign.MIDDLE,
 	},
-	1000,
-	430,
-);
-await image.writeAsync(`${articleDirectory}/og.png`);
+	maxWidth: 1000,
+	maxHeight: 430,
+});
+await image.write(`${articleDirectory}/og.png`);
 
 let spoilerId = 0;
 
