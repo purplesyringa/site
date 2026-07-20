@@ -14,6 +14,8 @@ This is a guest post by [Yuki](https://codeberg.org/sylfn/) about some tricks we
 
 If you want to read more stuff from her, [here's an Atom feed](https://sylfn.codeberg.page/atom.xml) and [the blog](https://sylfn.codeberg.page/).
 
+> Updated on 20 July: Fixed raw string serialization nuance
+
 ### Context
 
 <aside-start-here />
@@ -106,20 +108,40 @@ Raw strings, however...
 Raw strings
 are started by `[=[` (any number of `=`s)
 and terminated by `]=]` (same number of `=`s)
-and must contain neither their starter nor their terminator.
-This makes `[=[meow [=[ mrrp]=]` an invalid string, but `[[meow [=[ mrrp]]` is valid.
+and must not contain their terminator.
+Additionally, Lua 5.1 and Cobalt error when raw strings started by `[[` contain `[[`.
 
-One might think "yeah let's find the longest matches of `\[=+\[|\]=+\]` regex and one-up them,
-but that breaks on `[=[==[`.
+```lua
+[=[meow [=[ mrrp]=] -- valid
+[[meow [=[ mrrp]] -- valid
+[[meow [[ mrrp]] -- banned in Lua 5.1 and Cobalt
+```
 
-One might think "yeah let's filter matches of `[\[\]]=*` by next charactex and then one-up them,
+One might think "yeah let's find the longest matches of `\[\[|\]=*\]` regex and one-up them,
+but that breaks on `]=]==]`.
+
+One might think "yeah let's filter matches of `\[|\]=*` by next character and then one-up them,
 and that would work... mostly.
 
 Except that there's nuance.
 
 ### Nuance???
 
-Raw strings inside table keys are special and need a space, like C++ templates prior to C++11:
+That next character can be "we're at the end", as in `]`,
+and together with the closing `]]` it would form a closing `]]` one character early:
+
+```lua
+-- correct
+[=[]]=]
+-- wrong
+[[]]]
+```
+
+This problem happens only at the end of the string.
+I missed this nuance in the first version of the post.
+
+Additionally, raw strings inside table keys are special and need a space,
+like C++ templates prior to C++11:
 
 ```lua
 { [ [[meow]]] = 10 }
@@ -225,4 +247,4 @@ the indices of the bits we need to populate. This feels cleaner than using `% 7`
 
 Full string serialization code can be accessed [here][cc-p/ser/iter].
 
-[cc-p/ser/iter]: https://github.com/purplesyringa/computercraft-programs/blob/df3551a486e239f7761312ba8989560229ddd241/initrd-ng/initrd-core/src/ser.rs#L102
+[cc-p/ser/iter]: https://github.com/purplesyringa/computercraft-programs/blob/16d310f84e5fc52e5f41af4070789889dae2b6b5/initrd-ng/initrd-core/src/ser.rs#L104
