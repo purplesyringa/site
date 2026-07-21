@@ -116,7 +116,7 @@ This is a bad way to look at it. A more prospective interpretation is that this 
 
 ### Fixing decoder
 
-So we're going out on a limb and update the `while` condition in the decoder to the offset-independent `right - left < 1 << 24`:
+So we're going to go out on a limb and update the `while` condition in the decoder to the offset-independent `right - left < 1 << 24`:
 
 ```rust
 // Initialization
@@ -271,7 +271,7 @@ fn encode_bit(bit: bool, probability: f32) {
 }
 ```
 
-Do you see some similarity with the previous encoder in the `while` loop? `left_rest` is what used to be `bytes`, and `left_bottom` is what used to be `left`. So pretty much the only difference between the two decoders (except for the `while` condition) is that the new one adjusts its output when a carry occurs, while the old one never had carries:
+Do you see some similarity with the previous encoder in the `while` loop? `left_rest` is what used to be `bytes`, and `left_bottom` is what used to be `left`. So pretty much the only difference between the two encoders (except for the `while` condition) is that the new one adjusts its output when a carry occurs, while the old one never had carries:
 
 ```diff
 -left += mid;
