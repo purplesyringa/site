@@ -7,10 +7,31 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Sun, 19 Jul 2026 21:15:35 GMT</lastBuildDate>
+		<lastBuildDate>Wed, 22 Jul 2026 08:13:23 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>log is non-monotonous in PHP and Lua</title>
+				<link>https://purplesyringa.moe/blog/./log-is-non-monotonous-in-php-and-lua/</link>
+				<description>&lt;p&gt;If &lt;eq&gt;&lt;math&gt;&lt;mrow&gt;&lt;mi&gt;a&lt;/mi&gt;&lt;mo&gt;&amp;gt;&lt;/mo&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mi&gt;b&lt;/mi&gt;&lt;mo&gt;&amp;gt;&lt;/mo&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/eq&gt; and &lt;eq&gt;&lt;math&gt;&lt;mrow&gt;&lt;mi&gt;x&lt;/mi&gt;&lt;mo&gt;&amp;gt;&lt;/mo&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/eq&gt;, you can prove that &lt;eq&gt;&lt;math&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;log&lt;/mi&gt;&lt;mi&gt;a&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;⁡&lt;/mo&gt;&lt;mspace width=&quot;0.1667em&quot;&gt;&lt;/mspace&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mi&gt;x&lt;/mi&gt;&lt;mo&gt;&amp;lt;&lt;/mo&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;log&lt;/mi&gt;&lt;mi&gt;b&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;⁡&lt;/mo&gt;&lt;mspace width=&quot;0.1667em&quot;&gt;&lt;/mspace&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mi&gt;x&lt;/mi&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/eq&gt;. (As a reminder, &lt;eq&gt;&lt;math&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;log&lt;/mi&gt;&lt;mi&gt;a&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;⁡&lt;/mo&gt;&lt;mspace width=&quot;0.1667em&quot;&gt;&lt;/mspace&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mi&gt;x&lt;/mi&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/eq&gt; denotes the value &lt;eq&gt;&lt;math&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/math&gt;&lt;/eq&gt; such that &lt;eq&gt;&lt;math&gt;&lt;mrow&gt;&lt;mi&gt;x&lt;/mi&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msup&gt;&lt;mi&gt;a&lt;/mi&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/msup&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/eq&gt;.) This is very intuitive if you think about it: for “normal” numbers, the greater &lt;eq&gt;&lt;math&gt;&lt;mi&gt;a&lt;/mi&gt;&lt;/math&gt;&lt;/eq&gt;, the smaller &lt;eq&gt;&lt;math&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/math&gt;&lt;/eq&gt; you will need to get the same &lt;eq&gt;&lt;math&gt;&lt;mi&gt;x&lt;/mi&gt;&lt;/math&gt;&lt;/eq&gt;.&lt;/p&gt;
+&lt;p&gt;Yet if you ask PHP what it thinks, it will tell you you’re wrong in a couple rare cases:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-php&quot;&gt;&lt;span class=&quot;hljs-meta&quot;&gt;&amp;lt;?php&lt;/span&gt;
+&lt;span class=&quot;hljs-variable&quot;&gt;$x&lt;/span&gt; = &lt;span class=&quot;hljs-number&quot;&gt;2.93&lt;/span&gt;;
+&lt;span class=&quot;hljs-variable&quot;&gt;$a&lt;/span&gt; = &lt;span class=&quot;hljs-number&quot;&gt;10&lt;/span&gt; + &lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt; ** -&lt;span class=&quot;hljs-number&quot;&gt;49&lt;/span&gt;;
+&lt;span class=&quot;hljs-variable&quot;&gt;$b&lt;/span&gt; = &lt;span class=&quot;hljs-number&quot;&gt;10&lt;/span&gt;;
+&lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;assert&lt;/span&gt;(&lt;span class=&quot;hljs-variable&quot;&gt;$a&lt;/span&gt; &amp;gt; &lt;span class=&quot;hljs-variable&quot;&gt;$b&lt;/span&gt;);
+&lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;var_dump&lt;/span&gt;(&lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;hljs-variable&quot;&gt;$x&lt;/span&gt;, &lt;span class=&quot;hljs-variable&quot;&gt;$a&lt;/span&gt;) &amp;lt; &lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;hljs-variable&quot;&gt;$x&lt;/span&gt;, &lt;span class=&quot;hljs-variable&quot;&gt;$b&lt;/span&gt;));
+&lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;var_dump&lt;/span&gt;(&lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;hljs-variable&quot;&gt;$x&lt;/span&gt;, &lt;span class=&quot;hljs-variable&quot;&gt;$a&lt;/span&gt;) == &lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;hljs-variable&quot;&gt;$x&lt;/span&gt;, &lt;span class=&quot;hljs-variable&quot;&gt;$b&lt;/span&gt;));
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To be clear, this is &lt;strong&gt;not&lt;/strong&gt; the usual floating-point inaccuracy. Everyone already knows floating-point operations are imprecise and it wouldn’t be fun to blog about. This example was deliberately engineered to trigger something different.&lt;/p&gt;
+</description>
+				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+				
+				<guid>https://purplesyringa.moe/blog/./log-is-non-monotonous-in-php-and-lua/</guid>
+				<pubDate>Wed, 22 Jul 2026 00:00:00 GMT</pubDate>
+			</item>
 		
 			<item>
 				<title>Sorted rank coding</title>
