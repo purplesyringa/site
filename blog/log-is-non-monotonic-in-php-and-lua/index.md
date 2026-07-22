@@ -1,5 +1,5 @@
 ---
-title: log is non-monotonous in PHP and Lua
+title: log is non-monotonic in PHP and Lua
 time: July 22, 2026
 intro: |
     If $a > b > 1$ and $x > 1$, you can prove that $\log_a x < \log_b x$. (As a reminder, $\log_a x$ denotes the value $t$ such that $x = a^t$.) This is very intuitive if you think about it: for "normal" numbers, the greater $a$, the smaller $t$ you will need to get the same $x$.
@@ -52,7 +52,7 @@ To find why this happens, let's discuss how languages *usually* implement `math.
 
 <aside-start-here />
 
-`libm`, the library that provides [transcendental functions](https://en.wikipedia.org/wiki/Transcendental_function), exposes multiple functions for computing logarithms: `log`, `log10`, `log2`, etc. Each function handles a single base: `log` uses base $e$, `log10` uses base $10$, and so on. While there are no guarantees on their precision, they are usually pretty good, and at least monotonous ([brute-force](https://play.rust-lang.org/?version=stable&mode=release&edition=2024&gist=0451f055ca6b29eb8f24287f7f699dea)).
+`libm`, the library that provides [transcendental functions](https://en.wikipedia.org/wiki/Transcendental_function), exposes multiple functions for computing logarithms: `log`, `log10`, `log2`, etc. Each function handles a single base: `log` uses base $e$, `log10` uses base $10$, and so on. While there are no guarantees on their precision, they are usually pretty good, and at least monotonic ([brute-force](https://play.rust-lang.org/?version=stable&mode=release&edition=2024&gist=0451f055ca6b29eb8f24287f7f699dea)).
 
 :::aside
 "Usually" because `libc` has multiple independent implementations.
