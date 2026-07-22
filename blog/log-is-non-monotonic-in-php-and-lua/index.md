@@ -48,15 +48,15 @@ log(243 ** 3, 3 ** 3) != log(243, 3)
 
 ### Log base
 
-To find why this happens, let's discuss how languages *usually* implement `math.log`.
-
 <aside-start-here />
 
-`libm`, the library that provides [transcendental functions](https://en.wikipedia.org/wiki/Transcendental_function), exposes multiple functions for computing logarithms: `log`, `log10`, `log2`, etc. Each function handles a single base: `log` uses base $e$, `log10` uses base $10$, and so on. While there are no guarantees on their precision, they are usually pretty good, and at least monotonic ([brute-force](https://play.rust-lang.org/?version=stable&mode=release&edition=2024&gist=0451f055ca6b29eb8f24287f7f699dea)).
+To find why this happens, let's discuss how languages *usually* implement `math.log`.
 
 :::aside
 "Usually" because `libc` has multiple independent implementations.
 :::
+
+`libm`, the library that provides [transcendental functions](https://en.wikipedia.org/wiki/Transcendental_function), exposes multiple functions for computing logarithms: `log`, `log10`, `log2`, etc. Each function handles a single base: `log` uses base $e$, `log10` uses base $10$, and so on. While there are no guarantees on their precision, they are usually pretty good, and at least monotonic ([brute-force](https://play.rust-lang.org/?version=stable&mode=release&edition=2024&gist=0451f055ca6b29eb8f24287f7f699dea)).
 
 But there is no function for an arbitrary base, so languages providing a two-argument `log` have to cheat. Mathematically, $\log_a x = \frac{\ln x}{\ln a}$, so you can compute any logarithm from two base-$e$ ones.
 
