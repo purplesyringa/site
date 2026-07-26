@@ -175,22 +175,22 @@ alice:say_hello() <span class=hljs-comment>-- compiles just fine, errors in runt
 <span class=hljs-keyword>import</span> { <span class="hljs-title class_">Test</span> } <span class=hljs-keyword>from</span> <span class=hljs-string>"./a.ts"</span>
 <span class=hljs-comment>// or</span>
 <span class=hljs-keyword>import</span> <span class=hljs-keyword>type</span> { <span class="hljs-title class_">Test</span> } <span class=hljs-keyword>from</span> <span class=hljs-string>"./a.ts"</span>
-</code></pre><p><code>import</code> compiles to a runtime import and is useful for types with runtime presence, such as classes. <code>import type</code> is zero-cost and erased during transpilation.<p>Lua doesn’t have named exports: each module returns only one value, so named returns are simulated by returning a table. But Teal’s equivalent of <code>import type</code> doesn’t recognize the idiomatic way to construct it!<pre><code class=language-lua><span class=hljs-comment>-- a.ts</span>
+</code></pre><p><code>import</code> compiles to a runtime import and is useful for types with runtime presence, such as classes. <code>import type</code> is zero-cost and erased during transpilation.<p>Lua doesn’t have named exports: each module returns only one value, so named returns are simulated by returning a table. But Teal’s equivalent of <code>import type</code> doesn’t recognize the idiomatic way to construct it!<pre><code class=language-lua><span class=hljs-comment>-- a.tl</span>
 <span class=hljs-keyword>local</span> interface Test <span class=hljs-keyword>end</span>
 <span class=hljs-keyword>return</span> {
     Test = Test,
 }
 
-<span class=hljs-comment>-- b.ts</span>
+<span class=hljs-comment>-- b.tl</span>
 <span class=hljs-comment>-- Error: 'require' did not return a type, got record (Test: Test)</span>
 <span class=hljs-keyword>local</span> <span class=hljs-built_in>type</span> Test = <span class=hljs-built_in>require</span>(<span class=hljs-string>"a"</span>).Test
-</code></pre><p>Instead, you have to define a temporary record and return <em>that</em>:<pre><code class=language-lua><span class=hljs-comment>-- a.ts</span>
+</code></pre><p>Instead, you have to define a temporary record and return <em>that</em>:<pre><code class=language-lua><span class=hljs-comment>-- a.tl</span>
 <span class=hljs-keyword>local</span> record A
     interface Test <span class=hljs-keyword>end</span>
 <span class=hljs-keyword>end</span>
 
 <span class=hljs-keyword>return</span> A
-</code></pre><p><code>record</code>s are just tables in disguise, so you can still populate them with runtime values via <code>function A.f()</code> and <code>A.x = ...</code> – but you can’t use a table literal directly.<p>But the fact that <code>record</code>s can be <code>return</code>ed from modules means that some types imported with <code>local type</code> exist in runtime, which is completely unlike TypeScript:<pre><code class=language-lua><span class=hljs-comment>-- b.ts</span>
+</code></pre><p><code>record</code>s are just tables in disguise, so you can still populate them with runtime values via <code>function A.f()</code> and <code>A.x = ...</code> – but you can’t use a table literal directly.<p>But the fact that <code>record</code>s can be <code>return</code>ed from modules means that some types imported with <code>local type</code> exist in runtime, which is completely unlike TypeScript:<pre><code class=language-lua><span class=hljs-comment>-- b.tl</span>
 <span class=hljs-keyword>local</span> <span class=hljs-built_in>type</span> Test = <span class=hljs-built_in>require</span>(<span class=hljs-string>"a"</span>).Test
 <span class=hljs-keyword>return</span> Test
 

@@ -374,13 +374,13 @@ import type { Test } from "./a.ts"
 Lua doesn't have named exports: each module returns only one value, so named returns are simulated by returning a table. But Teal's equivalent of `import type` doesn't recognize the idiomatic way to construct it!
 
 ```lua
--- a.ts
+-- a.tl
 local interface Test end
 return {
     Test = Test,
 }
 
--- b.ts
+-- b.tl
 -- Error: 'require' did not return a type, got record (Test: Test)
 local type Test = require("a").Test
 ```
@@ -388,7 +388,7 @@ local type Test = require("a").Test
 Instead, you have to define a temporary record and return *that*:
 
 ```lua
--- a.ts
+-- a.tl
 local record A
     interface Test end
 end
@@ -401,7 +401,7 @@ return A
 But the fact that `record`s can be `return`ed from modules means that some types imported with `local type` exist in runtime, which is completely unlike TypeScript:
 
 ```lua
--- b.ts
+-- b.tl
 local type Test = require("a").Test
 return Test
 
