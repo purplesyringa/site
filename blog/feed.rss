@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Sun, 26 Jul 2026 12:31:18 GMT</lastBuildDate>
+		<lastBuildDate>Sun, 26 Jul 2026 14:12:06 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -23,6 +23,17 @@
 				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
 				
 				<guid>https://purplesyringa.moe/blog/./impressions-of-teal/</guid>
+				<pubDate>Sun, 26 Jul 2026 00:00:00 GMT</pubDate>
+			</item>
+		
+			<item>
+				<title>Thoughts on &quot;SIMD in Pure Python&quot;</title>
+				<link>https://purplesyringa.moe/blog/./thoughts-on-simd-in-pure-python/</link>
+				<description>&lt;p&gt;I found the post &lt;a href=&quot;https://www.da.vidbuchanan.co.uk/blog/python-swar.html&quot;&gt;SIMD in Pure Python&lt;/a&gt; by &lt;em&gt;retr0id&lt;/em&gt; about optimizing Game of Life and thought it’s a good opportunity to yap about SWAR. Make sure to read that post before continuing here! Or at least skim it.&lt;/p&gt;
+</description>
+				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+				
+				<guid>https://purplesyringa.moe/blog/./thoughts-on-simd-in-pure-python/</guid>
 				<pubDate>Sun, 26 Jul 2026 00:00:00 GMT</pubDate>
 			</item>
 		
