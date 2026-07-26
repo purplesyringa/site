@@ -35,7 +35,7 @@ has_at_least_3_neighbors = summed + MASK_5
 
 ```python
 has_at_least_4_neighbors = summed + MASK_4
-has_at_least_5_neighbors = summed + MASK_4
+has_at_least_5_neighbors = summed + MASK_3
 has_at_least_7_neighbors = summed + MASK_1
 has_at_least_8_neighbors = summed # free!
 ```
@@ -51,7 +51,7 @@ has_7_neighbors = has_at_least_7_neighbors & ~has_at_least_8_neighbors
 Oh, and you don't need all the negations, e.g.:
 
 ```python
-~has_at_least_5_neighbors = -has_at_least_5_neighbors - 1 = ~MASK_4 - summed # one op, not two
+~has_at_least_5_neighbors = -has_at_least_5_neighbors - 1 = ~MASK_3 - summed # one op, not two
 ```
 
 Compared to the original 15 operations, this is either 8 or 6, depending on how you count `&~`. Not as crazy of an improvement as in the 5-bit case, but still cool.
