@@ -59,3 +59,5 @@ Compared to the original 15 operations, this is either 8 or 6, depending on how 
 ---
 
 I'd love to tell you where these tricks originated from, but I don't know! The earliest mention I could find is [this Usenet post back in 1987](https://groups.google.com/forum/#!original/comp.lang.c/2HtQXvg7iKc/xOJeipH6KLMJ) by Alan Mycroft. If any digital archaeologist can figure out if this was known earlier, I'd love to amend the post.
+
+And if you're looking for a practical application of these tricks, check out [my earlier post on `serde_json`](../i-sped-up-serde-json-strings-by-20-percent/).
