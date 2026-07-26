@@ -1,0 +1,240 @@
+<!doctypehtml><html prefix="og: http://ogp.me/ns#"lang=en_US><meta charset=utf-8><meta content=width=device-width,initial-scale=1 name=viewport><title>Impressions of Teal | purplesyringa's blog</title><link href=../../favicon.ico?v=2 rel=icon><link href=../../all.css rel=stylesheet><link href=../../blog.css rel=stylesheet><link href=../../vendor/Temml-Local.css rel=stylesheet><link crossorigin href=https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&family=Slabo+27px&display=swap rel=stylesheet><link href=../../fonts/webfont.css rel=stylesheet><link media="screen and (prefers-color-scheme: dark"href=../../vendor/atom-one-dark.min.css rel=stylesheet><link media="screen and (prefers-color-scheme: light"href=../../vendor/a11y-light.min.css rel=stylesheet><link title="Blog posts"href=../../blog/feed.rss rel=alternate type=application/rss+xml><meta content="Impressions of Teal"property=og:title><meta content=article property=og:type><meta content=https://purplesyringa.moe/blog/impressions-of-teal/og.png property=og:image><meta content=https://purplesyringa.moe/blog/impressions-of-teal/ property=og:url><meta content="About two months ago, I found the Teal programming language, which describes itself as a statically-typed dialect of Lua. It transpiles to Lua and runs typecheck on the developer’s machine, so it fills roughly the same niche as TypeScript. It’s used by quite a few projects, including LuaRocks and inspect.
+For better or worse, I am trying to write Lua without feeling like it’s year 2010, and Teal promised to be suitable for this purpose.
+This post is a retrospective on my experience: what went right and what, in my opinion, could be improved. Mostly the latter.
+Disclaimer: while I stumbled upon multiple issues, I deeply respect everyone who works on this project, and I consider it a valuable tool. No offence intended."property=og:description><meta content=en_US property=og:locale><meta content="purplesyringa's blog"property=og:site_name><meta content=summary_large_image name=twitter:card><meta content=https://purplesyringa.moe/blog/impressions-of-teal/og.png name=twitter:image><script data-website-id=0da1961d-43f2-45cc-a8e2-75679eefbb69 defer src=https://zond.tei.su/script.js></script><body><header><div class=viewport-container><div class=media><a href=https://github.com/purplesyringa><img alt=GitHub src=../../images/github-mark-white.svg></a></div><h1><a href=/>purplesyringa</a></h1><nav><a href=../..>about</a><a class=current href=../../blog/>blog</a><a href=../../sink/>kitchen sink</a></nav></div></header><section><div class=viewport-container><h2>Impressions of Teal</h2><time>July 26, 2026</time><p>About two months ago, I found <a href=https://teal-language.org/>the Teal programming language</a>, which describes itself as a statically-typed dialect of Lua. It transpiles to Lua and runs typecheck on the developer’s machine, so it fills roughly the same niche as TypeScript. It’s used by quite a few projects, including <a href=https://github.com/luarocks/luarocks>LuaRocks</a> and <a href=https://github.com/kikito/inspect.lua>inspect</a>.<p>For better or worse, I <em>am</em> trying to write Lua without feeling like it’s year 2010, and Teal promised to be suitable for this purpose.<p>This post is a retrospective on my experience: what went right and what, in my opinion, could be improved. Mostly the latter.<p>Disclaimer: while I stumbled upon multiple issues, I deeply respect everyone who works on this project, and I consider it a valuable tool. No offence intended.<h3>Annotations</h3><p>I think the main selling point of Teal is just how simple its annotations are. Look at the example on the website:<pre><code class=language-lua><span class=hljs-keyword>local</span> <span class=hljs-function><span class=hljs-keyword>function</span> <span class=hljs-title>add</span><span class=hljs-params>(a: number, b: number)</span></span>: number
+    <span class=hljs-keyword>return</span> a + b
+<span class=hljs-keyword>end</span>
+
+<span class=hljs-keyword>local</span> s: number = add(<span class=hljs-number>1</span>, <span class=hljs-number>2</span>)
+<span class=hljs-built_in>print</span>(s)
+</code></pre><p>It’s concise and non-intrusive, like TypeScript. Compare it to <a href=https://luals.github.io/wiki/annotations/>LuaLS annotations</a>, which offers a competitive Lua typing project:<pre><code class=language-lua><span class=hljs-comment>---@param a number</span>
+<span class=hljs-comment>---@param b number</span>
+<span class=hljs-comment>---@return number</span>
+<span class=hljs-keyword>local</span> <span class=hljs-function><span class=hljs-keyword>function</span> <span class=hljs-title>add</span><span class=hljs-params>(a, b)</span></span>
+    <span class=hljs-keyword>return</span> a + b
+<span class=hljs-keyword>end</span>
+
+<span class=hljs-comment>---@type number</span>
+<span class=hljs-keyword>local</span> s = add(<span class=hljs-number>1</span>, <span class=hljs-number>2</span>)
+<span class=hljs-built_in>print</span>(s)
+</code></pre><p>Nasty!<h3>Soundness</h3><p>This is where its obvious advantages end, though. As we’ll find out in a bit, the simplicity is quite fragile.<p>I’m a Rust-pilled developer, so I expect some degree of soundness from type systems. “Soundness” means that if the type checker says the program is fine, you shouldn’t encounter type errors in runtime. Sounds easy?<p>But soundness is fundamentally difficult to achieve in dynamic languages due to <a href=https://en.wikipedia.org/wiki/Type_variance>variance</a>. The issue arises when mutability and subtypes collide. Here’s an example:<ul><li>Suppose that some function <code>f</code> takes a parameter <code>x: number[]</code>.<li>Outside the function, create a list <code>a: integer[]</code>. You should seemingly be able to pass it as an argument to <code>f</code>, since every integer is a number: <code>f(a)</code>.<li>From the perspective of <code>f</code>, <code>x</code> is <code>number[]</code>, so it can append <code>1.5</code> to the list.<li>But this causes the variable <code>a: integer[]</code> to contain a non-integer value <code>1.5</code>!</ul><p>The only real way to solve this is with <code>readonly</code> annotations, like in TypeScript. Teal doesn’t offer anything of similar functionality. It also doesn’t have <code>nil</code> safety, not even opt-in, so e.g. all table accesses return <code>T</code>, not <code>T | nil</code>.<p>I won’t hold this specific issue against Teal, as even TypeScript <a href=https://www.typescriptlang.org/tsconfig/#strictFunctionTypes>supports bivariance by default</a> and doesn’t have <code>nil</code> safety for arrays, but it does hint that Teal considers soundness – which I’d call the main point of typing – an afterthought.<h3>Unions</h3><p>Teal has very rudimentary support for discriminated unions (or sum types, or <code>enum</code>s with fields). For comparison, here’s what that looks like in Rust:<pre><code class=language-rust><span class=hljs-keyword>enum</span> <span class="hljs-title class_">Enum</span> {
+    Variant1 {
+        a: <span class=hljs-type>String</span>,
+    },
+    Variant2 {
+        a: <span class=hljs-type>i32</span>.
+        b: <span class=hljs-type>i32</span>,
+    },
+}
+</code></pre><p>…and in TypeScript, which simulates them with union types:<pre><code class=language-typescript><span class=hljs-keyword>interface</span> <span class="hljs-title class_">Variant1</span> {
+    <span class=hljs-attr>type</span>: <span class=hljs-string>"variant1"</span>
+    <span class=hljs-attr>a</span>: <span class=hljs-built_in>string</span>
+}
+
+<span class=hljs-keyword>interface</span> <span class="hljs-title class_">Variant2</span> {
+    <span class=hljs-attr>type</span>: <span class=hljs-string>"variant2"</span>
+    <span class=hljs-attr>a</span>: <span class=hljs-built_in>number</span>
+    <span class=hljs-attr>b</span>: <span class=hljs-built_in>number</span>
+}
+
+<span class=hljs-keyword>type</span> <span class="hljs-title class_">Enum</span> = <span class="hljs-title class_">Variant1</span> | <span class="hljs-title class_">Variant2</span>
+</code></pre><p>Note that we have to explicitly add a field of a <a href=https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#literal-types>literal type</a> to disambiguate types in runtime. Teal supports neither first-class sum types, nor literal types, so you have to tell it how to disambiguate variants explicitly – otherwise you can’t make a type union:<pre><code class=language-lua><span class=hljs-keyword>local</span> record Variant1
+where <span class=hljs-built_in>self</span>.<span class=hljs-built_in>type</span> == <span class=hljs-string>"variant1"</span>
+    <span class=hljs-built_in>type</span>: <span class=hljs-built_in>string</span>
+    a: <span class=hljs-built_in>string</span>
+<span class=hljs-keyword>end</span>
+
+<span class=hljs-keyword>local</span> record Variant2
+where <span class=hljs-built_in>self</span>.<span class=hljs-built_in>type</span> == <span class=hljs-string>"variant2"</span>
+    <span class=hljs-built_in>type</span>: <span class=hljs-built_in>string</span>
+    a: number
+    b: number
+<span class=hljs-keyword>end</span>
+
+<span class=hljs-keyword>local</span> <span class=hljs-built_in>type</span> Enum = Variant1 | Variant2
+</code></pre><p><code>where</code> denotes a <a href=https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates>type predicate</a>. It can contain arbitrary code, and the compiler doesn’t validate that the definition actually makes sense. So you have to write the equivalent of <code>unsafe</code> code every time you want to define a discriminated union!<p>Furthermore, Teal can’t validate that newly created instances of <code>Variant*</code> have the right <code>type</code>s, because <code>type</code> is just a <code>string</code>. To enforce that, you have to use single-variant <code>enum</code>s to simulate some aspects of literal types:<pre><code class=language-lua><span class=hljs-keyword>local</span> enum Variant1Type <span class=hljs-string>"variant1"</span> <span class=hljs-keyword>end</span>
+<span class=hljs-keyword>local</span> record Variant1
+where <span class=hljs-built_in>self</span>.<span class=hljs-built_in>type</span> == <span class=hljs-string>"variant1"</span> <span class=hljs-comment>-- still required, but at least type-checked</span>
+    <span class=hljs-built_in>type</span>: Variant1Type
+    a: <span class=hljs-built_in>string</span>
+<span class=hljs-keyword>end</span>
+
+...
+
+<span class=hljs-comment>-- Error: string "variatn1" is not a variant of Variant1Type</span>
+<span class=hljs-keyword>local</span> x: Variant1 = {
+    <span class=hljs-built_in>type</span> = <span class=hljs-string>"variatn1"</span>, <span class=hljs-comment>-- hypothetical misspelling</span>
+    a = <span class=hljs-string>"b"</span>,
+}
+</code></pre><p>Suffice to say, this is messier than it should be. But all the underlying mechanisms are already there, so hopefully Teal supports sum types as a first-class citizen one day.<h3>is</h3><p>Teal adds two operators to the language: <code>as</code> and <code>is</code>. <code>as</code> is an unchecked typecast that gets optimized away in runtime, and <code>is</code> checks if a variable has a given runtime type.<p>The main use for <code>is</code> is pattern-matching union types:<pre><code class=language-lua><span class=hljs-keyword>local</span> <span class=hljs-function><span class=hljs-keyword>function</span> <span class=hljs-title>f</span><span class=hljs-params>(x: Enum)</span></span>
+    <span class=hljs-comment>-- Doesn't work, says `x` has type `Variant1 | Variant2` even inside `if` branches.</span>
+    <span class=hljs-keyword>if</span> x.<span class=hljs-built_in>type</span> == <span class=hljs-string>"variant1"</span> <span class=hljs-keyword>then</span>
+        <span class=hljs-keyword>local</span> y: Variant1 = x
+    <span class=hljs-keyword>else</span>
+        <span class=hljs-keyword>local</span> y: Variant2 = x
+    <span class=hljs-keyword>end</span>
+
+    <span class=hljs-comment>-- Works correctly, substitutes the predicate in `where`.</span>
+    <span class=hljs-keyword>if</span> x is Variant1 <span class=hljs-keyword>then</span>
+        <span class=hljs-keyword>local</span> y: Variant1 = x
+    <span class=hljs-keyword>else</span>
+        <span class=hljs-keyword>local</span> y: Variant2 = x
+    <span class=hljs-keyword>end</span>
+<span class=hljs-keyword>end</span>
+</code></pre><p>Its semantics don’t seem to be thought-out well, though. <code>is T</code> resolves the type to <code>T</code> in any context, not just for union types:<pre><code class=language-lua><span class=hljs-keyword>local</span> <span class=hljs-function><span class=hljs-keyword>function</span> <span class=hljs-title>f</span><span class=hljs-params>(x: any)</span></span>
+    <span class=hljs-keyword>if</span> x is Variant1 <span class=hljs-keyword>then</span>
+        <span class=hljs-keyword>local</span> y: Variant1 = x
+    <span class=hljs-keyword>end</span>
+<span class=hljs-keyword>end</span>
+</code></pre><p>But in this context, <code>x</code> is not even guaranteed to be a table, so the access <code>x.type == "variant1"</code> substituted from <code>where</code> may fail. While I would expect the <em>result</em> of <code>where</code> to be trusted blindly, I wouldn’t expect the calculation itself to be trusted, since it’s type-checked – but, apparently, not strictly enough.<p>Furthermore, in this context, <code>is</code> works even on types without <code>where</code> – those get an implicit <code>where type(self) == "table"</code>, meaning that <code>is</code> itself is effectively unsound:<pre><code class=language-lua><span class=hljs-keyword>local</span> record Record
+<span class=hljs-keyword>end</span>
+
+<span class=hljs-keyword>local</span> <span class=hljs-function><span class=hljs-keyword>function</span> <span class=hljs-title>f</span><span class=hljs-params>(x: any)</span></span>
+    <span class=hljs-keyword>if</span> x is Record <span class=hljs-keyword>then</span>
+        <span class=hljs-keyword>local</span> y: Record = x
+        <span class=hljs-comment>-- Assumes `y` is `Record` even though the runtime check only verifies it's a table.</span>
+    <span class=hljs-keyword>end</span>
+<span class=hljs-keyword>end</span>
+</code></pre><p>In addition, <code>x is any</code> lowers to <code>type(x) == "table"</code> (which is strange because <code>any</code> is supposed to represent any value), and <code>x is nil</code> lowers to <code>x == nil</code>, despite the fact that comparison operators can be overloaded.<p>While each issue can be solved individually (and I reported some of them), their multitude makes me question the design decisions that allowed them to manifest.<h3>Metatables</h3><p>Lua implements OOP with <a href=https://en.wikipedia.org/wiki/Prototype-based_programming>prototypes</a>. To create an object, you need to do two things:<pre><code class=language-lua><span class=hljs-comment>-- 1. Create a data-only table with the right fields.</span>
+<span class=hljs-keyword>local</span> obj = {
+    a = <span class=hljs-number>1</span>,
+    b = <span class=hljs-number>2</span>,
+    ...
+}
+
+<span class=hljs-comment>-- 2. Set its metatable.</span>
+<span class=hljs-built_in>setmetatable</span>(obj, {
+    <span class=hljs-built_in>__index</span> = Type,
+})
+</code></pre><p>The metatable controls many properties of the object, including how attribute accesses to absent keys are resolved. This allows us to share method definitions across object instances:<pre><code class=language-lua><span class=hljs-comment>-- Define methods once.</span>
+<span class=hljs-keyword>local</span> Person = {
+    say_hello = <span class=hljs-function><span class=hljs-keyword>function</span><span class=hljs-params>(self)</span></span> <span class=hljs-built_in>print</span>(<span class=hljs-string>"Hello"</span>, <span class=hljs-built_in>self</span>.name) <span class=hljs-keyword>end</span>,
+}
+
+<span class=hljs-comment>-- Create multiple objects whose attribute accesses fall back to `Person`.</span>
+<span class=hljs-keyword>local</span> alice = { name = <span class=hljs-string>"Alice"</span> }
+<span class=hljs-built_in>setmetatable</span>(alice, { <span class=hljs-built_in>__index</span> = Person })
+<span class=hljs-keyword>local</span> bob = { name = <span class=hljs-string>"Bob"</span> }
+<span class=hljs-built_in>setmetatable</span>(bob, { <span class=hljs-built_in>__index</span> = Person })
+
+<span class=hljs-comment>-- `alice` doesn't have a `say_hello` field, but `alice` inherits from `Person`, which does, so</span>
+<span class=hljs-comment>-- that's what `alice.say_hello` resolves to.</span>
+alice.say_hello(alice)
+<span class=hljs-comment>-- A colon instead of a dot is syntax sugar for passing the receiver as the first argument.</span>
+bob:say_hello()
+</code></pre><p>The states of the object after <code>setmetatable</code> and before <code>setmetatable</code> are fundamentally different: one enables method calls, overloaded operators, and static properties, while the other one doesn’t. But Teal doesn’t see the difference:<pre><code class=language-lua><span class=hljs-keyword>local</span> record Person
+    name: <span class=hljs-built_in>string</span>
+<span class=hljs-keyword>end</span>
+
+<span class=hljs-function><span class=hljs-keyword>function</span> <span class=hljs-title>Person:say_hello</span><span class=hljs-params>()</span></span>
+    <span class=hljs-built_in>print</span>(<span class=hljs-string>"Hello"</span>, <span class=hljs-built_in>self</span>.name)
+<span class=hljs-keyword>end</span>
+
+<span class=hljs-keyword>local</span> alice: Person = { name = <span class=hljs-string>"alice"</span> }
+<span class=hljs-comment>-- Oops, forgot `setmetatable`!</span>
+alice:say_hello() <span class=hljs-comment>-- compiles just fine, errors in runtime</span>
+</code></pre><p>This is quite a surprising omission. While <code>setmetatable(obj, metatable)</code> mutates <code>obj</code>, it also returns <code>obj</code>, so you could plausibly imagine Teal introducing a signature like<pre><code class=language-lua><span class=hljs-built_in>setmetatable</span>: <span class=hljs-function><span class=hljs-keyword>function</span><<span class=hljs-title>T</span>><span class=hljs-params>(onlyfields&LTT>, metatable&LTT>)</span></span>: T
+</code></pre><p>…and inferring the type of <code>{ name = "alice" }</code> as <code>onlyfields&LTPerson></code>, not <code>Person</code>. In fact, Teal already supports the <code>metatable&LTT></code> type, so this feels like an honest omission – but I can’t help but get surprised that such a basic thing got forgotten.<h3>Effects</h3><p>Lua offers coroutines, which can be used to implement iterators and async functions. A coroutine is created by <code>coroutine.create(closure)</code>, and any call <code>coroutine.yield(...)</code> nested arbitrarily deep in <code>closure</code> sends a value upward to the coroutine owner (e.g. a <code>for</code> loop or an async runtime). The owner can then resume the coroutine from after the yield point.<p>As every other time someone “solves” <a href=https://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/>the coloring problem</a>, it turns out that static typing brings it back, but worse. Let’s look at a concrete example:<pre><code class=language-lua><span class=hljs-keyword>local</span> <span class=hljs-function><span class=hljs-keyword>function</span> <span class=hljs-title>f</span><span class=hljs-params>()</span></span>
+    <span class=hljs-built_in>coroutine</span>.<span class=hljs-built_in>yield</span>(<span class=hljs-number>1</span>)
+<span class=hljs-keyword>end</span>
+
+<span class=hljs-keyword>local</span> <span class=hljs-function><span class=hljs-keyword>function</span> <span class=hljs-title>g</span><span class=hljs-params>()</span></span>
+    f()
+<span class=hljs-keyword>end</span>
+
+<span class=hljs-keyword>local</span> <span class=hljs-function><span class=hljs-keyword>function</span> <span class=hljs-title>h</span><span class=hljs-params>()</span></span>
+    <span class=hljs-keyword>local</span> coro = <span class=hljs-built_in>coroutine</span>.<span class=hljs-built_in>create</span>(g)
+    <span class=hljs-keyword>local</span> ok, value = <span class=hljs-built_in>coroutine</span>.<span class=hljs-built_in>resume</span>(coro)
+    <span class=hljs-built_in>assert</span>(ok <span class=hljs-keyword>and</span> value == <span class=hljs-number>1</span>)
+<span class=hljs-keyword>end</span>
+</code></pre><p><code>f</code> yields a <code>number</code>, but that fact is not represented in its signature: <code>f</code> takes no parameters and returns no values, so there’s nothing to annotate. By the time we get to <code>h</code>, we’ve already passed through <code>g</code>, which has forgotten that it yields anything at all (the body of <code>g</code> doesn’t mention <code>coroutine</code> once, and <code>f</code>’s signature doesn’t mention it yields either), so we’ve lost all type information. Then how do we type <code>value</code> in <code>h</code>?<p>We need an annotation that survives nested calls. That’s called an <em>effect</em>. We could imagine an effect <code>yields &LTtype></code> and a requirement that every call to a function with <code>yields &LTtype></code> must itself occur in a function annotated with <code>yields &LTtype></code>:<pre><code class=language-lua><span class=hljs-keyword>local</span> <span class=hljs-function><span class=hljs-keyword>function</span> <span class=hljs-title>f</span><span class=hljs-params>()</span></span> yields number
+    <span class=hljs-built_in>coroutine</span>.<span class=hljs-built_in>yield</span>(<span class=hljs-number>1</span>) <span class=hljs-comment>-- requires `f` to have `yields number`</span>
+<span class=hljs-keyword>end</span>
+
+<span class=hljs-keyword>local</span> <span class=hljs-function><span class=hljs-keyword>function</span> <span class=hljs-title>g</span><span class=hljs-params>()</span></span> yields number
+    f() <span class=hljs-comment>-- requires `g` to have `yields number`</span>
+<span class=hljs-keyword>end</span>
+
+<span class=hljs-keyword>local</span> <span class=hljs-function><span class=hljs-keyword>function</span> <span class=hljs-title>h</span><span class=hljs-params>()</span></span>
+    <span class=hljs-keyword>local</span> coro = <span class=hljs-built_in>coroutine</span>.<span class=hljs-built_in>create</span>(g) <span class=hljs-comment>-- takes `function() yields T` for a generic `T`</span>
+    <span class=hljs-keyword>local</span> ok, value = <span class=hljs-built_in>coroutine</span>.<span class=hljs-built_in>resume</span>(coro) <span class=hljs-comment>-- returns `boolean, T`</span>
+    <span class=hljs-built_in>assert</span>(ok <span class=hljs-keyword>and</span> value == <span class=hljs-number>1</span>)
+<span class=hljs-keyword>end</span>
+</code></pre><p>Teal doesn’t have an effect system: it just marks <code>coroutine.resume</code> and <code>coroutine.yield</code> as taking/returning <code>any</code> values (TypeScript’s <code>unknown</code>) and requires the user to insert type casts. That’s quite unfortunate, since even this rudimentary form of effects would make coroutine-based iterators sound.<p>This also means that <code>coroutine.wrap</code> has to be annotated as <code>function&LTF>(F): F</code>, unsoundly ignoring yielded values. <code>function(function(): R yields T): (function(): R | T)</code> would be a better signature if Teal supported effects (still not quite correct due to arguments, but that requires typestate).<p>While coroutines are rare in computational Lua, they are used extensively in GUIs and server logic. I wouldn’t call supporting it a <em>must</em>, but event-driven software is an important niche, and it would be great to see this limitation fixed.<h3>Numbers</h3><p>Teal has a strange relationship with numbers, though it’s arguably Lua’s fault.<p>Modern Lua has two numeric types: <code>integer</code> and <code>float</code>. They behave completely differently, e.g. <code>integer</code>s wrap-around on overflow and <code>float</code>s work like floats do. Teal exposes <code>integer</code> as a subtype of <code>number</code>, but doesn’t offer <code>float</code>, meaning that this function cannot be annotated safely:<pre><code class=language-lua><span class=hljs-keyword>local</span> <span class=hljs-function><span class=hljs-keyword>function</span> <span class=hljs-title>f</span><span class=hljs-params>(a: number, b: number)</span></span>
+    <span class=hljs-keyword>if</span> a > <span class=hljs-number>0</span> <span class=hljs-keyword>and</span> b > <span class=hljs-number>0</span> <span class=hljs-keyword>then</span>
+        <span class=hljs-comment>-- Valid for `float`s, invalid for `integer`s.</span>
+        <span class=hljs-built_in>assert</span>(a + b > <span class=hljs-number>0</span>)
+    <span class=hljs-keyword>end</span>
+<span class=hljs-keyword>end</span>
+</code></pre><p>It quickly becomes clear that Teal inconsistently treats <code>integer</code> as meaning “any <code>number</code> that is whole” or “<code>integer</code> according to Lua rules” in different places:<ul><li>The type system seemingly follows the former interpretation.<li><code>string.char</code> takes an <code>integer</code> value, and <code>math.floor</code> and <code>math.modf</code> return <code>integer</code> values in the first sense.<li><code>next</code> takes an <code>integer</code> and <code>tonumber</code> returns an <code>integer</code> in the second sense.<li><code>local x: integer = 1.0</code> is a type error, as per Lua semantics.<li><code>x is integer</code> is lowered to <code>math.type(x) == "integer"</code>, which uses Lua semantics.<li>…except on older Lua versions, where the polyfill follows the first interpretation.</ul><h3>stdlib</h3><p>On a positive note, there is a surprisingly small amount of issues in the standard library annotations. We’ve already seen issues with <code>coroutine</code> methods, <code>setmetatable</code>, and <code>integer</code>s, but the remaining problems are very minor:<ul><li><p><code>math.max</code> has an overload <code>function(any...): any</code>, but Lua doesn’t allow comparing e.g. strings to numbers. I don’t know why it’s needed.</p><li><p><code>utf8</code> methods take <code>number</code>s instead of <code>integer</code>s for some reason.</p><li><p><code>debug.setlocal</code> takes a parameter of type <code>any</code>, i.e. top type, which means “you can pass any value here without type checking”, while what it actually tries to say is “no type is provably correct”, i.e. the bottom type, which Teal lacks.</p><li><p>Metamethods on <code>metatable&LTT></code> are declared with generics instead of existentials, but the compiler seems to special-case them to work correctly.</p></ul><h3>Modules</h3><p>Using a type defined in a different file requires a manual import. The design is similar to TypeScript, but there are subtle differences between JavaScript and Lua that make this choice questionable.<p>In TypeScript, you can export a named type and import it in one of two ways:<pre><code class=language-typescript><span class=hljs-comment>// a.ts</span>
+<span class=hljs-keyword>export</span> <span class=hljs-keyword>interface</span> <span class="hljs-title class_">Test</span> {
+    <span class=hljs-attr>field</span>: <span class=hljs-built_in>string</span>
+}
+
+<span class=hljs-comment>// b.ts</span>
+<span class=hljs-keyword>import</span> { <span class="hljs-title class_">Test</span> } <span class=hljs-keyword>from</span> <span class=hljs-string>"./a.ts"</span>
+<span class=hljs-comment>// or</span>
+<span class=hljs-keyword>import</span> <span class=hljs-keyword>type</span> { <span class="hljs-title class_">Test</span> } <span class=hljs-keyword>from</span> <span class=hljs-string>"./a.ts"</span>
+</code></pre><p><code>import</code> compiles to a runtime import and is useful for types with runtime presence, such as classes. <code>import type</code> is zero-cost and erased during transpilation.<p>Lua doesn’t have named exports: each module returns only one value, so named returns are simulated by returning a table. But Teal’s equivalent of <code>import type</code> doesn’t recognize the idiomatic way to construct it!<pre><code class=language-lua><span class=hljs-comment>-- a.ts</span>
+<span class=hljs-keyword>local</span> interface Test <span class=hljs-keyword>end</span>
+<span class=hljs-keyword>return</span> {
+    Test = Test,
+}
+
+<span class=hljs-comment>-- b.ts</span>
+<span class=hljs-comment>-- Error: 'require' did not return a type, got record (Test: Test)</span>
+<span class=hljs-keyword>local</span> <span class=hljs-built_in>type</span> Test = <span class=hljs-built_in>require</span>(<span class=hljs-string>"a"</span>).Test
+</code></pre><p>Instead, you have to define a temporary record and return <em>that</em>:<pre><code class=language-lua><span class=hljs-comment>-- a.ts</span>
+<span class=hljs-keyword>local</span> record A
+    interface Test <span class=hljs-keyword>end</span>
+<span class=hljs-keyword>end</span>
+
+<span class=hljs-keyword>return</span> A
+</code></pre><p><code>record</code>s are just tables in disguise, so you can still populate them with runtime values via <code>function A.f()</code> and <code>A.x = ...</code> – but you can’t use a table literal directly.<p>But the fact that <code>record</code>s can be <code>return</code>ed from modules means that some types imported with <code>local type</code> exist in runtime, which is completely unlike TypeScript:<pre><code class=language-lua><span class=hljs-comment>-- b.ts</span>
+<span class=hljs-keyword>local</span> <span class=hljs-built_in>type</span> Test = <span class=hljs-built_in>require</span>(<span class=hljs-string>"a"</span>).Test
+<span class=hljs-keyword>return</span> Test
+
+<span class=hljs-comment>-- compiles to:</span>
+<span class=hljs-keyword>local</span> Test = <span class=hljs-built_in>require</span>(<span class=hljs-string>"a"</span>).Test
+<span class=hljs-keyword>return</span> Test
+</code></pre><p>This matters because the compiler and the runtime resolve modules differently: when importing external libraries, Teal will use the <code>.d.tl</code> type annotations, and Lua will use the untyped <code>.lua</code> code. If the <code>.d.tl</code> file contains helper type definitions that don’t exist in <code>.lua</code>, you may get errors in runtime despite using <code>local type</code>, without a warning.<p>So <code>local type = require</code> is less powerful than <code>local = require</code>, but at the same time it’s not guaranteed to be compile-time-only. Then why does it exist? Optimization aside, there seems to be just one reason: <code>interface</code>s don’t have a runtime representation, so <code>local = require</code> fails for them, forcing the use of <code>local type = require</code>.<p>None of this screams “great design” to me. If materializing types is considered cheap, <code>interface</code>s with nested types should be materialized as well, so that <code>nil</code> accesses on reexports are avoided and <code>local type</code> becomes unnecessary. And if it’s expensive, <code>local type</code> should never materialize automatically.<h3>Syntax</h3><p>This section is a little subjective, but hopefully convincing.<p>Lua has a simple grammar: Lua code can be parsed pretty much without lookahead and is easy to generate. There are many compatible Lua parsers and runtimes.<p>Teal grammar looks similar to Lua, but it’s much subtler, and the docs don’t make that obvious. Here’s one example.<p><code>record</code>, <code>interface</code>, <code>global</code>, etc. are contextual keywords in Teal, meaning that they can also be used as variable names. This is necessary for compatibility with pre-existing Lua code. So a Teal parser needs to disambiguate between <code>local record</code> and <code>local record Name ... end</code>, but in general that’s impossible:<pre><code class=language-lua><span class=hljs-comment>-- Consider this snippet:</span>
+<span class=hljs-keyword>local</span> record global interface X <span class=hljs-keyword>end</span> <span class=hljs-keyword>end</span>
+
+<span class=hljs-comment>-- Interpretation #1: a local named `record`, followed by an empty global interface named `X`, and</span>
+<span class=hljs-comment>-- then the parent scope is closed.</span>
+    <span class=hljs-keyword>local</span> record
+    global interface X <span class=hljs-keyword>end</span>
+<span class=hljs-keyword>end</span>
+
+<span class=hljs-comment>-- Interpretation #2: a local record named `global`, containing an empty interface `X`.</span>
+<span class=hljs-keyword>local</span> record global
+    interface X <span class=hljs-keyword>end</span>
+<span class=hljs-keyword>end</span>
+
+<span class=hljs-comment>-- Ambiguous example -- which line closes the `do` scope?</span>
+<span class=hljs-keyword>do</span>
+<span class=hljs-keyword>local</span> record global interface X <span class=hljs-keyword>end</span> <span class=hljs-keyword>end</span>
+<span class=hljs-keyword>local</span> record global interface X <span class=hljs-keyword>end</span> <span class=hljs-keyword>end</span>
+</code></pre><p>The official compiler uses subtle heuristics, so writing a Teal parser requires copying them precisely. This is the reason why <a href=https://github.com/purplesyringa/orangetl>my partial reimplementation of Teal</a> is so long.<p>A simpler difference is that Teal is whitespace-sensitive, unlike Lua. The same unannotated code, transpiled with the same Teal compiler, can behave differently depending on whether the file is named <code>test.tl</code> or <code>test.lua</code>:<pre><code class=language-lua>f()
+(g)()
+</code></pre><ul><li>Teal interpretation: <code>f(); g()</code><li>Lua interpretation: <code>f()(g)()</code> (three chained/curried calls).</ul><p>Teal assumes lines beginning with <code>(</code> start a new statement, Lua treats them as the continuation of a previous expression. Leading <code>(</code> is rare in Lua, so this seldom causes trouble, but in Teal it’s common to see <code>(obj as T).f()</code>, so they had to adjust it. I wish they changed the syntax of <code>as</code> instead, perhaps to <code>cast&LTT>(obj).f()</code> or <code>obj.as&LTT>.f()</code>.<p>Yet this whitespace sensitivity is not applied in a different context where it would help. Both <code>function</code> and <code>function()</code> are valid types in Teal, but <code>function(</code> is always parsed greedily without consideration for whitespace:<pre><code class=language-lua><span class=hljs-keyword>local</span> x: <span class=hljs-function><span class=hljs-keyword>function</span> 
+<span class=hljs-params>(f)</span></span>() <span class=hljs-comment>-- syntax error, because this is parsed as `function(f)()`</span>
+</code></pre><p>Other than that, it’s just wild how inconsistent the syntax is compared to Lua:<ul><li>As in Lua, a variable can’t be used inside its own definition: in <code>local x = f(x)</code>, the second <code>x</code> refers to the previous value of <code>x</code>. Yet the name of a type is visible inside its definition.<li><code>enum</code>s are declared as <code>enum Name "a" "b" "c" end</code>, while Lua always separates values with commas or semicolons.<li><code>{T}</code> and <code>is {T}</code> are both valid in <code>record</code> definitions and indicate that the array part has type <code>T</code>. One is presented in the docs and the other is used in the compiler.<li>The optional sign <code>?</code> can be specified both before and after the parameter name.<li>Both <code>userdata</code> and <code>is userdata</code> compile, but only one has the right semantics.</ul><h3>Focus</h3><p>Given such glaring issues in the core parts of the language – <code>tl</code>, I assume, initially stood for Typed Lua, and there are quite a few problems with both the “typed” part and the “Lua” part – one would hope that the maintenance efforts were focused on strengthening the foundation.<p>In practice, though, Teal tries to do <em>so much more</em>, with varying results:<ul><li>It has <em>two</em> different macro systems: <ul><li>Newer, syntax-based Rust-like macros.<li>Older macro expressions, which are pretty much just functions inlined in compile time. They were ostensibly introduced for type predicates, but their scope has increased since then, together with bugginess. Furthermore, the existence of <code>macroexp</code> methods makes code generation type-dependent.</ul><li>It has a compatibility mechanism for targeting every version from Lua 5.1 to Lua 5.4. It uses <a href=https://github.com/lunarmodules/lua-compat-5.3>compat53</a> under the hood, but it <em>also</em> inlines a few definitions separately, and in some cases the two disagree.<li>Teal does not follow upstream syntax changes – it has some semantics that Lua 5.5 dropped, so there are now <em>forward</em>-compatibility features as well, and their syntax for <code>global</code> differs from Lua 5.5.</ul><p>Teal seems to be more of an experimentation ground than a reliable tool – it’s a kitchen sink of ideas, some better than others. It’s more of a general-purpose, all-around Lua preprocessor than a typed superset.<p>And that’s fine! Despite quite a few problems and limitations, I learned a lot from studying Teal, and I’m glad that it exists. It’s clearly useful at least to some people, and it removes a fair share of footguns. Maybe it’s not a great typing language, but it’s versatile enough that you can (mis)use it for some wild stuff.<p>But I wish I didn’t have to learn this lesson the hard way. Teal should advertise its purpose and capabilities better – in light of the above, the <a href=https://teal-language.org/>website</a> and the <a href=https://teal-language.org/book/latest/>documentation</a> are frankly misleading:<blockquote><p>Teal is a statically-typed dialect of Lua. It extends Lua with type annotations, allowing you to specify arrays, maps and records, as well as interfaces, union types and generics.</blockquote><p>Yes, but: it also adds a ton of stuff unrelated to type annotations, and the listed type system features are underbaked.<blockquote><p>It aims to fill a niche similar to that of TypeScript in the JavaScript world, but adhering to Lua’s spirit of minimalism, portability and embeddability.</blockquote><p>Yes, but: transpilation requiring type checking is not TypeScript-like, a language with two macro systems is not minimalistic, and the bolted-upon compatibility module doesn’t enable portable <em>semantics</em>.<blockquote><p>Here is a quick taste of what Teal code looks like:<pre><code class=language-lua><span class=hljs-keyword>local</span> <span class=hljs-function><span class=hljs-keyword>function</span> <span class=hljs-title>add</span><span class=hljs-params>(a: number, b: number)</span></span>: number
+   <span class=hljs-keyword>return</span> a + b
+<span class=hljs-keyword>end</span>
+
+<span class=hljs-keyword>local</span> s = add(<span class=hljs-number>1</span>, <span class=hljs-number>2</span>)
+<span class=hljs-built_in>print</span>(s)
+</code></pre></blockquote><p>Yes, but: realistic Teal code has type definitions and OOP patterns, which quickly get uglier than the example hints at.<h3>Conclusion</h3><p>I think Teal is having a bit of an identity crisis, but it refuses to admit that. We would all be better off if it made a decision on what it’s trying to grow into. That’s difficult, and perhaps not a priority for development – but I think it would do wonders for adoption and production readiness.</div></section><footer><div class=viewport-container><h2>Made with my own bare hands (why.)</h2></div></footer><script>window.addEventListener("keydown", e => {
+				if (e.key === "Enter") {
+					if (e.ctrlKey) {
+						window.open("https://github.com/purplesyringa/site/edit/master/blog/impressions-of-teal/index.md", "_blank");
+					} else if (
+						e.target.type === "checkbox"
+						&& e.target.parentNode
+						&& e.target.parentNode.className === "expansible-code"
+					) {
+						e.target.click();
+					}
+				}
+			});</script>

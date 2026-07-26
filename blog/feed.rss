@@ -7,10 +7,24 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Wed, 22 Jul 2026 16:02:05 GMT</lastBuildDate>
+		<lastBuildDate>Sun, 26 Jul 2026 12:31:18 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>Impressions of Teal</title>
+				<link>https://purplesyringa.moe/blog/./impressions-of-teal/</link>
+				<description>&lt;p&gt;About two months ago, I found &lt;a href=&quot;https://teal-language.org/&quot;&gt;the Teal programming language&lt;/a&gt;, which describes itself as a statically-typed dialect of Lua. It transpiles to Lua and runs typecheck on the developer’s machine, so it fills roughly the same niche as TypeScript. It’s used by quite a few projects, including &lt;a href=&quot;https://github.com/luarocks/luarocks&quot;&gt;LuaRocks&lt;/a&gt; and &lt;a href=&quot;https://github.com/kikito/inspect.lua&quot;&gt;inspect&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;For better or worse, I &lt;em&gt;am&lt;/em&gt; trying to write Lua without feeling like it’s year 2010, and Teal promised to be suitable for this purpose.&lt;/p&gt;
+&lt;p&gt;This post is a retrospective on my experience: what went right and what, in my opinion, could be improved. Mostly the latter.&lt;/p&gt;
+&lt;p&gt;Disclaimer: while I stumbled upon multiple issues, I deeply respect everyone who works on this project, and I consider it a valuable tool. No offence intended.&lt;/p&gt;
+</description>
+				<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+				
+				<guid>https://purplesyringa.moe/blog/./impressions-of-teal/</guid>
+				<pubDate>Sun, 26 Jul 2026 00:00:00 GMT</pubDate>
+			</item>
 		
 			<item>
 				<title>log is non-monotonic in PHP and Lua</title>
