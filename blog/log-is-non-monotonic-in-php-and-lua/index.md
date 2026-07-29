@@ -35,7 +35,7 @@ var_dump(log($x, $a) == log($x, $b));
 
 To be clear, this is **not** the usual floating-point inaccuracy. Everyone already knows floating-point operations are imprecise and it wouldn't be fun to blog about. This example was deliberately engineered to trigger something different.
 
-It would be completely natural if the produced result indicated $\log_a x = \log_b x$ instead of $<$: not all real numbers can be exactly represented as floats, so rounding can cause close results to appear equal. In fact, on the same numbers, Python's `math.log` produces the "equals" result. In PHP, however, the result somehow *flips*. And in Lua, too! But not in Rust or C#. All on the same machine and OS! How come?
+It would be completely natural if the produced result indicated $\log_a x = \log_b x$ instead of $<$: not all real numbers can be exactly represented as floats, so rounding can cause close results to appear equal. In fact, on the same numbers, Python's `math.log` produces the "equals" result. In PHP, however, the result somehow *flips*. And in Lua, too! But not in Rust, or C#, or even LuaJIT. All on the same machine and OS! How come?
 
 Also note that I'm only changing the base: if I also changed the argument, I would find lots of counterexamples that work in any language, e.g.:
 
@@ -71,7 +71,7 @@ Even more weird is the fact that if you actually *compute* $\ln a$ and $\ln b$ i
 
 You probably already see the reason. $b = 10$ is a pretty specific counter-example, and there's a suspicious `log10`-shaped hole in the double-`log` precision error.
 
-PHP and Lua don't *always* use the $\frac{\ln x}{\ln a}$ formula. For the bases that `libm` implements directly, i.e. base $10$ and base $2$, they call the corresponding functions (`log10` and `log2`) without going through the natural logarithm. So the code in question doesn't compare two $\frac{\ln x}{\ln a}$ calculations, but rather `log(x) / log(10 + eps)` to `log10(x)`. Since these are completely different methods, it shouldn't be a surprise that they may result in errors in different directions.
+PHP and Lua (excluding LuaJIT) don't *always* use the $\frac{\ln x}{\ln a}$ formula. For the bases that `libm` implements directly, i.e. base $10$ and base $2$, they call the corresponding functions (`log10` and `log2`) without going through the natural logarithm. So the code in question doesn't compare two $\frac{\ln x}{\ln a}$ calculations, but rather `log(x) / log(10 + eps)` to `log10(x)`. Since these are completely different methods, it shouldn't be a surprise that they may result in errors in different directions.
 
 The intention is good: when applicable, `log10` provides a more precise, faster result. But combining two evaluation methods results in a discontinuity at the boundary, which breaks reasonable assumptions that the methods satisfy separately!
 
