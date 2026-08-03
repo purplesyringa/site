@@ -1,6 +1,9 @@
 ---
 title: log is non-monotonic in PHP and Lua
 time: July 22, 2026
+discussion:
+- https://news.ycombinator.com/item?id=49021756
+- https://lobste.rs/s/pa54mh/log_is_non_monotonic_php_lua
 intro: |
     If $a > b > 1$ and $x > 1$, you can prove that $\log_a x < \log_b x$. (As a reminder, $\log_a x$ denotes the value $t$ such that $x = a^t$.) This is very intuitive if you think about it: for "normal" numbers, the greater $a$, the smaller $t$ you will need to get the same $x$.
 
