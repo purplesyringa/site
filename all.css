@@ -116,6 +116,16 @@ code {
 	word-wrap: break-word;
 }
 
+abbr {
+	text-decoration-color: var(--color-accent);
+}
+abbr::after {
+	display: inline-block;
+	content: "*";
+	padding-left: 0.1em;
+	color: var(--color-accent);
+}
+
 .viewport-container {
 	width: 40rem;
 	margin-right: 15rem;
