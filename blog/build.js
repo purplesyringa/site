@@ -25,7 +25,10 @@ const [_, yamlHeader, markdown] = fileText.match(/^---\n([\s\S]*?)\n---\n([\s\S]
 const parsedYamlHeader = YAML.parse(yamlHeader);
 
 const relPath = path.relative(process.cwd(), articleDirectory);
-const locale = relPath.startsWith("ru/") ? "ru_RU" : "en_US";
+// Determine languages separately, as some they don't have an easy mapping, e.g. ru-Cyrl-BY/ru_BY,
+// or ja-Kana/ja_JP, or zh-yue/yue_HK? (Cantonese), or zh-Latn-CN-pinyin/zh_CN, or tok/??_??
+const locale = relPath.startsWith("ru/") ? "ru-RU" : "en-US";
+const og_locale = relPath.startsWith("ru/") ? "ru_RU" : "en_US";
 
 const image = await Jimp.read("og_template.png");
 const font = await loadFont("../fonts/lilitaone.fnt");
@@ -34,7 +37,7 @@ image.print({
 	x: 100,
 	y: 100,
 	text: {
-		text: locale === "en_US" ? (parsedYamlHeader.ogTitle || parsedYamlHeader.title) : "purplesyringa's blog",
+		text: locale === "en-US" ? (parsedYamlHeader.ogTitle || parsedYamlHeader.title) : "purplesyringa's blog",
 		alignmentX: HorizontalAlign.CENTER,
 		alignmentY: VerticalAlign.MIDDLE,
 	},
@@ -130,6 +133,7 @@ html = html.replace(/{{ path }}/g, escapeHTML(relPath));
 html = html.replace(/{{ description }}/g, escapeHTML(stripHtml(md.render(parsedYamlHeader.intro || "")).result));
 html = html.replace(/{{ time }}/g, escapeHTML(parsedYamlHeader.time));
 html = html.replace(/{{ locale }}/g, locale);
+html = html.replace(/{{ og_locale }}/g, og_locale);
 
 const discussion = typeof parsedYamlHeader.discussion === "string" ? [parsedYamlHeader.discussion] : parsedYamlHeader.discussion || [];
 html = html.replace(
