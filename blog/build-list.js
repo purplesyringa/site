@@ -74,16 +74,17 @@ let content = posts.map(post => {
 	const translation = Object.entries(post.translation || {}).map(([language, url]) => {
 		return `<a class="discussion" href="${escapeHTML(url)}"><i class="nf nf-md-translate" title="Translation"></i> ${language}</a>`;
 	}).join("");
+	const locale = post.path.startsWith("ru/") ? "ru-RU" : "en-US";
 	return `
 		<div class="post-entry">
-			<h2><a href="${escapeHTML(post.path)}/">${escapeHTML(post.title)}</a></h2>
+			<h2 lang="${escapeHTML(locale)}"><a href="${escapeHTML(post.path)}/">${escapeHTML(post.title)}</a></h2>
 			<time>${escapeHTML(post.time)}</time>
 			${guest}
 			${discussion}
 			${translation}
-			${md.render(post.intro || "")}
+			<div lang="${escapeHTML(locale)}">${md.render(post.intro || "")}</div>
 			<p>
-				<a href="${escapeHTML(post.path)}/">Keep reading</a>
+				<a href="${escapeHTML(post.path)}/" lang="en-US">Keep reading</a>
 			</p>
 		</div>
 	`;
