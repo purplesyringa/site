@@ -110,16 +110,19 @@ fs.writeFileSync("feed.rss", `<?xml version="1.0" encoding="UTF-8" ?>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
-		${posts.map(post => `
-			<item>
-				<title>${escapeHTML(post.title)}</title>
-				<link>${escapeHTML(`https://purplesyringa.moe/blog/${post.path}/`)}</link>
-				<description>${escapeHTML(md.render(post.intro || ""))}</description>
-				<author>${escapeHTML(post.author || "me@purplesyringa.moe (Alisa Sireneva)")}</author>
-				${post.discussion.length > 0 ? `<comments>${escapeHTML(post.discussion[0])}</comments>` : ""}
-				<guid>${escapeHTML(`https://purplesyringa.moe/blog/${post.path}/`)}</guid>
-				<pubDate>${post.parsedDate.toUTCString()}</pubDate>
-			</item>
-		`).join("")}
+		${posts.map(post => {
+			const locale = post.path.startsWith("ru/") ? "ru-RU" : "en-US";
+			return `
+				<item>
+					<title xml:lang="${escapeHTML(locale)}">${escapeHTML(post.title)}</title>
+					<link hreflang="${escapeHTML(locale)}">${escapeHTML(`https://purplesyringa.moe/blog/${post.path}/`)}</link>
+					<description xml:lang="${escapeHTML(locale)}">${escapeHTML(md.render(post.intro || ""))}</description>
+					<author>${escapeHTML(post.author || "me@purplesyringa.moe (Alisa Sireneva)")}</author>
+					${post.discussion.length > 0 ? `<comments>${escapeHTML(post.discussion[0])}</comments>` : ""}
+					<guid>${escapeHTML(`https://purplesyringa.moe/blog/${post.path}/`)}</guid>
+					<pubDate>${post.parsedDate.toUTCString()}</pubDate>
+				</item>
+			`;
+		}).join("")}
 	</channel>
 </rss>`);
