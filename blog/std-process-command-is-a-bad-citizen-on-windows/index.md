@@ -34,7 +34,7 @@ But if there's a call following option (2), there's a problem. Let's say you wan
 Can accidentally inherited handles cause issues? Why, yes:
 
 - If you drop privileges, inherited handles can grant untrusted code access to protected resources.
-- Keeping a handle alive longer then intended can leak memory.
+- Keeping a handle alive longer than intended can leak memory.
 - Files are usually undeletable while a handle to them exists, causing issues both to the user and your own program.
 
 So, quiz time! Which option, out of the three, do you think Rust's `stdlib` uses?
