@@ -7,11 +7,23 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Sun, 16 Aug 2026 08:09:10 GMT</lastBuildDate>
+		<lastBuildDate>Tue, 18 Aug 2026 18:03:17 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
 		
+				<item>
+					<title xml:lang="en-US">Race-free handle inheritance, maybe</title>
+					<link hreflang="en-US">https://purplesyringa.moe/blog/./race-free-handle-inheritance-maybe/</link>
+					<description xml:lang="en-US">&lt;p&gt;&lt;a href=&quot;../blog/std-process-command-is-a-bad-citizen-on-windows/&quot;&gt;Last time&lt;/a&gt;, I found out that Rust’s implementation of subprocesses on Windows makes it impossible to spawn children that inherit selected handles without race conditions. Even if you do everything by the book, a simultaneous call to &lt;code&gt;std::process::Command&lt;/code&gt; can inherit handles meant for another process. Since &lt;a href=&quot;https://github.com/rust-lang/rust/issues/161158#issuecomment-5306592901&quot;&gt;this problem cannot be solved at the root&lt;/a&gt; due to backwards compatibility hazards, at least not universally, I started looking for a different option.&lt;/p&gt;
+&lt;p&gt;As a reminder, the problem is that to spawn a child that inherits a handle &lt;code&gt;h&lt;/code&gt;, you have to temporarily set the “inheritable” flag for &lt;code&gt;h&lt;/code&gt;, but that causes &lt;code&gt;std::process::Command&lt;/code&gt; to inherit it as well. So we can’t set the “inheritable” flag for any handle, ever.&lt;/p&gt;
+</description>
+					<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+					
+					<guid>https://purplesyringa.moe/blog/./race-free-handle-inheritance-maybe/</guid>
+					<pubDate>Tue, 18 Aug 2026 00:00:00 GMT</pubDate>
+				</item>
+			
 				<item>
 					<title xml:lang="en-US">std::process::Command is a bad citizen on Windows</title>
 					<link hreflang="en-US">https://purplesyringa.moe/blog/./std-process-command-is-a-bad-citizen-on-windows/</link>
