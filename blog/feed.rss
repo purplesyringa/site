@@ -7,11 +7,24 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Tue, 18 Aug 2026 18:35:03 GMT</lastBuildDate>
+		<lastBuildDate>Wed, 19 Aug 2026 12:31:07 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
 		
+				<item>
+					<title xml:lang="en-US">DuplicateHandle works on sockets, mostly</title>
+					<link hreflang="en-US">https://purplesyringa.moe/blog/./duplicatehandle-works-on-sockets-mostly/</link>
+					<description xml:lang="en-US">&lt;p&gt;WinAPI represents most “things” as &lt;code&gt;HANDLE&lt;/code&gt;s: files, cross-process mutexes, threads, jobs, etc. Sockets, however, are a notable exception: while on Unix systems they’re no different from files, Windows denotes them by a different type: &lt;code&gt;SOCKET&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The reason for this is that sockets are a userland abstraction provided by Winsock2, rather than a kernel primitive. At least on paper. As such, operating on them as on handles is incorrect. For example, MSDN says that even if casting a &lt;code&gt;SOCKET&lt;/code&gt; to &lt;code&gt;HANDLE&lt;/code&gt; and calling &lt;code&gt;DuplicateHandle&lt;/code&gt; works, it &lt;a href=&quot;https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-duplicatehandle#:~:text=Also%2C%20using%20DuplicateHandle%20interferes%20with%20internal%20reference%20counting%20on%20the%20underlying%20object&quot;&gt;messes up some refcounts&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;This post explores just how far this difference lies, and when you can get away with using handle methods for sockets.&lt;/p&gt;
+</description>
+					<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+					
+					<guid>https://purplesyringa.moe/blog/./duplicatehandle-works-on-sockets-mostly/</guid>
+					<pubDate>Wed, 19 Aug 2026 00:00:00 GMT</pubDate>
+				</item>
+			
 				<item>
 					<title xml:lang="en-US">Race-free handle inheritance, maybe</title>
 					<link hreflang="en-US">https://purplesyringa.moe/blog/./race-free-handle-inheritance-maybe/</link>
