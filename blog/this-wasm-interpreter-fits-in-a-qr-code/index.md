@@ -31,7 +31,7 @@ I had insane fun working on it, and now I want to share what made this possible.
 
 Thanks to:
 
-- [Yuki](https://github.com/sylfn) for writing a tool for the project and rubber-duck debugging.
+- [Yuki](https://codeberg.org/sylfn) for writing a tool for the project and rubber-duck debugging.
 - [Genbox](https://github.com/Genbox) for contributing the idea of using a QR code.
 
 
@@ -643,7 +643,7 @@ Are these thorough optimizations and hand-written assembly enough? Nope: at this
 
 Demosceners are used to packing their demos. Programs compressed with tools like [Crinkler](https://github.com/runestubbe/Crinkler) don't just use external decoders like `gzip` -- that would be cheating, and compression ratio suffers anyway. Instead, it packs a fine-tuned [entropy decoder](https://en.wikipedia.org/wiki/Entropy_coding) written in assembly. It's a little slow to decode, even slower to encode, and requires plenty of memory, but it gets the job done.
 
-But Crinkler targets 32-bit Windows, while I'm using 64-bit Linux. And I can't change this: wasting space on 64-bit arithmetic sucks as much as importing syscalls from NTDLL. I needed a new Crinkler, and the lazy bum I am, I poked [Yuki](https://github.com/sylfn) to do it for me.
+But Crinkler targets 32-bit Windows, while I'm using 64-bit Linux. And I can't change this: wasting space on 64-bit arithmetic sucks as much as importing syscalls from NTDLL. I needed a new Crinkler, and the lazy bum I am, I poked [Yuki](https://codeberg.org/sylfn) to do it for me.
 
 The details are a little too technical, so I won't cover them in the entirety -- if you're interested, [this post](https://code4k.blogspot.com/2010/12/crinkler-secrets-4k-intro-executable.html) covers the Crinkler design, which is very similar to ours.
 
