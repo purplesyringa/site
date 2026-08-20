@@ -7,11 +7,27 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Wed, 19 Aug 2026 12:31:07 GMT</lastBuildDate>
+		<lastBuildDate>Thu, 20 Aug 2026 16:44:29 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
 		
+				<item>
+					<title xml:lang="en-US">accept() and socket inheritance</title>
+					<link hreflang="en-US">https://purplesyringa.moe/blog/./accept-and-socket-inheritance/</link>
+					<description xml:lang="en-US">&lt;p&gt;This post is about Windows.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;../duplicatehandle-works-on-sockets-mostly/&quot;&gt;Last time&lt;/a&gt; we saw that sockets are pretty much just handles, and as such, they can be inherited. If a process creates an inheritable socket and runs &lt;code&gt;CreateProcess&lt;/code&gt; with the appropriate parameters, its children will retain access to the socket. This has obvious security and functional implications, so it’s important to be able to control which sockets are inheritable and which ones aren’t.&lt;/p&gt;
+&lt;p&gt;The most obvious way to create a socket is the BSD-style &lt;a href=&quot;https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-socket&quot;&gt;&lt;code&gt;socket&lt;/code&gt; function&lt;/a&gt;. The docs for &lt;code&gt;socket&lt;/code&gt; don’t mention this, but it creates an inheritable socket. If you want to make a non-inheritable one, &lt;a href=&quot;https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasocketw&quot;&gt;use &lt;code&gt;WSASocketW&lt;/code&gt;&lt;/a&gt;. It extends &lt;code&gt;socket&lt;/code&gt; with multiple parameters, including &lt;code&gt;dwFlags&lt;/code&gt;, which controls, among other things, inheritance:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;WSA_FLAG_NO_HANDLE_INHERIT&lt;/code&gt; – Create a socket that is non-inheritable. A socket handle created by the &lt;code&gt;WSASocket&lt;/code&gt; or the &lt;code&gt;socket&lt;/code&gt; function is inheritable by default. When this flag is set, the socket handle is non-inheritable.&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+					<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+					
+					<guid>https://purplesyringa.moe/blog/./accept-and-socket-inheritance/</guid>
+					<pubDate>Thu, 20 Aug 2026 00:00:00 GMT</pubDate>
+				</item>
+			
 				<item>
 					<title xml:lang="en-US">DuplicateHandle works on sockets, mostly</title>
 					<link hreflang="en-US">https://purplesyringa.moe/blog/./duplicatehandle-works-on-sockets-mostly/</link>
