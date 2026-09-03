@@ -7,11 +7,25 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Thu, 20 Aug 2026 16:44:29 GMT</lastBuildDate>
+		<lastBuildDate>Thu, 03 Sep 2026 21:30:04 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
 		
+				<item>
+					<title xml:lang="en-US">The NX bit is not just about security</title>
+					<link hreflang="en-US">https://purplesyringa.moe/blog/guest/the-nx-bit-is-not-just-about-security/</link>
+					<description xml:lang="en-US">&lt;blockquote&gt;
+&lt;p&gt;While I’m taking a short break from low-level programming, here’s a story by a friend of mine, &lt;a href=&quot;https://sleirsgoevy.dev/&quot;&gt;Sonya&lt;/a&gt;, about debugging a seemingly impossible bug in ARM code.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;This bug hunting saga started several months ago. While developing a bare-metal hypervisor on ARM64 for &lt;a href=&quot;https://postmarketos.org/&quot;&gt;postmarketOS&lt;/a&gt;, I hit a strange bug: if I enabled the &lt;a href=&quot;https://support.arm.com/documentation/ddi0601/2026-06/AArch64-Registers/CTR-EL0--Cache-Type-Register?lang=en&quot;&gt;CTR_EL0&lt;/a&gt; intercept (which was the whole purpose of the HV, so could not be skipped), the phone would randomly lock itself up. After a few seconds, the watchdog kicked in and reset the system. At first I thought that the boot got slowed down so much that the system simply did not have enough time to boot, but disabling the watchdog did not help either (fortunately, the phone in question had removable battery, and I didn’t have to wait several hours for it to discharge). So, I started digging deeper.&lt;/p&gt;
+</description>
+					<author>sleirsgoevy@gmail.com (Sonya Sireneva)</author>
+					
+					<guid>https://purplesyringa.moe/blog/guest/the-nx-bit-is-not-just-about-security/</guid>
+					<pubDate>Fri, 04 Sep 2026 00:00:00 GMT</pubDate>
+				</item>
+			
 				<item>
 					<title xml:lang="en-US">accept() and socket inheritance</title>
 					<link hreflang="en-US">https://purplesyringa.moe/blog/./accept-and-socket-inheritance/</link>
