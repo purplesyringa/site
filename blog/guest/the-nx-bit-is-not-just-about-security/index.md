@@ -1,6 +1,7 @@
 ---
 title: The NX bit is not just about security
 time: September 4, 2026
+discussion: https://lobste.rs/s/eokmrg/nx_bit_is_not_just_about_security
 upstream: https://sleirsgoevy.dev
 intro: |
     > While I'm taking a short break from low-level programming, here's a story by a friend of mine, [Sonya](https://sleirsgoevy.dev/), about debugging a seemingly impossible bug in ARM code.
