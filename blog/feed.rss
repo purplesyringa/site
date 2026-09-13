@@ -7,11 +7,24 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Mon, 07 Sep 2026 10:17:46 GMT</lastBuildDate>
+		<lastBuildDate>Sun, 13 Sep 2026 00:13:39 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
 		
+				<item>
+					<title xml:lang="en-US">Don&#39;t call yourself an artisanal programmer</title>
+					<link hreflang="en-US">https://purplesyringa.moe/blog/./dont-call-yourself-an-artisanal-programmer/</link>
+					<description xml:lang="en-US">&lt;p&gt;So I’ve been meaning to write about something, but got sucked into this rabbit hole, and now I’m kinda scared if I’ve been a subject of propaganda that worked on me.&lt;/p&gt;
+&lt;p&gt;A common theme in software development AI discourse is that there are “serious” engineers who value the end result the most, and “artisanal” coders who value the experience of coding over the final product. This dichotomy doesn’t correctly describe me and likely many others, but let’s play along with it for now.&lt;/p&gt;
+&lt;p&gt;I want my programs to be reliable. Patience and care are two important ingredients for this. When designing programs from ground up and taking my time, I just &lt;em&gt;know&lt;/em&gt; that they’re correct, and that any mistake is due to a typo. Unit tests, LLM reviews, and provers can guarantee the code is 99% right, but not that it’s 100% right: optimal, maintainable, readable, and that it doesn’t rely or break due to undocumented incompliant behaviors. I want that 100%. I can only begin to achieve this with deep connection to code, so I refuse to use LLMs, since they isolate me from the low-level details that matter and cannot guarantee correctness by construction.&lt;/p&gt;
+</description>
+					<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+					
+					<guid>https://purplesyringa.moe/blog/./dont-call-yourself-an-artisanal-programmer/</guid>
+					<pubDate>Sun, 13 Sep 2026 00:00:00 GMT</pubDate>
+				</item>
+			
 				<item>
 					<title xml:lang="en-US">The NX bit is not just about security</title>
 					<link hreflang="en-US">https://purplesyringa.moe/blog/guest/the-nx-bit-is-not-just-about-security/</link>
