@@ -7,11 +7,24 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Sun, 13 Sep 2026 00:13:39 GMT</lastBuildDate>
+		<lastBuildDate>Fri, 18 Sep 2026 23:51:11 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
 		
+				<item>
+					<title xml:lang="en-US">Write while learning</title>
+					<link hreflang="en-US">https://purplesyringa.moe/blog/./write-while-learning/</link>
+					<description xml:lang="en-US">&lt;p&gt;When learning new topics, we always ask questions we can’t find answers to. “Why are there two APIs that do seemingly the same thing?” “How do I achieve this goal?” “Why does this code not work even though it looks similar to the example?”&lt;/p&gt;
+&lt;p&gt;As we research and get more familiar with tools, we gain understanding. At some point, we become experts and know how to answer earlier questions. But it’s worth covering &lt;em&gt;how&lt;/em&gt; we get from point A to point B to help others make progress, too. In my experience, it’s common that the answers seem obvious post-factum, but there’s a missing link between facing questions and knowing the terms to look for.&lt;/p&gt;
+&lt;p&gt;Usually I have to get familiar with the project architecture, read its code, look at what it interacts with, scan the bug tracker, etc., before I built a model in my head that answers my questions. And then I discover that the model is easy to understand and has docs, and I agree with experts that it’s a reasonable and well-designed model – forgetting that I-the-novice failed to find it despite the documentation existing!&lt;/p&gt;
+</description>
+					<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+					
+					<guid>https://purplesyringa.moe/blog/./write-while-learning/</guid>
+					<pubDate>Sat, 19 Sep 2026 00:00:00 GMT</pubDate>
+				</item>
+			
 				<item>
 					<title xml:lang="en-US">Don&#39;t call yourself an artisanal programmer</title>
 					<link hreflang="en-US">https://purplesyringa.moe/blog/./dont-call-yourself-an-artisanal-programmer/</link>
