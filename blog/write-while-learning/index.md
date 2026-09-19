@@ -28,7 +28,7 @@ ServerEvents.tags('item', (event) => {
 
 Immediately I'm left wondering: what is `ServerEvents`, and why are the operations performed in the closure? Is that closure invoked immediately and it's just a way to get access to `event`? Why is it called "event" if it doesn't react to any player action?
 
-It turns out that the answer is: KubeJS integrates with a mod loader, in this case NeoForge, which [offers events](https://docs.neoforged.net/docs/concepts/events/). The examples on that page show events like "entity jumps", which are clearly game-related events, but at the every bottom we have:
+It turns out that the answer is: KubeJS integrates with a mod loader, in this case NeoForge, which [offers events](https://docs.neoforged.net/docs/concepts/events/). The examples on that page show events like "entity jumps", which are clearly game-related events, but at the very bottom we have:
 
 > Lifecycle events run once in every mod's lifecycle during startup. [...] The registry events [...] include `NewRegistryEvent`, `DataPackRegistryEvent.NewRegistry` and, for each registry, `RegisterEvent`.
 
