@@ -7,11 +7,22 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Fri, 18 Sep 2026 23:51:11 GMT</lastBuildDate>
+		<lastBuildDate>Thu, 24 Sep 2026 19:21:02 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
 		
+				<item>
+					<title xml:lang="en-US">Grieving the loss of details</title>
+					<link hreflang="en-US">https://purplesyringa.moe/blog/./grieving-the-loss-of-details/</link>
+					<description xml:lang="en-US">&lt;p&gt;I’ve been thinking about where I stand in respect to the current state of the industry. This is more of a journal note than a post, apologies for that. I usually leave this stuff private, but I thought I’d post this as a trial in case someone relates to this experience and feels less alone. All opinions are my own.&lt;/p&gt;
+</description>
+					<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+					
+					<guid>https://purplesyringa.moe/blog/./grieving-the-loss-of-details/</guid>
+					<pubDate>Thu, 24 Sep 2026 00:00:00 GMT</pubDate>
+				</item>
+			
 				<item>
 					<title xml:lang="en-US">Write while learning</title>
 					<link hreflang="en-US">https://purplesyringa.moe/blog/./write-while-learning/</link>
