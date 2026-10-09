@@ -1,6 +1,7 @@
 ---
 title: Write while learning
 time: September 19, 2026
+discussion: https://lobste.rs/s/ukzxid/write_while_learning
 intro: |
     When learning new topics, we always ask questions we can't find answers to. "Why are there two APIs that do seemingly the same thing?" "How do I achieve this goal?" "Why does this code not work even though it looks similar to the example?"
 

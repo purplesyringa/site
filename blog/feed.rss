@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Thu, 24 Sep 2026 19:21:02 GMT</lastBuildDate>
+		<lastBuildDate>Fri, 09 Oct 2026 06:33:02 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -18,7 +18,7 @@
 					<description xml:lang="en-US">&lt;p&gt;I’ve been thinking about where I stand in respect to the current state of the industry. This is more of a journal note than a post, apologies for that. I usually leave this stuff private, but I thought I’d post this as a trial in case someone relates to this experience and feels less alone. All opinions are my own.&lt;/p&gt;
 </description>
 					<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-					
+					<comments>https://lobste.rs/s/jmlnak/grieving_loss_details</comments>
 					<guid>https://purplesyringa.moe/blog/./grieving-the-loss-of-details/</guid>
 					<pubDate>Thu, 24 Sep 2026 00:00:00 GMT</pubDate>
 				</item>
@@ -31,7 +31,7 @@
 &lt;p&gt;Usually I have to get familiar with the project architecture, read its code, look at what it interacts with, scan the bug tracker, etc., before I built a model in my head that answers my questions. And then I discover that the model is easy to understand and has docs, and I agree with experts that it’s a reasonable and well-designed model – forgetting that I-the-novice failed to find it despite the documentation existing!&lt;/p&gt;
 </description>
 					<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-					
+					<comments>https://lobste.rs/s/ukzxid/write_while_learning</comments>
 					<guid>https://purplesyringa.moe/blog/./write-while-learning/</guid>
 					<pubDate>Sat, 19 Sep 2026 00:00:00 GMT</pubDate>
 				</item>
