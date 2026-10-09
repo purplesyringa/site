@@ -83,4 +83,4 @@ c2:
     .qword 0x340000000000000, 0x340000000000000, 0x340000000000000, 0x340000000000000
 ```
 
-On Haswell, this runs at $0.49$ ns/iteration and $2.3$ ns when latency-bound. On Alder Lake, it's $0.35$ ns/iteration and $1.3$ ns when latency-bound. The slowdown compared to `clz` is due to using one more instruction. It can be avoided by using `vpternlogq` if AVX-512 is present, but at that point you might as well run `vpopcntd` on `x ^ (x - 1)`. The scalar version behaves no differently from `clz`.
+On Haswell, this runs at $0.49$ ns/iteration and $2.3$ ns when latency-bound. On Alder Lake, it's $0.35$ ns/iteration and $1.3$ ns when latency-bound. The slowdown compared to `clz` is due to using one more instruction. It can be avoided by using `vpternlogq` if AVX-512 is present, but at that point you might as well run `vpopcntd` on `(x - 1) & !x`. The scalar version behaves no differently from `clz`.
