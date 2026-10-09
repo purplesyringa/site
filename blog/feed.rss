@@ -7,11 +7,23 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Fri, 09 Oct 2026 06:33:02 GMT</lastBuildDate>
+		<lastBuildDate>Fri, 09 Oct 2026 14:12:42 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
 		
+				<item>
+					<title xml:lang="en-US">Vectorized CLZ and CTZ</title>
+					<link hreflang="en-US">https://purplesyringa.moe/blog/./vectorized-clz-and-ctz/</link>
+					<description xml:lang="en-US">&lt;p&gt;&lt;code&gt;clz&lt;/code&gt; and &lt;code&gt;ctz&lt;/code&gt; are instructions that compute the number of leading (trailing) zero bits in a fixed-size integer. They are natively supported by modern CPUs, though they are not always fast, e.g. &lt;code&gt;tzcnt&lt;/code&gt; has a latency of &lt;code&gt;3&lt;/code&gt; on Arrow Lake.&lt;/p&gt;
+&lt;p&gt;I used &lt;code&gt;ctz&lt;/code&gt; in an FPU emulator I’m working on, but figured out how to avoid it with floating-point trickery, and I just realized that this generalizes to a vectorizable &lt;code&gt;ctz&lt;/code&gt; polyfill in a round-about way. I also implemented &lt;code&gt;clz&lt;/code&gt; for completeness.&lt;/p&gt;
+</description>
+					<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+					
+					<guid>https://purplesyringa.moe/blog/./vectorized-clz-and-ctz/</guid>
+					<pubDate>Fri, 09 Oct 2026 00:00:00 GMT</pubDate>
+				</item>
+			
 				<item>
 					<title xml:lang="en-US">Grieving the loss of details</title>
 					<link hreflang="en-US">https://purplesyringa.moe/blog/./grieving-the-loss-of-details/</link>
