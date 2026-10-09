@@ -38,3 +38,10 @@ html {
 	opacity: 0.6;
 	white-space: nowrap;
 }
+
+@media screen and (min-width: 422px) and (max-width: 480px) {
+	.media {
+		margin-top: 3.25rem;
+	}
+}
+
