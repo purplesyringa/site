@@ -108,24 +108,13 @@ We can't use a true 32-byte LUT because `vpshufb` cannot cross 16-byte lanes. Th
 
 This takes $1$ ns on Haswell ($0.7$ ns on Alder Lake), but has twice the throughput, so it may be a little faster than the FP-based approach if it helps avoid shuffling.
 
-<!-- If you don't need to deal with $x = 0$, removing the last line brings time down to $0.9$ ns. -->
+If you don't need to deal with $x = 0$ (or want $\mathrm{ctz}(0)$ to be $0$ and not $32$), using
 
-<!-- ```
-const char table[32] = {
-    0, 1, 2, 5, 3, 9, 6, 11, 15, 4, 8, 10, 14, 7, 13, 12,
-    0, 1, 2, 5, 3, 9, 6, 11, 15, 4, 8, 10, 14, 7, 13, 12
-};
-__m256i bit = _mm256_andnot_si256(_mm256_sub_epi64(x, _mm256_set1_epi64x(1)), x);
-__m256i index = _mm256_srli_epi32(_mm256_mullo_epi32(bit, _mm256_set1_epi16(0x09af)), 28);
-__m256i low = _mm256_shuffle_epi8(_mm256_loadu_si256((__m256i*)table), index);
+```c
 __m256i high = _mm256_and_si256(
-    _mm256_cmpgt_epi32(bit, _mm256_set1_epi32(0xffff)),
+    _mm256_cmpgt_epi32(bit, _mm256_set1_epi32(0x7fff)),
     _mm256_set1_epi32(16)
 );
-__m256i out = _mm256_add_epi32(low, high);
-return _mm256_blendv_epi8(
-    out,
-    _mm256_set1_epi32(32),
-    _mm256_cmpeq_epi32(x, _mm256_setzero_si256())
-);
-``` -->
+```
+
+brings the time down to $0.82$ ns.
