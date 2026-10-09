@@ -84,3 +84,48 @@ c2:
 ```
 
 On Haswell, this runs at $0.49$ ns/iteration and $2.3$ ns when latency-bound. On Alder Lake, it's $0.35$ ns/iteration and $1.3$ ns when latency-bound. The slowdown compared to `clz` is due to using one more instruction. It can be avoided by using `vpternlogq` if AVX-512 is present, but at that point you might as well run `vpopcntd` on `(x - 1) & !x`. The scalar version behaves no differently from `clz`.
+
+> **Added later:**
+
+[Nikolay Malkovsky](https://t.me/a_zachem_eto_nuzhno) pointed out that [de Bruijn sequences](https://en.wikipedia.org/wiki/De_Bruijn_sequence) offer another vectorizable approach. After some testing, I arrived at the following code:
+
+```c
+const char table[32] = {
+    0, 4, 5, 6, 11, 9, 7, 12, 15, 3, 10, 8, 14, 2, 13, 1,
+    0, 4, 5, 6, 11, 9, 7, 12, 15, 3, 10, 8, 14, 2, 13, 1,
+};
+__m256i bit = _mm256_andnot_si256(x, _mm256_sub_epi32(x, _mm256_set1_epi32(1)));
+__m256i high = _mm256_madd_epi16(
+    _mm256_cmpeq_epi16(bit, _mm256_set1_epi16(-1)),
+    _mm256_set1_epi16(-16)
+);
+__m256i index = _mm256_srli_epi32(_mm256_mullo_epi32(bit, _mm256_set1_epi32(0xf0a6f0a7)), 28);
+__m256i low = _mm256_shuffle_epi8(_mm256_loadu_si256((__m256i*)table), index);
+return _mm256_add_epi32(low, high);
+```
+
+We can't use a true 32-byte LUT because `vpshufb` cannot cross 16-byte lanes. The approach I used instead is tricky to explain, but essentially we use a 16-bit de Bruijn sequence repeated twice to compute bits 0-3 of the `ctz`, and then add $16$ or $32$ depending on which halves are zeroes. ~~Six seven~~ `0xf0a6f0a7` is one of only four magic constants that make this work.
+
+This takes $1$ ns on Haswell ($0.7$ ns on Alder Lake), but has twice the throughput, so it may be a little faster than the FP-based approach if it helps avoid shuffling.
+
+<!-- If you don't need to deal with $x = 0$, removing the last line brings time down to $0.9$ ns. -->
+
+<!-- ```
+const char table[32] = {
+    0, 1, 2, 5, 3, 9, 6, 11, 15, 4, 8, 10, 14, 7, 13, 12,
+    0, 1, 2, 5, 3, 9, 6, 11, 15, 4, 8, 10, 14, 7, 13, 12
+};
+__m256i bit = _mm256_andnot_si256(_mm256_sub_epi64(x, _mm256_set1_epi64x(1)), x);
+__m256i index = _mm256_srli_epi32(_mm256_mullo_epi32(bit, _mm256_set1_epi16(0x09af)), 28);
+__m256i low = _mm256_shuffle_epi8(_mm256_loadu_si256((__m256i*)table), index);
+__m256i high = _mm256_and_si256(
+    _mm256_cmpgt_epi32(bit, _mm256_set1_epi32(0xffff)),
+    _mm256_set1_epi32(16)
+);
+__m256i out = _mm256_add_epi32(low, high);
+return _mm256_blendv_epi8(
+    out,
+    _mm256_set1_epi32(32),
+    _mm256_cmpeq_epi32(x, _mm256_setzero_si256())
+);
+``` -->
