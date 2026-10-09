@@ -45,7 +45,11 @@ bias:
     .quad 32
 ```
 
-On my Haswell, this runs at $0.45$ ns/iteration, compared to $1$ ns for the scalar version. When latency-bound, the numbers rise to $2$ ns vs $1$ ns (but if you're latency-bound on vectorized `ctz`, you're probably doing something wrong). On modern Intel CPUs, the numbers should be the same or better, while AMD CPUs make `lzcnt` so cheap that a scalar version will likely win. Though mind that Zen CPUs support AVX-512, which has `vplzcntd`, so that's an option, too.
+On my Haswell, this runs at $0.45$ ns/iteration, compared to $1$ ns for the scalar version. When latency-bound, the numbers rise to $2$ ns vs $1$ ns (but if you're latency-bound on vectorized `ctz`, you're probably doing something wrong).
+
+Ian Qvist tested this on Alder Lake (thanks!) and got $0.29$ ns/iteration, compared to $0.85$ ns for the scalar version, and $1.3$ ns vs $0.85$ ns when latency-bound. On modern Intel CPUs, the numbers should be the same or better.
+
+AMD CPUs make `lzcnt` so cheap that a scalar version will likely win. Though keep in mind that Zen CPUs support AVX-512, which has `vplzcntd`, so that's an option, too.
 
 
 ### ctz
@@ -79,4 +83,4 @@ c2:
     .qword 0x340000000000000, 0x340000000000000, 0x340000000000000, 0x340000000000000
 ```
 
-This runs at $0.49$ ns/iteration and $2.3$ ns when latency-bound. The slowdown compared to `clz` is due to using one more instruction. It can be avoided by using `vpternlogq` if AVX-512 is present, but at that point you might as well run `vpopcntd` on `x ^ (x - 1)`. The scalar version behaves no differently from `clz`.
+On Haswell, this runs at $0.49$ ns/iteration and $2.3$ ns when latency-bound. On Alder Lake, it's $0.35$ ns/iteration and $1.3$ ns when latency-bound. The slowdown compared to `clz` is due to using one more instruction. It can be avoided by using `vpternlogq` if AVX-512 is present, but at that point you might as well run `vpopcntd` on `x ^ (x - 1)`. The scalar version behaves no differently from `clz`.
