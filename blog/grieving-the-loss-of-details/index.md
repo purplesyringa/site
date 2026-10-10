@@ -1,7 +1,9 @@
 ---
 title: Grieving the loss of details
 time: September 24, 2026
-discussion: https://lobste.rs/s/jmlnak/grieving_loss_details
+discussion:
+- https://lobste.rs/s/jmlnak/grieving_loss_details
+- https://news.ycombinator.com/item?id=49980880
 intro: |
   I've been thinking about where I stand in respect to the current state of the industry. This is more of a journal note than a post, apologies for that. I usually leave this stuff private, but I thought I'd post this as a trial in case someone relates to this experience and feels less alone. All opinions are my own.
 ---
