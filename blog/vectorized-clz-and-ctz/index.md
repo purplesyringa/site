@@ -85,7 +85,7 @@ c2:
 
 On Haswell, this runs at $0.49$ ns/iteration and $2.3$ ns when latency-bound. On Alder Lake, it's $0.35$ ns/iteration and $1.3$ ns when latency-bound. The slowdown compared to `clz` is due to using one more instruction. It can be avoided by using `vpternlogq` if AVX-512 is present, but at that point you might as well run `vpopcntd` on `(x - 1) & !x`. The scalar version behaves no differently from `clz`.
 
-> **Added later:**
+> **Added on October 10:**
 
 [Nikolay Malkovsky](https://t.me/a_zachem_eto_nuzhno) pointed out that [de Bruijn sequences](https://en.wikipedia.org/wiki/De_Bruijn_sequence) offer another vectorizable approach. After some testing, I arrived at the following code:
 
@@ -118,3 +118,24 @@ __m256i high = _mm256_and_si256(
 ```
 
 brings the time down to $0.82$ ns.
+
+> **Added on October 11**:
+
+[arya dradjica](https://bal-e.org/) and I brainstormed a 64-bit version of the algorithm and managed to find what I think is the optimal algorithm:
+
+```c
+const char table[32] = { // x -> 4 - popcnt(x)
+    4, 3, 3, 2, 3, 2, 2, 1, 3, 2, 2, 1, 2, 1, 1, 0,
+    4, 3, 3, 2, 3, 2, 2, 1, 3, 2, 2, 1, 2, 1, 1, 0,
+};
+__m256i lut = _mm256_loadu_si256((__m256i*)table);
+
+__m256i bit = _mm256_andnot_si256(x, _mm256_sub_epi64(x, _mm256_set1_epi64x(1)));
+__m256i low = _mm256_shuffle_epi8(lut, bit);
+__m256i high = _mm256_shuffle_epi8(lut, _mm256_srli_epi16(bit, 4));
+return _mm256_sad_epu8(_mm256_add_epi8(low, high), _mm256_set1_epi8(8));
+```
+
+This correctly returns $\mathrm{ctz}(0) = 64$ and takes $0.63$ ns on my Haswell ($2.8$ ns when latency-bound). It computes inverted popcounts of the two nibbles of each byte of `(x - 1) & !x` separately (inverted because of some idiosyncrasies of `pshufb`) and then uses `vpsadbw` to perform the horizontal sum and correct the inversion in one go.
+
+`vpsadbw` can only horizontally sum exactly $8$ bytes, which is why this algorithm is specialized to 64 bits and doesn't work with 32-bit inputs. The approach based on the de Bruijn sequence is still the fastest in that scenario.
