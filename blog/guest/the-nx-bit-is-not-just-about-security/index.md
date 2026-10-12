@@ -4,6 +4,7 @@ time: September 4, 2026
 discussion:
 - https://lobste.rs/s/eokmrg/nx_bit_is_not_just_about_security
 - https://news.ycombinator.com/item?id=49564609
+- https://www.reddit.com/r/programming/comments/1w7vcf3/the_nx_bit_is_not_just_about_security/
 upstream: https://sleirsgoevy.dev
 intro: |
     > While I'm taking a short break from low-level programming, here's a story by a friend of mine, [Sonya](https://sleirsgoevy.dev/), about debugging a seemingly impossible bug in ARM code.

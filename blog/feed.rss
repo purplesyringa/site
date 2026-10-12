@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Sat, 10 Oct 2026 20:13:17 GMT</lastBuildDate>
+		<lastBuildDate>Mon, 12 Oct 2026 08:00:03 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -143,7 +143,7 @@
 &lt;p&gt;Disclaimer: while I stumbled upon multiple issues, I deeply respect everyone who works on this project, and I consider it a valuable tool. No offence intended.&lt;/p&gt;
 </description>
 					<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-					
+					<comments>https://www.reddit.com/r/lua/comments/1wb3utd/impressions_of_teal/</comments>
 					<guid>https://purplesyringa.moe/blog/./impressions-of-teal/</guid>
 					<pubDate>Sun, 26 Jul 2026 00:00:00 GMT</pubDate>
 				</item>

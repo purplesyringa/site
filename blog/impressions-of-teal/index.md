@@ -1,6 +1,8 @@
 ---
 title: Impressions of Teal
 time: July 26, 2026
+discussion:
+- https://www.reddit.com/r/lua/comments/1wb3utd/impressions_of_teal/
 intro: |
     About two months ago, I found [the Teal programming language](https://teal-language.org/), which describes itself as a statically-typed dialect of Lua. It transpiles to Lua and runs typecheck on the developer's machine, so it fills roughly the same niche as TypeScript. It's used by quite a few projects, including [LuaRocks](https://github.com/luarocks/luarocks) and [inspect](https://github.com/kikito/inspect.lua).
 
