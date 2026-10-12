@@ -51,6 +51,26 @@ Ian Qvist tested this on Alder Lake (thanks!) and got $0.29$ ns/iteration, compa
 
 AMD CPUs make `lzcnt` so cheap that a scalar version will likely win. Though keep in mind that Zen CPUs support AVX-512, which has `vplzcntd`, so that's an option, too.
 
+> **Added on October 12**:
+
+I found a [full 8-lane $32$-bit `clz` implementation](https://stackoverflow.com/a/58827596/5417677) by [aqrit](https://stackoverflow.com/users/5691983/aqrit) and optimized it further. The idea is to use `i32` $\rightarrow$ `f32` conversion to produce a float instead of building one by hand, so that integers wider than $23$ bits can fit in `f32`.
+
+This is tricky due to rounding, e.g. $2^{30} - 1$ might get rounded to $2^{30}$ during conversion, producing the wrong result. The algorithm on Stack Overflow fixes this by computing (essentially) `x &= !(x >> 1)` prior to conversion, which clears the bit below the topmost one to ensure rounding doesn't change the exponent. But I found a better way:
+
+```c
+__m256i cleared = _mm256_min_epu8(x, _mm256_set1_epi8(0x80));
+__m256i exp = _mm256_srli_epi32(_mm256_castps_si256(_mm256_cvtepi32_ps(cleared)), 23);
+return _mm256_min_epi16(_mm256_subs_epu16(_mm256_set1_epi32(0x9e), exp), _mm256_set1_epi32(32));
+```
+
+All we really need to do is avoid having $20$-ish ones in a row, which can be done in one instruction by computing per-byte `max` with `0x80`, which reduces `0xff` to `0x80` without affecting the `clz`.
+
+There are some other tricky details that the original algorithm already handles in a clever manner, like sign-extension, but I won't focus on them here.
+
+This algorithm runs at $0.6$ ns on my Haswell ($2.7$ ns when latency-bound), so it takes just a little more time than the previous one to process twice as much data. If you don't need to handle $\mathrm{clz}(0)$ gracefully, you can drop the final `min` for more perf.
+
+I'm still not sure how to handle $64$-bit `clz`, since x86 doesn't support packed `i64` $\rightarrow$ `f64` conversion without AVX-512.
+
 
 ### ctz
 
