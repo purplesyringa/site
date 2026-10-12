@@ -106,7 +106,7 @@ return _mm256_add_epi32(low, high);
 
 We can't use a true 32-byte LUT because `vpshufb` cannot cross 16-byte lanes. The approach I used instead is tricky to explain, but essentially we use a 16-bit de Bruijn sequence repeated twice to compute bits 0-3 of the `ctz`, and then add $16$ or $32$ depending on which halves are zeroes. ~~Six seven~~ `0xf0a6f0a7` is one of only four magic constants that make this work.
 
-This takes $1$ ns on Haswell ($0.7$ ns on Alder Lake), but has twice the throughput, so it may be a little faster than the FP-based approach if it helps avoid shuffling.
+This takes $1$ ns on Haswell ($0.7$ ns on Alder Lake) and $3.8$ ns when latency-bound, but has twice the throughput, so it may be a little faster than the FP-based approach if it helps avoid shuffling.
 
 If you don't need to deal with $x = 0$ (or want $\mathrm{ctz}(0)$ to be $0$ and not $32$), using
 
@@ -139,3 +139,40 @@ return _mm256_sad_epu8(_mm256_add_epi8(low, high), _mm256_set1_epi8(8));
 This correctly returns $\mathrm{ctz}(0) = 64$ and takes $0.63$ ns on my Haswell ($2.8$ ns when latency-bound). It computes inverted popcounts of the two nibbles of each byte of `(x - 1) & !x` separately (inverted because of some idiosyncrasies of `pshufb`) and then uses `vpsadbw` to perform the horizontal sum and correct the inversion in one go.
 
 `vpsadbw` can only horizontally sum exactly $8$ bytes, which is why this algorithm is specialized to 64 bits and doesn't work with 32-bit inputs. The approach based on the de Bruijn sequence is still the fastest in that scenario.
+
+> **Added on October 12**:
+
+More progress! [u/UnalignedAxis111](https://www.reddit.com/r/asm/comments/1x29czu/comment/pfevmpr/) mentioned that floating point-based approaches can be extended to the full 32/64-bit lengths by using int-to-float conversion instructions instead of bit twiddling. This can be slower, but it might be faster than de Bruijn. There are quite a few nuances:
+
+- It introduces rounding issues, but for `ctz` that's not a problem, because `x & -x` has only one bit set.
+- x86 supports signed-int-to-float casts but not unsigned-int-to-float, which causes problems for $x = 2^{31}$.
+- It doesn't allow tweaking the exponent bias.
+
+After some brainstorming, I got this for 32-bit `ctz`:
+
+```c
+__m256i bit = _mm256_andnot_si256(_mm256_sub_epi32(x, _mm256_set1_epi32(1)), x);
+__m256i exp = _mm256_srli_epi32(_mm256_castps_si256(_mm256_cvtepi32_ps(bit)), 23);
+return _mm256_min_epu8(_mm256_sub_epi32(exp, _mm256_set1_epi32(0x7f)), _mm256_set1_epi32(32));
+```
+
+This starts by extracting the biased exponent `exp` of `!x & (x - 1)`, which is:
+
+- `0x7f` when $\mathrm{ctz}(x) = 0$
+- `0x80` when $\mathrm{ctz}(x) = 1$
+- `0x81` when $\mathrm{ctz}(x) = 2$
+- ...
+- `0x9d` when $\mathrm{ctz}(x) = 30$
+- `0x19e` when $\mathrm{ctz}(x) = 31$ (since $x = 2^{31}$ is interpreted as $x = -2^{31}$!)
+- `0x00` when $\mathrm{ctz}(x) = 32$ (because that corresponds to $x = 0$)
+
+I managed to map this to `ctz` in just two instructions:
+
+1. `exp - 0x7f` maps most inputs to the correct `ctz`, but gives `0x11f` instead of `0x1f` and `-0x7f` (`0xffffff81`) instead of $32$.
+2. *Per-byte* `min` with $32$ = `00 00 00 1f` clears the second byte of `0x11f` and maps the bottom byte of `-0x7f` to $32$ at the same time.
+
+On my Haswell, this takes $0.6$ ns when throughput-bound and $3$ ns when latency-bound, beating the de Bruijn sequence-based approach.
+
+This can't be extended to the $64$-bit case because pre-AVX-512 x86 lacks packed `i64` $\leftrightarrow$ `f64` conversions. For that, use the `vpsadbw` approach from yesterday.
+
+P.S.: I find it funny that the $32$-bit and $64$-bit implementations now have pretty much the same performance characteristics despite using completely different algorithms.
