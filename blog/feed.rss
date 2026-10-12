@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Mon, 12 Oct 2026 08:00:03 GMT</lastBuildDate>
+		<lastBuildDate>Mon, 12 Oct 2026 14:26:25 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -19,7 +19,7 @@
 &lt;p&gt;I used &lt;code&gt;ctz&lt;/code&gt; in an FPU emulator I’m working on, but figured out how to avoid it with floating-point trickery, and I just realized that this generalizes to a vectorizable &lt;code&gt;ctz&lt;/code&gt; polyfill in a round-about way. I also implemented &lt;code&gt;clz&lt;/code&gt; for completeness.&lt;/p&gt;
 </description>
 					<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-					
+					<comments>https://www.reddit.com/r/asm/comments/1x29czu/vectorized_clz_and_ctz/</comments>
 					<guid>https://purplesyringa.moe/blog/./vectorized-clz-and-ctz/</guid>
 					<pubDate>Fri, 09 Oct 2026 00:00:00 GMT</pubDate>
 				</item>

@@ -1,6 +1,9 @@
 ---
 title: Vectorized CLZ and CTZ
 time: October 9, 2026
+discussion:
+- https://www.reddit.com/r/asm/comments/1x29czu/vectorized_clz_and_ctz/
+- https://news.ycombinator.com/item?id=50039608
 intro: |
     `clz` and `ctz` are instructions that compute the number of leading (trailing) zero bits in a fixed-size integer. They are natively supported by modern CPUs, though they are not always fast, e.g. `tzcnt` has a latency of `3` on Arrow Lake.
 
