@@ -1,6 +1,7 @@
 ---
 title: Who is vfmaddrnd231pd??
 time: October 12, 2026
+discussion: https://news.ycombinator.com/item?id=50063138
 intro: |
     `vfmaddrnd231pd` is a unique instruction from the FMA instruction set. Most instructions in that set have mnemonics like `vfmadd231pd`, but here `rnd` means something very specific. The Intel Software Development Manual documents it as:
 
