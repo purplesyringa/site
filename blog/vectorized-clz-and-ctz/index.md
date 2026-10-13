@@ -74,6 +74,21 @@ This algorithm runs at $0.6$ ns on my Haswell ($2.7$ ns when latency-bound), so 
 
 I'm still not sure how to handle $64$-bit `clz`, since x86 doesn't support packed `i64` $\rightarrow$ `f64` conversion without AVX-512.
 
+> **Added on October 13**:
+
+Here is a $64$-bit `clz` made with [help from aqrit](https://www.reddit.com/r/asm/comments/1x29czu/comment/pgeeso1/) that computes two $32$-bit `clz`s and merges the results:
+
+```c
+__m256i cleared = _mm256_min_epu8(x, _mm256_set1_epi8(0x9e));
+__m256i exp = _mm256_srli_epi32(_mm256_castps_si256(_mm256_cvtepi32_ps(cleared)), 23);
+__m256i adj_exp = _mm256_add_epi32(
+    _mm256_subs_epu16(_mm256_set1_epi32(0x9e), exp), _mm256_set1_epi64x(32));
+return _mm256_min_epu8(
+    _mm256_srli_epi64(adj_exp, 32), _mm256_min_epu8(adj_exp, _mm256_set1_epi64x(64)));
+```
+
+It works in $0.9$ ns, just a little faster than the scalar version. I believe that it can be improved by one instruction, but I couldn't find a way to do so.
+
 
 ### ctz
 
