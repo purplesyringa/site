@@ -15,8 +15,8 @@ intro: |
     $a = 10 + 2 ** -49;
     $b = 10;
     assert($a > $b);
-    var_dump(log($x, $a) < log($x, $b));
-    var_dump(log($x, $a) == log($x, $b));
+    var_dump(log($x, $a) < log($x, $b)); // false
+    var_dump(log($x, $a) == log($x, $b)); // false
     ```
 
     To be clear, this is **not** the usual floating-point inaccuracy. Everyone already knows floating-point operations are imprecise and it wouldn't be fun to blog about. This example was deliberately engineered to trigger something different.
@@ -32,8 +32,8 @@ $x = 2.93;
 $a = 10 + 2 ** -49;
 $b = 10;
 assert($a > $b);
-var_dump(log($x, $a) < log($x, $b));
-var_dump(log($x, $a) == log($x, $b));
+var_dump(log($x, $a) < log($x, $b)); // false
+var_dump(log($x, $a) == log($x, $b)); // false
 ```
 
 To be clear, this is **not** the usual floating-point inaccuracy. Everyone already knows floating-point operations are imprecise and it wouldn't be fun to blog about. This example was deliberately engineered to trigger something different.

@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Tue, 13 Oct 2026 07:05:20 GMT</lastBuildDate>
+		<lastBuildDate>Tue, 13 Oct 2026 09:03:40 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -184,8 +184,8 @@
 &lt;span class=&quot;hljs-variable&quot;&gt;$a&lt;/span&gt; = &lt;span class=&quot;hljs-number&quot;&gt;10&lt;/span&gt; + &lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt; ** -&lt;span class=&quot;hljs-number&quot;&gt;49&lt;/span&gt;;
 &lt;span class=&quot;hljs-variable&quot;&gt;$b&lt;/span&gt; = &lt;span class=&quot;hljs-number&quot;&gt;10&lt;/span&gt;;
 &lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;assert&lt;/span&gt;(&lt;span class=&quot;hljs-variable&quot;&gt;$a&lt;/span&gt; &amp;gt; &lt;span class=&quot;hljs-variable&quot;&gt;$b&lt;/span&gt;);
-&lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;var_dump&lt;/span&gt;(&lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;hljs-variable&quot;&gt;$x&lt;/span&gt;, &lt;span class=&quot;hljs-variable&quot;&gt;$a&lt;/span&gt;) &amp;lt; &lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;hljs-variable&quot;&gt;$x&lt;/span&gt;, &lt;span class=&quot;hljs-variable&quot;&gt;$b&lt;/span&gt;));
-&lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;var_dump&lt;/span&gt;(&lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;hljs-variable&quot;&gt;$x&lt;/span&gt;, &lt;span class=&quot;hljs-variable&quot;&gt;$a&lt;/span&gt;) == &lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;hljs-variable&quot;&gt;$x&lt;/span&gt;, &lt;span class=&quot;hljs-variable&quot;&gt;$b&lt;/span&gt;));
+&lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;var_dump&lt;/span&gt;(&lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;hljs-variable&quot;&gt;$x&lt;/span&gt;, &lt;span class=&quot;hljs-variable&quot;&gt;$a&lt;/span&gt;) &amp;lt; &lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;hljs-variable&quot;&gt;$x&lt;/span&gt;, &lt;span class=&quot;hljs-variable&quot;&gt;$b&lt;/span&gt;)); &lt;span class=&quot;hljs-comment&quot;&gt;// false&lt;/span&gt;
+&lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;var_dump&lt;/span&gt;(&lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;hljs-variable&quot;&gt;$x&lt;/span&gt;, &lt;span class=&quot;hljs-variable&quot;&gt;$a&lt;/span&gt;) == &lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;log&lt;/span&gt;(&lt;span class=&quot;hljs-variable&quot;&gt;$x&lt;/span&gt;, &lt;span class=&quot;hljs-variable&quot;&gt;$b&lt;/span&gt;)); &lt;span class=&quot;hljs-comment&quot;&gt;// false&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;To be clear, this is &lt;strong&gt;not&lt;/strong&gt; the usual floating-point inaccuracy. Everyone already knows floating-point operations are imprecise and it wouldn’t be fun to blog about. This example was deliberately engineered to trigger something different.&lt;/p&gt;
 </description>
