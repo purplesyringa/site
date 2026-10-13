@@ -61,12 +61,12 @@ I found a [full 8-lane $32$-bit `clz` implementation](https://stackoverflow.com/
 This is tricky due to rounding, e.g. $2^{30} - 1$ might get rounded to $2^{30}$ during conversion, producing the wrong result. The algorithm on Stack Overflow fixes this by computing (essentially) `x &= !(x >> 1)` prior to conversion, which clears the bit below the topmost one to ensure rounding doesn't change the exponent. But I found a better way:
 
 ```c
-__m256i cleared = _mm256_min_epu8(x, _mm256_set1_epi8(0x80));
+__m256i cleared = _mm256_min_epu8(x, _mm256_set1_epi8(0x9e));
 __m256i exp = _mm256_srli_epi32(_mm256_castps_si256(_mm256_cvtepi32_ps(cleared)), 23);
 return _mm256_min_epi16(_mm256_subs_epu16(_mm256_set1_epi32(0x9e), exp), _mm256_set1_epi32(32));
 ```
 
-All we really need to do is avoid having $20$-ish ones in a row, which can be done in one instruction by computing per-byte `max` with `0x80`, which reduces `0xff` to `0x80` without affecting the `clz`.
+All we really need to do is avoid having $20$-ish ones in a row, which can be done in one instruction by computing per-byte `max` with `0x9e`, removing `0xff` without affecting the `clz`. Any value `>= 0x80` would work, but the `0x9e` constant is already used in a different place, so might as well reuse it ([thanks to aqrit themselves for this idea](https://www.reddit.com/r/asm/comments/1x29czu/comment/pgeeso1/)).
 
 There are some other tricky details that the original algorithm already handles in a clever manner, like sign-extension, but I won't focus on them here.
 
