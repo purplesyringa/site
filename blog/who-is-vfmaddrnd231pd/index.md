@@ -46,7 +46,7 @@ My theory is that originally, Intel decided that the easiest way to do this was 
 
 It seems like by 2024, Intel decided that this approach won't work. And I get it: it's odd that `vfmaddrnd231pd` was more powerful than AVX-512 instructions, but only supported 256-bit vectors. And if it supported 512-bit vectors, the rounding mode control built into AVX-512 would become obsolete for the most part.
 
-So Intel bit the bullet, dedicated the last unused bit in the `EVEX` prefix to enabling rounding modes for 256-bit vectors, and reused the AVX-512 instruction encoding for AVX10. This also allowed them to reuse the AVX-512 assembly syntax and avoid introducing new mnemonics, at which point the `vfmaddrnd231pd` mnemonic and others become unnecessary. During this process, someone forgot to remove `vfmaddrnd231pd` specifically from the SDM draft.
+So Intel bit the bullet, dedicated the last unused bit in the `EVEX` prefix to enabling rounding modes for 256-bit vectors, and reused the AVX-512 instruction encoding for AVX10. This also allowed them to reuse the AVX-512 assembly syntax and avoid introducing new mnemonics, at which point the `vfmaddrnd231pd` mnemonic and others became unnecessary. During this process, someone forgot to remove `vfmaddrnd231pd` specifically from the SDM draft.
 
 By 2025, AVX-512 was considered table stakes due to the popularity of Zen 4, and Intel finally decided to make 512-bit support unconditional in AVX10. This made this entire hack unnecessary, so Intel [updated the AVX10 whitepaper](https://cdrdv2.intel.com/v1/dl/getContent/784343):
 
@@ -62,6 +62,6 @@ We can partially confirm this theory by inspecting the patches. One of them is n
 
 ...and removes multiple intrinsics, including `_mm256_fmadd_round_pd`, which is named very similarly to the documented intrinsic for the ghost instruction, `_mm256_fmaddround_pd`.
 
-At a later point, someone at Intel realized that the `vfmaddrnd231pd` was still mentioned in the SDM and removed it.
+At a later point, someone at Intel realized that `vfmaddrnd231pd` was still mentioned in the SDM and removed it.
 
 Summing up: I believe that `vfmaddrnd231pd` is of AVX10 lineage. I think it was added during the prototyping stage of AVX10, then reworked to use a different instruction encoding, until it finally became unnecessary. Market pressures, timing constraints, and weird tech debt affected the design process enough that things had to be reworked on the fly, and at some point someone slipped up and accidentally documented an instruction that has never existed in released hardware.
