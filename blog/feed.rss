@@ -7,11 +7,23 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Tue, 13 Oct 2026 21:17:39 GMT</lastBuildDate>
+		<lastBuildDate>Wed, 14 Oct 2026 16:51:07 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
 		
+				<item>
+					<title xml:lang="en-US">Things I wish I knew before starting speedrunning</title>
+					<link hreflang="en-US">https://purplesyringa.moe/blog/./things-i-wish-i-knew-before-starting-speedrunning/</link>
+					<description xml:lang="en-US">&lt;p&gt;I started speedrunning Minecraft a while ago. It’s an interesting niche with many tutorials and a helpful community, so all the information you need is freely available. But I used to struggle a lot, because it wasn’t clear to me how to &lt;em&gt;learn to execute&lt;/em&gt; this stuff – partially because my hand-eye coordination and reaction time suck, but also because most of the advice on improving mechanics is literally “play more”, and for me personally familiarity doesn’t easily translate into improvements.&lt;/p&gt;
+&lt;p&gt;I think I found an approach that works for me, and I want to share it here. Since it focuses on how to deal with stuff mentally rather than on MCSR specifically, I think it should be applicable elsewhere in case traditional approaches fail for you, so hopefully it’s going to be useful to more than one person.&lt;/p&gt;
+</description>
+					<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+					
+					<guid>https://purplesyringa.moe/blog/./things-i-wish-i-knew-before-starting-speedrunning/</guid>
+					<pubDate>Wed, 14 Oct 2026 00:00:00 GMT</pubDate>
+				</item>
+			
 				<item>
 					<title xml:lang="en-US">Who is vfmaddrnd231pd??</title>
 					<link hreflang="en-US">https://purplesyringa.moe/blog/./who-is-vfmaddrnd231pd/</link>
