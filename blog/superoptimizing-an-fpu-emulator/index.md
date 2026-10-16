@@ -102,16 +102,22 @@ To save time and memory, I avoid deduplication on the last iteration and output 
 
 ### Results
 
-So, did this exhaustive search find anything interesting? Yes! There were several formulas with $5$ operations, though none with $4$ or fewer.
+So, did this exhaustive search find anything interesting? Yes! There were several formulas with $5$ operations, e.g. this one:
 
-But this approach has a limitation: it doesn't take into account that calculations can be reused. So, for example, if `x & 1` is used in two places, it will count that as two operations, not one. I was hoping that one of the $5$-op formulas could actually be expressed as $4$ operations via reuse, and after manually checking every formula, the very last one turned out to have this property! Here's what it looks like:
+```rust
+return x - f32::from_bits(x.to_bits() & (
+    (f32::EXPONENT_MASK - (x | f32::EXPONENT_MASK)) ^ !f32::EXPONENT_MASK
+));
+```
+
+I couldn't find formulas with $4$ operations, but this approach has a limitation: it doesn't take into account that calculations can be reused. So, for example, if `x & 1` is used in two places, it will count that as two operations, not one. I was hoping that one of the $5$-op formulas could actually be expressed as $4$ operations via reuse, and after manually checking every formula, the very last one turned out to have this property! Here's what it looks like:
 
 ```rust
 let a = x.to_bits() & !f32::MANTISSA_MASK; // x without mantissa bits
 return f32::from_bits(x.to_bits() & (a - x.to_bits())) - f32::from_bits(a);
 ```
 
-It doesn't make much sense at first glance, and it's not supposed to.
+It behaves a little differently for powers of two -- it flips the sign bit, which I don't care about. And the logic doesn't make sense at first glance, and yet it works.
 
 The reason why only this formula can reuse `a` is the subexpression `a - x.to_bits()`. It's equivalent to `-(x & f32::MANTISSA_MASK)`, which is how other formulas refer to it. All formulas compute `x & !f32::MANTISSA_MASK` and `x & f32::MANTISSA_MASK`, but this one rewrites the latter as `x - (x & f32::MANTISSA_MASK)`, and then merges that with negation to save one operation!
 
