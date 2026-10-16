@@ -117,4 +117,4 @@ The reason why only this formula can reuse `a` is the subexpression `a - x.to_bi
 
 I was flabbergasted when I realized it found such a clever rewrite. You don't need an LLM to be amazed by what computers can invent! And it doesn't destroy industries.
 
-Anyway, this code now [lives in my work-in-progress FPU emulator](https://github.com/purplesyringa/fpu-v/blob/cb3a754b71c06e059a51f94ed1b427bf229f2629/src/ops/multiplication.rs#L485) and I'm proud of it.
+Anyway, this code now [lives in my work-in-progress FPU emulator](https://github.com/purplesyringa/fpu-v/blob/d3c3f72c691698e5095d259a79610e5293911651/src/ops/multiplication.rs#L485) and I'm proud of it.
