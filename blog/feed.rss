@@ -7,11 +7,36 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Wed, 14 Oct 2026 16:51:07 GMT</lastBuildDate>
+		<lastBuildDate>Fri, 16 Oct 2026 10:38:04 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
 		
+				<item>
+					<title xml:lang="en-US">Superoptimizing an FPU emulator</title>
+					<link hreflang="en-US">https://purplesyringa.moe/blog/./superoptimizing-an-fpu-emulator/</link>
+					<description xml:lang="en-US">&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Superoptimization&lt;/strong&gt; is the process where a compiler automatically finds the optimal sequence for a loop-free sequence of instructions.&lt;/p&gt;
+&lt;p&gt;– &lt;a href=&quot;https://en.wikipedia.org/wiki/Superoptimization&quot;&gt;Wikipedia&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Compilers are good at making mechanical transformations that make code faster. Unfortunately, most of them are not as good at non-trivial reasoning, so they can’t invent a completely novel approach to solving your problem.&lt;/p&gt;
+&lt;p&gt;When designing a library for floating-point calculations, I had to implement a function that takes a float &lt;eq&gt;&lt;math&gt;&lt;mi&gt;f&lt;/mi&gt;&lt;/math&gt;&lt;/eq&gt; and produces a float corresponding to the lowest set bit in &lt;eq&gt;&lt;math&gt;&lt;mi&gt;f&lt;/mi&gt;&lt;/math&gt;&lt;/eq&gt;. For example, if &lt;eq&gt;&lt;math&gt;&lt;mrow&gt;&lt;mi&gt;f&lt;/mi&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mn&gt;1.01101&lt;/mn&gt;&lt;mo&gt;⋅&lt;/mo&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msup&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mn&gt;10&lt;/mn&gt;&lt;/msup&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/eq&gt; in binary, it would return &lt;eq&gt;&lt;math&gt;&lt;mrow&gt;&lt;mn&gt;0.00001&lt;/mn&gt;&lt;mo&gt;⋅&lt;/mo&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msup&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mn&gt;10&lt;/mn&gt;&lt;/msup&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msup&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mn&gt;5&lt;/mn&gt;&lt;/msup&gt;&lt;/mrow&gt;&lt;/math&gt;&lt;/eq&gt;.&lt;/p&gt;
+&lt;p&gt;This can be implemented with bit twiddling, but the straightforward algorithm breaks for powers of two, so I had to insert an &lt;code&gt;if&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-rust&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;hljs-type&quot;&gt;f32&lt;/span&gt;::&lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;from_bits&lt;/span&gt;(x.&lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;to_bits&lt;/span&gt;() &amp;amp; !&lt;span class=&quot;hljs-type&quot;&gt;f32&lt;/span&gt;::MANTISSA_MASK) == x { &lt;span class=&quot;hljs-comment&quot;&gt;// is x a power of two?&lt;/span&gt;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; x; &lt;span class=&quot;hljs-comment&quot;&gt;// x itself is the lowest bit&lt;/span&gt;
+} &lt;span class=&quot;hljs-keyword&quot;&gt;else&lt;/span&gt; {
+    &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; x - &lt;span class=&quot;hljs-type&quot;&gt;f32&lt;/span&gt;::&lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;from_bits&lt;/span&gt;(x.&lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;to_bits&lt;/span&gt;() &amp;amp; (x.&lt;span class=&quot;hljs-title function_ invoke__&quot;&gt;to_bits&lt;/span&gt;() - &lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;)); &lt;span class=&quot;hljs-comment&quot;&gt;// x, minus x without lowest bit&lt;/span&gt;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This &lt;code&gt;if&lt;/code&gt; really annoyed me. It’s slowed down for the common case, and branches could be mispredicted. I wanted to find a formula that automatically handled powers of two, but try as I might, I couldn’t find anything convincingly optimal.&lt;/p&gt;
+&lt;p&gt;So I made a non-orthodox play.&lt;/p&gt;
+</description>
+					<author>me@purplesyringa.moe (Alisa Sireneva)</author>
+					
+					<guid>https://purplesyringa.moe/blog/./superoptimizing-an-fpu-emulator/</guid>
+					<pubDate>Fri, 16 Oct 2026 00:00:00 GMT</pubDate>
+				</item>
+			
 				<item>
 					<title xml:lang="en-US">Things I wish I knew before starting speedrunning</title>
 					<link hreflang="en-US">https://purplesyringa.moe/blog/./things-i-wish-i-knew-before-starting-speedrunning/</link>
