@@ -2,6 +2,9 @@
 title: Superoptimizing an FPU emulator
 ogTitle: "Superoptimizing\nan FPU emulator"
 time: October 16, 2026
+discussion:
+- https://news.ycombinator.com/item?id=50117935
+- https://lobste.rs/s/1s3dve/superoptimizing_fpu_emulator
 intro: |
     > **Superoptimization** is the process where a compiler automatically finds the optimal sequence for a loop-free sequence of instructions.
     > 

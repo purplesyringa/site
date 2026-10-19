@@ -7,7 +7,7 @@
 		<copyright>Alisa Sireneva, CC BY</copyright>
 		<managingEditor>me@purplesyringa.moe (Alisa Sireneva)</managingEditor>
 		<webMaster>me@purplesyringa.moe (Alisa Sireneva)</webMaster>
-		<lastBuildDate>Fri, 16 Oct 2026 10:38:04 GMT</lastBuildDate>
+		<lastBuildDate>Mon, 19 Oct 2026 09:00:58 GMT</lastBuildDate>
 		<docs>https://www.rssboard.org/rss-specification</docs>
 		<ttl>60</ttl>
 		<atom:link href="https://purplesyringa.moe/blog/feed.rss" rel="self" type="application/rss+xml" />
@@ -32,7 +32,7 @@
 &lt;p&gt;So I made a non-orthodox play.&lt;/p&gt;
 </description>
 					<author>me@purplesyringa.moe (Alisa Sireneva)</author>
-					
+					<comments>https://news.ycombinator.com/item?id=50117935</comments>
 					<guid>https://purplesyringa.moe/blog/./superoptimizing-an-fpu-emulator/</guid>
 					<pubDate>Fri, 16 Oct 2026 00:00:00 GMT</pubDate>
 				</item>
